@@ -15,6 +15,7 @@ from paradigmshift import theme  # noqa: E402
 from paradigmshift.dialogs import HardwareDialog, QuickDesignDialog, RunDialog  # noqa: E402
 from paradigmshift.hardware import now  # noqa: E402
 from paradigmshift.mainwindow import MainWindow  # noqa: E402
+from paradigmshift.model import Paradigm  # noqa: E402
 from paradigmshift.runner import PresentationWindow  # noqa: E402
 
 OUT = os.path.join(ROOT, "docs", "screenshots")
@@ -129,6 +130,70 @@ def main():
     shot(pw, "10_participant_rating.png")
     pw.phase = "done"
     pw.close()
+    # 11 – template dialog
+    from paradigmshift.dialogs import TemplateDialog
+    td = TemplateDialog(par.hardware, os.path.join(ROOT, "examples", "stimuli"), win)
+    td.show()
+    td.select("hariri")
+    settle(app)
+    shot(td, "11_templates_hariri.png")
+    td.select("emoreg")
+    settle(app)
+    shot(td, "12_templates_emoreg.png")
+    td.reject()
+
+    ex = os.path.join(ROOT, "examples")
+
+    # 13 – Hariri in the editor
+    win.doc.dirty = False
+    win.open_file(os.path.join(ex, "hariri_face_matching.paradigm.json"))
+    settle(app)
+    m = [b for b in win.doc.paradigm.blocks if b.kind == "match" and b.condition == "faces"][1]
+    win.doc.select([m.id])
+    win.timeline.set_zoom(14)
+    win.timeline.horizontalScrollBar().setValue(0)
+    win.timeline.set_playhead(m.start + 2)
+    settle(app)
+    shot(win, "13_hariri_editor.png")
+
+    # 14 – Go/No-Go, zoomed in on a No-Go trial
+    win.doc.dirty = False
+    win.open_file(os.path.join(ex, "go_nogo.paradigm.json"))
+    settle(app)
+    ng = [b for b in win.doc.paradigm.blocks if b.kind == "gonogo" and b.params["trial"] == "nogo"][1]
+    win.doc.select([ng.id])
+    win.timeline.set_zoom(55)
+    win.timeline.horizontalScrollBar().setValue(int((ng.start - 8) * 55))
+    win.timeline.set_playhead(ng.start + 0.2)
+    settle(app)
+    shot(win, "14_gonogo_editor.png")
+
+    # 15 – emotion regulation
+    win.doc.dirty = False
+    win.open_file(os.path.join(ex, "emotion_regulation.paradigm.json"))
+    settle(app)
+    pic = [b for b in win.doc.paradigm.blocks if b.condition == "decrease_negative"][0]
+    win.doc.select([pic.id])
+    win.timeline.set_zoom(16)
+    win.timeline.horizontalScrollBar().setValue(int(max(0, pic.start - 30) * 16))
+    win.timeline.set_playhead(pic.start + 2)
+    settle(app)
+    shot(win, "15_emoreg_editor.png")
+
+    # 16 – participant screen: Hariri faces trial
+    hp = Paradigm.load(os.path.join(ex, "hariri_face_matching.paradigm.json"))
+    pw = PresentationWindow(hp, {"sub": "01", "run": 1, "out_dir": "/tmp", "simulate": False,
+                                 "fullscreen": False, "screen": 0})
+    pw.resize(1280, 720)
+    pw.show()
+    pw.phase = "running"
+    pw.current = [b for b in hp.blocks if b.kind == "match" and b.condition == "faces"][0]
+    pw.state.t0 = now() - pw.current.start - 1
+    settle(app)
+    shot(pw, "16_participant_hariri.png")
+    pw.phase = "done"
+    pw.close()
+
     win.doc.dirty = False
     QTimer.singleShot(0, app.quit)
     app.exec()

@@ -340,7 +340,7 @@ class TimelineView(QAbstractScrollArea):
         if r.right() < HEADER_W or r.left() > self.viewport().width():
             return
         sel = b.id in self.doc.selection
-        base = QColor(b.type.color)
+        base = QColor(b.color)
         bad = invalid or (self._drag is not None and sel and self.p.has_overlap(b))
         grad = QLinearGradient(r.topLeft(), r.bottomLeft())
         grad.setColorAt(0, base.lighter(112))
@@ -353,7 +353,7 @@ class TimelineView(QAbstractScrollArea):
         p.fillPath(path, QBrush(grad))
         p.setClipPath(path)
         # image thumbnails
-        img = b.params.get("path")
+        img = b.thumbnail_path
         if img and r.width() > 40:
             th = thumbnail(img, int(r.height() - 22))
             if th is not None:
@@ -382,18 +382,21 @@ class TimelineView(QAbstractScrollArea):
             p.setFont(theme.ui_font(8.5, True))
             p.drawText(QRectF(r.left() + 22, r.top() + 1, r.width() - 26, 16), Qt.AlignLeft | Qt.AlignVCenter,
                        p.fontMetrics().elidedText(b.display_label, Qt.ElideRight, int(r.width() - 26)))
+        info_right = r.left() + 4
         if r.width() > 50 and not (img and r.width() > 40):
             p.setPen(QColor(255, 255, 255, 190))
             p.setFont(theme.ui_font(8))
             info = f"{b.duration:g}s"
             if self.p.tr > 0:
                 info += f" · {b.duration / self.p.tr:.3g} TR"
+            info = p.fontMetrics().elidedText(info, Qt.ElideRight, int(r.width() - 12))
             p.drawText(QRectF(r.left() + 7, r.bottom() - 20, r.width() - 10, 16), Qt.AlignLeft | Qt.AlignVCenter, info)
-        if b.condition and r.width() > 60:
+            info_right = r.left() + 10 + p.fontMetrics().horizontalAdvance(info)
+        if b.condition and r.width() > 60 and b.condition not in b.display_label.lower():
             p.setFont(theme.ui_font(7.5, True))
             tw = p.fontMetrics().horizontalAdvance(b.condition) + 12
             tag = QRectF(r.right() - tw - 5, r.bottom() - 19, tw, 15)
-            if tag.left() > r.left() + 50 or (img and tag.left() > r.left() + 4):
+            if tag.left() > info_right:
                 p.setBrush(QColor(0, 0, 0, 120))
                 p.setPen(Qt.NoPen)
                 p.drawRoundedRect(tag, 7, 7)
@@ -429,7 +432,8 @@ class TimelineView(QAbstractScrollArea):
         p.setPen(QColor(theme.TEXT_DIM))
         p.setFont(theme.ui_font(10.5))
         p.drawText(r, Qt.AlignCenter,
-                   "Drag a block from the library onto this track  ·  or drop image files here  ·  or use  ✦ Quick design")
+                   "Drag a block from the library onto this track  ·  drop image files here  ·  "
+                   "or start from  ▦ Templates  (Hariri, Go/No-Go, emotion regulation)")
 
     def _paint_playhead(self, p, h):
         x = self.x_of(self.playhead)

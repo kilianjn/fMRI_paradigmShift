@@ -54,10 +54,10 @@ class BlockCard(QFrame):
             BlockCard {{ background: {theme.PANEL_2}; border: 1px solid {theme.BORDER}; border-radius: 8px; }}
             BlockCard:hover {{ border-color: {bt.color}; background: #2B303B; }}""")
         lay = QHBoxLayout(self)
-        lay.setContentsMargins(8, 7, 8, 7)
+        lay.setContentsMargins(8, 4, 8, 4)
         lay.setSpacing(10)
         icon = QLabel()
-        icon.setPixmap(theme.kind_icon(kind, size=30).pixmap(30, 30))
+        icon.setPixmap(theme.kind_icon(kind, size=26).pixmap(26, 26))
         lay.addWidget(icon)
         txt = QVBoxLayout()
         txt.setSpacing(0)
@@ -166,6 +166,7 @@ class LibraryPanel(QFrame):
         outer.setContentsMargins(0, 0, 0, 0)
         outer.setSpacing(8)
         f, lay = panel("Blocks", hint="drag ➜ timeline")
+        lay.setSpacing(5)
         for kind in BLOCK_TYPES:
             card = BlockCard(kind)
             card.activated.connect(self.addKind)
@@ -224,6 +225,8 @@ class MonitorView(QWidget):
         if b is not None and b.kind == "rating":
             lo, hi = int(b.params.get("min", 1)), int(b.params.get("max", 4))
             state = {"value": (lo + hi + 1) // 2} if b.params.get("mode") == "cursor" else {}
+        if b is not None:
+            state["t"] = self.t - b.start
         paint_stimulus(p, r, par, b, state)
         p.setPen(QPen(QColor(theme.BORDER), 1))
         p.setBrush(Qt.NoBrush)
@@ -233,7 +236,8 @@ class MonitorView(QWidget):
         resp = [x for x in par.active_blocks(self.t) if x.kind == "response"]
         tags = []
         if b is not None:
-            tags.append((b.type.title + (f" · {b.condition}" if b.condition else ""), b.type.color))
+            title = b.display_label if b.kind == "gonogo" else b.type.title
+            tags.append((title + (f" · {b.condition}" if b.condition else ""), b.color))
         else:
             tags.append(("background", "#5B6577"))
         if resp:
@@ -281,18 +285,20 @@ class ColorButton(QPushButton):
 class ImagePicker(QWidget):
     pathChanged = Signal(str)
 
-    def __init__(self, path: str):
+    def __init__(self, path: str, height: int = 110):
         super().__init__()
+        self._h = height
         lay = QVBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         self.preview = QLabel()
         self.preview.setAlignment(Qt.AlignCenter)
-        self.preview.setFixedHeight(110)
+        self.preview.setFixedHeight(height)
         self.preview.setStyleSheet(f"background: {theme.BG}; border: 1px dashed {theme.BORDER}; border-radius: 6px;")
         lay.addWidget(self.preview)
         row = QHBoxLayout()
         self.name = QLabel()
         self.name.setObjectName("Hint")
+        self.name.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
         row.addWidget(self.name, 1)
         btn = QPushButton("Choose…")
         btn.clicked.connect(self._choose)
@@ -302,7 +308,7 @@ class ImagePicker(QWidget):
 
     def set_path(self, path: str):
         self.path = path
-        th = thumbnail(path, 104) if path else None
+        th = thumbnail(path, self._h - 6) if path else None
         if th:
             self.preview.setPixmap(th)
         else:
@@ -412,6 +418,11 @@ class InspectorPanel(QFrame):
             self._build_block(form, blocks[0])
         else:
             self._build_multi(form, blocks)
+        for cb in w.findChildren(QComboBox):   # never let long entries widen the panel
+            cb.setSizeAdjustPolicy(QComboBox.AdjustToMinimumContentsLengthWithIcon)
+            cb.setMinimumContentsLength(6)
+        if self._info is not None:
+            self._info.setWordWrap(True)
         self.scroll.setWidget(w)
 
     def _refresh_info(self):
@@ -604,6 +615,56 @@ class InspectorPanel(QFrame):
             ex.setObjectName("Hint")
             ex.setWordWrap(True)
             form.addRow("", ex)
+        if b.kind == "match":
+            self._section(form, "PICTURES  –  TOP IS THE TARGET")
+            for key, title in (("top", "Top (target)"), ("left", "Bottom left"), ("right", "Bottom right")):
+                pk = ImagePicker(prm.get(key, ""), 72)
+                pk.pathChanged.connect(lambda path, k=key: self._set(bid, **{k: path}))
+                cap = QLabel(title)
+                cap.setObjectName("Hint")
+                form.addRow(cap)
+                form.addRow(pk)
+            corr = QComboBox()
+            corr.addItem("Bottom left", "left")
+            corr.addItem("Bottom right", "right")
+            corr.setCurrentIndex(0 if prm.get("correct", "left") == "left" else 1)
+            corr.currentIndexChanged.connect(lambda i: self._set(bid, correct=corr.itemData(i)))
+            form.addRow("Correct match", corr)
+            for key, title in (("left_button", "Button = left"), ("right_button", "Button = right")):
+                cb = QComboBox()
+                cb.addItems(self.doc.paradigm.hardware.button_names())
+                cb.setCurrentText(prm.get(key, ""))
+                cb.currentTextChanged.connect(lambda txt, k=key: self._set(bid, **{k: txt}))
+                form.addRow(title, cb)
+        if b.kind == "gonogo":
+            self._section(form, "GO / NO-GO")
+            trial = QComboBox()
+            trial.addItem("Go  – participant presses", "go")
+            trial.addItem("No-Go  – participant holds back", "nogo")
+            trial.setCurrentIndex(0 if prm.get("trial", "go") == "go" else 1)
+            trial.currentIndexChanged.connect(lambda i: self._set(bid, trial=trial.itemData(i)))
+            form.addRow("Trial", trial)
+            txt = QLineEdit(prm.get("text", ""))
+            txt.setPlaceholderText("letter or word")
+            txt.editingFinished.connect(lambda: self._set(bid, text=txt.text()))
+            form.addRow("Stimulus", txt)
+            st = dspin(float(prm.get("stim_time", 0.5)), 0.05, 60, 0.1, 2)
+            st.setToolTip("How long the stimulus is visible; the rest of the trial shows the fixation symbol.")
+            st.valueChanged.connect(lambda v: self._set(bid, stim_time=v))
+            form.addRow("Visible for", st)
+            btn = QComboBox()
+            btn.addItem("Any grip button", "any")
+            for n in self.doc.paradigm.hardware.button_names():
+                btn.addItem(n, n)
+            btn.setCurrentIndex(max(0, btn.findData(prm.get("button", "any"))))
+            btn.currentIndexChanged.connect(lambda i: self._set(bid, button=btn.itemData(i)))
+            form.addRow("Go button", btn)
+            pk = ImagePicker(prm.get("path", ""), 72)
+            pk.pathChanged.connect(lambda path: self._set(bid, path=path))
+            cap = QLabel("…or show a picture instead of the text")
+            cap.setObjectName("Hint")
+            form.addRow(cap)
+            form.addRow(pk)
         if b.kind == "response":
             self._section(form, "RESPONSE")
             btns = QComboBox()

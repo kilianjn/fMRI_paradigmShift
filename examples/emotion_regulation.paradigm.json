@@ -1,0 +1,1522 @@
+{
+  "name": "Emotion regulation",
+  "tr": 2.0,
+  "dummy_scans": 3,
+  "background": "#000000",
+  "tracks": [
+    "Stimuli",
+    "Responses"
+  ],
+  "blocks": [
+    {
+      "kind": "text",
+      "start": 0.0,
+      "duration": 10.0,
+      "track": 0,
+      "label": "Instructions",
+      "condition": "instruction",
+      "params": {
+        "text": "LOOK: just look at the picture and let yourself feel whatever it evokes.\nDECREASE: reinterpret the picture so it feels less negative.\n\nAfterwards rate how negative you feel.",
+        "size": 32,
+        "color": "#FFFFFF"
+      },
+      "id": "7dc2663df3"
+    },
+    {
+      "kind": "fixation",
+      "start": 10.0,
+      "duration": 10.0,
+      "track": 0,
+      "label": "Baseline",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ddbcbbc1f4"
+    },
+    {
+      "kind": "text",
+      "start": 20.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "DECREASE",
+      "condition": "cue",
+      "params": {
+        "text": "DECREASE",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "1e3451c988"
+    },
+    {
+      "kind": "image",
+      "start": 22.0,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "decrease_negative",
+      "params": {
+        "path": "stimuli/negative/negative_03.png",
+        "scale": 0.85
+      },
+      "id": "16b6e82431"
+    },
+    {
+      "kind": "rating",
+      "start": 29.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "b82eaa1a81"
+    },
+    {
+      "kind": "fixation",
+      "start": 33.0,
+      "duration": 5.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "94141c9e18"
+    },
+    {
+      "kind": "text",
+      "start": 38.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "DECREASE",
+      "condition": "cue",
+      "params": {
+        "text": "DECREASE",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "7cd83f35c6"
+    },
+    {
+      "kind": "image",
+      "start": 40.5,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "decrease_negative",
+      "params": {
+        "path": "stimuli/negative/negative_06.png",
+        "scale": 0.85
+      },
+      "id": "1e4b06780a"
+    },
+    {
+      "kind": "rating",
+      "start": 47.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "d20435f138"
+    },
+    {
+      "kind": "fixation",
+      "start": 51.5,
+      "duration": 4.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8e3015186c"
+    },
+    {
+      "kind": "text",
+      "start": 56.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "c9bf427699"
+    },
+    {
+      "kind": "image",
+      "start": 58.0,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_negative",
+      "params": {
+        "path": "stimuli/negative/negative_15.png",
+        "scale": 0.85
+      },
+      "id": "1a5b2218fa"
+    },
+    {
+      "kind": "rating",
+      "start": 65.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "b53970c196"
+    },
+    {
+      "kind": "fixation",
+      "start": 69.0,
+      "duration": 5.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "129f65eb8d"
+    },
+    {
+      "kind": "text",
+      "start": 74.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "e669999afb"
+    },
+    {
+      "kind": "image",
+      "start": 76.5,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_neutral",
+      "params": {
+        "path": "stimuli/neutral/neutral_04.png",
+        "scale": 0.85
+      },
+      "id": "bc8a0d9db0"
+    },
+    {
+      "kind": "rating",
+      "start": 83.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "4cf65e40f6"
+    },
+    {
+      "kind": "fixation",
+      "start": 87.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "9097238937"
+    },
+    {
+      "kind": "text",
+      "start": 91.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "001b1147d8"
+    },
+    {
+      "kind": "image",
+      "start": 93.5,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_negative",
+      "params": {
+        "path": "stimuli/negative/negative_10.png",
+        "scale": 0.85
+      },
+      "id": "7840d45cbf"
+    },
+    {
+      "kind": "rating",
+      "start": 100.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "9ab7a6d2c1"
+    },
+    {
+      "kind": "fixation",
+      "start": 104.5,
+      "duration": 3.0,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "9ef27b7c82"
+    },
+    {
+      "kind": "text",
+      "start": 107.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "295df43e9e"
+    },
+    {
+      "kind": "image",
+      "start": 109.5,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_neutral",
+      "params": {
+        "path": "stimuli/neutral/neutral_07.png",
+        "scale": 0.85
+      },
+      "id": "79f9c86fbf"
+    },
+    {
+      "kind": "rating",
+      "start": 116.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "e543569484"
+    },
+    {
+      "kind": "fixation",
+      "start": 120.5,
+      "duration": 5.0,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "e29772036a"
+    },
+    {
+      "kind": "text",
+      "start": 125.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "DECREASE",
+      "condition": "cue",
+      "params": {
+        "text": "DECREASE",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "4262a9d8bb"
+    },
+    {
+      "kind": "image",
+      "start": 127.5,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "decrease_negative",
+      "params": {
+        "path": "stimuli/negative/negative_09.png",
+        "scale": 0.85
+      },
+      "id": "aec7c2df3e"
+    },
+    {
+      "kind": "rating",
+      "start": 134.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "4d15905a74"
+    },
+    {
+      "kind": "fixation",
+      "start": 138.5,
+      "duration": 5.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "a8e048b01f"
+    },
+    {
+      "kind": "text",
+      "start": 144.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "DECREASE",
+      "condition": "cue",
+      "params": {
+        "text": "DECREASE",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "773609a6af"
+    },
+    {
+      "kind": "image",
+      "start": 146.0,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "decrease_negative",
+      "params": {
+        "path": "stimuli/negative/negative_05.png",
+        "scale": 0.85
+      },
+      "id": "861a5a397c"
+    },
+    {
+      "kind": "rating",
+      "start": 153.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "7a81e535a7"
+    },
+    {
+      "kind": "fixation",
+      "start": 157.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "e4940f8e7e"
+    },
+    {
+      "kind": "text",
+      "start": 159.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "c619c6b04a"
+    },
+    {
+      "kind": "image",
+      "start": 161.0,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_negative",
+      "params": {
+        "path": "stimuli/negative/negative_12.png",
+        "scale": 0.85
+      },
+      "id": "b5b0bddee4"
+    },
+    {
+      "kind": "rating",
+      "start": 168.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "cc287c2e4a"
+    },
+    {
+      "kind": "fixation",
+      "start": 172.0,
+      "duration": 4.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "a4044b9d56"
+    },
+    {
+      "kind": "text",
+      "start": 176.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "c6be29bba6"
+    },
+    {
+      "kind": "image",
+      "start": 178.5,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_neutral",
+      "params": {
+        "path": "stimuli/neutral/neutral_02.png",
+        "scale": 0.85
+      },
+      "id": "b592260b6b"
+    },
+    {
+      "kind": "rating",
+      "start": 185.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "edda10afe0"
+    },
+    {
+      "kind": "fixation",
+      "start": 189.5,
+      "duration": 2.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "638c8e22eb"
+    },
+    {
+      "kind": "text",
+      "start": 192.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "0c5c7fe745"
+    },
+    {
+      "kind": "image",
+      "start": 194.0,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_negative",
+      "params": {
+        "path": "stimuli/negative/negative_14.png",
+        "scale": 0.85
+      },
+      "id": "cdb94a5c77"
+    },
+    {
+      "kind": "rating",
+      "start": 201.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "96bb80a250"
+    },
+    {
+      "kind": "fixation",
+      "start": 205.0,
+      "duration": 2.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "55659a9cdc"
+    },
+    {
+      "kind": "text",
+      "start": 207.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "2e277f00d6"
+    },
+    {
+      "kind": "image",
+      "start": 209.5,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_neutral",
+      "params": {
+        "path": "stimuli/neutral/neutral_06.png",
+        "scale": 0.85
+      },
+      "id": "668b52e7bb"
+    },
+    {
+      "kind": "rating",
+      "start": 216.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "49ae8559e3"
+    },
+    {
+      "kind": "fixation",
+      "start": 220.5,
+      "duration": 5.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "895112bfe2"
+    },
+    {
+      "kind": "text",
+      "start": 226.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "7701b04d8b"
+    },
+    {
+      "kind": "image",
+      "start": 228.0,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_neutral",
+      "params": {
+        "path": "stimuli/neutral/neutral_08.png",
+        "scale": 0.85
+      },
+      "id": "900715247a"
+    },
+    {
+      "kind": "rating",
+      "start": 235.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "0a8fadb4f5"
+    },
+    {
+      "kind": "fixation",
+      "start": 239.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "1b8776c7cb"
+    },
+    {
+      "kind": "text",
+      "start": 241.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "DECREASE",
+      "condition": "cue",
+      "params": {
+        "text": "DECREASE",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "b867bbaa2e"
+    },
+    {
+      "kind": "image",
+      "start": 243.0,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "decrease_negative",
+      "params": {
+        "path": "stimuli/negative/negative_01.png",
+        "scale": 0.85
+      },
+      "id": "0633af1244"
+    },
+    {
+      "kind": "rating",
+      "start": 250.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "1e3ee216b7"
+    },
+    {
+      "kind": "fixation",
+      "start": 254.0,
+      "duration": 3.0,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c22960e0f1"
+    },
+    {
+      "kind": "text",
+      "start": 257.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "DECREASE",
+      "condition": "cue",
+      "params": {
+        "text": "DECREASE",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "785a8a949f"
+    },
+    {
+      "kind": "image",
+      "start": 259.0,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "decrease_negative",
+      "params": {
+        "path": "stimuli/negative/negative_08.png",
+        "scale": 0.85
+      },
+      "id": "23c785ac30"
+    },
+    {
+      "kind": "rating",
+      "start": 266.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "e2fc18107f"
+    },
+    {
+      "kind": "fixation",
+      "start": 270.0,
+      "duration": 6.0,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "d8d2d1897b"
+    },
+    {
+      "kind": "text",
+      "start": 276.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "87940a931a"
+    },
+    {
+      "kind": "image",
+      "start": 278.0,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_neutral",
+      "params": {
+        "path": "stimuli/neutral/neutral_01.png",
+        "scale": 0.85
+      },
+      "id": "c2818606ed"
+    },
+    {
+      "kind": "rating",
+      "start": 285.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "f7c592c4d9"
+    },
+    {
+      "kind": "fixation",
+      "start": 289.0,
+      "duration": 3.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "00448084f9"
+    },
+    {
+      "kind": "text",
+      "start": 292.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "060c92b758"
+    },
+    {
+      "kind": "image",
+      "start": 294.5,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_negative",
+      "params": {
+        "path": "stimuli/negative/negative_02.png",
+        "scale": 0.85
+      },
+      "id": "d44bf150ff"
+    },
+    {
+      "kind": "rating",
+      "start": 301.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "9601ae1019"
+    },
+    {
+      "kind": "fixation",
+      "start": 305.5,
+      "duration": 2.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ce584f2a50"
+    },
+    {
+      "kind": "text",
+      "start": 308.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "aaab61137d"
+    },
+    {
+      "kind": "image",
+      "start": 310.0,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_neutral",
+      "params": {
+        "path": "stimuli/neutral/neutral_05.png",
+        "scale": 0.85
+      },
+      "id": "0b49574172"
+    },
+    {
+      "kind": "rating",
+      "start": 317.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "415bfd779d"
+    },
+    {
+      "kind": "fixation",
+      "start": 321.0,
+      "duration": 2.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "eb624a0387"
+    },
+    {
+      "kind": "text",
+      "start": 323.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "fff998b50e"
+    },
+    {
+      "kind": "image",
+      "start": 325.5,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_negative",
+      "params": {
+        "path": "stimuli/negative/negative_04.png",
+        "scale": 0.85
+      },
+      "id": "84580be594"
+    },
+    {
+      "kind": "rating",
+      "start": 332.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "bafbf332e0"
+    },
+    {
+      "kind": "fixation",
+      "start": 336.5,
+      "duration": 3.0,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "38cdf79abd"
+    },
+    {
+      "kind": "text",
+      "start": 339.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "DECREASE",
+      "condition": "cue",
+      "params": {
+        "text": "DECREASE",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "c20d8cd645"
+    },
+    {
+      "kind": "image",
+      "start": 341.5,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "decrease_negative",
+      "params": {
+        "path": "stimuli/negative/negative_13.png",
+        "scale": 0.85
+      },
+      "id": "dd03878afd"
+    },
+    {
+      "kind": "rating",
+      "start": 348.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "3e11328522"
+    },
+    {
+      "kind": "fixation",
+      "start": 352.5,
+      "duration": 5.0,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "9ac2dc5e5e"
+    },
+    {
+      "kind": "text",
+      "start": 357.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "DECREASE",
+      "condition": "cue",
+      "params": {
+        "text": "DECREASE",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "8d507654b9"
+    },
+    {
+      "kind": "image",
+      "start": 359.5,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "decrease_negative",
+      "params": {
+        "path": "stimuli/negative/negative_07.png",
+        "scale": 0.85
+      },
+      "id": "16de7af3f5"
+    },
+    {
+      "kind": "rating",
+      "start": 366.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "edb7d71ca5"
+    },
+    {
+      "kind": "fixation",
+      "start": 370.5,
+      "duration": 2.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "60091b7550"
+    },
+    {
+      "kind": "text",
+      "start": 373.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "999b63146e"
+    },
+    {
+      "kind": "image",
+      "start": 375.0,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_negative",
+      "params": {
+        "path": "stimuli/negative/negative_11.png",
+        "scale": 0.85
+      },
+      "id": "42411d99a0"
+    },
+    {
+      "kind": "rating",
+      "start": 382.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "17b9f73ae1"
+    },
+    {
+      "kind": "fixation",
+      "start": 386.0,
+      "duration": 5.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "6170dd4518"
+    },
+    {
+      "kind": "text",
+      "start": 391.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "95e52ab8e6"
+    },
+    {
+      "kind": "image",
+      "start": 393.5,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_negative",
+      "params": {
+        "path": "stimuli/negative/negative_16.png",
+        "scale": 0.85
+      },
+      "id": "83e12f2068"
+    },
+    {
+      "kind": "rating",
+      "start": 400.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "1e9b6e6017"
+    },
+    {
+      "kind": "fixation",
+      "start": 404.5,
+      "duration": 3.5,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "d3701d488a"
+    },
+    {
+      "kind": "text",
+      "start": 408.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "LOOK",
+      "condition": "cue",
+      "params": {
+        "text": "LOOK",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "f04c32173e"
+    },
+    {
+      "kind": "image",
+      "start": 410.0,
+      "duration": 7.0,
+      "track": 0,
+      "label": "",
+      "condition": "look_neutral",
+      "params": {
+        "path": "stimuli/neutral/neutral_03.png",
+        "scale": 0.85
+      },
+      "id": "44e94cbca1"
+    },
+    {
+      "kind": "rating",
+      "start": 417.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "rating",
+      "params": {
+        "path": "",
+        "question": "How negative do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "not at all",
+        "right_label": "very",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "092de32211"
+    },
+    {
+      "kind": "fixation",
+      "start": 421.0,
+      "duration": 6.0,
+      "track": 0,
+      "label": "Relax",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "cb281e3a43"
+    },
+    {
+      "kind": "fixation",
+      "start": 427.0,
+      "duration": 10.0,
+      "track": 0,
+      "label": "Baseline",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "1679c94a58"
+    }
+  ],
+  "hardware": {
+    "sync_mode": "keyboard",
+    "trigger_key": "s",
+    "serial_port": "",
+    "baud_rate": 57600,
+    "buttons": [
+      {
+        "name": "Left thumb",
+        "key": "1"
+      },
+      {
+        "name": "Left index",
+        "key": "2"
+      },
+      {
+        "name": "Right index",
+        "key": "3"
+      },
+      {
+        "name": "Right thumb",
+        "key": "4"
+      }
+    ],
+    "move_left": "Left index",
+    "move_right": "Right index",
+    "confirm": "Right thumb"
+  },
+  "format": 1
+}

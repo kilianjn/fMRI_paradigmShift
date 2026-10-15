@@ -94,7 +94,53 @@ def paint_stimulus(p: QPainter, rect: QRectF, paradigm: Paradigm, block: Block |
                    Qt.AlignCenter | Qt.TextWordWrap, prm.get("text", ""))
     elif block.kind == "rating":
         _paint_rating(p, rect, block, state or {})
+    elif block.kind == "match":
+        _paint_match(p, rect, block)
+    elif block.kind == "gonogo":
+        _paint_gonogo(p, rect, block, (state or {}).get("t", 0.0), k)
     p.restore()
+
+
+def gonogo_visible(block: Block, t_in_block: float) -> bool:
+    """Go/No-Go stimuli are only shown for ``stim_time`` seconds, then the ISI symbol."""
+    return t_in_block < float(block.params.get("stim_time", 0.5))
+
+
+def _paint_gonogo(p: QPainter, rect: QRectF, block: Block, t: float, k: float) -> None:
+    prm = block.params
+    if gonogo_visible(block, t):
+        if prm.get("path"):
+            _draw_image(p, rect, prm["path"], 0.5)
+            return
+        f = QFont("Inter")
+        f.setBold(True)
+        f.setPixelSize(max(4, int(prm.get("size", 140) * k)))
+        p.setFont(f)
+        p.setPen(QColor(prm.get("color", "#FFFFFF")))
+        p.drawText(rect, Qt.AlignCenter, prm.get("text", ""))
+    elif prm.get("isi_symbol"):
+        f = QFont("DejaVu Sans")
+        f.setPixelSize(max(4, int(72 * k)))
+        p.setFont(f)
+        p.setPen(QColor("#FFFFFF"))
+        p.drawText(rect, Qt.AlignCenter, prm["isi_symbol"])
+
+
+def _paint_match(p: QPainter, rect: QRectF, block: Block) -> None:
+    """Hariri layout: target on top, two choices below."""
+    prm = block.params
+    sc = float(prm.get("scale", 0.9))
+    h = rect.height() * .44
+    w = h * 0.8
+    gap = rect.width() * .05
+    top = QRectF(0, 0, w, h)
+    top.moveCenter(QPointF(rect.center().x(), rect.top() + rect.height() * .27))
+    left = QRectF(0, 0, w, h)
+    left.moveCenter(QPointF(rect.center().x() - w / 2 - gap, rect.top() + rect.height() * .74))
+    right = QRectF(0, 0, w, h)
+    right.moveCenter(QPointF(rect.center().x() + w / 2 + gap, rect.top() + rect.height() * .74))
+    for area, key in ((top, "top"), (left, "left"), (right, "right")):
+        _draw_image(p, rect, prm.get(key, ""), sc, area)
 
 
 def _paint_rating(p: QPainter, rect: QRectF, block: Block, state: dict) -> None:

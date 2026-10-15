@@ -646,3 +646,244 @@ class RunDialog(QDialog):
             "fullscreen": self.fullscreen.isChecked(),
             "simulate": self.simulate.isChecked(),
         }
+
+
+# =============================================================================
+# Paradigm templates (Hariri, Go/No-Go, emotion regulation)
+# =============================================================================
+_OPT_LABELS = {
+    "tr": ("TR", " s"), "face_blocks": ("Face blocks", ""), "trials_per_block": ("Trials per block", ""),
+    "trial_dur": ("Trial length", " s"), "instruction_dur": ("Instruction", " s"),
+    "faces_dir": ("Faces folder", ""), "shapes_dir": ("Shapes folder", ""), "seed": ("Random seed", ""),
+    "n_trials": ("Trials", ""), "nogo_percent": ("No-Go trials", " %"), "stim_time": ("Letter visible", " s"),
+    "go_letters": ("Go letters", ""), "nogo_letter": ("No-Go letter", ""),
+    "rest_every": ("Rest after every", " trials"), "rest_dur": ("Rest length", " s"),
+    "jitter_max": ("Extra jitter up to", " s"), "button": ("Go button", ""),
+    "trials_per_condition": ("Trials per condition", ""), "include_increase": ("Add INCREASE condition", ""),
+    "cue_dur": ("Cue", " s"), "picture_dur": ("Picture", " s"), "rating_dur": ("Rating", " s"),
+    "iti_min": ("Relax from", " s"), "iti_max": ("Relax up to", " s"), "rating_max": ("Rating scale 1 to", ""),
+    "neutral_dir": ("Neutral pictures", ""), "negative_dir": ("Negative pictures", ""),
+}
+_OPT_TIPS = {
+    "faces_dir": "Folder with angry and fearful faces (e.g. NimStim or KDEF). Empty = built-in placeholder faces.",
+    "shapes_dir": "Folder with shape pictures. Empty = built-in circles and ellipses.",
+    "neutral_dir": "Folder with neutral pictures (e.g. IAPS/OASIS). Empty = built-in placeholders.",
+    "negative_dir": "Folder with negative pictures (e.g. IAPS/OASIS). Empty = built-in placeholders.",
+    "nogo_percent": "Share of No-Go trials. They never follow each other directly.",
+    "trial_dur": "Time per trial (stimulus onset to next onset).",
+    "seed": "Change to get a different random order. Same seed = same paradigm.",
+}
+
+
+class FolderField(QWidget):
+    changed = Signal()
+
+    def __init__(self, path: str):
+        super().__init__()
+        lay = QHBoxLayout(self)
+        lay.setContentsMargins(0, 0, 0, 0)
+        self.edit = QLineEdit(path)
+        self.edit.setPlaceholderText("built-in placeholders")
+        self.edit.editingFinished.connect(self.changed)
+        b = QPushButton("Browse…")
+        b.clicked.connect(self._browse)
+        lay.addWidget(self.edit, 1)
+        lay.addWidget(b)
+
+    def _browse(self):
+        d = QFileDialog.getExistingDirectory(self, "Choose folder", self.edit.text())
+        if d:
+            self.edit.setText(d)
+            self.changed.emit()
+
+    def value(self) -> str:
+        return self.edit.text().strip()
+
+
+class TemplateCard(QFrame):
+    clicked = Signal(str)
+
+    def __init__(self, t):
+        super().__init__()
+        self.key = t.key
+        self.color = t.color
+        self.setCursor(Qt.PointingHandCursor)
+        lay = QHBoxLayout(self)
+        lay.setContentsMargins(10, 10, 10, 10)
+        icon = QLabel()
+        icon.setPixmap(theme.kind_icon(t.kinds[0], t.color, 36).pixmap(36, 36))
+        lay.addWidget(icon)
+        col = QVBoxLayout()
+        col.setSpacing(0)
+        a = QLabel(t.title)
+        a.setStyleSheet("font-weight: 600; font-size: 14px; background: transparent;")
+        b = QLabel(t.subtitle)
+        b.setStyleSheet(f"color: {theme.TEXT_DIM}; font-size: 11px; background: transparent;")
+        col.addWidget(a)
+        col.addWidget(b)
+        lay.addLayout(col, 1)
+        self.set_selected(False)
+
+    def set_selected(self, on: bool):
+        border = self.color if on else theme.BORDER
+        bg = "#2B303B" if on else theme.PANEL_2
+        self.setStyleSheet(f"TemplateCard {{ background: {bg}; border: 1px solid {border}; border-radius: 8px; }}")
+
+    def mousePressEvent(self, _e):
+        self.clicked.emit(self.key)
+
+
+class TemplateDialog(QDialog):
+    """Start a new paradigm from a validated task design."""
+
+    def __init__(self, hw: Hardware, stim_dir: str, parent=None, start: str = "hariri"):
+        super().__init__(parent)
+        from .templates import TEMPLATES
+        self.setWindowTitle("New paradigm from template")
+        self.resize(940, 640)
+        self.hw = hw
+        self.stim_dir = stim_dir
+        self.templates = {t.key: t for t in TEMPLATES}
+        self.paradigm: Paradigm | None = None
+        root = QVBoxLayout(self)
+        t = QLabel("Paradigm templates")
+        t.setObjectName("Big")
+        root.addWidget(t)
+        root.addWidget(_hint("Pick a classic task, adjust the numbers, and get a complete, editable timeline. "
+                             "Without your own stimulus folders, placeholder pictures are generated – replace "
+                             "them with a validated set for real studies."))
+        body = QHBoxLayout()
+        side = QVBoxLayout()
+        self.cards = {}
+        for tpl in TEMPLATES:
+            c = TemplateCard(tpl)
+            c.clicked.connect(self.select)
+            side.addWidget(c)
+            self.cards[tpl.key] = c
+        side.addStretch()
+        sw = QWidget()
+        sw.setLayout(side)
+        sw.setFixedWidth(290)
+        body.addWidget(sw)
+        right = QFrame()
+        right.setObjectName("Panel")
+        self.rlay = QVBoxLayout(right)
+        self.rlay.setContentsMargins(16, 14, 16, 14)
+        self.title = QLabel()
+        self.title.setObjectName("Big")
+        self.desc = _hint("")
+        self.desc.setStyleSheet(f"color: {theme.TEXT}; font-size: 13px;")
+        self.ref = _hint("")
+        self.rlay.addWidget(self.title)
+        self.rlay.addWidget(self.desc)
+        self.rlay.addWidget(self.ref)
+        self.form_host = QVBoxLayout()
+        self.rlay.addLayout(self.form_host, 1)
+        body.addWidget(right, 1)
+        root.addLayout(body, 1)
+        self.summary = QLabel()
+        self.summary.setStyleSheet(f"color: {theme.ACCENT}; font-weight: 600;")
+        self.summary.setWordWrap(True)
+        bottom = QHBoxLayout()
+        bottom.addWidget(self.summary, 1)
+        bb = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.ok = bb.button(QDialogButtonBox.Ok)
+        self.ok.setText("Create paradigm")
+        self.ok.setObjectName("Primary")
+        bb.accepted.connect(self.accept)
+        bb.rejected.connect(self.reject)
+        bottom.addWidget(bb)
+        root.addLayout(bottom)
+        self.key = None
+        self.select(start)
+
+    def select(self, key: str):
+        from dataclasses import fields
+        self.key = key
+        tpl = self.templates[key]
+        for k, c in self.cards.items():
+            c.set_selected(k == key)
+        self.title.setText(tpl.title)
+        self.desc.setText(tpl.description)
+        self.ref.setText("Reference: " + tpl.reference)
+        while self.form_host.count():
+            w = self.form_host.takeAt(0).widget()
+            if w:
+                w.deleteLater()
+        holder = QWidget()
+        form = QFormLayout(holder)
+        form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        form.setContentsMargins(0, 8, 0, 0)
+        defaults = tpl.options()
+        self.inputs = {}
+        for f in fields(defaults):
+            v = getattr(defaults, f.name)
+            label, unit = _OPT_LABELS.get(f.name, (f.name, ""))
+            if f.name.endswith("_dir"):
+                w = FolderField(v)
+                w.changed.connect(self._update)
+            elif f.name == "button":
+                w = QComboBox()
+                w.addItem("Any grip button", "any")
+                for n in self.hw.button_names():
+                    w.addItem(n, n)
+                w.currentIndexChanged.connect(self._update)
+            elif isinstance(v, bool):
+                w = QCheckBox()
+                w.setChecked(v)
+                w.toggled.connect(self._update)
+            elif isinstance(v, int):
+                w = ispin(v, 0, 10000)
+                w.setSuffix(unit)
+                w.valueChanged.connect(self._update)
+            elif isinstance(v, float):
+                w = dspin(v, 0, 10000, 0.5 if unit == " s" else 1, 2, unit)
+                w.valueChanged.connect(self._update)
+            else:
+                w = QLineEdit(v)
+                w.editingFinished.connect(self._update)
+            if f.name in _OPT_TIPS:
+                w.setToolTip(_OPT_TIPS[f.name])
+            self.inputs[f.name] = w
+            form.addRow(label, w)
+        self.form_host.addWidget(holder)
+        self._update()
+
+    def options(self):
+        tpl = self.templates[self.key]
+        o = tpl.options()
+        for name, w in self.inputs.items():
+            if isinstance(w, FolderField):
+                val = w.value()
+            elif isinstance(w, QComboBox):
+                val = w.currentData()
+            elif isinstance(w, QCheckBox):
+                val = w.isChecked()
+            elif isinstance(w, (QSpinBox,)):
+                val = w.value()
+            elif isinstance(w, QLineEdit):
+                val = w.text()
+            else:
+                val = float(w.value())
+            setattr(o, name, val)
+        return o
+
+    def _update(self, *_):
+        from .templates import build
+        try:
+            QGuiApplication.setOverrideCursor(Qt.WaitCursor)
+            par = build(self.key, self.options(), self.stim_dir)
+        except (ValueError, OSError) as exc:
+            self.paradigm = None
+            self.summary.setText(f"⚠ {exc}")
+            self.summary.setStyleSheet(f"color: {theme.DANGER}; font-weight: 600;")
+            self.ok.setEnabled(False)
+            return
+        finally:
+            QGuiApplication.restoreOverrideCursor()
+        self.paradigm = par
+        conds = [c for c in par.conditions() if c not in ("instruction", "cue", "rating")]
+        self.summary.setStyleSheet(f"color: {theme.ACCENT}; font-weight: 600;")
+        self.summary.setText(f"→ {fmt_time(par.duration)} min  ·  {par.volumes} volumes at TR {par.tr:g}s  ·  "
+                             f"{len(par.blocks)} blocks  ·  conditions: {', '.join(conds)}")
+        self.ok.setEnabled(True)

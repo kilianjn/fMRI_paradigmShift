@@ -138,6 +138,15 @@ def draw_kind_glyph(p: QPainter, kind: str, r: QRectF, color: QColor) -> None:
         p.drawRoundedRect(body, w * .12, w * .12)
         p.setBrush(color)
         p.drawEllipse(QPointF(c.x(), r.top() + h * .36), w * .06, w * .06)
+    elif kind == "match":
+        bw, bh = w * .26, h * .26
+        for x, y in ((c.x() - bw / 2, r.top() + h * .14), (r.left() + w * .14, r.top() + h * .58),
+                     (r.right() - w * .14 - bw, r.top() + h * .58)):
+            p.drawRoundedRect(QRectF(x, y, bw, bh), 2, 2)
+    elif kind == "gonogo":
+        p.drawEllipse(QPointF(r.left() + w * .32, c.y()), w * .15, w * .15)
+        p.setBrush(color)
+        p.drawEllipse(QPointF(r.right() - w * .32, c.y()), w * .15, w * .15)
     elif kind == "trigger":
         path = QPainterPath(QPointF(r.left() + w * .12, c.y()))
         for i, x in enumerate((.3, .3, .5, .5, .7, .7, .88)):
@@ -259,6 +268,9 @@ def glyph_icon(name: str, color: str = TEXT, size: int = 20) -> QIcon:
         p.drawLine(QPointF(s * .33, s * .44), QPointF(s * .55, s * .44))
         if name == "zoomin":
             p.drawLine(QPointF(s * .44, s * .33), QPointF(s * .44, s * .55))
+    elif name == "template":
+        for x, y in ((.18, .18), (.54, .18), (.18, .54), (.54, .54)):
+            p.drawRoundedRect(QRectF(s * x, s * y, s * .28, s * .28), 2, 2)
     elif name == "check":
         p.drawLine(QPointF(s * .22, s * .52), QPointF(s * .42, s * .72))
         p.drawLine(QPointF(s * .42, s * .72), QPointF(s * .8, s * .3))

@@ -144,3 +144,29 @@ def test_full_run_with_simulated_scanner(app, tmp_path):
     rows = open(got[0]).read().splitlines()
     assert len(rows) == 4            # header + 3 blocks
     assert "Left index" in open(got[0]).read()
+
+
+def test_template_dialog_and_examples_in_editor(win, app, tmp_path):
+    from paradigmshift.dialogs import TemplateDialog
+
+    dlg = TemplateDialog(win.doc.paradigm.hardware, str(tmp_path), win)
+    for key in ("hariri", "gonogo", "emoreg"):
+        dlg.select(key)
+        app.processEvents()
+        assert dlg.paradigm is not None and dlg.ok.isEnabled()
+    dlg.select("gonogo")
+    dlg.inputs["nogo_percent"].setValue(90)        # impossible -> error shown, cannot create
+    assert dlg.paradigm is None and not dlg.ok.isEnabled()
+    dlg.reject()
+    ex = os.path.join(os.path.dirname(__file__), "..", "examples")
+    for name in ("hariri_face_matching", "go_nogo", "emotion_regulation"):
+        win.doc.dirty = False
+        win.open_file(os.path.join(ex, name + ".paradigm.json"))
+        seen = set()
+        for b in win.doc.paradigm.blocks:
+            if b.kind not in seen:
+                seen.add(b.kind)
+                win.doc.select([b.id])
+                win.timeline.set_playhead(b.start + 0.1)
+                app.processEvents()
+        assert seen

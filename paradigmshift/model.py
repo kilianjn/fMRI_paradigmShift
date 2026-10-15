@@ -69,10 +69,26 @@ BLOCK_TYPES: dict[str, BlockType] = {
             "Records grip presses while it runs (place it under a stimulus).",
             4.0, 1, {"buttons": "any", "correct": ""},
         ),
+        BlockType(
+            "match", "Matching trial", "#1FA8B8",
+            "Three pictures: which of the two bottom ones matches the top one? (Hariri task)",
+            5.0, 0,
+            {"top": "", "left": "", "right": "", "correct": "left",
+             "left_button": "Left index", "right_button": "Right index", "scale": 0.9},
+        ),
+        BlockType(
+            "gonogo", "Go / No-Go trial", "#6BBF3A",
+            "Flashes a letter or picture. Go: press a button. No-Go: hold back.",
+            1.5, 0,
+            {"trial": "go", "text": "A", "path": "", "stim_time": 0.5, "button": "any",
+             "size": 140, "color": "#FFFFFF", "isi_symbol": "+"},
+        ),
     ]
 }
 
-STIMULUS_KINDS = ("fixation", "image", "rating", "text", "rest")
+STIMULUS_KINDS = ("fixation", "image", "rating", "text", "rest", "match", "gonogo")
+IMAGE_PARAMS = ("path", "top", "left", "right")   # params that hold picture files
+NOGO_COLOR = "#E5484D"
 
 
 # --------------------------------------------------------------------------
@@ -110,7 +126,24 @@ class Block:
             return os.path.basename(path)
         if self.kind == "text":
             return self.params.get("text", "").split("\n")[0][:40] or self.type.title
+        if self.kind == "gonogo":
+            return ("NO-GO " if self.params.get("trial") == "nogo" else "GO ") + self.params.get("text", "")
+        if self.kind == "match" and self.params.get("top"):
+            return os.path.basename(self.params["top"])
         return self.type.title
+
+    @property
+    def color(self) -> str:
+        if self.kind == "gonogo" and self.params.get("trial") == "nogo":
+            return NOGO_COLOR
+        return self.type.color
+
+    @property
+    def thumbnail_path(self) -> str:
+        return self.params.get("path") or self.params.get("top") or ""
+
+    def image_files(self) -> list[str]:
+        return [self.params[k] for k in IMAGE_PARAMS if self.params.get(k)]
 
     @classmethod
     def create(cls, kind: str, start: float, duration: float | None = None,
@@ -272,10 +305,11 @@ class Paradigm:
         problems = []
         for b in sorted(self.blocks, key=lambda b: b.start):
             where = f"{b.display_label} @ {b.start:.2f}s"
-            path = b.params.get("path")
-            if b.kind == "image" and not path:
+            if b.kind == "image" and not b.params.get("path"):
                 problems.append(f"{where}: no image chosen")
-            if path and not os.path.exists(path):
+            if b.kind == "match" and not all(b.params.get(k) for k in ("top", "left", "right")):
+                problems.append(f"{where}: needs a top, left and right picture")
+            if any(not os.path.exists(f) for f in b.image_files()):
                 problems.append(f"{where}: image file not found")
             if self.has_overlap(b):
                 problems.append(f"{where}: overlaps another block")
@@ -306,12 +340,13 @@ class Paradigm:
         d = self.to_dict()
         # store images relative to the paradigm file so projects can be moved
         for b in d["blocks"]:
-            p = b["params"].get("path")
-            if p and os.path.isabs(p):
-                try:
-                    b["params"]["path"] = os.path.relpath(p, base)
-                except ValueError:  # different drive on Windows
-                    pass
+            for key in IMAGE_PARAMS:
+                p = b["params"].get(key)
+                if p and os.path.isabs(p):
+                    try:
+                        b["params"][key] = os.path.relpath(p, base).replace(os.sep, "/")
+                    except ValueError:  # different drive on Windows
+                        pass
         with open(path, "w", encoding="utf-8") as fh:
             json.dump(d, fh, indent=2)
 
@@ -321,9 +356,10 @@ class Paradigm:
             p = cls.from_dict(json.load(fh))
         base = os.path.dirname(os.path.abspath(path))
         for b in p.blocks:
-            rel = b.params.get("path")
-            if rel and not os.path.isabs(rel):
-                b.params["path"] = os.path.normpath(os.path.join(base, rel))
+            for key in IMAGE_PARAMS:
+                rel = b.params.get(key)
+                if rel and not os.path.isabs(rel):
+                    b.params[key] = os.path.normpath(os.path.join(base, rel))
         return p
 
     def copy(self) -> "Paradigm":

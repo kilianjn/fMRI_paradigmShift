@@ -4,14 +4,14 @@ from __future__ import annotations
 import csv
 import os
 
-from PySide6.QtCore import QSettings, QSize, Qt, QTimer
+from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, QTimer
 from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import (QFileDialog, QFrame, QHBoxLayout, QLabel, QMainWindow, QMessageBox,
                                QPushButton, QSizePolicy, QSplitter, QToolBar, QToolButton, QVBoxLayout,
                                QWidget)
 
 from . import theme
-from .dialogs import HardwareDialog, QuickDesignDialog, RunDialog
+from .dialogs import HardwareDialog, QuickDesignDialog, RunDialog, TemplateDialog
 from .document import Document
 from .hardware import now
 from .model import FILE_SUFFIX, Paradigm
@@ -72,6 +72,8 @@ class MainWindow(QMainWindow):
         self.a_save_as = self._act("Save as…", lambda: self.save_file(True), QKeySequence.SaveAs)
         self.a_undo = self._act("Undo", self.doc.undo, QKeySequence.Undo, "undo")
         self.a_redo = self._act("Redo", self.doc.redo, "Ctrl+Shift+Z", "redo")
+        self.a_template = self._act("Templates", self.new_from_template, "Ctrl+T", "template",
+                                    "Start from a classic task: Hariri, Go/No-Go, emotion regulation")
         self.a_wizard = self._act("Quick design", self.quick_design, "Ctrl+Shift+N", "wand",
                                   "Build a block or event-related design in a few clicks")
         self.a_hw = self._act("Hardware", self.hardware_setup, "Ctrl+Shift+H", "hardware",
@@ -90,8 +92,16 @@ class MainWindow(QMainWindow):
         self.a_validate = self._act("Check paradigm", self.validate, "Ctrl+K", "check")
         mb = self.menuBar()
         m = mb.addMenu("&File")
-        for a in (self.a_new, self.a_open, self.a_save, self.a_save_as):
+        m.addAction(self.a_new)
+        m.addAction("New from template…", self.new_from_template)
+        for a in (self.a_open, self.a_save, self.a_save_as):
             m.addAction(a)
+        ex = m.addMenu("Open example")
+        ex_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "examples")
+        if os.path.isdir(ex_dir):
+            for f in sorted(os.listdir(ex_dir)):
+                if f.endswith(FILE_SUFFIX):
+                    ex.addAction(f.replace(FILE_SUFFIX, ""), lambda p=os.path.join(ex_dir, f): self.open_file(p))
         m.addSeparator()
         m.addAction(self.a_export)
         m.addSeparator()
@@ -107,6 +117,7 @@ class MainWindow(QMainWindow):
         m.addAction("Delete and close gap", lambda: self.timeline.delete_selected(True), "Shift+Del")
         m.addAction("Select all", lambda: self.doc.select([b.id for b in self.doc.paradigm.blocks]), "Ctrl+A")
         m = mb.addMenu("&Paradigm")
+        m.addAction(self.a_template)
         m.addAction(self.a_wizard)
         m.addAction(self.a_validate)
         m.addAction(self.a_hw)
@@ -130,6 +141,7 @@ class MainWindow(QMainWindow):
         tb.addAction(self.a_undo)
         tb.addAction(self.a_redo)
         tb.addSeparator()
+        tb.addAction(self.a_template)
         tb.addAction(self.a_wizard)
         tb.addAction(self.a_hw)
         tb.addAction(self.a_export)
@@ -295,7 +307,8 @@ class MainWindow(QMainWindow):
                 QMessageBox.critical(self, "Could not open", str(exc))
                 return
             self.settings.setValue("dir", os.path.dirname(path))
-            imgs = sorted({b.params["path"] for b in self.doc.paradigm.blocks if b.params.get("path")})
+            imgs = sorted({f for b in self.doc.paradigm.blocks for f in b.image_files()})
+            self.library.media.clear()
             self.library.media.add_files(imgs)
             self.timeline.set_playhead(0)
             QTimer.singleShot(0, self.timeline.zoom_fit)
@@ -322,6 +335,29 @@ class MainWindow(QMainWindow):
             e.ignore()
 
     # ------------------------------------------------------------------ tools
+    def new_from_template(self, key: str = "hariri"):
+        if not self._confirm_discard():
+            return
+        stim_dir = os.path.join(QStandardPaths.writableLocation(QStandardPaths.AppDataLocation),
+                                "placeholder-stimuli")
+        hw = self.doc.paradigm.hardware
+        dlg = TemplateDialog(hw, stim_dir, self, start=key if isinstance(key, str) else "hariri")
+        if not dlg.exec() or dlg.paradigm is None:
+            return
+        par = dlg.paradigm
+        par.hardware = hw
+        for b in par.blocks:   # left/right answers follow the cursor buttons from the hardware setup
+            if b.kind == "match":
+                b.params["left_button"], b.params["right_button"] = hw.move_left, hw.move_right
+        self.doc.reset(par)
+        self.doc.dirty = True
+        files = sorted({f for b in par.blocks for f in b.image_files()})
+        self.library.media.clear()
+        self.library.media.add_files(files)
+        self.timeline.set_playhead(0)
+        self._refresh()
+        QTimer.singleShot(0, self.timeline.zoom_fit)
+
     def quick_design(self):
         dlg = QuickDesignDialog(self.doc.paradigm, self.library.media.files(), self)
         if dlg.exec():
@@ -413,7 +449,7 @@ def export_onsets(par: Paradigm, folder: str) -> list[str]:
         w.writerow(["onset", "duration", "trial_type", "block", "stim_file"])
         for b in sorted(par.blocks, key=lambda b: (b.start, b.track)):
             w.writerow([f"{b.start:.3f}", f"{b.duration:.3f}", b.condition or b.kind, b.kind,
-                        os.path.basename(b.params.get("path", "")) or "n/a"])
+                        os.path.basename(b.thumbnail_path) or "n/a"])
     files.append(path)
     for cond in par.conditions():
         path = os.path.join(folder, f"{stem}_{cond}.txt")

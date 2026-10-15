@@ -18,7 +18,7 @@ from PySide6.QtWidgets import QWidget
 
 from .hardware import InputRouter, now
 from .model import Block, Paradigm
-from .stimulus import load_pixmap, paint_stimulus
+from .stimulus import gonogo_visible, load_pixmap, paint_stimulus
 
 
 def bids_label(text: str) -> str:
@@ -63,12 +63,16 @@ class RunState:
     def onset(self, b: Block, t: float) -> None:
         if b.id in self.events:
             return
-        self.events[b.id] = {
+        self.events[b.id] = ev = {
             "onset": round(t - self.t0, 4), "duration": b.duration, "planned_onset": b.start,
             "trial_type": b.condition or b.kind, "block": b.kind, "label": b.display_label,
             "stim_file": os.path.basename(b.params.get("path", "")) if b.params.get("path") else "n/a",
-            "response": "n/a", "response_time": "n/a", "rating": "n/a", "correct": "n/a",
+            "response": "n/a", "response_time": "n/a", "rating": "n/a", "correct": "n/a", "outcome": "n/a",
         }
+        if b.kind == "match":
+            ev["stim_file"] = os.path.basename(b.params.get("top", "")) or "n/a"
+        elif b.kind == "gonogo":
+            ev["trial_type"] = b.condition or b.params.get("trial", "go")
         self.log.append({"time": self.rel(t), "type": "onset", "value": b.kind, "info": b.display_label})
         if b.kind == "rating":
             lo, hi = int(b.params.get("min", 1)), int(b.params.get("max", 4))
@@ -95,6 +99,27 @@ class RunState:
                 ev["response_time"] = round(tt - ev["onset"], 4)
                 if b.params.get("correct"):
                     ev["correct"] = int(name == b.params["correct"])
+                changed.append(b.id)
+            elif b.kind == "match":
+                if ev["response"] != "n/a":
+                    continue
+                side = {b.params.get("left_button", "Left index"): "left",
+                        b.params.get("right_button", "Right index"): "right"}.get(name)
+                if side is None:
+                    continue
+                ev["response"] = side
+                ev["response_time"] = round(tt - ev["onset"], 4)
+                ev["correct"] = int(side == b.params.get("correct", "left"))
+                changed.append(b.id)
+            elif b.kind == "gonogo":
+                want = b.params.get("button", "any")
+                if want not in ("any", name) or ev["response"] != "n/a":
+                    continue
+                ev["response"] = name
+                ev["response_time"] = round(tt - ev["onset"], 4)
+                go = b.params.get("trial", "go") == "go"
+                ev["outcome"] = "hit" if go else "false_alarm"
+                ev["correct"] = int(go)
                 changed.append(b.id)
             elif b.kind == "rating":
                 st = self.ratings[b.id]
@@ -126,9 +151,18 @@ class RunState:
             ev = self.events.get(bid)
             if ev and not st["confirmed"] and st["value"] is not None:
                 ev["rating"] = f"{st['value']} (unconfirmed)"
+        for bid, ev in self.events.items():
+            b = self.p.block(bid)
+            if b is not None and b.kind == "gonogo" and ev["response"] == "n/a":
+                go = b.params.get("trial", "go") == "go"
+                ev["outcome"] = "miss" if go else "correct_rejection"
+                ev["correct"] = int(not go)
+            elif b is not None and b.kind == "match" and ev["response"] == "n/a":
+                ev["outcome"] = "miss"
+                ev["correct"] = 0
         ev_path = os.path.join(out_dir, f"{stem}_events.tsv")
         cols = ["onset", "duration", "trial_type", "block", "label", "stim_file", "response",
-                "response_time", "rating", "correct", "planned_onset"]
+                "response_time", "rating", "correct", "outcome", "planned_onset"]
         with open(ev_path, "w", newline="", encoding="utf-8") as fh:
             w = csv.DictWriter(fh, cols, delimiter="\t", extrasaction="ignore")
             w.writeheader()
@@ -140,6 +174,22 @@ class RunState:
             w.writeheader()
             w.writerows(self.log)
         return [ev_path, log_path]
+
+
+def performance_summary(state: "RunState") -> list[str]:
+    """Short accuracy summary shown on the participant screen after the run."""
+    rows = list(state.events.values())
+    lines = []
+    gng = [r for r in rows if r["block"] == "gonogo"]
+    if gng:
+        n = {o: sum(r["outcome"] == o for r in gng) for o in ("hit", "miss", "false_alarm", "correct_rejection")}
+        lines.append(f"Go/No-Go: {n['hit']} hits, {n['miss']} misses, {n['false_alarm']} false alarms, "
+                     f"{n['correct_rejection']} correct rejections")
+    match = [r for r in rows if r["block"] == "match"]
+    if match:
+        ok = sum(r["correct"] == 1 for r in match)
+        lines.append(f"Matching: {ok}/{len(match)} correct")
+    return lines
 
 
 class PresentationWindow(QWidget):
@@ -158,9 +208,10 @@ class PresentationWindow(QWidget):
         self.current: Block | None = None
         self.files: list[str] = []
         self._esc_at = 0.0
+        self._visible = True
         for b in paradigm.blocks:          # preload pictures – no disk access while running
-            if b.params.get("path"):
-                load_pixmap(b.params["path"])
+            for f in b.image_files():
+                load_pixmap(f)
         self.router = InputRouter(paradigm.hardware, settings.get("simulate", False), paradigm.tr, self)
         self.router.trigger.connect(self._on_trigger)
         self.router.button.connect(self._on_button)
@@ -222,6 +273,11 @@ class PresentationWindow(QWidget):
         b = self.p.stimulus_at(t)
         changed = b is not self.current
         self.current = b
+        if b is not None and b.kind == "gonogo":
+            visible = gonogo_visible(b, t - b.start)
+            if visible != self._visible:
+                changed = True
+            self._visible = visible
         for blk in self.p.active_blocks(t):
             if blk.id not in self.state.events:
                 self.state.onset(blk, now())
@@ -255,7 +311,9 @@ class PresentationWindow(QWidget):
         p = QPainter(self)
         r = QRectF(self.rect())
         if self.phase == "running":
-            st = self.state.ratings.get(self.current.id, {}) if self.current is not None else {}
+            st = dict(self.state.ratings.get(self.current.id, {})) if self.current is not None else {}
+            if self.current is not None:
+                st["t"] = self.elapsed() - self.current.start
             paint_stimulus(p, r, self.p, self.current, st, ref_height=r.height())
         else:
             p.fillRect(r, QColor(self.p.background))
@@ -272,6 +330,9 @@ class PresentationWindow(QWidget):
                     msg += "\n(simulated scanner)"
             else:
                 msg = ("Run aborted." if getattr(self, "aborted", False) else "Run complete.") + "\n\n"
+                summary = performance_summary(self.state)
+                if summary:
+                    msg += "\n".join(summary) + "\n\n"
                 msg += ("Saved:\n" + "\n".join(os.path.basename(f) for f in self.files)) if self.files \
                     else "No data recorded (the scanner never started)."
                 msg += "\n\nPress Esc to close."

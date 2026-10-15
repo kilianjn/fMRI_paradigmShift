@@ -12,6 +12,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from PySide6.QtCore import QPointF, QRectF, Qt  # noqa: E402
 from PySide6.QtGui import QColor, QGuiApplication, QImage, QLinearGradient, QPainter, QPainterPath, QRadialGradient  # noqa: E402
 
+from paradigmshift import templates  # noqa: E402
 from paradigmshift.model import Block, Paradigm  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "examples")
@@ -107,6 +108,16 @@ def main():
     out = os.path.join(ROOT, "emotional_rating.paradigm.json")
     par.save(out)
     print("wrote", out)
+
+    # The classic task modules, built from their templates with placeholder stimuli.
+    stim = os.path.join(ROOT, "stimuli")
+    for key, opts, fname in (("hariri", templates.HaririOptions(), "hariri_face_matching"),
+                             ("gonogo", templates.GoNoGoOptions(), "go_nogo"),
+                             ("emoreg", templates.EmoRegOptions(), "emotion_regulation")):
+        par = templates.build(key, opts, stim)
+        out = os.path.join(ROOT, fname + ".paradigm.json")
+        par.save(out)
+        print("wrote", out, f"({par.duration:.0f}s, {par.volumes} volumes)")
 
 
 if __name__ == "__main__":

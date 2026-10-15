@@ -1,0 +1,1138 @@
+{
+  "name": "Hariri face matching",
+  "tr": 2.0,
+  "dummy_scans": 3,
+  "background": "#000000",
+  "tracks": [
+    "Stimuli",
+    "Responses"
+  ],
+  "blocks": [
+    {
+      "kind": "text",
+      "start": 0.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "Match shapes",
+      "condition": "instruction",
+      "params": {
+        "text": "Match Shapes",
+        "size": 64,
+        "color": "#FFFFFF"
+      },
+      "id": "5b3dd1d617"
+    },
+    {
+      "kind": "match",
+      "start": 2.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_circle.png",
+        "left": "stimuli/shapes/shape_circle.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "9db3d04c0e"
+    },
+    {
+      "kind": "match",
+      "start": 7.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_wide.png",
+        "left": "stimuli/shapes/shape_circle.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "f6873bffc4"
+    },
+    {
+      "kind": "match",
+      "start": 12.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_wide.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "0c5b76c71b"
+    },
+    {
+      "kind": "match",
+      "start": 17.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_tall.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_circle.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "b54dc95dd0"
+    },
+    {
+      "kind": "match",
+      "start": 22.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_tall.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "3ed573721c"
+    },
+    {
+      "kind": "match",
+      "start": 27.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_wide.png",
+        "left": "stimuli/shapes/shape_circle.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "4a3906df59"
+    },
+    {
+      "kind": "text",
+      "start": 32.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "Match faces",
+      "condition": "instruction",
+      "params": {
+        "text": "Match Faces",
+        "size": 64,
+        "color": "#FFFFFF"
+      },
+      "id": "0e5d3ddc13"
+    },
+    {
+      "kind": "match",
+      "start": 34.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face04_angry.png",
+        "left": "stimuli/faces/face05_fearful.png",
+        "right": "stimuli/faces/face01_angry.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "35c3b1f664"
+    },
+    {
+      "kind": "match",
+      "start": 39.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face02_fearful.png",
+        "left": "stimuli/faces/face04_angry.png",
+        "right": "stimuli/faces/face04_fearful.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "900521aa04"
+    },
+    {
+      "kind": "match",
+      "start": 44.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face05_fearful.png",
+        "left": "stimuli/faces/face03_angry.png",
+        "right": "stimuli/faces/face02_fearful.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "58330195f3"
+    },
+    {
+      "kind": "match",
+      "start": 49.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face02_fearful.png",
+        "left": "stimuli/faces/face06_fearful.png",
+        "right": "stimuli/faces/face04_angry.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "0920122935"
+    },
+    {
+      "kind": "match",
+      "start": 54.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face03_angry.png",
+        "left": "stimuli/faces/face01_angry.png",
+        "right": "stimuli/faces/face04_fearful.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "28808e16ca"
+    },
+    {
+      "kind": "match",
+      "start": 59.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face05_angry.png",
+        "left": "stimuli/faces/face01_angry.png",
+        "right": "stimuli/faces/face02_fearful.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "deff59f957"
+    },
+    {
+      "kind": "text",
+      "start": 64.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "Match shapes",
+      "condition": "instruction",
+      "params": {
+        "text": "Match Shapes",
+        "size": 64,
+        "color": "#FFFFFF"
+      },
+      "id": "4ab237f61a"
+    },
+    {
+      "kind": "match",
+      "start": 66.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_wide.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "5bc68bf6c2"
+    },
+    {
+      "kind": "match",
+      "start": 71.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_tall.png",
+        "left": "stimuli/shapes/shape_ellipse_wide.png",
+        "right": "stimuli/shapes/shape_ellipse_tall.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "0b4e76dad4"
+    },
+    {
+      "kind": "match",
+      "start": 76.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_tall.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "f3bf4a888b"
+    },
+    {
+      "kind": "match",
+      "start": 81.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_tall.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_circle.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "b908b7ebc0"
+    },
+    {
+      "kind": "match",
+      "start": 86.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_wide.png",
+        "left": "stimuli/shapes/shape_ellipse_wide.png",
+        "right": "stimuli/shapes/shape_circle.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "f3b87585c1"
+    },
+    {
+      "kind": "match",
+      "start": 91.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_tall.png",
+        "left": "stimuli/shapes/shape_ellipse_wide.png",
+        "right": "stimuli/shapes/shape_ellipse_tall.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "5d45d8205a"
+    },
+    {
+      "kind": "text",
+      "start": 96.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "Match faces",
+      "condition": "instruction",
+      "params": {
+        "text": "Match Faces",
+        "size": 64,
+        "color": "#FFFFFF"
+      },
+      "id": "6adec8b66a"
+    },
+    {
+      "kind": "match",
+      "start": 98.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face03_angry.png",
+        "left": "stimuli/faces/face04_angry.png",
+        "right": "stimuli/faces/face06_fearful.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "bb7a8e107e"
+    },
+    {
+      "kind": "match",
+      "start": 103.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face01_fearful.png",
+        "left": "stimuli/faces/face04_fearful.png",
+        "right": "stimuli/faces/face01_angry.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "c4dcbee773"
+    },
+    {
+      "kind": "match",
+      "start": 108.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face03_angry.png",
+        "left": "stimuli/faces/face05_fearful.png",
+        "right": "stimuli/faces/face05_angry.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "4d5f8c5822"
+    },
+    {
+      "kind": "match",
+      "start": 113.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face05_fearful.png",
+        "left": "stimuli/faces/face04_fearful.png",
+        "right": "stimuli/faces/face06_angry.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "c9c093fd86"
+    },
+    {
+      "kind": "match",
+      "start": 118.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face02_fearful.png",
+        "left": "stimuli/faces/face05_angry.png",
+        "right": "stimuli/faces/face06_fearful.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "47b1fb9ee0"
+    },
+    {
+      "kind": "match",
+      "start": 123.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face02_angry.png",
+        "left": "stimuli/faces/face02_fearful.png",
+        "right": "stimuli/faces/face01_angry.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "122ff019b5"
+    },
+    {
+      "kind": "text",
+      "start": 128.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "Match shapes",
+      "condition": "instruction",
+      "params": {
+        "text": "Match Shapes",
+        "size": 64,
+        "color": "#FFFFFF"
+      },
+      "id": "491ce18439"
+    },
+    {
+      "kind": "match",
+      "start": 130.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_wide.png",
+        "left": "stimuli/shapes/shape_ellipse_wide.png",
+        "right": "stimuli/shapes/shape_circle.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "c644e3b303"
+    },
+    {
+      "kind": "match",
+      "start": 135.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_tall.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_circle.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "f91e6cccd5"
+    },
+    {
+      "kind": "match",
+      "start": 140.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_wide.png",
+        "left": "stimuli/shapes/shape_circle.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "59f3c68c49"
+    },
+    {
+      "kind": "match",
+      "start": 145.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_wide.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "8ce269d0e7"
+    },
+    {
+      "kind": "match",
+      "start": 150.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_tall.png",
+        "left": "stimuli/shapes/shape_circle.png",
+        "right": "stimuli/shapes/shape_ellipse_tall.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "3460f4eb9a"
+    },
+    {
+      "kind": "match",
+      "start": 155.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_tall.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "14f3da7b65"
+    },
+    {
+      "kind": "text",
+      "start": 160.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "Match faces",
+      "condition": "instruction",
+      "params": {
+        "text": "Match Faces",
+        "size": 64,
+        "color": "#FFFFFF"
+      },
+      "id": "67d1c0737c"
+    },
+    {
+      "kind": "match",
+      "start": 162.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face02_fearful.png",
+        "left": "stimuli/faces/face06_fearful.png",
+        "right": "stimuli/faces/face05_angry.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "98154bec0f"
+    },
+    {
+      "kind": "match",
+      "start": 167.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face05_angry.png",
+        "left": "stimuli/faces/face02_angry.png",
+        "right": "stimuli/faces/face01_fearful.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "e468027fd1"
+    },
+    {
+      "kind": "match",
+      "start": 172.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face05_fearful.png",
+        "left": "stimuli/faces/face01_angry.png",
+        "right": "stimuli/faces/face03_fearful.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "3365303e0b"
+    },
+    {
+      "kind": "match",
+      "start": 177.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face06_angry.png",
+        "left": "stimuli/faces/face01_fearful.png",
+        "right": "stimuli/faces/face01_angry.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "95403703ef"
+    },
+    {
+      "kind": "match",
+      "start": 182.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face01_fearful.png",
+        "left": "stimuli/faces/face04_fearful.png",
+        "right": "stimuli/faces/face01_angry.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "e55979d7c9"
+    },
+    {
+      "kind": "match",
+      "start": 187.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face03_angry.png",
+        "left": "stimuli/faces/face03_fearful.png",
+        "right": "stimuli/faces/face02_angry.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "03a82e1294"
+    },
+    {
+      "kind": "text",
+      "start": 192.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "Match shapes",
+      "condition": "instruction",
+      "params": {
+        "text": "Match Shapes",
+        "size": 64,
+        "color": "#FFFFFF"
+      },
+      "id": "9af77691c8"
+    },
+    {
+      "kind": "match",
+      "start": 194.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_tall.png",
+        "left": "stimuli/shapes/shape_ellipse_wide.png",
+        "right": "stimuli/shapes/shape_ellipse_tall.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "fd00e4e431"
+    },
+    {
+      "kind": "match",
+      "start": 199.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_tall.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "94c80312fb"
+    },
+    {
+      "kind": "match",
+      "start": 204.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_wide.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "fb3c05b75f"
+    },
+    {
+      "kind": "match",
+      "start": 209.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_wide.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "35feb12799"
+    },
+    {
+      "kind": "match",
+      "start": 214.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_circle.png",
+        "left": "stimuli/shapes/shape_circle.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "873d528ad4"
+    },
+    {
+      "kind": "match",
+      "start": 219.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_wide.png",
+        "left": "stimuli/shapes/shape_ellipse_wide.png",
+        "right": "stimuli/shapes/shape_ellipse_tall.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "6a1319e463"
+    },
+    {
+      "kind": "text",
+      "start": 224.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "Match faces",
+      "condition": "instruction",
+      "params": {
+        "text": "Match Faces",
+        "size": 64,
+        "color": "#FFFFFF"
+      },
+      "id": "3b59de4a6b"
+    },
+    {
+      "kind": "match",
+      "start": 226.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face01_angry.png",
+        "left": "stimuli/faces/face01_fearful.png",
+        "right": "stimuli/faces/face02_angry.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "2f50036332"
+    },
+    {
+      "kind": "match",
+      "start": 231.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face04_fearful.png",
+        "left": "stimuli/faces/face02_fearful.png",
+        "right": "stimuli/faces/face01_angry.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "6af5e7fe7d"
+    },
+    {
+      "kind": "match",
+      "start": 236.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face06_fearful.png",
+        "left": "stimuli/faces/face02_fearful.png",
+        "right": "stimuli/faces/face04_angry.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "ef0800e6bb"
+    },
+    {
+      "kind": "match",
+      "start": 241.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face06_fearful.png",
+        "left": "stimuli/faces/face06_angry.png",
+        "right": "stimuli/faces/face05_fearful.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "09bc1774af"
+    },
+    {
+      "kind": "match",
+      "start": 246.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face04_angry.png",
+        "left": "stimuli/faces/face02_fearful.png",
+        "right": "stimuli/faces/face05_angry.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "f156818841"
+    },
+    {
+      "kind": "match",
+      "start": 251.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "faces",
+      "params": {
+        "top": "stimuli/faces/face06_angry.png",
+        "left": "stimuli/faces/face05_angry.png",
+        "right": "stimuli/faces/face04_fearful.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "db61e2b453"
+    },
+    {
+      "kind": "text",
+      "start": 256.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "Match shapes",
+      "condition": "instruction",
+      "params": {
+        "text": "Match Shapes",
+        "size": 64,
+        "color": "#FFFFFF"
+      },
+      "id": "8458296598"
+    },
+    {
+      "kind": "match",
+      "start": 258.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_circle.png",
+        "left": "stimuli/shapes/shape_ellipse_wide.png",
+        "right": "stimuli/shapes/shape_circle.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "78a8a122aa"
+    },
+    {
+      "kind": "match",
+      "start": 263.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_circle.png",
+        "left": "stimuli/shapes/shape_circle.png",
+        "right": "stimuli/shapes/shape_ellipse_tall.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "391319dd5d"
+    },
+    {
+      "kind": "match",
+      "start": 268.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_circle.png",
+        "left": "stimuli/shapes/shape_ellipse_wide.png",
+        "right": "stimuli/shapes/shape_circle.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "a52aba4ff6"
+    },
+    {
+      "kind": "match",
+      "start": 273.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_wide.png",
+        "left": "stimuli/shapes/shape_ellipse_wide.png",
+        "right": "stimuli/shapes/shape_ellipse_tall.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "d30b0d019a"
+    },
+    {
+      "kind": "match",
+      "start": 278.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_tall.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_circle.png",
+        "correct": "left",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "38607fe7f4"
+    },
+    {
+      "kind": "match",
+      "start": 283.0,
+      "duration": 5.0,
+      "track": 0,
+      "label": "",
+      "condition": "shapes",
+      "params": {
+        "top": "stimuli/shapes/shape_ellipse_wide.png",
+        "left": "stimuli/shapes/shape_ellipse_tall.png",
+        "right": "stimuli/shapes/shape_ellipse_wide.png",
+        "correct": "right",
+        "left_button": "Left index",
+        "right_button": "Right index",
+        "scale": 0.9
+      },
+      "id": "1ff8d95065"
+    }
+  ],
+  "hardware": {
+    "sync_mode": "keyboard",
+    "trigger_key": "s",
+    "serial_port": "",
+    "baud_rate": 57600,
+    "buttons": [
+      {
+        "name": "Left thumb",
+        "key": "1"
+      },
+      {
+        "name": "Left index",
+        "key": "2"
+      },
+      {
+        "name": "Right index",
+        "key": "3"
+      },
+      {
+        "name": "Right thumb",
+        "key": "4"
+      }
+    ],
+    "move_left": "Left index",
+    "move_right": "Right index",
+    "confirm": "Right thumb"
+  },
+  "format": 1
+}

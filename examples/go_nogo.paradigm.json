@@ -1,0 +1,3164 @@
+{
+  "name": "Go-NoGo",
+  "tr": 2.0,
+  "dummy_scans": 3,
+  "background": "#000000",
+  "tracks": [
+    "Stimuli",
+    "Responses"
+  ],
+  "blocks": [
+    {
+      "kind": "text",
+      "start": 0.0,
+      "duration": 8.0,
+      "track": 0,
+      "label": "Instructions",
+      "condition": "instruction",
+      "params": {
+        "text": "Press the button as fast as you can for every letter.\n\nDo NOT press for  X",
+        "size": 44,
+        "color": "#FFFFFF"
+      },
+      "id": "24b98ab27e"
+    },
+    {
+      "kind": "fixation",
+      "start": 8.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "Get ready",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "184d664e7f"
+    },
+    {
+      "kind": "gonogo",
+      "start": 12.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "T",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "07f1339e1a"
+    },
+    {
+      "kind": "gonogo",
+      "start": 13.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "H",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "a417ffac14"
+    },
+    {
+      "kind": "gonogo",
+      "start": 15.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "R",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "a7ffe3bb47"
+    },
+    {
+      "kind": "gonogo",
+      "start": 16.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "d8d389769f"
+    },
+    {
+      "kind": "gonogo",
+      "start": 18.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "S",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "13c610d2bc"
+    },
+    {
+      "kind": "gonogo",
+      "start": 19.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "3bcf786b1c"
+    },
+    {
+      "kind": "gonogo",
+      "start": 21.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "U",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "8789f76572"
+    },
+    {
+      "kind": "gonogo",
+      "start": 22.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "48fb24187f"
+    },
+    {
+      "kind": "gonogo",
+      "start": 24.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "H",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "a496b55e98"
+    },
+    {
+      "kind": "gonogo",
+      "start": 25.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "d67b7f446e"
+    },
+    {
+      "kind": "gonogo",
+      "start": 27.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "M",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "a3e8ce4781"
+    },
+    {
+      "kind": "gonogo",
+      "start": 28.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "H",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "c6b1f4e9b8"
+    },
+    {
+      "kind": "gonogo",
+      "start": 30.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "Z",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "717e7d5bb9"
+    },
+    {
+      "kind": "gonogo",
+      "start": 31.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "H",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "4ffaeffed7"
+    },
+    {
+      "kind": "gonogo",
+      "start": 33.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "R",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "380b083629"
+    },
+    {
+      "kind": "gonogo",
+      "start": 34.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "b6036a8ae0"
+    },
+    {
+      "kind": "gonogo",
+      "start": 36.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "K",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "5ae8c3b382"
+    },
+    {
+      "kind": "gonogo",
+      "start": 37.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "A",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "c29bb11698"
+    },
+    {
+      "kind": "gonogo",
+      "start": 39.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "P",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "534b5ccc60"
+    },
+    {
+      "kind": "gonogo",
+      "start": 40.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "U",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "c84e247d8b"
+    },
+    {
+      "kind": "gonogo",
+      "start": 42.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "f251abdff8"
+    },
+    {
+      "kind": "gonogo",
+      "start": 43.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "Y",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "c8167488ea"
+    },
+    {
+      "kind": "gonogo",
+      "start": 45.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "2baee0cdae"
+    },
+    {
+      "kind": "gonogo",
+      "start": 46.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "D",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "385cd81a7c"
+    },
+    {
+      "kind": "gonogo",
+      "start": 48.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "F",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "d04c43e421"
+    },
+    {
+      "kind": "gonogo",
+      "start": 49.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "dc436ececd"
+    },
+    {
+      "kind": "gonogo",
+      "start": 51.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "Y",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "0ece5fc153"
+    },
+    {
+      "kind": "gonogo",
+      "start": 52.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "K",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "a05696d976"
+    },
+    {
+      "kind": "gonogo",
+      "start": 54.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "ecb5f85428"
+    },
+    {
+      "kind": "gonogo",
+      "start": 55.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "D",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "acfd37cac1"
+    },
+    {
+      "kind": "gonogo",
+      "start": 57.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "L",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "e738237a26"
+    },
+    {
+      "kind": "gonogo",
+      "start": 58.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "T",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "8a77e9afcb"
+    },
+    {
+      "kind": "gonogo",
+      "start": 60.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "P",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "64fd62c81f"
+    },
+    {
+      "kind": "gonogo",
+      "start": 61.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "T",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "98bac37551"
+    },
+    {
+      "kind": "gonogo",
+      "start": 63.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "Z",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "259ba37d03"
+    },
+    {
+      "kind": "gonogo",
+      "start": 64.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "G",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "7c13725bf9"
+    },
+    {
+      "kind": "gonogo",
+      "start": 66.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "K",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "75a7637636"
+    },
+    {
+      "kind": "gonogo",
+      "start": 67.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "K",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "cb15c545c1"
+    },
+    {
+      "kind": "gonogo",
+      "start": 69.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "1bea1f90d1"
+    },
+    {
+      "kind": "gonogo",
+      "start": 70.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "V",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "47d863cce9"
+    },
+    {
+      "kind": "fixation",
+      "start": 72.0,
+      "duration": 16.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "0badeab3f8"
+    },
+    {
+      "kind": "gonogo",
+      "start": 88.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "2bf92fe70e"
+    },
+    {
+      "kind": "gonogo",
+      "start": 89.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "S",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "bf388e20ec"
+    },
+    {
+      "kind": "gonogo",
+      "start": 91.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "T",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "805a159513"
+    },
+    {
+      "kind": "gonogo",
+      "start": 92.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "25f781e191"
+    },
+    {
+      "kind": "gonogo",
+      "start": 94.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "N",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "50d0695ba5"
+    },
+    {
+      "kind": "gonogo",
+      "start": 95.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "V",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "eb88ad3856"
+    },
+    {
+      "kind": "gonogo",
+      "start": 97.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "B",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "72599f0399"
+    },
+    {
+      "kind": "gonogo",
+      "start": 98.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "42b7b14516"
+    },
+    {
+      "kind": "gonogo",
+      "start": 100.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "S",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "6a97b8ddee"
+    },
+    {
+      "kind": "gonogo",
+      "start": 101.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "H",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "a7e2fa43f2"
+    },
+    {
+      "kind": "gonogo",
+      "start": 103.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "e83b60cd3a"
+    },
+    {
+      "kind": "gonogo",
+      "start": 104.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "N",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "3826d8ff48"
+    },
+    {
+      "kind": "gonogo",
+      "start": 106.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "P",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "e3e86f7344"
+    },
+    {
+      "kind": "gonogo",
+      "start": 107.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "Z",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "9b6b69d727"
+    },
+    {
+      "kind": "gonogo",
+      "start": 109.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "F",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "00c65aceea"
+    },
+    {
+      "kind": "gonogo",
+      "start": 110.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "M",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "fb9114d3df"
+    },
+    {
+      "kind": "gonogo",
+      "start": 112.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "U",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "7c96efed32"
+    },
+    {
+      "kind": "gonogo",
+      "start": 113.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "e7ab3598d0"
+    },
+    {
+      "kind": "gonogo",
+      "start": 115.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "Z",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "c063fc6932"
+    },
+    {
+      "kind": "gonogo",
+      "start": 116.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "M",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "a0a50da635"
+    },
+    {
+      "kind": "gonogo",
+      "start": 118.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "C",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "486f42aacc"
+    },
+    {
+      "kind": "gonogo",
+      "start": 119.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "R",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "fb46609bed"
+    },
+    {
+      "kind": "gonogo",
+      "start": 121.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "Z",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "dde7c76449"
+    },
+    {
+      "kind": "gonogo",
+      "start": 122.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "T",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "20e5517dfc"
+    },
+    {
+      "kind": "gonogo",
+      "start": 124.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "D",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "e7b5541b9f"
+    },
+    {
+      "kind": "gonogo",
+      "start": 125.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "F",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "ed9c916005"
+    },
+    {
+      "kind": "gonogo",
+      "start": 127.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "80881a33bb"
+    },
+    {
+      "kind": "gonogo",
+      "start": 128.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "T",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "d683f2e2b8"
+    },
+    {
+      "kind": "gonogo",
+      "start": 130.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "c85c220ecb"
+    },
+    {
+      "kind": "gonogo",
+      "start": 131.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "N",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "14718eabbb"
+    },
+    {
+      "kind": "gonogo",
+      "start": 133.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "M",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "4132251620"
+    },
+    {
+      "kind": "gonogo",
+      "start": 134.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "S",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "6703ff7fc5"
+    },
+    {
+      "kind": "gonogo",
+      "start": 136.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "A",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "47f40cb1d5"
+    },
+    {
+      "kind": "gonogo",
+      "start": 137.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "S",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "b2305ff9b4"
+    },
+    {
+      "kind": "gonogo",
+      "start": 139.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "6d3e7df4fa"
+    },
+    {
+      "kind": "gonogo",
+      "start": 140.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "B",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "2dc8e89deb"
+    },
+    {
+      "kind": "gonogo",
+      "start": 142.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "66f8c45ba2"
+    },
+    {
+      "kind": "gonogo",
+      "start": 143.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "K",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "f88d9f8f14"
+    },
+    {
+      "kind": "gonogo",
+      "start": 145.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "W",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "5d69332722"
+    },
+    {
+      "kind": "gonogo",
+      "start": 146.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "cc7dfcbb0a"
+    },
+    {
+      "kind": "fixation",
+      "start": 148.0,
+      "duration": 16.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "0ee4a35aad"
+    },
+    {
+      "kind": "gonogo",
+      "start": 164.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "V",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "4eaa046595"
+    },
+    {
+      "kind": "gonogo",
+      "start": 165.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "V",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "c66b55a746"
+    },
+    {
+      "kind": "gonogo",
+      "start": 167.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "N",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "65f68d5587"
+    },
+    {
+      "kind": "gonogo",
+      "start": 168.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "7b70f4f89f"
+    },
+    {
+      "kind": "gonogo",
+      "start": 170.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "Y",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "cbd8abf9d4"
+    },
+    {
+      "kind": "gonogo",
+      "start": 171.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "F",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "50fc75c03a"
+    },
+    {
+      "kind": "gonogo",
+      "start": 173.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "852ab798bc"
+    },
+    {
+      "kind": "gonogo",
+      "start": 174.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "F",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "c214c0868a"
+    },
+    {
+      "kind": "gonogo",
+      "start": 176.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "1258d46e2e"
+    },
+    {
+      "kind": "gonogo",
+      "start": 177.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "T",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "4767b58166"
+    },
+    {
+      "kind": "gonogo",
+      "start": 179.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "H",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "c674688921"
+    },
+    {
+      "kind": "gonogo",
+      "start": 180.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "A",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "fb57d9bc5a"
+    },
+    {
+      "kind": "gonogo",
+      "start": 182.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "G",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "7fe82c8967"
+    },
+    {
+      "kind": "gonogo",
+      "start": 183.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "U",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "cd4d11da5b"
+    },
+    {
+      "kind": "gonogo",
+      "start": 185.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "U",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "4bf8f58866"
+    },
+    {
+      "kind": "gonogo",
+      "start": 186.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "6779fb086f"
+    },
+    {
+      "kind": "gonogo",
+      "start": 188.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "H",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "e79d375044"
+    },
+    {
+      "kind": "gonogo",
+      "start": 189.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "N",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "d68ee65ad0"
+    },
+    {
+      "kind": "gonogo",
+      "start": 191.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "T",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "45e48d54cb"
+    },
+    {
+      "kind": "gonogo",
+      "start": 192.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "3cd3b148d1"
+    },
+    {
+      "kind": "gonogo",
+      "start": 194.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "M",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "bcd1b0aa7e"
+    },
+    {
+      "kind": "gonogo",
+      "start": 195.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "V",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "f2703b1867"
+    },
+    {
+      "kind": "gonogo",
+      "start": 197.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "M",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "eed2cd3595"
+    },
+    {
+      "kind": "gonogo",
+      "start": 198.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "96b689728f"
+    },
+    {
+      "kind": "gonogo",
+      "start": 200.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "R",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "5aee11476f"
+    },
+    {
+      "kind": "gonogo",
+      "start": 201.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "J",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "b800cd3f3b"
+    },
+    {
+      "kind": "gonogo",
+      "start": 203.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "aa71747ddf"
+    },
+    {
+      "kind": "gonogo",
+      "start": 204.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "Z",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "f5fb09076d"
+    },
+    {
+      "kind": "gonogo",
+      "start": 206.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "U",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "0e4ffe745f"
+    },
+    {
+      "kind": "gonogo",
+      "start": 207.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "W",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "668495ac5b"
+    },
+    {
+      "kind": "gonogo",
+      "start": 209.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "A",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "d5d034d2a5"
+    },
+    {
+      "kind": "gonogo",
+      "start": 210.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "N",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "ab5c6a3a99"
+    },
+    {
+      "kind": "gonogo",
+      "start": 212.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "T",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "cd8f180394"
+    },
+    {
+      "kind": "gonogo",
+      "start": 213.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "98cb52083d"
+    },
+    {
+      "kind": "gonogo",
+      "start": 215.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "E",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "d90269165c"
+    },
+    {
+      "kind": "gonogo",
+      "start": 216.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "T",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "ca2533f464"
+    },
+    {
+      "kind": "gonogo",
+      "start": 218.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "a31f28b7c0"
+    },
+    {
+      "kind": "gonogo",
+      "start": 219.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "U",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "f07f934958"
+    },
+    {
+      "kind": "gonogo",
+      "start": 221.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "G",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "e9dea779d4"
+    },
+    {
+      "kind": "gonogo",
+      "start": 222.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "e7cf4e4f06"
+    },
+    {
+      "kind": "fixation",
+      "start": 224.0,
+      "duration": 16.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "f91bd30d50"
+    },
+    {
+      "kind": "gonogo",
+      "start": 240.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "P",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "54e82f78d8"
+    },
+    {
+      "kind": "gonogo",
+      "start": 241.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "B",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "904519bbaa"
+    },
+    {
+      "kind": "gonogo",
+      "start": 243.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "9dea88ff17"
+    },
+    {
+      "kind": "gonogo",
+      "start": 244.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "S",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "0b8bad1a35"
+    },
+    {
+      "kind": "gonogo",
+      "start": 246.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "M",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "50ea373eaa"
+    },
+    {
+      "kind": "gonogo",
+      "start": 247.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "V",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "166c16b985"
+    },
+    {
+      "kind": "gonogo",
+      "start": 249.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "U",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "e46e0edabe"
+    },
+    {
+      "kind": "gonogo",
+      "start": 250.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "G",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "c83d04713c"
+    },
+    {
+      "kind": "gonogo",
+      "start": 252.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "T",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "24c5a2dc68"
+    },
+    {
+      "kind": "gonogo",
+      "start": 253.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "P",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "b666417b35"
+    },
+    {
+      "kind": "gonogo",
+      "start": 255.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "S",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "5a9eeb0785"
+    },
+    {
+      "kind": "gonogo",
+      "start": 256.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "507567d332"
+    },
+    {
+      "kind": "gonogo",
+      "start": 258.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "M",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "d2256157f8"
+    },
+    {
+      "kind": "gonogo",
+      "start": 259.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "P",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "f74b1c090f"
+    },
+    {
+      "kind": "gonogo",
+      "start": 261.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "04b4d6d551"
+    },
+    {
+      "kind": "gonogo",
+      "start": 262.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "M",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "a128123ce1"
+    },
+    {
+      "kind": "gonogo",
+      "start": 264.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "6ab1f4439b"
+    },
+    {
+      "kind": "gonogo",
+      "start": 265.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "A",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "7428222334"
+    },
+    {
+      "kind": "gonogo",
+      "start": 267.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "U",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "4d6e55f20f"
+    },
+    {
+      "kind": "gonogo",
+      "start": 268.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "02d955e6cb"
+    },
+    {
+      "kind": "gonogo",
+      "start": 270.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "U",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "8f0df5aa5a"
+    },
+    {
+      "kind": "gonogo",
+      "start": 271.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "W",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "237cdbfea4"
+    },
+    {
+      "kind": "gonogo",
+      "start": 273.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "69da30c8c8"
+    },
+    {
+      "kind": "gonogo",
+      "start": 274.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "W",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "468436a2e2"
+    },
+    {
+      "kind": "gonogo",
+      "start": 276.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "9d60993c4a"
+    },
+    {
+      "kind": "gonogo",
+      "start": 277.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "L",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "c50344c6e0"
+    },
+    {
+      "kind": "gonogo",
+      "start": 279.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "R",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "cee6d0dfaf"
+    },
+    {
+      "kind": "gonogo",
+      "start": 280.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "1be88cf83a"
+    },
+    {
+      "kind": "gonogo",
+      "start": 282.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "W",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "22a74f0523"
+    },
+    {
+      "kind": "gonogo",
+      "start": 283.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "ce3dc10bd3"
+    },
+    {
+      "kind": "gonogo",
+      "start": 285.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "A",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "eb50588f36"
+    },
+    {
+      "kind": "gonogo",
+      "start": 286.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "H",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "2446a512ed"
+    },
+    {
+      "kind": "gonogo",
+      "start": 288.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "Y",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "4751ae37fb"
+    },
+    {
+      "kind": "gonogo",
+      "start": 289.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "F",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "148782be83"
+    },
+    {
+      "kind": "gonogo",
+      "start": 291.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "U",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "c84fe8eb31"
+    },
+    {
+      "kind": "gonogo",
+      "start": 292.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "nogo",
+      "params": {
+        "trial": "nogo",
+        "text": "X",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "ea494df7a7"
+    },
+    {
+      "kind": "gonogo",
+      "start": 294.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "V",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "b9197ed4cf"
+    },
+    {
+      "kind": "gonogo",
+      "start": 295.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "F",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "d3268cf887"
+    },
+    {
+      "kind": "gonogo",
+      "start": 297.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "C",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "d045205491"
+    },
+    {
+      "kind": "gonogo",
+      "start": 298.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "",
+      "condition": "go",
+      "params": {
+        "trial": "go",
+        "text": "U",
+        "path": "",
+        "stim_time": 0.5,
+        "button": "any",
+        "size": 140,
+        "color": "#FFFFFF",
+        "isi_symbol": "+"
+      },
+      "id": "06a74d279f"
+    },
+    {
+      "kind": "fixation",
+      "start": 300.0,
+      "duration": 16.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "7fea40c66b"
+    }
+  ],
+  "hardware": {
+    "sync_mode": "keyboard",
+    "trigger_key": "s",
+    "serial_port": "",
+    "baud_rate": 57600,
+    "buttons": [
+      {
+        "name": "Left thumb",
+        "key": "1"
+      },
+      {
+        "name": "Left index",
+        "key": "2"
+      },
+      {
+        "name": "Right index",
+        "key": "3"
+      },
+      {
+        "name": "Right thumb",
+        "key": "4"
+      }
+    ],
+    "move_left": "Left index",
+    "move_right": "Right index",
+    "confirm": "Right thumb"
+  },
+  "format": 1
+}
