@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "paradigmshift"
+version = "0.1.0"
+description = "Timeline editor and presenter for fMRI paradigms (NNL SyncBox & ResponseGrips)"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["PySide6>=6.5"]
+
+[project.optional-dependencies]
+serial = ["pyserial>=3.5"]
+test = ["pytest"]
+
+[project.gui-scripts]
+paradigmshift = "paradigmshift.__main__:main"
+
+[tool.setuptools]
+packages = ["paradigmshift"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

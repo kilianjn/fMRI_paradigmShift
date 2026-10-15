@@ -1,0 +1,2 @@
+PySide6>=6.5
+pyserial>=3.5   # only needed when the SyncBox is connected via a serial/COM port

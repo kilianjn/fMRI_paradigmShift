@@ -1,0 +1,550 @@
+{
+  "name": "Emotional picture rating",
+  "tr": 2.0,
+  "dummy_scans": 3,
+  "background": "#000000",
+  "tracks": [
+    "Stimuli",
+    "Responses"
+  ],
+  "blocks": [
+    {
+      "kind": "text",
+      "start": 0.0,
+      "duration": 6.0,
+      "track": 0,
+      "label": "",
+      "condition": "",
+      "params": {
+        "text": "Rate how each picture makes you feel.\n\nUse the grip buttons 1 \u2013 4.",
+        "size": 40,
+        "color": "#FFFFFF"
+      },
+      "id": "742cd6e9a3"
+    },
+    {
+      "kind": "fixation",
+      "start": 6.0,
+      "duration": 10.0,
+      "track": 0,
+      "label": "Baseline",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "1088975001"
+    },
+    {
+      "kind": "image",
+      "start": 16.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "positive",
+      "params": {
+        "path": "images/pos_sunrise.png",
+        "scale": 0.8
+      },
+      "id": "8296497484"
+    },
+    {
+      "kind": "response",
+      "start": 16.0,
+      "duration": 4.0,
+      "track": 1,
+      "label": "",
+      "condition": "positive",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "a05cb093a4"
+    },
+    {
+      "kind": "rating",
+      "start": 20.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "positive",
+      "params": {
+        "path": "images/pos_sunrise.png",
+        "question": "How do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "very bad",
+        "right_label": "very good",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "d705d795f9"
+    },
+    {
+      "kind": "fixation",
+      "start": 24.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "682b51dd1f"
+    },
+    {
+      "kind": "image",
+      "start": 28.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "negative",
+      "params": {
+        "path": "images/neg_storm.png",
+        "scale": 0.8
+      },
+      "id": "fa15301137"
+    },
+    {
+      "kind": "response",
+      "start": 28.0,
+      "duration": 4.0,
+      "track": 1,
+      "label": "",
+      "condition": "negative",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "f6400f144a"
+    },
+    {
+      "kind": "rating",
+      "start": 32.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "negative",
+      "params": {
+        "path": "images/neg_storm.png",
+        "question": "How do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "very bad",
+        "right_label": "very good",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "fa2992f0c8"
+    },
+    {
+      "kind": "fixation",
+      "start": 36.0,
+      "duration": 6.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "860573cd79"
+    },
+    {
+      "kind": "image",
+      "start": 42.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "positive",
+      "params": {
+        "path": "images/pos_meadow.png",
+        "scale": 0.8
+      },
+      "id": "b66d7e13c0"
+    },
+    {
+      "kind": "response",
+      "start": 42.0,
+      "duration": 4.0,
+      "track": 1,
+      "label": "",
+      "condition": "positive",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "fe87003a2d"
+    },
+    {
+      "kind": "rating",
+      "start": 46.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "positive",
+      "params": {
+        "path": "images/pos_meadow.png",
+        "question": "How do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "very bad",
+        "right_label": "very good",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "fbeb049f75"
+    },
+    {
+      "kind": "fixation",
+      "start": 50.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "5265e79534"
+    },
+    {
+      "kind": "image",
+      "start": 54.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "negative",
+      "params": {
+        "path": "images/neg_ashes.png",
+        "scale": 0.8
+      },
+      "id": "db5f24ac16"
+    },
+    {
+      "kind": "response",
+      "start": 54.0,
+      "duration": 4.0,
+      "track": 1,
+      "label": "",
+      "condition": "negative",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "111ba8ee48"
+    },
+    {
+      "kind": "rating",
+      "start": 58.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "negative",
+      "params": {
+        "path": "images/neg_ashes.png",
+        "question": "How do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "very bad",
+        "right_label": "very good",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "a16e8aa9bf"
+    },
+    {
+      "kind": "fixation",
+      "start": 62.0,
+      "duration": 8.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "65d14db85a"
+    },
+    {
+      "kind": "image",
+      "start": 70.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "negative",
+      "params": {
+        "path": "images/neg_fog.png",
+        "scale": 0.8
+      },
+      "id": "3144b421f8"
+    },
+    {
+      "kind": "response",
+      "start": 70.0,
+      "duration": 4.0,
+      "track": 1,
+      "label": "",
+      "condition": "negative",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "4b92b927e0"
+    },
+    {
+      "kind": "rating",
+      "start": 74.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "negative",
+      "params": {
+        "path": "images/neg_fog.png",
+        "question": "How do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "very bad",
+        "right_label": "very good",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "abe6af766e"
+    },
+    {
+      "kind": "fixation",
+      "start": 78.0,
+      "duration": 6.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "febd4d9349"
+    },
+    {
+      "kind": "image",
+      "start": 84.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "positive",
+      "params": {
+        "path": "images/pos_beach.png",
+        "scale": 0.8
+      },
+      "id": "72f204434f"
+    },
+    {
+      "kind": "response",
+      "start": 84.0,
+      "duration": 4.0,
+      "track": 1,
+      "label": "",
+      "condition": "positive",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "5db83efa34"
+    },
+    {
+      "kind": "rating",
+      "start": 88.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "positive",
+      "params": {
+        "path": "images/pos_beach.png",
+        "question": "How do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "very bad",
+        "right_label": "very good",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "975d3289bd"
+    },
+    {
+      "kind": "fixation",
+      "start": 92.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3753c7b19c"
+    },
+    {
+      "kind": "image",
+      "start": 96.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "negative",
+      "params": {
+        "path": "images/neg_night.png",
+        "scale": 0.8
+      },
+      "id": "5d230bbaf7"
+    },
+    {
+      "kind": "response",
+      "start": 96.0,
+      "duration": 4.0,
+      "track": 1,
+      "label": "",
+      "condition": "negative",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "3c5a9bde23"
+    },
+    {
+      "kind": "rating",
+      "start": 100.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "negative",
+      "params": {
+        "path": "images/neg_night.png",
+        "question": "How do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "very bad",
+        "right_label": "very good",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "eb7262d77e"
+    },
+    {
+      "kind": "fixation",
+      "start": 104.0,
+      "duration": 6.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "4bf58c37a2"
+    },
+    {
+      "kind": "image",
+      "start": 110.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "positive",
+      "params": {
+        "path": "images/pos_lavender.png",
+        "scale": 0.8
+      },
+      "id": "c7b01bd7fb"
+    },
+    {
+      "kind": "response",
+      "start": 110.0,
+      "duration": 4.0,
+      "track": 1,
+      "label": "",
+      "condition": "positive",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "bed7f6fd24"
+    },
+    {
+      "kind": "rating",
+      "start": 114.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "",
+      "condition": "positive",
+      "params": {
+        "path": "images/pos_lavender.png",
+        "question": "How do you feel?",
+        "min": 1,
+        "max": 4,
+        "left_label": "very bad",
+        "right_label": "very good",
+        "mode": "direct",
+        "scale": 0.9
+      },
+      "id": "5abafdb9cc"
+    },
+    {
+      "kind": "fixation",
+      "start": 118.0,
+      "duration": 8.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "28e02d6ae0"
+    },
+    {
+      "kind": "rest",
+      "start": 126.0,
+      "duration": 10.0,
+      "track": 0,
+      "label": "End baseline",
+      "condition": "",
+      "params": {},
+      "id": "921f23b908"
+    }
+  ],
+  "hardware": {
+    "sync_mode": "keyboard",
+    "trigger_key": "s",
+    "serial_port": "",
+    "baud_rate": 57600,
+    "buttons": [
+      {
+        "name": "Left thumb",
+        "key": "1"
+      },
+      {
+        "name": "Left index",
+        "key": "2"
+      },
+      {
+        "name": "Right index",
+        "key": "3"
+      },
+      {
+        "name": "Right thumb",
+        "key": "4"
+      }
+    ],
+    "move_left": "Left index",
+    "move_right": "Right index",
+    "confirm": "Right thumb"
+  },
+  "format": 1
+}
