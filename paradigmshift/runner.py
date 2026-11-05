@@ -2,8 +2,12 @@
 
 Timing: the paradigm clock starts at the first SyncBox trigger after the dummy
 scans (t = 0). Planned onsets are relative to that trigger; actual onsets are
-measured with ``time.perf_counter`` when each frame is drawn. All triggers are
-logged too, so the timing can be verified volume by volume afterwards.
+measured with ``time.perf_counter`` when the stimulus is switched. All triggers
+are logged too, so the timing can be verified volume by volume afterwards.
+
+A run has one :class:`RunController` (clock, hardware input, logging) and two
+views on it: the :class:`PresentationWindow` the participant sees, and the
+control room window (:mod:`paradigmshift.controlroom`) for the operator.
 """
 from __future__ import annotations
 
@@ -12,13 +16,13 @@ import os
 import re
 from datetime import datetime
 
-from PySide6.QtCore import QRectF, Qt, QTimer, Signal
-from PySide6.QtGui import QColor, QFont, QGuiApplication, QPainter
-from PySide6.QtWidgets import QWidget
+from PySide6.QtCore import QEvent, QObject, QRectF, Qt, QTimer, Signal
+from PySide6.QtGui import QGuiApplication, QPainter
+from PySide6.QtWidgets import QApplication, QWidget
 
 from .hardware import InputRouter, now
 from .model import Block, Paradigm
-from .stimulus import gonogo_visible, load_pixmap, paint_stimulus
+from .stimulus import gonogo_visible, load_pixmap, paint_stimulus, paint_waiting
 
 
 def bids_label(text: str) -> str:
@@ -44,6 +48,7 @@ class RunState:
         self.log: list[dict] = []          # raw log: triggers, buttons, onsets
         self.events: dict[str, dict] = {}  # block id -> event row
         self.ratings: dict[str, dict] = {}  # block id -> {"value", "confirmed", "rt"}
+        self.version = 0                   # bumped on every change, lets views refresh cheaply
 
     def on_trigger(self, t: float) -> bool:
         """Returns True when this trigger starts the paradigm."""
@@ -55,7 +60,28 @@ class RunState:
             started = True
         self.log.append({"time": self.rel(t), "type": "trigger", "value": n, "info": "dummy" if self.t0 is None
                          or (n <= self.p.dummy_scans) else f"volume {n - self.p.dummy_scans}"})
+        self.version += 1
         return started
+
+    def force_start(self, t: float) -> None:
+        """Start without waiting for the scanner (operator override, logged as such)."""
+        if self.t0 is None:
+            self.t0 = t
+            self.log.append({"time": 0.0, "type": "manual_start", "value": "", "info": "started without trigger"})
+            self.version += 1
+
+    @property
+    def dummies_seen(self) -> int:
+        return min(len(self.triggers), self.p.dummy_scans)
+
+    def volumes_seen(self) -> int:
+        return max(0, len(self.triggers) - self.p.dummy_scans)
+
+    def measured_tr(self, last: int = 8) -> float | None:
+        ts = self.triggers[-last:]
+        if len(ts) < 2:
+            return None
+        return (ts[-1] - ts[0]) / (len(ts) - 1)
 
     def rel(self, t: float) -> float | str:
         return round(t - self.t0, 4) if self.t0 is not None else "n/a"
@@ -78,6 +104,18 @@ class RunState:
             lo, hi = int(b.params.get("min", 1)), int(b.params.get("max", 4))
             start = (lo + hi + 1) // 2 if b.params.get("mode") == "cursor" else None
             self.ratings[b.id] = {"value": start, "confirmed": False, "rt": None}
+        self.version += 1
+
+    def paint_state(self, b: Block | None, t: float) -> dict:
+        """What the renderer needs to draw *b* at paradigm time *t* (rating cursor, chosen picture…)."""
+        if b is None:
+            return {}
+        st = dict(self.ratings.get(b.id, {}))
+        st["t"] = t - b.start
+        ev = self.events.get(b.id)
+        if b.kind == "match" and ev and ev["response"] in ("left", "right"):
+            st["chosen"] = ev["response"]
+        return st
 
     def on_button(self, name: str, t: float) -> list[str]:
         """Apply a grip press to whatever is active. Returns ids of blocks that changed."""
@@ -142,6 +180,8 @@ class RunState:
                     ev["response"] = name
                     ev["response_time"] = round(st["rt"], 4)
                 changed.append(b.id)
+        if changed:
+            self.version += 1
         return changed
 
     def write(self, out_dir: str, stem: str) -> list[str]:
@@ -176,99 +216,256 @@ class RunState:
         return [ev_path, log_path]
 
 
-def performance_summary(state: "RunState") -> list[str]:
-    """Short accuracy summary shown on the participant screen after the run."""
-    rows = list(state.events.values())
-    lines = []
-    gng = [r for r in rows if r["block"] == "gonogo"]
-    if gng:
-        n = {o: sum(r["outcome"] == o for r in gng) for o in ("hit", "miss", "false_alarm", "correct_rejection")}
-        lines.append(f"Go/No-Go: {n['hit']} hits, {n['miss']} misses, {n['false_alarm']} false alarms, "
-                     f"{n['correct_rejection']} correct rejections")
-    match = [r for r in rows if r["block"] == "match"]
+# =============================================================================
+# Live evaluation – used by the control room and the end-of-run summary
+# =============================================================================
+SCORED_KINDS = ("match", "gonogo", "rating", "response")
+
+
+def live_result(b: Block, ev: dict, t: float | None) -> tuple[str, str]:
+    """(text, tone) describing a trial's result so far. tone: ok | bad | warn | pending | info."""
+    answered = ev["response"] != "n/a"
+    over = t is None or t >= b.end
+    if b.kind == "gonogo":
+        go = b.params.get("trial", "go") == "go"
+        if answered:
+            return ("hit", "ok") if go else ("false alarm", "bad")
+        if not over:
+            return "…", "pending"
+        return ("miss", "bad") if go else ("correct rejection", "ok")
+    if b.kind == "match":
+        if answered:
+            ok = ev["correct"] == 1
+            return (f"{ev['response']} ✓" if ok else f"{ev['response']} ✗"), ("ok" if ok else "bad")
+        return ("…", "pending") if not over else ("no answer", "warn")
+    if b.kind == "rating":
+        if ev["rating"] != "n/a":
+            return f"rated {ev['rating']}", "info"
+        return ("…", "pending") if not over else ("no rating", "warn")
+    if answered:
+        if b.params.get("correct"):
+            return ("correct", "ok") if ev["correct"] == 1 else ("wrong", "bad")
+        return ev["response"], "info"
+    return ("…", "pending") if not over else ("no response", "warn")
+
+
+def _mean(xs):
+    xs = [x for x in xs if isinstance(x, (int, float))]
+    return sum(xs) / len(xs) if xs else None
+
+
+def live_stats(state: RunState, t: float | None = None) -> list[tuple[str, str, str]]:
+    """Performance so far as ``(title, text, tone)`` lines. ``t=None`` means the run is over."""
+    out = []
+    rows = [(state.p.block(i), ev) for i, ev in state.events.items()]
+    rows = [(b, ev) for b, ev in rows if b is not None]
+
+    def done(b):
+        return t is None or t >= b.end or state.events[b.id]["response"] != "n/a"
+
+    match = [(b, ev) for b, ev in rows if b.kind == "match" and done(b)]
     if match:
-        ok = sum(r["correct"] == 1 for r in match)
-        lines.append(f"Matching: {ok}/{len(match)} correct")
-    return lines
+        ok = sum(ev["correct"] == 1 for _, ev in match)
+        miss = sum(ev["response"] == "n/a" for _, ev in match)
+        rt = _mean(ev["response_time"] for _, ev in match)
+        per = []
+        for cond in dict.fromkeys(b.condition for b, _ in match):
+            sub = [ev for b, ev in match if b.condition == cond]
+            per.append(f"{cond or 'trials'} {sum(e['correct'] == 1 for e in sub)}/{len(sub)}")
+        acc = ok / len(match)
+        out.append(("Matching", f"{ok}/{len(match)} correct ({acc:.0%})  ·  {miss} no answer"
+                    + (f"  ·  RT {rt:.2f}s" if rt else "") + "\n" + "  ·  ".join(per),
+                    "ok" if acc >= .8 else "warn"))
+    gng = [(b, ev) for b, ev in rows if b.kind == "gonogo" and done(b)]
+    if gng:
+        res = [live_result(b, ev, t)[0] for b, ev in gng]
+        n = {k: res.count(k) for k in ("hit", "miss", "false alarm", "correct rejection")}
+        go = n["hit"] + n["miss"]
+        nogo = n["false alarm"] + n["correct rejection"]
+        rt = _mean(ev["response_time"] for b, ev in gng if b.params.get("trial") == "go")
+        text = (f"{n['hit']} hits · {n['miss']} misses · {n['false alarm']} false alarms · "
+                f"{n['correct rejection']} correct rejections")
+        rates = []
+        if go:
+            rates.append(f"hit rate {n['hit'] / go:.0%}")
+        if nogo:
+            rates.append(f"false alarm rate {n['false alarm'] / nogo:.0%}")
+        if rt:
+            rates.append(f"Go RT {rt:.2f}s")
+        out.append(("Go / No-Go", text + "\n" + "  ·  ".join(rates),
+                    "ok" if not go or n["hit"] / go >= .8 else "warn"))
+    rat = [(b, ev) for b, ev in rows if b.kind == "rating" and done(b)]
+    if rat:
+        given = [(b, ev) for b, ev in rat if ev["rating"] != "n/a"]
+        per = []
+        # rating blocks often share one condition ("rating"); group by the stimulus shown before instead
+        for b, ev in given:
+            prev = [o for o in state.p.blocks_on(b.track) if o.end <= b.start + 1e-6 and o.condition
+                    and o.kind in ("image", "match", "text") and o.condition not in ("cue", "instruction")]
+            key = (prev[-1].condition if prev else "") if b.condition in ("", "rating") else b.condition
+            per.append((key or "all", ev["rating"]))
+        groups = {}
+        for k, v in per:
+            if isinstance(v, (int, float)):
+                groups.setdefault(k, []).append(v)
+        text = f"{len(given)}/{len(rat)} rated"
+        if groups:
+            text += "\n" + "  ·  ".join(f"{k} ⌀ {sum(v) / len(v):.1f}" for k, v in groups.items())
+        out.append(("Ratings", text, "ok" if len(given) == len(rat) else "warn"))
+    resp = [(b, ev) for b, ev in rows if b.kind == "response" and done(b)]
+    if resp:
+        got = [ev for _, ev in resp if ev["response"] != "n/a"]
+        rt = _mean(ev["response_time"] for ev in got)
+        out.append(("Response windows", f"{len(got)}/{len(resp)} with a response"
+                    + (f"  ·  RT {rt:.2f}s" if rt else ""), "ok" if len(got) == len(resp) else "warn"))
+    # watchdog: participant stopped answering?
+    if t is not None:
+        recent = sorted(((b, ev) for b, ev in rows if b.kind in SCORED_KINDS and t >= b.end
+                         and not (b.kind == "gonogo" and b.params.get("trial") == "nogo")),
+                        key=lambda x: x[0].start)[-5:]
+        if len(recent) == 5 and all(ev["response"] == "n/a" for _, ev in recent):
+            out.insert(0, ("Attention", "No response in the last 5 trials – check the grips and the participant.",
+                           "bad"))
+    return out
 
 
-class PresentationWindow(QWidget):
-    """The participant screen. Waits for the scanner, then plays the timeline."""
-    finished = Signal(list)   # written files
+def performance_summary(state: RunState) -> list[str]:
+    """Plain-text accuracy summary (end of run)."""
+    return [f"{title}: {text.splitlines()[0]}" for title, text, _ in live_stats(state, None)
+            if title != "Attention"]
 
-    def __init__(self, paradigm: Paradigm, settings: dict):
-        super().__init__()
-        self.setWindowTitle(f"{paradigm.name} – participant screen")
-        self.setCursor(Qt.BlankCursor)
-        self.setFocusPolicy(Qt.StrongFocus)
+
+# =============================================================================
+# Run controller – one per run, shared by participant screen and control room
+# =============================================================================
+class RunController(QObject):
+    stimulusChanged = Signal()     # participant screen must repaint
+    changed = Signal()             # anything noteworthy (trigger, onset, response, phase)
+    abortArmed = Signal(bool)      # Esc pressed once: ask for confirmation
+    finished = Signal(list)        # written files
+
+    def __init__(self, paradigm: Paradigm, settings: dict, parent=None):
+        super().__init__(parent)
         self.p = paradigm
         self.settings = settings
         self.state = RunState(paradigm)
-        self.phase = "waiting"
         self.current: Block | None = None
         self.files: list[str] = []
-        self._esc_at = 0.0
+        self.aborted = False
+        self.error = ""
+        self._done = False
         self._visible = True
+        self._abort_armed_at = 0.0
         for b in paradigm.blocks:          # preload pictures – no disk access while running
             for f in b.image_files():
                 load_pixmap(f)
         self.router = InputRouter(paradigm.hardware, settings.get("simulate", False), paradigm.tr, self)
         self.router.trigger.connect(self._on_trigger)
         self.router.button.connect(self._on_button)
-        self.router.error.connect(lambda m: setattr(self, "error", m) or self.update())
-        self.error = ""
+        self.router.error.connect(self._on_error)
         self.timer = QTimer(self)
         self.timer.setTimerType(Qt.PreciseTimer)
         self.timer.timeout.connect(self._tick)
 
+    # -- lifecycle ---------------------------------------------------------------
     def start(self):
-        screens = QGuiApplication.screens()
-        scr = screens[min(self.settings.get("screen", 0), len(screens) - 1)]
-        self.setGeometry(scr.geometry())
-        if self.settings.get("fullscreen", True):
-            self.showFullScreen()
-        else:
-            self.resize(1280, 720)
-            self.show()
-        self.activateWindow()
-        self.setFocus()
+        app = QApplication.instance()
+        if app is not None:
+            app.installEventFilter(self)   # SyncBox/grip keys reach the run whichever app window has focus
         self.router.start()
         if self.settings.get("simulate"):
             QTimer.singleShot(1500, self.router.start_simulation)
+        self.changed.emit()
 
-    # -- input -----------------------------------------------------------------
-    def keyPressEvent(self, e):
-        if e.key() == Qt.Key_Escape:
-            t = now()
-            if self.phase == "done" or t - self._esc_at < 1.5:
-                self._finish(aborted=self.phase != "done")
-                self.close()
-            self._esc_at = t
-            self.update()
-            return
-        if not e.isAutoRepeat():
-            self.router.feed(e.text(), now())
+    @property
+    def phase(self) -> str:
+        if self._done:
+            return "done"
+        if self.state.t0 is not None:
+            return "running"
+        return "dummy" if self.state.triggers else "waiting"
 
-    def _on_trigger(self, t):
-        if self.phase == "done":
-            return
-        if self.state.on_trigger(t):
-            self.phase = "running"
-            self.timer.start(1)
-        self.update()
-
-    def _on_button(self, name, t):
-        if self.state.on_button(name, t):
-            self.update()
-
-    # -- clock -----------------------------------------------------------------
     def elapsed(self) -> float:
         return now() - self.state.t0 if self.state.t0 is not None else 0.0
 
+    def start_now(self):
+        """Operator override: start the paradigm clock without a scanner trigger."""
+        if self.state.t0 is None and not self._done:
+            self.state.force_start(now())
+            self._begin()
+
+    def request_abort(self):
+        """First call arms, a second call within 3 s aborts (so a stray key press can't end a run)."""
+        if self._done:
+            return
+        if now() - self._abort_armed_at < 3.0:
+            self.finish(aborted=True)
+        else:
+            self._abort_armed_at = now()
+            self.abortArmed.emit(True)
+            QTimer.singleShot(3000, lambda: self.abortArmed.emit(False))
+
+    def finish(self, aborted: bool = False):
+        if self._done:
+            return
+        self._done = True
+        self.aborted = aborted
+        self.timer.stop()
+        self.router.stop()
+        app = QApplication.instance()
+        if app is not None:
+            app.removeEventFilter(self)
+        if self.state.t0 is not None:
+            stem = output_stem(self.p, self.settings) + ("_ABORTED" if aborted else "")
+            try:
+                self.files = self.state.write(self.settings["out_dir"], stem)
+            except OSError as exc:
+                self.error = f"Could not save the logs: {exc}"
+        self.stimulusChanged.emit()
+        self.changed.emit()
+        self.finished.emit(self.files)
+
+    # -- input -------------------------------------------------------------------
+    def eventFilter(self, obj, e):
+        if e.type() == QEvent.ShortcutOverride and not self._done:
+            e.accept()      # claim the key, so editor shortcuts (e.g. "S") can't swallow a SyncBox trigger
+            return True
+        if e.type() == QEvent.KeyPress and not self._done:
+            if e.key() == Qt.Key_Escape:
+                if not e.isAutoRepeat():
+                    self.request_abort()
+                return True
+            if not e.isAutoRepeat() and e.text():
+                self.router.feed(e.text(), now())
+            return True
+        return False
+
+    def _on_trigger(self, t):
+        if self._done:
+            return
+        if self.state.on_trigger(t):
+            self._begin()
+        self.changed.emit()
+
+    def _begin(self):
+        self.timer.start(1)
+        self._tick()
+        self.changed.emit()
+
+    def _on_button(self, name, t):
+        if self.state.on_button(name, t):
+            self.stimulusChanged.emit()
+        self.changed.emit()
+
+    def _on_error(self, msg):
+        self.error = msg
+        self.changed.emit()
+
+    # -- clock -------------------------------------------------------------------
     def _tick(self):
         t = self.elapsed()
         if t >= self.p.duration:
-            self._finish()
+            self.finish()
             return
         b = self.p.stimulus_at(t)
         changed = b is not self.current
@@ -278,69 +475,61 @@ class PresentationWindow(QWidget):
             if visible != self._visible:
                 changed = True
             self._visible = visible
+        onset = False
         for blk in self.p.active_blocks(t):
             if blk.id not in self.state.events:
                 self.state.onset(blk, now())
-                changed = True
-        if changed:
-            self.repaint()
+                onset = True
+        if changed or onset:
+            self.stimulusChanged.emit()
+        if onset:
+            self.changed.emit()
 
-    def _finish(self, aborted: bool = False):
-        if self.phase == "done" and self.files:
-            return
-        self.timer.stop()
-        self.router.stop()
-        self.phase = "done"
-        self.aborted = aborted
-        if self.state.t0 is not None:
-            stem = output_stem(self.p, self.settings)
-            if aborted:
-                stem += "_ABORTED"
-            self.files = self.state.write(self.settings["out_dir"], stem)
-        self.setCursor(Qt.ArrowCursor)
-        self.update()
-        self.finished.emit(self.files)
+    # -- shared drawing ----------------------------------------------------------
+    def paint_participant(self, p: QPainter, r: QRectF, ref_height: float | None = None):
+        """Exactly what the participant sees – used by their screen and the control room mirror."""
+        ref = ref_height or r.height()
+        ph = self.phase
+        if ph == "running":
+            t = self.elapsed()
+            paint_stimulus(p, r, self.p, self.current, self.state.paint_state(self.current, t), ref_height=ref)
+        elif ph == "done":
+            paint_waiting(p, r, self.p, self.p.end_text or "", ref_height=ref)
+        else:
+            paint_waiting(p, r, self.p, ref_height=ref)
+
+
+class PresentationWindow(QWidget):
+    """The participant screen. Shows only the paradigm – never status or technical text."""
+
+    def __init__(self, controller: RunController):
+        super().__init__()
+        self.c = controller
+        self.setWindowTitle(f"{controller.p.name} – participant screen")
+        self.setCursor(Qt.BlankCursor)
+        self.setFocusPolicy(Qt.StrongFocus)
+        controller.stimulusChanged.connect(self.repaint)
+        controller.changed.connect(self.update)
+
+    def show_on_screen(self):
+        s = self.c.settings
+        screens = QGuiApplication.screens()
+        scr = screens[min(s.get("screen", 0), len(screens) - 1)]
+        self.setGeometry(scr.geometry())
+        if s.get("fullscreen", True):
+            self.showFullScreen()
+        else:
+            self.resize(1280, 720)
+            self.show()
 
     def closeEvent(self, e):
-        if self.phase != "done":
-            self._finish(aborted=True)
+        if self.c.phase != "done":
+            self.c.finish(aborted=True)
         super().closeEvent(e)
 
-    # -- drawing -----------------------------------------------------------------
     def paintEvent(self, _e):
         p = QPainter(self)
-        r = QRectF(self.rect())
-        if self.phase == "running":
-            st = dict(self.state.ratings.get(self.current.id, {})) if self.current is not None else {}
-            if self.current is not None:
-                st["t"] = self.elapsed() - self.current.start
-            paint_stimulus(p, r, self.p, self.current, st, ref_height=r.height())
-        else:
-            p.fillRect(r, QColor(self.p.background))
-            p.setPen(QColor("#9AA0AA"))
-            f = QFont("Inter")
-            f.setPixelSize(max(14, int(r.height() * .025)))
-            p.setFont(f)
-            if self.phase == "waiting":
-                n = len(self.state.triggers)
-                hw = self.p.hardware
-                src = (f"key “{hw.trigger_key}”" if hw.sync_mode == "keyboard" else f"serial {hw.serial_port}")
-                msg = f"Waiting for scanner …\n\n{n} / {self.p.dummy_scans + 1} triggers   ·   {src}"
-                if self.settings.get("simulate"):
-                    msg += "\n(simulated scanner)"
-            else:
-                msg = ("Run aborted." if getattr(self, "aborted", False) else "Run complete.") + "\n\n"
-                summary = performance_summary(self.state)
-                if summary:
-                    msg += "\n".join(summary) + "\n\n"
-                msg += ("Saved:\n" + "\n".join(os.path.basename(f) for f in self.files)) if self.files \
-                    else "No data recorded (the scanner never started)."
-                msg += "\n\nPress Esc to close."
-            if self.error:
-                msg += f"\n\n⚠ {self.error}"
-            if self.phase != "done" and now() - self._esc_at < 1.5:
-                msg += "\n\nPress Esc again to abort"
-            p.drawText(r, Qt.AlignCenter, msg)
+        self.c.paint_participant(p, QRectF(self.rect()))
         p.end()
 
 

@@ -74,7 +74,8 @@ BLOCK_TYPES: dict[str, BlockType] = {
             "Three pictures: which of the two bottom ones matches the top one? (Hariri task)",
             5.0, 0,
             {"top": "", "left": "", "right": "", "correct": "left",
-             "left_button": "Left index", "right_button": "Right index", "scale": 0.9},
+             "left_button": "Left index", "right_button": "Right index", "scale": 0.9,
+             "show_choice": True, "choice_color": "#FFD23F"},
         ),
         BlockType(
             "gonogo", "Go / No-Go trial", "#6BBF3A",
@@ -222,6 +223,11 @@ class Paradigm:
     tr: float = 2.0
     dummy_scans: int = 0
     background: str = "#000000"
+    # What the participant sees before the first counted trigger (incl. dummy scans) and after the run.
+    # Technical information (trigger counts etc.) is only ever shown in the control room.
+    waiting_screen: str = "fixation"     # "fixation" | "blank" | "text"
+    waiting_text: str = "The measurement will start in a moment."
+    end_text: str = "Thank you!"
     tracks: list = field(default_factory=lambda: list(DEFAULT_TRACKS))
     blocks: list = field(default_factory=list)
     hardware: Hardware = field(default_factory=Hardware)
@@ -329,6 +335,9 @@ class Paradigm:
             name=d.get("name", "Untitled paradigm"),
             tr=float(d.get("tr", 2.0)),
             dummy_scans=int(d.get("dummy_scans", 0)),
+            waiting_screen=d.get("waiting_screen", "fixation"),
+            waiting_text=d.get("waiting_text", cls.waiting_text),
+            end_text=d.get("end_text", cls.end_text),
             background=d.get("background", "#000000"),
             tracks=list(d.get("tracks", DEFAULT_TRACKS)),
             blocks=[Block(**b) for b in d.get("blocks", [])],

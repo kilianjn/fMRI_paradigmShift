@@ -16,7 +16,51 @@ from paradigmshift.dialogs import HardwareDialog, QuickDesignDialog, RunDialog  
 from paradigmshift.hardware import now  # noqa: E402
 from paradigmshift.mainwindow import MainWindow  # noqa: E402
 from paradigmshift.model import Paradigm  # noqa: E402
-from paradigmshift.runner import PresentationWindow  # noqa: E402
+from paradigmshift.controlroom import ControlRoomWindow  # noqa: E402
+from paradigmshift.runner import PresentationWindow, RunController  # noqa: E402
+
+SETTINGS = {"sub": "01", "run": 1, "out_dir": "/tmp/paradigmshift-shots", "simulate": False,
+            "fullscreen": False, "screen": 0}
+
+
+def fake_run(par, at: float, answer, seed=3):
+    """A controller frozen *at* seconds into the run, with simulated triggers and grip answers."""
+    import random
+    rng = random.Random(seed)
+    c = RunController(par, dict(SETTINGS))
+    t0 = now() - at
+    tr = par.tr
+    for i in range(par.dummy_scans):
+        c.state.on_trigger(t0 - (par.dummy_scans - i) * tr)
+    k = 0
+    while k * tr <= at:
+        c.state.on_trigger(t0 + k * tr + rng.uniform(-.001, .001))
+        k += 1
+    for b in sorted(par.blocks, key=lambda b: b.start):
+        if b.start <= at:
+            c.state.onset(b, t0 + b.start + .002)
+            press = answer(b, rng)
+            if press and b.start + press[1] < min(at, b.end):
+                c.state.on_button(press[0], t0 + b.start + press[1])
+    c.current = par.stimulus_at(at)
+    return c
+
+
+def hariri_answer(b, rng):
+    if b.kind != "match":
+        return None
+    if rng.random() < .08:
+        return None
+    side = b.params["correct"] if rng.random() < .9 else ("left" if b.params["correct"] == "right" else "right")
+    return (b.params["left_button"] if side == "left" else b.params["right_button"]), rng.uniform(.7, 1.6)
+
+
+def gonogo_answer(b, rng):
+    if b.kind != "gonogo":
+        return None
+    if b.params["trial"] == "go":
+        return ("Right index", rng.uniform(.3, .55)) if rng.random() < .95 else None
+    return ("Right index", rng.uniform(.3, .45)) if rng.random() < .2 else None
 
 OUT = os.path.join(ROOT, "docs", "screenshots")
 EXAMPLE = os.path.join(ROOT, "examples", "emotional_rating.paradigm.json")
@@ -113,23 +157,37 @@ def main():
     shot(rd, "08_run_dialog.png")
     rd.reject()
 
-    # 9/10 – participant screen: waiting for scanner, then a rating trial
-    pw = PresentationWindow(par.copy(), {"sub": "01", "run": 1, "out_dir": "/tmp", "simulate": False,
-                                         "fullscreen": False, "screen": 0})
+    # 9 – participant screen during dummy scans: only a fixation cross, no technical text
+    wp = par.copy()
+    wp.dummy_scans = 4
+    c = RunController(wp, dict(SETTINGS))
+    c.state.on_trigger(now() - 2)
+    c.state.on_trigger(now())
+    pw = PresentationWindow(c)
     pw.resize(1280, 720)
     pw.show()
-    pw.state.triggers = [0.0, 2.0]
     settle(app)
     shot(pw, "09_participant_waiting.png")
-    pw.phase = "running"
-    pw.current = [b for b in pw.p.blocks if b.kind == "rating"][0]
-    pw.state.t0 = now() - pw.current.start - 1
-    pw.state.onset(pw.current, now())
-    pw.state.ratings[pw.current.id]["value"] = 3
+    cr = ControlRoomWindow(c, None)
+    cr.show()
+    cr.refresh()
+    settle(app)
+    shot(cr, "17_control_room_dummy_scans.png")
+    cr.timer.stop()
+    cr.hide()
+    pw.hide()
+
+    # 10 – participant screen: rating trial
+    rating = [b for b in par.blocks if b.kind == "rating"][0]
+    c = fake_run(par.copy(), rating.start + 1, lambda b, r: None)
+    c.state.ratings[c.current.id]["value"] = 3
+    pw = PresentationWindow(c)
+    pw.resize(1280, 720)
+    pw.show()
     settle(app)
     shot(pw, "10_participant_rating.png")
-    pw.phase = "done"
-    pw.close()
+    pw.hide()
+
     # 11 – template dialog
     from paradigmshift.dialogs import TemplateDialog
     td = TemplateDialog(par.hardware, os.path.join(ROOT, "examples", "stimuli"), win)
@@ -180,19 +238,36 @@ def main():
     settle(app)
     shot(win, "15_emoreg_editor.png")
 
-    # 16 – participant screen: Hariri faces trial
+    # 16 – participant screen: Hariri faces trial, the chosen face is framed
     hp = Paradigm.load(os.path.join(ex, "hariri_face_matching.paradigm.json"))
-    pw = PresentationWindow(hp, {"sub": "01", "run": 1, "out_dir": "/tmp", "simulate": False,
-                                 "fullscreen": False, "screen": 0})
+    trial = [b for b in hp.blocks if b.kind == "match" and b.condition == "faces"][0]
+    c = fake_run(hp, trial.start + 1.5, lambda b, r: (b.params["left_button"], 1.1) if b is trial else None)
+    pw = PresentationWindow(c)
     pw.resize(1280, 720)
     pw.show()
-    pw.phase = "running"
-    pw.current = [b for b in hp.blocks if b.kind == "match" and b.condition == "faces"][0]
-    pw.state.t0 = now() - pw.current.start - 1
     settle(app)
     shot(pw, "16_participant_hariri.png")
-    pw.phase = "done"
-    pw.close()
+    pw.hide()
+
+    # 18/19 – control room in the middle of a run
+    hp = Paradigm.load(os.path.join(ex, "hariri_face_matching.paradigm.json"))
+    c = fake_run(hp, 101.3, hariri_answer)
+    cr = ControlRoomWindow(c, None)
+    cr.show()
+    cr.refresh()
+    settle(app)
+    shot(cr, "18_control_room_hariri.png")
+    cr.timer.stop()
+    cr.hide()
+    gp = Paradigm.load(os.path.join(ex, "go_nogo.paradigm.json"))
+    c = fake_run(gp, 143.2, gonogo_answer)
+    cr = ControlRoomWindow(c, None)
+    cr.show()
+    cr.refresh()
+    settle(app)
+    shot(cr, "19_control_room_gonogo.png")
+    cr.timer.stop()
+    cr.hide()
 
     win.doc.dirty = False
     QTimer.singleShot(0, app.quit)

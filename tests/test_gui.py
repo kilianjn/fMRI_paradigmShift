@@ -123,27 +123,96 @@ def test_open_example_inspector_and_export(win, app, tmp_path):
 
 def test_full_run_with_simulated_scanner(app, tmp_path):
     from PySide6.QtCore import QEventLoop, QTimer
+    from PySide6.QtGui import QImage, QPainter
 
+    from paradigmshift.controlroom import open_run
     from paradigmshift.model import Block, Paradigm
-    from paradigmshift.runner import PresentationWindow
 
-    par = Paradigm(name="quick", tr=0.25, dummy_scans=1)
+    par = Paradigm(name="quick", tr=0.25, dummy_scans=2, waiting_screen="text", waiting_text="Gleich geht's los")
     par.blocks += [Block.create("fixation", 0, 0.5), Block.create("text", 0.5, 0.5),
                    Block.create("response", 0, 1.0)]
-    win = PresentationWindow(par, {"sub": "x", "run": 1, "out_dir": str(tmp_path), "simulate": True,
-                                   "fullscreen": False, "screen": 0})
+    settings = {"sub": "x", "run": 1, "out_dir": str(tmp_path), "simulate": True, "fullscreen": False, "screen": 0}
+    c, pw, cr = open_run(par, settings)
+    seen = {}
+
+    def probe():
+        seen.setdefault(c.phase, (len(c.state.triggers), cr.pill.text()))
+        if c.phase == "dummy":   # participant screen shows only the waiting text, no trigger counts
+            img = QImage(400, 225, QImage.Format_RGB32)
+            p = QPainter(img)
+            from PySide6.QtCore import QRectF
+            c.paint_participant(p, QRectF(0, 0, 400, 225))
+            p.end()
+            seen["dummy_img"] = img
+    poll = QTimer()
+    poll.timeout.connect(probe)
+    poll.start(20)
     loop = QEventLoop()
     got = []
-    win.finished.connect(lambda files: (got.extend(files), loop.quit()))
+    c.finished.connect(lambda files: (got.extend(files), loop.quit()))
     QTimer.singleShot(10000, loop.quit)
-    win.start()
-    QTimer.singleShot(1900, lambda: win.router.feed("2"))   # a grip press during the response window
+    QTimer.singleShot(2400, lambda: c.router.feed("2"))   # a grip press during the response window
     loop.exec()
-    win.close()
+    poll.stop()
+    app.processEvents()
+    assert {"waiting", "dummy", "running"} <= set(seen)
+    assert seen["dummy"][1].startswith("DUMMY SCANS")
+    assert c.state.dummies_seen == 2 and c.state.log[0]["info"] == "dummy"
     assert got and all(os.path.exists(f) for f in got)
     rows = open(got[0]).read().splitlines()
     assert len(rows) == 4            # header + 3 blocks
     assert "Left index" in open(got[0]).read()
+    assert cr.pill.text() == "FINISHED" and cr.close_btn.isVisible()
+    assert cr.table.rowCount() == 1 and cr.table.item(0, 3).text() == "Left index"
+    cr.close()
+    assert not pw.isVisible()
+
+
+def test_control_room_abort_needs_confirmation(app, tmp_path):
+    from paradigmshift.controlroom import open_run
+    from paradigmshift.model import Block, Paradigm
+
+    par = Paradigm(tr=2.0, dummy_scans=0)
+    par.blocks.append(Block.create("fixation", 0, 60))
+    c, pw, cr = open_run(par, {"sub": "x", "run": 1, "out_dir": str(tmp_path), "simulate": False,
+                               "fullscreen": False, "screen": 0})
+    c.router.feed(par.hardware.trigger_key)
+    app.processEvents()
+    assert c.phase == "running"
+    c.request_abort()
+    assert c.phase == "running"           # first press only arms
+    cr.refresh()
+    assert "again" in cr.banner.text()
+    c.request_abort()
+    assert c.phase == "done" and c.aborted and c.files[0].endswith("_ABORTED_events.tsv")
+    cr.close()
+
+
+def test_matching_choice_is_framed(app):
+    from PySide6.QtCore import QRectF
+    from PySide6.QtGui import QColor, QImage, QPainter
+
+    from paradigmshift.model import Block, Paradigm
+    from paradigmshift.stimulus import paint_stimulus
+
+    par = Paradigm()
+    b = Block.create("match", 0, 5, top="", left="", right="")
+
+    def render(chosen):
+        img = QImage(640, 360, QImage.Format_RGB32)
+        p = QPainter(img)
+        paint_stimulus(p, QRectF(0, 0, 640, 360), par, b, {"chosen": chosen} if chosen else {})
+        p.end()
+        return img
+
+    frame = QColor(b.params["choice_color"]).rgb()
+    count = lambda img, x0, x1: sum(img.pixel(x, y) == frame  # noqa: E731
+                                    for x in range(x0, x1) for y in range(180, 360))
+    plain, left = render(None), render("left")
+    assert count(plain, 0, 320) == 0
+    assert count(left, 0, 320) > 100 and count(left, 320, 640) == 0
+    b.params["show_choice"] = False
+    assert count(render("left"), 0, 320) == 0
 
 
 def test_template_dialog_and_examples_in_editor(win, app, tmp_path):

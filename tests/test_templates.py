@@ -123,7 +123,7 @@ def test_runner_scores_matching_and_gonogo(tmp_path):
     assert e[go2.id]["outcome"] == "miss"
     assert e[nogo2.id]["outcome"] == "correct_rejection" and e[nogo2.id]["correct"] == 1
     summary = " ".join(performance_summary(s))
-    assert "1 hits, 1 misses, 1 false alarms, 1 correct rejections" in summary and "1/1 correct" in summary
+    assert "1 hits · 1 misses · 1 false alarms · 1 correct rejections" in summary and "1/1 correct" in summary
 
 
 def test_example_projects_load():

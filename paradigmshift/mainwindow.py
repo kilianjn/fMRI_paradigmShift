@@ -16,7 +16,7 @@ from .document import Document
 from .hardware import now
 from .model import FILE_SUFFIX, Paradigm
 from .panels import InspectorPanel, LibraryPanel, MonitorView, panel
-from .runner import PresentationWindow
+from .controlroom import open_run
 from .timeline import TimelineView, fmt_time
 
 FILE_FILTER = f"fMRI paradigm (*{FILE_SUFFIX});;JSON (*.json)"
@@ -423,12 +423,14 @@ class MainWindow(QMainWindow):
             return
         s = dlg.settings()
         self.settings.setValue("out_dir", s["out_dir"])
+        keys = ("dummy_scans", "waiting_screen", "waiting_text", "end_text")
+        if any(getattr(par, k) != s[k] for k in keys):   # remember the scanner-start settings in the paradigm
+            self.doc.edit(lambda p_: [setattr(p_, k, s[k]) for k in keys])
         if self._playing:
             self.toggle_play()
-        self._runner = PresentationWindow(par.copy(), s)
-        self._runner.finished.connect(
+        self._runner = open_run(self.doc.paradigm.copy(), s, self)
+        self._runner[0].finished.connect(
             lambda files: self.statusBar().showMessage("Run finished – saved " + ", ".join(files), 15000))
-        self._runner.start()
 
     def show_shortcuts(self):
         QMessageBox.information(self, "Keyboard shortcuts", (

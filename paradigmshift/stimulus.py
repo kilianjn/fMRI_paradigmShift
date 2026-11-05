@@ -95,7 +95,7 @@ def paint_stimulus(p: QPainter, rect: QRectF, paradigm: Paradigm, block: Block |
     elif block.kind == "rating":
         _paint_rating(p, rect, block, state or {})
     elif block.kind == "match":
-        _paint_match(p, rect, block)
+        _paint_match(p, rect, block, (state or {}).get("chosen"))
     elif block.kind == "gonogo":
         _paint_gonogo(p, rect, block, (state or {}).get("t", 0.0), k)
     p.restore()
@@ -126,8 +126,8 @@ def _paint_gonogo(p: QPainter, rect: QRectF, block: Block, t: float, k: float) -
         p.drawText(rect, Qt.AlignCenter, prm["isi_symbol"])
 
 
-def _paint_match(p: QPainter, rect: QRectF, block: Block) -> None:
-    """Hariri layout: target on top, two choices below."""
+def _paint_match(p: QPainter, rect: QRectF, block: Block, chosen: str | None = None) -> None:
+    """Hariri layout: target on top, two choices below. A frame marks the participant's choice."""
     prm = block.params
     sc = float(prm.get("scale", 0.9))
     h = rect.height() * .44
@@ -139,8 +139,39 @@ def _paint_match(p: QPainter, rect: QRectF, block: Block) -> None:
     left.moveCenter(QPointF(rect.center().x() - w / 2 - gap, rect.top() + rect.height() * .74))
     right = QRectF(0, 0, w, h)
     right.moveCenter(QPointF(rect.center().x() + w / 2 + gap, rect.top() + rect.height() * .74))
+    drawn = {}
     for area, key in ((top, "top"), (left, "left"), (right, "right")):
-        _draw_image(p, rect, prm.get(key, ""), sc, area)
+        drawn[key] = _draw_image(p, rect, prm.get(key, ""), sc, area)
+    if chosen in ("left", "right") and prm.get("show_choice", True):
+        lw = max(2.0, rect.height() * .008)
+        p.setPen(QPen(QColor(prm.get("choice_color", "#FFD23F")), lw, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin))
+        p.setBrush(Qt.NoBrush)
+        pad = lw * 1.6
+        p.drawRect(drawn[chosen].adjusted(-pad, -pad, pad, pad))
+
+
+def paint_waiting(p: QPainter, rect: QRectF, paradigm: Paradigm, text: str | None = None,
+                  ref_height: float = 1080.0) -> None:
+    """The neutral screen the participant sees before the run starts (and *text* after it ends)."""
+    p.save()
+    p.fillRect(rect, QColor(paradigm.background))
+    k = rect.height() / ref_height
+    mode = "text" if text is not None else paradigm.waiting_screen
+    msg = text if text is not None else paradigm.waiting_text
+    if mode == "fixation":
+        f = QFont("DejaVu Sans")
+        f.setPixelSize(max(4, int(72 * k)))
+        p.setFont(f)
+        p.setPen(QColor("#FFFFFF"))
+        p.drawText(rect, Qt.AlignCenter, "+")
+    elif mode == "text" and msg:
+        f = QFont("Inter")
+        f.setPixelSize(max(4, int(40 * k)))
+        p.setFont(f)
+        p.setPen(QColor("#FFFFFF"))
+        p.drawText(rect.adjusted(rect.width() * .1, 0, -rect.width() * .1, 0),
+                   Qt.AlignCenter | Qt.TextWordWrap, msg)
+    p.restore()
 
 
 def _paint_rating(p: QPainter, rect: QRectF, block: Block, state: dict) -> None:

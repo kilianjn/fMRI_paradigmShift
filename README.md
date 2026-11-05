@@ -61,6 +61,30 @@ The defaults follow the published protocols, but check them against the protocol
 Right-click anything on the timeline for more (duplicate, repeat ×N, split at playhead, close gaps…).
 F1 lists the keyboard shortcuts.
 
+## During a run: control room & participant screen
+
+**Run in scanner** opens two windows:
+
+* **Participant screen** (projector): shows only the paradigm. Before the start – including the
+  **dummy scans** – the participant sees a fixation cross, an empty screen or a text of your choice. After the
+  run they see an end text. Trigger counts and other technical information never appear here.
+* **Control room** (operator monitor):
+  * a live mirror of the participant screen;
+  * status: waiting → dummy scans *n / N* → running → finished;
+  * elapsed and remaining time, volume and trigger counts, and the measured TR;
+  * a progress strip of the whole run, with the current and next block;
+  * a live list of answers (RT, correct/incorrect, hit/miss/false alarm, ratings);
+  * a running performance summary, e.g. accuracy per condition, hit/false-alarm rate, mean rating per
+    condition;
+  * warnings when the participant stops answering, when no trigger arrives, or when another app has the
+    keyboard focus (SyncBox keys would be lost).
+
+  Aborting takes two clicks or two presses of Esc.
+
+You set the number of dummy scans in the run dialog or in the inspector (nothing selected). The paradigm clock
+starts with trigger *N + 1*. In the **Matching trial** a frame marks the picture the participant chose (colour
+adjustable, can be switched off).
+
 ## Scanner hardware (NNL)
 
 * **SyncBox** – *USB keyboard mode* (default): the trigger arrives as a key, default `s`.
@@ -97,7 +121,9 @@ Paradigms are saved as `*.paradigm.json` (picture paths stored relative to the f
 | ![](docs/screenshots/08_run_dialog.png) Run setup | ![](docs/screenshots/10_participant_rating.png) Participant screen: rating trial |
 | ![](docs/screenshots/11_templates_hariri.png) Templates: Hariri | ![](docs/screenshots/12_templates_emoreg.png) Templates: emotion regulation |
 | ![](docs/screenshots/13_hariri_editor.png) Hariri in the editor | ![](docs/screenshots/14_gonogo_editor.png) Go/No-Go – No-Go trials in red |
-| ![](docs/screenshots/15_emoreg_editor.png) Emotion regulation: cue → picture → rating → relax | ![](docs/screenshots/16_participant_hariri.png) Participant screen: Hariri faces trial |
+| ![](docs/screenshots/15_emoreg_editor.png) Emotion regulation: cue → picture → rating → relax | ![](docs/screenshots/16_participant_hariri.png) Participant screen: Hariri trial, chosen face framed |
+| ![](docs/screenshots/18_control_room_hariri.png) Control room during a Hariri run | ![](docs/screenshots/19_control_room_gonogo.png) Control room during Go/No-Go |
+| ![](docs/screenshots/17_control_room_dummy_scans.png) Control room during dummy scans | ![](docs/screenshots/09_participant_waiting.png) …while the participant only sees the fixation cross |
 
 Screenshots are generated with `QT_QPA_PLATFORM=offscreen python tools/screenshots.py`.
 
@@ -111,4 +137,4 @@ python tools/make_example.py     # regenerates examples/
 
 Code layout: `model.py` (paradigm, blocks, generators – no Qt), `templates.py` (Hariri, Go/No-Go, emotion
 regulation), `placeholders.py` (generated stimuli), `timeline.py`, `panels.py`, `dialogs.py`,
-`runner.py` (presentation + logging), `hardware.py` (SyncBox/grips input), `stimulus.py` (shared renderer).
+`runner.py` (run clock, logging, participant screen), `controlroom.py` (operator window), `hardware.py` (SyncBox/grips input), `stimulus.py` (shared renderer).

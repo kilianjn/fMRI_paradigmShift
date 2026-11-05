@@ -577,7 +577,8 @@ class RunDialog(QDialog):
     def __init__(self, paradigm: Paradigm, out_dir: str, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Run paradigm")
-        self.resize(520, 480)
+        self.resize(560, 640)
+        self.paradigm = paradigm
         lay = QVBoxLayout(self)
         t = QLabel("▶  Run in the scanner")
         t.setObjectName("Big")
@@ -585,8 +586,7 @@ class RunDialog(QDialog):
         hw = paradigm.hardware
         sync = (f"SyncBox via USB keyboard, trigger key “{hw.trigger_key}”" if hw.sync_mode == "keyboard"
                 else f"SyncBox via serial port {hw.serial_port or '(not set!)'}")
-        lay.addWidget(_hint(f"{paradigm.name}  ·  {fmt_time(paradigm.duration)}  ·  {paradigm.volumes} volumes "
-                            f"(+{paradigm.dummy_scans} dummy)\n{sync}"))
+        lay.addWidget(_hint(f"{paradigm.name}  ·  {fmt_time(paradigm.duration)}  ·  {paradigm.volumes} volumes\n{sync}"))
         form = QFormLayout()
         form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.sub = QLineEdit("01")
@@ -618,11 +618,43 @@ class RunDialog(QDialog):
         self.fullscreen = QCheckBox("Full screen")
         self.fullscreen.setChecked(True)
         form.addRow("", self.fullscreen)
+        if len(screens) < 2:
+            form.addRow("", _hint("Only one screen found: the participant window covers the control room. "
+                                  "Untick “Full screen” for a test run."))
         self.simulate = QCheckBox("Simulate scanner (no SyncBox connected – for testing)")
         form.addRow("", self.simulate)
+
+        sec = QLabel("SCANNER START")
+        sec.setObjectName("PanelTitle")
+        form.addRow(sec)
+        self.dummy = QSpinBox()
+        self.dummy.setRange(0, 50)
+        self.dummy.setValue(paradigm.dummy_scans)
+        self.dummy.setSuffix(" volumes")
+        self.dummy.setToolTip("Scanner triggers to skip before the paradigm starts (T1 saturation).")
+        form.addRow("Dummy scans", self.dummy)
+        self.dummy_info = _hint("")
+        form.addRow("", self.dummy_info)
+        self.wait_mode = QComboBox()
+        self.wait_mode.addItem("Fixation cross", "fixation")
+        self.wait_mode.addItem("Empty screen", "blank")
+        self.wait_mode.addItem("Text…", "text")
+        self.wait_mode.setCurrentIndex(max(0, self.wait_mode.findData(paradigm.waiting_screen)))
+        form.addRow("Participant sees until start", self.wait_mode)
+        self.wait_text = QLineEdit(paradigm.waiting_text)
+        form.addRow("", self.wait_text)
+        self.end_text = QLineEdit(paradigm.end_text)
+        self.end_text.setPlaceholderText("empty screen")
+        form.addRow("…and after the run", self.end_text)
+        self.dummy.valueChanged.connect(self._dummy_changed)
+        self.wait_mode.currentIndexChanged.connect(
+            lambda _i: self.wait_text.setVisible(self.wait_mode.currentData() == "text"))
+        self.wait_text.setVisible(paradigm.waiting_screen == "text")
+        self._dummy_changed()
         lay.addLayout(form)
-        lay.addWidget(_hint("During the run: Esc twice aborts (data so far is saved). Grip buttons can be "
-                            "simulated with their keys."))
+        lay.addWidget(_hint("Scanner status, dummy-scan count, progress and answers are shown only in the "
+                            "control room window – never on the participant's screen. "
+                            "Esc twice (or the Abort button) stops the run; data so far is saved."))
         lay.addStretch()
         bb = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         bb.button(QDialogButtonBox.Ok).setText("Start – wait for scanner")
@@ -630,6 +662,12 @@ class RunDialog(QDialog):
         bb.accepted.connect(self.accept)
         bb.rejected.connect(self.reject)
         lay.addWidget(bb)
+
+    def _dummy_changed(self, *_):
+        n = self.dummy.value()
+        tr = self.paradigm.tr
+        self.dummy_info.setText(f"The paradigm starts with trigger {n + 1}"
+                                + (f"  ·  {n * tr:g} s of dummy scans" if n else "  ·  on the very first trigger"))
 
     def _browse(self):
         d = QFileDialog.getExistingDirectory(self, "Save logs to", self.out.text())
@@ -645,6 +683,10 @@ class RunDialog(QDialog):
             "screen": self.screen.currentData() or 0,
             "fullscreen": self.fullscreen.isChecked(),
             "simulate": self.simulate.isChecked(),
+            "dummy_scans": self.dummy.value(),
+            "waiting_screen": self.wait_mode.currentData(),
+            "waiting_text": self.wait_text.text(),
+            "end_text": self.end_text.text(),
         }
 
 
