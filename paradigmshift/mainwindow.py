@@ -6,15 +6,17 @@ import os
 
 from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, QTimer
 from PySide6.QtGui import QAction, QKeySequence
-from PySide6.QtWidgets import (QFileDialog, QFrame, QHBoxLayout, QLabel, QMainWindow, QMessageBox,
+from PySide6.QtWidgets import (QApplication, QFileDialog, QFrame, QHBoxLayout, QLabel, QMainWindow, QMessageBox,
                                QPushButton, QSizePolicy, QSplitter, QToolBar, QToolButton, QVBoxLayout,
                                QWidget)
 
 from . import theme
-from .dialogs import HardwareDialog, QuickDesignDialog, RunDialog, TemplateDialog
+from .dialogs import (FindReplaceDialog, HardwareDialog, PreferencesDialog, QuickDesignDialog, RunDialog,
+                      TemplateDialog)
+from .prefs import Prefs, apply_block_defaults
 from .document import Document
 from .hardware import now
-from .model import FILE_SUFFIX, Paradigm
+from .model import BLOCK_TYPES, FILE_SUFFIX, Paradigm
 from .panels import InspectorPanel, LibraryPanel, MonitorView, panel
 from .controlroom import open_run
 from .timeline import TimelineView, fmt_time
@@ -29,6 +31,9 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(theme.app_icon())
         self.resize(1560, 940)
         self.settings = QSettings("ParadigmShift", "ParadigmShift")
+        self.prefs = Prefs(self.settings)
+        self._autosave = QTimer(self)
+        self._autosave.timeout.connect(self._do_autosave)
         self._playing = False
         self._play_t0 = 0.0
         self._play_from = 0.0
@@ -50,8 +55,78 @@ class MainWindow(QMainWindow):
         self._build_layout()
         self.doc.changed.connect(self._refresh)
         self.doc.pathChanged.connect(self._refresh)
+        self.apply_prefs()
         self._refresh()
         self._on_playhead(0.0)
+
+    # ------------------------------------------------------------------ preferences
+    def apply_prefs(self):
+        p = self.prefs
+        app = QApplication.instance()
+        if app is not None:
+            app.setStyleSheet(theme.stylesheet(p.get("ui_scale")))
+        self.timeline.snap = p.get("snap")
+        self.timeline.snap_px = p.get("snap_px")
+        self.a_snap.setChecked(self.timeline.snap)
+        self.tl_hint.setVisible(p.get("show_hints"))
+        self.a_hints.setChecked(p.get("show_hints"))
+        self.a_confirm_abort.setChecked(p.get("confirm_abort"))
+        self.a_save_copy.setChecked(p.get("save_paradigm_with_data"))
+        for mode, a in self.a_rating_mode.items():
+            a.setChecked(p.get("rating_mode") == mode)
+        apply_block_defaults(p)
+        mins = p.get("autosave_minutes")
+        if mins > 0:
+            self._autosave.start(mins * 60_000)
+        else:
+            self._autosave.stop()
+        self.timeline.viewport().update()
+
+    def _set_pref(self, key, value):
+        self.prefs.set(key, value)
+        self.apply_prefs()
+
+    def open_preferences(self):
+        dlg = PreferencesDialog(self.prefs, self)
+        dlg.exec()          # OK saves, "Restore defaults" resets – re-apply in every case
+        self.apply_prefs()
+
+    def _do_autosave(self):
+        if self.doc.path and self.doc.dirty:
+            try:
+                self.doc.paradigm.save(self.doc.path + ".autosave")
+                self.statusBar().showMessage("Autosaved a backup copy", 2000)
+            except OSError:
+                pass
+
+    def find_replace(self):
+        FindReplaceDialog(self.doc, self).exec()
+
+    def _fill_select_menu(self, menu):
+        menu.clear()
+        par = self.doc.paradigm
+        kinds = {}
+        for b in par.blocks:
+            kinds.setdefault(b.kind, []).append(b.id)
+        if not kinds:
+            menu.addAction("(timeline is empty)").setEnabled(False)
+            return
+        menu.addSection("All blocks of a type")
+        for kind, ids in kinds.items():
+            menu.addAction(theme.kind_icon(kind), f"{BLOCK_TYPES[kind].title}  ({len(ids)})",
+                           lambda ids=ids: self.doc.select(ids))
+        conds = par.conditions()
+        if conds:
+            menu.addSection("All blocks of a condition")
+            for c in conds:
+                ids = [b.id for b in par.blocks if b.condition == c]
+                menu.addAction(f"{c}  ({len(ids)})", lambda ids=ids: self.doc.select(ids))
+        sel = self.doc.selected_blocks()
+        if len(sel) == 1:
+            b = sel[0]
+            same = [o.id for o in par.blocks if o.kind == b.kind and o.condition == b.condition]
+            menu.addSection("Like the selected block")
+            menu.addAction(f"Same type and condition  ({len(same)})", lambda: self.doc.select(same))
 
     # ------------------------------------------------------------------ actions
     def _act(self, text, slot, shortcut=None, icon=None, tip=None):
@@ -116,6 +191,10 @@ class MainWindow(QMainWindow):
         m.addAction("Delete", self.timeline.delete_selected)
         m.addAction("Delete and close gap", lambda: self.timeline.delete_selected(True), "Shift+Del")
         m.addAction("Select all", lambda: self.doc.select([b.id for b in self.doc.paradigm.blocks]), "Ctrl+A")
+        self.select_menu = m.addMenu("Select…")
+        self.select_menu.aboutToShow.connect(lambda: self._fill_select_menu(self.select_menu))
+        m.addSeparator()
+        m.addAction("Find and replace text…", self.find_replace, "Ctrl+H")
         m = mb.addMenu("&Paradigm")
         m.addAction(self.a_template)
         m.addAction(self.a_wizard)
@@ -126,6 +205,25 @@ class MainWindow(QMainWindow):
         m = mb.addMenu("&View")
         for a in (self.a_play, self.a_home, self.a_zin, self.a_zout, self.a_fit, self.a_snap):
             m.addAction(a)
+        m = mb.addMenu("&Options")
+        m.addAction(self.a_snap)
+        self.a_hints = m.addAction("Show usage hints", lambda: self._set_pref("show_hints", self.a_hints.isChecked()))
+        self.a_hints.setCheckable(True)
+        rm = m.addMenu("New rating blocks are answered with")
+        self.a_rating_mode = {}
+        for mode, text in (("direct", "One grip button per value"), ("cursor", "Cursor ◀ ▶ and confirm")):
+            a = rm.addAction(text, lambda md=mode: self._set_pref("rating_mode", md))
+            a.setCheckable(True)
+            self.a_rating_mode[mode] = a
+        m.addSeparator()
+        self.a_confirm_abort = m.addAction("Abort a run only after confirming",
+                                           lambda: self._set_pref("confirm_abort", self.a_confirm_abort.isChecked()))
+        self.a_confirm_abort.setCheckable(True)
+        self.a_save_copy = m.addAction("Save the paradigm with each run's data",
+                                       lambda: self._set_pref("save_paradigm_with_data", self.a_save_copy.isChecked()))
+        self.a_save_copy.setCheckable(True)
+        m.addSeparator()
+        m.addAction("Preferences…", self.open_preferences, "Ctrl+,")
         m = mb.addMenu("&Help")
         m.addAction("Keyboard shortcuts", self.show_shortcuts, "F1")
 
@@ -203,9 +301,9 @@ class MainWindow(QMainWindow):
         self.tl_info.setObjectName("Hint")
         bar.addWidget(self.tl_info)
         bar.addStretch()
-        hint = QLabel("drag to move · drag edges to trim · Ctrl+wheel zoom · right-click for more")
-        hint.setObjectName("Hint")
-        bar.addWidget(hint)
+        self.tl_hint = QLabel("drag to move · drag edges to trim · Ctrl+wheel zoom · right-click for more")
+        self.tl_hint.setObjectName("Hint")
+        bar.addWidget(self.tl_hint)
         bar.addSpacing(12)
         for a in (self.a_snap, self.a_zout, self.a_zin, self.a_fit):
             b = QToolButton()
@@ -250,6 +348,7 @@ class MainWindow(QMainWindow):
 
     def _toggle_snap(self):
         self.timeline.snap = self.a_snap.isChecked()
+        self.prefs.set("snap", self.timeline.snap)
 
     # ------------------------------------------------------------------ playback
     def toggle_play(self):
@@ -292,7 +391,10 @@ class MainWindow(QMainWindow):
     def new_file(self):
         if self._confirm_discard():
             hw = self.doc.paradigm.hardware
-            self.doc.reset(Paradigm(hardware=hw))
+            p = self.prefs
+            self.doc.reset(Paradigm(hardware=hw, tr=p.get("new_tr"), dummy_scans=p.get("new_dummy_scans"),
+                                    background=p.get("new_background"),
+                                    waiting_screen=p.get("new_waiting_screen"), end_text=p.get("new_end_text")))
             self.timeline.set_playhead(0)
 
     def open_file(self, path: str | None = None):
@@ -307,6 +409,7 @@ class MainWindow(QMainWindow):
                 QMessageBox.critical(self, "Could not open", str(exc))
                 return
             self.settings.setValue("dir", os.path.dirname(path))
+            self.settings.setValue("last_file", path)
             imgs = sorted({f for b in self.doc.paradigm.blocks for f in b.image_files()})
             self.library.media.clear()
             self.library.media.add_files(imgs)
@@ -324,6 +427,7 @@ class MainWindow(QMainWindow):
                 path += FILE_SUFFIX
         self.doc.save(path)
         self.settings.setValue("dir", os.path.dirname(path))
+        self.settings.setValue("last_file", path)
         self.statusBar().showMessage(f"Saved {path}", 3000)
         self._refresh()
         return True
@@ -417,12 +521,15 @@ class MainWindow(QMainWindow):
                 self, "Paradigm has issues", "\n".join(problems[:10]) + "\n\nRun anyway?",
                 QMessageBox.Yes | QMessageBox.No) != QMessageBox.Yes:
             return
-        out = self.settings.value("out_dir", os.path.join(os.path.expanduser("~"), "ParadigmShift-data"))
+        out = self.prefs.get("data_dir")
         dlg = RunDialog(par, out, self)
         if not dlg.exec():
             return
         s = dlg.settings()
-        self.settings.setValue("out_dir", s["out_dir"])
+        self.prefs.set("data_dir", s["out_dir"])
+        for k in ("confirm_abort", "save_paradigm_with_data", "watchdog_trials", "trigger_warning_trs",
+                  "control_refresh_ms"):
+            s[k] = self.prefs.get(k)
         keys = ("dummy_scans", "waiting_screen", "waiting_text", "end_text")
         if any(getattr(par, k) != s[k] for k in keys):   # remember the scanner-start settings in the paradigm
             self.doc.edit(lambda p_: [setattr(p_, k, s[k]) for k in keys])

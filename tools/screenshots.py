@@ -85,6 +85,8 @@ def main():
 
     # 1 – empty editor, first launch
     win = MainWindow()
+    win.prefs.reset()
+    win.apply_prefs()
     win.resize(1600, 960)
     win.show()
     settle(app)
@@ -267,6 +269,50 @@ def main():
     settle(app)
     shot(cr, "19_control_room_gonogo.png")
     cr.timer.stop()
+    cr.hide()
+
+    # 20 – bulk editing: all rating blocks selected, answer mode differs
+    win.doc.dirty = False
+    win.open_file(EXAMPLE)
+    settle(app)
+    par = win.doc.paradigm
+    ratings = [b.id for b in par.blocks if b.kind == "rating"]
+    for i in ratings[:3]:
+        par.block(i).params["mode"] = "cursor"
+    win.doc.select(ratings)
+    win.timeline.zoom_fit()
+    settle(app)
+    shot(win, "20_bulk_edit_ratings.png")
+
+    # 21 – find and replace
+    from paradigmshift.dialogs import FindReplaceDialog, PreferencesDialog
+    fr = FindReplaceDialog(win.doc, win)
+    fr.show()
+    fr.find.setText("feel")
+    fr.repl.setText("feel right now")
+    settle(app)
+    shot(fr, "21_find_replace.png")
+    fr.reject()
+
+    # 22 – preferences
+    pd = PreferencesDialog(win.prefs, win)
+    pd.show()
+    from PySide6.QtWidgets import QTabWidget
+    pd.findChild(QTabWidget).setCurrentIndex(1)
+    settle(app)
+    shot(pd, "22_preferences.png")
+    pd.reject()
+
+    # 23 – control room after an abort: the clock is frozen
+    hp = Paradigm.load(os.path.join(ex, "hariri_face_matching.paradigm.json"))
+    c = fake_run(hp, 117.6, hariri_answer)
+    c._begin = lambda: None
+    c.settings["out_dir"] = "/tmp/paradigmshift-shots"
+    cr = ControlRoomWindow(c, None)
+    cr.show()
+    c.finish(aborted=True)
+    settle(app)
+    shot(cr, "23_control_room_aborted.png")
     cr.hide()
 
     win.doc.dirty = False

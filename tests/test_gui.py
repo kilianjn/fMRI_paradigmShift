@@ -162,7 +162,7 @@ def test_full_run_with_simulated_scanner(app, tmp_path):
     rows = open(got[0]).read().splitlines()
     assert len(rows) == 4            # header + 3 blocks
     assert "Left index" in open(got[0]).read()
-    assert cr.pill.text() == "FINISHED" and cr.close_btn.isVisible()
+    assert cr.pill.text() == "✓ FINISHED" and cr.close_btn.isVisible()
     assert cr.table.rowCount() == 1 and cr.table.item(0, 3).text() == "Left index"
     cr.close()
     assert not pw.isVisible()
@@ -239,3 +239,30 @@ def test_template_dialog_and_examples_in_editor(win, app, tmp_path):
                 win.timeline.set_playhead(b.start + 0.1)
                 app.processEvents()
         assert seen
+
+
+def test_abort_freezes_clock(app, tmp_path):
+    import time
+
+    from paradigmshift.controlroom import open_run
+    from paradigmshift.model import Block, Paradigm
+
+    par = Paradigm(tr=2.0, dummy_scans=0)
+    par.blocks.append(Block.create("fixation", 0, 60))
+    c, pw, cr = open_run(par, {"sub": "x", "run": 1, "out_dir": str(tmp_path), "simulate": False,
+                               "fullscreen": False, "screen": 0})
+    c.router.feed(par.hardware.trigger_key)
+    time.sleep(0.2)
+    c.request_abort()
+    c.request_abort()
+    app.processEvents()
+    t_abort = c.elapsed()
+    assert 0.15 < t_abort < 2
+    time.sleep(0.3)
+    app.processEvents()
+    assert c.elapsed() == t_abort                      # clock stopped
+    assert not cr.timer.isActive()
+    assert cr.pill.text().startswith("■ ABORTED at")
+    assert "aborted" in cr.banner.text().lower() and cr.card_left.value.text() == "—"
+    assert c.state.log[-1]["type"] == "abort"
+    cr.close()

@@ -79,11 +79,37 @@ F1 lists the keyboard shortcuts.
   * warnings when the participant stops answering, when no trigger arrives, or when another app has the
     keyboard focus (SyncBox keys would be lost).
 
-  Aborting takes two clicks or two presses of Esc.
+  Aborting takes two clicks or two presses of Esc (configurable). After an abort, the clock stops, the
+  control room clearly shows *ABORTED at mm:ss*, the part of the run that never happened is hatched, and the
+  participant sees an empty screen.
 
 You set the number of dummy scans in the run dialog or in the inspector (nothing selected). The paradigm clock
 starts with trigger *N + 1*. In the **Matching trial** a frame marks the picture the participant chose (colour
 adjustable, can be switched off).
+
+## Editing many blocks at once
+
+* **Select several blocks of the same type**, e.g. all ratings. You can do this in three ways:
+  * right-click a block → *Select all Rating blocks*;
+  * **Edit → Select…** (by type or condition);
+  * in the inspector, *Edit all … blocks together*.
+
+  Every setting in the inspector then applies to all selected blocks, for example *Answer with: one grip
+  button per value / cursor ◀ ▶*. Settings where the blocks differ are marked **≠**. Fields you don't touch
+  stay as they are. One Ctrl+Z undoes the whole change.
+* **Edit → Find and replace text** (Ctrl+H) changes words or sentences in all instructions, rating questions,
+  rating labels and block labels at once.
+
+## Options & preferences
+
+The **Options** menu holds quick switches (snapping, hints, how new ratings are answered, two-step abort, saving
+the paradigm with each run). **Options → Preferences…** (Ctrl+,) has the rest:
+* text size, opening the last file on start, autosave;
+* defaults for new paradigms (TR, dummy scans, background, waiting and end screen) and new blocks;
+* snap distance;
+* default data folder;
+* control room warnings (after how many trials without an answer, after how many TRs without a trigger) and
+  its refresh rate.
 
 ## Scanner hardware (NNL)
 
@@ -124,6 +150,8 @@ Paradigms are saved as `*.paradigm.json` (picture paths stored relative to the f
 | ![](docs/screenshots/15_emoreg_editor.png) Emotion regulation: cue → picture → rating → relax | ![](docs/screenshots/16_participant_hariri.png) Participant screen: Hariri trial, chosen face framed |
 | ![](docs/screenshots/18_control_room_hariri.png) Control room during a Hariri run | ![](docs/screenshots/19_control_room_gonogo.png) Control room during Go/No-Go |
 | ![](docs/screenshots/17_control_room_dummy_scans.png) Control room during dummy scans | ![](docs/screenshots/09_participant_waiting.png) …while the participant only sees the fixation cross |
+| ![](docs/screenshots/23_control_room_aborted.png) Aborted run: clock stopped, rest hatched | ![](docs/screenshots/20_bulk_edit_ratings.png) All 8 rating blocks edited together (≠ = different values) |
+| ![](docs/screenshots/21_find_replace.png) Find and replace in all texts | ![](docs/screenshots/22_preferences.png) Preferences |
 
 Screenshots are generated with `QT_QPA_PLATFORM=offscreen python tools/screenshots.py`.
 
@@ -137,4 +165,4 @@ python tools/make_example.py     # regenerates examples/
 
 Code layout: `model.py` (paradigm, blocks, generators – no Qt), `templates.py` (Hariri, Go/No-Go, emotion
 regulation), `placeholders.py` (generated stimuli), `timeline.py`, `panels.py`, `dialogs.py`,
-`runner.py` (run clock, logging, participant screen), `controlroom.py` (operator window), `hardware.py` (SyncBox/grips input), `stimulus.py` (shared renderer).
+`runner.py` (run clock, logging, participant screen), `controlroom.py` (operator window), `prefs.py` (preferences), `hardware.py` (SyncBox/grips input), `stimulus.py` (shared renderer).

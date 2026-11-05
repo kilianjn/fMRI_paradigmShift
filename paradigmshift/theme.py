@@ -305,3 +305,11 @@ def app_icon() -> QIcon:
     p.drawLine(QPointF(66, 22), QPointF(66, 106))
     p.end()
     return QIcon(pm)
+
+
+def stylesheet(scale: int = 100) -> str:
+    """The app stylesheet with all font sizes scaled (Preferences → Text size)."""
+    import re
+    if scale == 100:
+        return STYLESHEET
+    return re.sub(r"font-size: (\d+)px", lambda m: f"font-size: {round(int(m.group(1)) * scale / 100)}px", STYLESHEET)

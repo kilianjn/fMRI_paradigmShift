@@ -254,7 +254,7 @@ def _mean(xs):
     return sum(xs) / len(xs) if xs else None
 
 
-def live_stats(state: RunState, t: float | None = None) -> list[tuple[str, str, str]]:
+def live_stats(state: RunState, t: float | None = None, watchdog: int = 5) -> list[tuple[str, str, str]]:
     """Performance so far as ``(title, text, tone)`` lines. ``t=None`` means the run is over."""
     out = []
     rows = [(state.p.block(i), ev) for i, ev in state.events.items()]
@@ -319,13 +319,13 @@ def live_stats(state: RunState, t: float | None = None) -> list[tuple[str, str, 
         out.append(("Response windows", f"{len(got)}/{len(resp)} with a response"
                     + (f"  ·  RT {rt:.2f}s" if rt else ""), "ok" if len(got) == len(resp) else "warn"))
     # watchdog: participant stopped answering?
-    if t is not None:
+    if t is not None and watchdog > 0:
         recent = sorted(((b, ev) for b, ev in rows if b.kind in SCORED_KINDS and t >= b.end
                          and not (b.kind == "gonogo" and b.params.get("trial") == "nogo")),
-                        key=lambda x: x[0].start)[-5:]
-        if len(recent) == 5 and all(ev["response"] == "n/a" for _, ev in recent):
-            out.insert(0, ("Attention", "No response in the last 5 trials – check the grips and the participant.",
-                           "bad"))
+                        key=lambda x: x[0].start)[-watchdog:]
+        if len(recent) == watchdog and all(ev["response"] == "n/a" for _, ev in recent):
+            out.insert(0, ("Attention", f"No response in the last {watchdog} trials – check the grips and the "
+                           "participant.", "bad"))
     return out
 
 
@@ -354,6 +354,7 @@ class RunController(QObject):
         self.aborted = False
         self.error = ""
         self._done = False
+        self._t_end: float | None = None    # paradigm time at which the run ended (frozen clock)
         self._visible = True
         self._abort_armed_at = 0.0
         for b in paradigm.blocks:          # preload pictures – no disk access while running
@@ -386,7 +387,16 @@ class RunController(QObject):
         return "dummy" if self.state.triggers else "waiting"
 
     def elapsed(self) -> float:
-        return now() - self.state.t0 if self.state.t0 is not None else 0.0
+        """Paradigm time. Stops at the end of the run – also when it was aborted."""
+        if self.state.t0 is None:
+            return 0.0
+        if self._t_end is not None:
+            return self._t_end
+        return now() - self.state.t0
+
+    @property
+    def ended_at(self) -> float | None:
+        return self._t_end
 
     def start_now(self):
         """Operator override: start the paradigm clock without a scanner trigger."""
@@ -398,7 +408,7 @@ class RunController(QObject):
         """First call arms, a second call within 3 s aborts (so a stray key press can't end a run)."""
         if self._done:
             return
-        if now() - self._abort_armed_at < 3.0:
+        if not self.settings.get("confirm_abort", True) or now() - self._abort_armed_at < 3.0:
             self.finish(aborted=True)
         else:
             self._abort_armed_at = now()
@@ -408,6 +418,8 @@ class RunController(QObject):
     def finish(self, aborted: bool = False):
         if self._done:
             return
+        if self.state.t0 is not None:
+            self._t_end = min(now() - self.state.t0, self.p.duration) if aborted else self.p.duration
         self._done = True
         self.aborted = aborted
         self.timer.stop()
@@ -416,9 +428,16 @@ class RunController(QObject):
         if app is not None:
             app.removeEventFilter(self)
         if self.state.t0 is not None:
+            if aborted:
+                self.state.log.append({"time": round(self._t_end, 4), "type": "abort", "value": "",
+                                       "info": "run aborted by operator"})
             stem = output_stem(self.p, self.settings) + ("_ABORTED" if aborted else "")
             try:
                 self.files = self.state.write(self.settings["out_dir"], stem)
+                if self.settings.get("save_paradigm_with_data", True):
+                    path = os.path.join(self.settings["out_dir"], stem + "_paradigm.json")
+                    self.p.save(path)
+                    self.files.append(path)
             except OSError as exc:
                 self.error = f"Could not save the logs: {exc}"
         self.stimulusChanged.emit()
@@ -493,8 +512,8 @@ class RunController(QObject):
         if ph == "running":
             t = self.elapsed()
             paint_stimulus(p, r, self.p, self.current, self.state.paint_state(self.current, t), ref_height=ref)
-        elif ph == "done":
-            paint_waiting(p, r, self.p, self.p.end_text or "", ref_height=ref)
+        elif ph == "done":   # aborted: neutral empty screen instead of the "thank you" text
+            paint_waiting(p, r, self.p, "" if self.aborted else (self.p.end_text or ""), ref_height=ref)
         else:
             paint_waiting(p, r, self.p, ref_height=ref)
 

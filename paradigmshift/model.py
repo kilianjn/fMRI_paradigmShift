@@ -87,6 +87,9 @@ BLOCK_TYPES: dict[str, BlockType] = {
     ]
 }
 
+# Preference-driven defaults for *new* blocks, e.g. {"rating": {"mode": "cursor"}} (see prefs.py)
+PARAM_OVERRIDES: dict[str, dict] = {}
+
 STIMULUS_KINDS = ("fixation", "image", "rating", "text", "rest", "match", "gonogo")
 IMAGE_PARAMS = ("path", "top", "left", "right")   # params that hold picture files
 NOGO_COLOR = "#E5484D"
@@ -151,6 +154,7 @@ class Block:
                track: int | None = None, label: str = "", condition: str = "", **params) -> "Block":
         bt = BLOCK_TYPES[kind]
         merged = copy.deepcopy(bt.defaults)
+        merged.update(PARAM_OVERRIDES.get(kind, {}))
         merged.update(params)
         return cls(
             kind=kind,
@@ -452,3 +456,47 @@ def generate_event_design(images: list[str], stim_dur: float, iti_min: float, it
         blocks.append(Block.create("fixation", t, round(iti, 3), label="ITI"))
         t += iti
     return blocks
+
+
+# --------------------------------------------------------------------------
+# Bulk text editing
+# --------------------------------------------------------------------------
+TEXT_FIELDS = {
+    "text": "Instruction / Go-No-Go text",
+    "question": "Rating question",
+    "left_label": "Rating left label",
+    "right_label": "Rating right label",
+    "label": "Block label",
+}
+
+
+def find_text(par: Paradigm, needle: str, case: bool = False, fields=None, ids=None) -> list[tuple]:
+    """All ``(block, field, value)`` whose text contains *needle*."""
+    import re
+    if not needle:
+        return []
+    rx = re.compile(re.escape(needle), 0 if case else re.IGNORECASE)
+    fields = list(fields or TEXT_FIELDS)
+    out = []
+    for b in sorted(par.blocks, key=lambda b: (b.start, b.track)):
+        if ids is not None and b.id not in ids:
+            continue
+        for f in fields:
+            val = b.label if f == "label" else b.params.get(f)
+            if isinstance(val, str) and rx.search(val):
+                out.append((b, f, val))
+    return out
+
+
+def replace_text(par: Paradigm, needle: str, repl: str, case: bool = False, fields=None, ids=None) -> int:
+    """Replace *needle* in all matching text fields. Returns the number of fields changed."""
+    import re
+    rx = re.compile(re.escape(needle), 0 if case else re.IGNORECASE)
+    hits = find_text(par, needle, case, fields, ids)
+    for b, f, val in hits:
+        new = rx.sub(lambda _m: repl, val)
+        if f == "label":
+            b.label = new
+        else:
+            b.params[f] = new
+    return len(hits)

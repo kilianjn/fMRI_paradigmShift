@@ -9,7 +9,7 @@ from PySide6.QtGui import QColor, QGuiApplication, QPainter
 from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog, QFormLayout,
                                QFrame, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
                                QRadioButton, QSpinBox, QTableWidget, QTableWidgetItem, QTabWidget,
-                               QVBoxLayout, QWidget, QHeaderView, QButtonGroup)
+                               QVBoxLayout, QWidget, QHeaderView, QButtonGroup, QMessageBox)
 
 from . import theme
 from .hardware import InputRouter, list_serial_ports, now, serial_available
@@ -929,3 +929,247 @@ class TemplateDialog(QDialog):
         self.summary.setText(f"→ {fmt_time(par.duration)} min  ·  {par.volumes} volumes at TR {par.tr:g}s  ·  "
                              f"{len(par.blocks)} blocks  ·  conditions: {', '.join(conds)}")
         self.ok.setEnabled(True)
+
+
+# =============================================================================
+# Find and replace text in all blocks
+# =============================================================================
+class FindReplaceDialog(QDialog):
+    def __init__(self, doc, parent=None):
+        super().__init__(parent)
+        from .model import TEXT_FIELDS
+        self.doc = doc
+        self.setWindowTitle("Find and replace text")
+        self.resize(640, 520)
+        lay = QVBoxLayout(self)
+        t = QLabel("Find and replace")
+        t.setObjectName("Big")
+        lay.addWidget(t)
+        lay.addWidget(_hint("Change a word or sentence in all instructions, rating questions and labels at once. "
+                            "One Undo (Ctrl+Z) reverts everything."))
+        form = QFormLayout()
+        form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.find = QLineEdit()
+        self.find.setPlaceholderText("text to find")
+        self.repl = QLineEdit()
+        self.repl.setPlaceholderText("replace with (empty = delete)")
+        form.addRow("Find", self.find)
+        form.addRow("Replace with", self.repl)
+        self.case = QCheckBox("Match upper/lower case")
+        form.addRow("", self.case)
+        self.scope = QComboBox()
+        self.scope.addItem("All blocks", "all")
+        if doc.selection:
+            self.scope.addItem(f"Only the {len(doc.selection)} selected blocks", "sel")
+        form.addRow("Search in", self.scope)
+        fl = QHBoxLayout()
+        self.fields = {}
+        for key, title in TEXT_FIELDS.items():
+            cb = QCheckBox(title.replace("Instruction / Go-No-Go text", "Texts").replace("Rating ", ""))
+            cb.setToolTip(title)
+            cb.setChecked(True)
+            cb.toggled.connect(self._update)
+            self.fields[key] = cb
+            fl.addWidget(cb)
+        fl.addStretch()
+        fw = QWidget()
+        fl.setContentsMargins(0, 0, 0, 0)
+        fw.setLayout(fl)
+        form.addRow("Fields", fw)
+        lay.addLayout(form)
+        self.count = QLabel()
+        self.count.setStyleSheet(f"color: {theme.ACCENT}; font-weight: 600;")
+        lay.addWidget(self.count)
+        self.list = QTableWidget(0, 3)
+        self.list.setHorizontalHeaderLabels(["Time", "Field", "Text"])
+        self.list.verticalHeader().setVisible(False)
+        self.list.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.list.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        self.list.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.list.setEditTriggers(QTableWidget.NoEditTriggers)
+        lay.addWidget(self.list, 1)
+        bb = QDialogButtonBox(QDialogButtonBox.Close)
+        self.go = QPushButton("Replace all")
+        self.go.setObjectName("Primary")
+        bb.addButton(self.go, QDialogButtonBox.ActionRole)
+        self.go.clicked.connect(self._replace)
+        bb.rejected.connect(self.reject)
+        lay.addWidget(bb)
+        for w in (self.find, self.repl):
+            w.textChanged.connect(self._update)
+        self.case.toggled.connect(self._update)
+        self.scope.currentIndexChanged.connect(self._update)
+        self._update()
+
+    def _args(self):
+        ids = set(self.doc.selection) if self.scope.currentData() == "sel" else None
+        fields = [k for k, cb in self.fields.items() if cb.isChecked()]
+        return self.find.text(), self.case.isChecked(), fields, ids
+
+    def _update(self, *_):
+        from .model import TEXT_FIELDS, find_text
+        needle, case, fields, ids = self._args()
+        hits = find_text(self.doc.paradigm, needle, case, fields, ids)
+        self.count.setText(f"{len(hits)} field(s) contain “{needle}”" if needle else "Type something to find.")
+        self.go.setEnabled(bool(hits))
+        self.list.setRowCount(len(hits))
+        for i, (b, f, val) in enumerate(hits):
+            for col, v in enumerate((fmt_time(b.start), TEXT_FIELDS[f], val.replace("\n", " ⏎ "))):
+                self.list.setItem(i, col, QTableWidgetItem(v))
+
+    def _replace(self):
+        from .model import replace_text
+        needle, case, fields, ids = self._args()
+        n = [0]
+        self.doc.edit(lambda par: n.__setitem__(0, replace_text(par, needle, self.repl.text(), case, fields, ids)))
+        self._update()
+        self.count.setText(f"✓ Replaced in {n[0]} field(s).  (Ctrl+Z in the editor undoes it)")
+
+
+# =============================================================================
+# Preferences
+# =============================================================================
+class PreferencesDialog(QDialog):
+    def __init__(self, prefs, parent=None):
+        super().__init__(parent)
+        from .prefs import DEFAULTS
+        self.prefs = prefs
+        self.setWindowTitle("Preferences")
+        self.resize(620, 560)
+        lay = QVBoxLayout(self)
+        t = QLabel("Preferences")
+        t.setObjectName("Big")
+        lay.addWidget(t)
+        lay.addWidget(_hint("Saved for your user account on this computer. Settings for “new paradigms” and "
+                            "“new blocks” do not change what is already in your timeline – use multi-select in "
+                            "the inspector for that."))
+        v = prefs.all()
+        self.w = {}
+        tabs = QTabWidget()
+
+        def page(rows):
+            pw = QWidget()
+            f = QFormLayout(pw)
+            f.setContentsMargins(16, 16, 16, 16)
+            f.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            for row in rows:
+                if isinstance(row, str):
+                    lab = QLabel(row.upper())
+                    lab.setObjectName("PanelTitle")
+                    f.addRow(lab)
+                else:
+                    label, key, widget = row
+                    self.w[key] = widget
+                    f.addRow(label, widget)
+            return pw
+
+        def combo(key, items):
+            c = QComboBox()
+            for text, data in items:
+                c.addItem(text, data)
+            c.setCurrentIndex(max(0, c.findData(v[key])))
+            return c
+
+        def check(key, text):
+            c = QCheckBox(text)
+            c.setChecked(bool(v[key]))
+            return c
+
+        def spin(key, lo, hi, suffix=""):
+            s_ = QSpinBox()
+            s_.setRange(lo, hi)
+            s_.setValue(int(v[key]))
+            s_.setSuffix(suffix)
+            return s_
+
+        from .panels import ColorButton
+        self.data_dir = QLineEdit(v["data_dir"])
+        browse = QPushButton("Browse…")
+        browse.clicked.connect(self._browse)
+        dd = QHBoxLayout()
+        dd.setContentsMargins(0, 0, 0, 0)
+        dd.addWidget(self.data_dir, 1)
+        dd.addWidget(browse)
+        ddw = QWidget()
+        ddw.setLayout(dd)
+        bg = ColorButton(v["new_background"])
+
+        tabs.addTab(page([
+            "Appearance",
+            ("Text size", "ui_scale", combo("ui_scale", [("Small (90 %)", 90), ("Normal (100 %)", 100),
+                                                         ("Large (115 %)", 115), ("Extra large (130 %)", 130)])),
+            ("", "show_hints", check("show_hints", "Show usage hints above the timeline")),
+            "Files",
+            ("", "open_last_file", check("open_last_file", "Open the last paradigm when the app starts")),
+            ("Autosave", "autosave_minutes", spin("autosave_minutes", 0, 60, " min  (0 = off)")),
+        ]), "General")
+        tabs.addTab(page([
+            "New paradigms",
+            ("TR", "new_tr", dspin(v["new_tr"], 0.1, 20, 0.1, 3)),
+            ("Dummy scans", "new_dummy_scans", spin("new_dummy_scans", 0, 50, " volumes")),
+            ("Background", "new_background", bg),
+            ("Before start", "new_waiting_screen", combo("new_waiting_screen", [
+                ("Fixation cross", "fixation"), ("Empty screen", "blank"), ("Text", "text")])),
+            ("After the run", "new_end_text", QLineEdit(v["new_end_text"])),
+            "New blocks",
+            ("Ratings answered with", "rating_mode", combo("rating_mode", [
+                ("One grip button per value", "direct"), ("Move cursor ◀ ▶ and confirm", "cursor")])),
+            ("Matching trials", "match_frame", check("match_frame", "Frame the picture the participant chose")),
+            "Timeline",
+            ("", "snap", check("snap", "Snap to the TR grid and block edges")),
+            ("Snap distance", "snap_px", spin("snap_px", 2, 40, " px")),
+        ]), "Paradigms && timeline")
+        tabs.addTab(page([
+            "Data",
+            ("Default data folder", "data_dir", ddw),
+            ("", "save_paradigm_with_data", check("save_paradigm_with_data",
+                                                  "Save a copy of the paradigm next to each run's logs")),
+            "Safety",
+            ("", "confirm_abort", check("confirm_abort", "Aborting needs two clicks / two Esc presses")),
+            "Control room",
+            ("Warn after", "watchdog_trials", spin("watchdog_trials", 0, 50, " trials without answer (0 = off)")),
+            ("Trigger warning after", "trigger_warning_trs", dspin(v["trigger_warning_trs"], 1, 20, 0.5, 1, " TR")),
+            ("Refresh every", "control_refresh_ms", spin("control_refresh_ms", 50, 1000, " ms")),
+        ]), "Run && control room")
+        lay.addWidget(tabs, 1)
+        bb = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel | QDialogButtonBox.RestoreDefaults)
+        bb.button(QDialogButtonBox.Ok).setObjectName("Primary")
+        bb.button(QDialogButtonBox.RestoreDefaults).clicked.connect(self._defaults)
+        bb.accepted.connect(self.accept)
+        bb.rejected.connect(self.reject)
+        lay.addWidget(bb)
+        self._defaults_values = DEFAULTS
+
+    def _browse(self):
+        d = QFileDialog.getExistingDirectory(self, "Default data folder", self.data_dir.text())
+        if d:
+            self.data_dir.setText(d)
+
+    def _defaults(self):
+        if QMessageBox.question(self, "Restore defaults", "Reset all preferences to their defaults?") \
+                == QMessageBox.Yes:
+            self.prefs.reset()
+            self.done(2)     # caller re-applies
+
+    def values(self) -> dict:
+        from .panels import ColorButton
+        out = {"data_dir": self.data_dir.text().strip() or self._defaults_values["data_dir"]}
+        for key, w in self.w.items():
+            if key == "data_dir":
+                continue
+            if isinstance(w, QCheckBox):
+                out[key] = w.isChecked()
+            elif isinstance(w, QComboBox):
+                out[key] = w.currentData()
+            elif isinstance(w, ColorButton):
+                out[key] = w.color
+            elif isinstance(w, QLineEdit):
+                out[key] = w.text()
+            else:
+                out[key] = w.value()
+        return out
+
+    def accept(self):
+        for k, val in self.values().items():
+            self.prefs.set(k, val)
+        super().accept()

@@ -3,10 +3,10 @@ from __future__ import annotations
 
 import os
 
-from PySide6.QtCore import QMimeData, QPoint, QRectF, QSize, Qt, QUrl, Signal
+from PySide6.QtCore import QMimeData, QPoint, QRectF, QSize, Qt, QTimer, QUrl, Signal
 from PySide6.QtGui import QColor, QIcon, QPainter, QPen
 from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QColorDialog, QComboBox, QDoubleSpinBox,
-                               QFileDialog, QFormLayout, QFrame, QHBoxLayout, QLabel, QLineEdit,
+                               QFileDialog, QFormLayout, QFrame, QGridLayout, QHBoxLayout, QLabel, QLineEdit,
                                QListWidget, QListWidgetItem, QPlainTextEdit, QPushButton, QScrollArea,
                                QSizePolicy, QSpinBox, QVBoxLayout, QWidget)
 
@@ -378,17 +378,63 @@ class InspectorPanel(QFrame):
             self.rebuild()
 
     # helpers ----------------------------------------------------------------
-    def _set(self, block_id: str, **kw):
+    def _set(self, target, **kw):
+        """Set fields/params on one block id or on a list of ids (one undo step)."""
+        ids = [target] if isinstance(target, str) else list(target)
+
         def fn(par):
-            b = par.block(block_id)
-            if b is None:
-                return
-            for k, v in kw.items():
-                if k in ("start", "duration", "label", "condition", "track"):
-                    setattr(b, k, v)
-                else:
-                    b.params[k] = v
+            for block_id in ids:
+                b = par.block(block_id)
+                if b is None:
+                    continue
+                for k, v in kw.items():
+                    if k in ("start", "duration", "label", "condition", "track"):
+                        setattr(b, k, v)
+                    else:
+                        b.params[k] = v
         self._apply(fn)
+
+    @staticmethod
+    def _mixed(blocks, key, default=None) -> bool:
+        return len({repr(b.params.get(key, default)) for b in blocks}) > 1
+
+    def _row_label(self, text: str, blocks, *keys) -> QLabel:
+        """Form label that turns orange (≠) when the selected blocks differ in this setting."""
+        lab = QLabel(text)
+        if len(blocks) > 1 and any(self._mixed(blocks, k) for k in keys):
+            lab.setText(text + " ≠")
+            lab.setStyleSheet(f"color: {theme.ACCENT};")
+            lab.setToolTip("The selected blocks have different values here.\n"
+                           "Changing it sets the same value for all of them.")
+        return lab
+
+    def _line(self, blocks, key, placeholder=""):
+        """QLineEdit for a text param; with several blocks only an actual edit is applied to all."""
+        ids = [b.id for b in blocks]
+        mixed = self._mixed(blocks, key, "")
+        w = QLineEdit("" if mixed else str(blocks[0].params.get(key, "")))
+        w.setPlaceholderText("different texts – type to set all" if mixed else placeholder)
+        initial = w.text()
+
+        def commit():
+            if w.text() != initial:      # untouched fields (incl. "different texts") never overwrite anything
+                self._set(ids, **{key: w.text()})
+        w.editingFinished.connect(commit)
+        return w
+
+    def _combo(self, blocks, key, items, default):
+        """Non-editable combo for a param. Shows nothing selected when the blocks differ."""
+        ids = [b.id for b in blocks]
+        cb = QComboBox()
+        for text, data in items:
+            cb.addItem(text, data)
+        if self._mixed(blocks, key, default):
+            cb.setCurrentIndex(-1)
+            cb.setPlaceholderText("different – choose to set all")
+        else:
+            cb.setCurrentIndex(max(0, cb.findData(blocks[0].params.get(key, default))))
+        cb.activated.connect(lambda i: self._set(ids, **{key: cb.itemData(i)}))
+        return cb
 
     def _apply(self, fn):
         self._rebuilding = True
@@ -479,7 +525,8 @@ class InspectorPanel(QFrame):
         wait.setToolTip("What the participant sees until the paradigm starts (incl. dummy scans).\n"
                         "Trigger counts are only shown in the control room.")
         wait.currentIndexChanged.connect(
-            lambda i: (self._apply(lambda p: setattr(p, "waiting_screen", wait.itemData(i))), self.rebuild()))
+            lambda i: (self._apply(lambda p: setattr(p, "waiting_screen", wait.itemData(i))),
+                       QTimer.singleShot(0, self.rebuild)))
         form.addRow("Before start", wait)
         if par.waiting_screen == "text":
             wt = QLineEdit(par.waiting_text)
@@ -554,161 +601,14 @@ class InspectorPanel(QFrame):
         form.addRow("", self._info)
         self._refresh_info()
 
-        prm = b.params
-        if b.kind in ("image", "rating"):
-            self._section(form, "PICTURE")
-            pick = ImagePicker(prm.get("path", ""))
-            pick.pathChanged.connect(lambda path: self._set(bid, path=path))
-            form.addRow(pick)
-            sc = dspin(float(prm.get("scale", .8)) * 100, 5, 100, 5, 0, " %")
-            sc.setToolTip("How much of the screen the picture may fill")
-            sc.valueChanged.connect(lambda v: self._set(bid, scale=v / 100))
-            form.addRow("Size", sc)
-        if b.kind == "fixation":
-            self._section(form, "APPEARANCE")
-            sym = QComboBox()
-            sym.setEditable(True)
-            sym.addItems(["+", "•", "×", "○"])
-            sym.setCurrentText(prm.get("symbol", "+"))
-            sym.currentTextChanged.connect(lambda s: self._set(bid, symbol=s or "+"))
-            form.addRow("Symbol", sym)
-            size = ispin(int(prm.get("size", 72)), 8, 600)
-            size.setSuffix(" px")
-            size.valueChanged.connect(lambda v: self._set(bid, size=v))
-            form.addRow("Size", size)
-            col = ColorButton(prm.get("color", "#FFFFFF"))
-            col.colorChanged.connect(lambda c: self._set(bid, color=c))
-            form.addRow("Colour", col)
-        if b.kind == "text":
-            self._section(form, "TEXT")
-            txt = CommitTextEdit(prm.get("text", ""))
-            txt.setFixedHeight(90)
-            txt.committed.connect(lambda s: self._set(bid, text=s))
-            form.addRow(txt)
-            size = ispin(int(prm.get("size", 40)), 8, 300)
-            size.setSuffix(" px")
-            size.valueChanged.connect(lambda v: self._set(bid, size=v))
-            form.addRow("Size", size)
-            col = ColorButton(prm.get("color", "#FFFFFF"))
-            col.colorChanged.connect(lambda c: self._set(bid, color=c))
-            form.addRow("Colour", col)
-        if b.kind == "rating":
-            self._section(form, "RATING SCALE")
-            q = QLineEdit(prm.get("question", ""))
-            q.editingFinished.connect(lambda: self._set(bid, question=q.text()))
-            form.addRow("Question", q)
-            rng = QHBoxLayout()
-            lo = ispin(int(prm.get("min", 1)), -100, 100)
-            hi = ispin(int(prm.get("max", 4)), -100, 100)
-            lo.valueChanged.connect(lambda v: self._set(bid, min=v))
-            hi.valueChanged.connect(lambda v: self._set(bid, max=v))
-            rng.addWidget(lo)
-            rng.addWidget(QLabel("to"))
-            rng.addWidget(hi)
-            rng.setContentsMargins(0, 0, 0, 0)
-            rw2 = QWidget()
-            rw2.setLayout(rng)
-            form.addRow("Values", rw2)
-            ll = QLineEdit(prm.get("left_label", ""))
-            ll.editingFinished.connect(lambda: self._set(bid, left_label=ll.text()))
-            form.addRow("Left label", ll)
-            rl = QLineEdit(prm.get("right_label", ""))
-            rl.editingFinished.connect(lambda: self._set(bid, right_label=rl.text()))
-            form.addRow("Right label", rl)
-            mode = QComboBox()
-            mode.addItem("One grip button per value", "direct")
-            mode.addItem("Move cursor ◀ ▶ and confirm", "cursor")
-            mode.setCurrentIndex(0 if prm.get("mode", "direct") == "direct" else 1)
-            mode.currentIndexChanged.connect(lambda i: self._set(bid, mode=mode.itemData(i)))
-            form.addRow("Answer with", mode)
-            hw_ = self.doc.paradigm.hardware
-            if prm.get("mode", "direct") == "direct":
-                lines = [f"{lo_v} = {n}" for lo_v, n in
-                         zip(range(int(prm.get("min", 1)), int(prm.get("max", 4)) + 1), hw_.button_names())]
-                expl = "Grips:  " + "  ·  ".join(lines)
-                if int(prm.get("max", 4)) - int(prm.get("min", 1)) + 1 > len(hw_.buttons):
-                    expl += "\n⚠ more values than grip buttons – use cursor mode"
-            else:
-                expl = f"◀ {hw_.move_left}   ▶ {hw_.move_right}   ✓ {hw_.confirm}"
-            ex = QLabel(expl)
-            ex.setObjectName("Hint")
-            ex.setWordWrap(True)
-            form.addRow("", ex)
-        if b.kind == "match":
-            self._section(form, "PICTURES  –  TOP IS THE TARGET")
-            for key, title in (("top", "Top (target)"), ("left", "Bottom left"), ("right", "Bottom right")):
-                pk = ImagePicker(prm.get(key, ""), 72)
-                pk.pathChanged.connect(lambda path, k=key: self._set(bid, **{k: path}))
-                cap = QLabel(title)
-                cap.setObjectName("Hint")
-                form.addRow(cap)
-                form.addRow(pk)
-            corr = QComboBox()
-            corr.addItem("Bottom left", "left")
-            corr.addItem("Bottom right", "right")
-            corr.setCurrentIndex(0 if prm.get("correct", "left") == "left" else 1)
-            corr.currentIndexChanged.connect(lambda i: self._set(bid, correct=corr.itemData(i)))
-            form.addRow("Correct match", corr)
-            frame = QCheckBox("Frame the picture the participant chose")
-            frame.setChecked(bool(prm.get("show_choice", True)))
-            frame.toggled.connect(lambda on: self._set(bid, show_choice=on))
-            form.addRow("Feedback", frame)
-            fcol = ColorButton(prm.get("choice_color", "#FFD23F"))
-            fcol.colorChanged.connect(lambda c: self._set(bid, choice_color=c))
-            form.addRow("Frame colour", fcol)
-            for key, title in (("left_button", "Button = left"), ("right_button", "Button = right")):
-                cb = QComboBox()
-                cb.addItems(self.doc.paradigm.hardware.button_names())
-                cb.setCurrentText(prm.get(key, ""))
-                cb.currentTextChanged.connect(lambda txt, k=key: self._set(bid, **{k: txt}))
-                form.addRow(title, cb)
-        if b.kind == "gonogo":
-            self._section(form, "GO / NO-GO")
-            trial = QComboBox()
-            trial.addItem("Go  – participant presses", "go")
-            trial.addItem("No-Go  – participant holds back", "nogo")
-            trial.setCurrentIndex(0 if prm.get("trial", "go") == "go" else 1)
-            trial.currentIndexChanged.connect(lambda i: self._set(bid, trial=trial.itemData(i)))
-            form.addRow("Trial", trial)
-            txt = QLineEdit(prm.get("text", ""))
-            txt.setPlaceholderText("letter or word")
-            txt.editingFinished.connect(lambda: self._set(bid, text=txt.text()))
-            form.addRow("Stimulus", txt)
-            st = dspin(float(prm.get("stim_time", 0.5)), 0.05, 60, 0.1, 2)
-            st.setToolTip("How long the stimulus is visible; the rest of the trial shows the fixation symbol.")
-            st.valueChanged.connect(lambda v: self._set(bid, stim_time=v))
-            form.addRow("Visible for", st)
-            btn = QComboBox()
-            btn.addItem("Any grip button", "any")
-            for n in self.doc.paradigm.hardware.button_names():
-                btn.addItem(n, n)
-            btn.setCurrentIndex(max(0, btn.findData(prm.get("button", "any"))))
-            btn.currentIndexChanged.connect(lambda i: self._set(bid, button=btn.itemData(i)))
-            form.addRow("Go button", btn)
-            pk = ImagePicker(prm.get("path", ""), 72)
-            pk.pathChanged.connect(lambda path: self._set(bid, path=path))
-            cap = QLabel("…or show a picture instead of the text")
-            cap.setObjectName("Hint")
-            form.addRow(cap)
-            form.addRow(pk)
-        if b.kind == "response":
-            self._section(form, "RESPONSE")
-            btns = QComboBox()
-            btns.addItem("Any grip button", "any")
-            for n in self.doc.paradigm.hardware.button_names():
-                btns.addItem(n, n)
-            i = btns.findData(prm.get("buttons", "any"))
-            btns.setCurrentIndex(max(0, i))
-            btns.currentIndexChanged.connect(lambda i: self._set(bid, buttons=btns.itemData(i)))
-            form.addRow("Accept", btns)
-            corr = QComboBox()
-            corr.addItem("– (no correct answer)", "")
-            for n in self.doc.paradigm.hardware.button_names():
-                corr.addItem(n, n)
-            corr.setCurrentIndex(max(0, corr.findData(prm.get("correct", ""))))
-            corr.currentIndexChanged.connect(lambda i: self._set(bid, correct=corr.itemData(i)))
-            form.addRow("Correct", corr)
-
+        self._build_params(form, [b])
+        same = [o for o in self.doc.paradigm.blocks if o.kind == b.kind]
+        if len(same) > 1:
+            self._section(form, "")
+            allb = QPushButton(f"Edit all {len(same)} {bt.title} blocks together")
+            allb.setToolTip("Selects every block of this type – changes in the inspector then apply to all of them.")
+            allb.clicked.connect(lambda: self.doc.select([o.id for o in same]))
+            form.addRow(allb)
         self._section(form, "")
         row = QHBoxLayout()
         row.setContentsMargins(0, 0, 0, 0)
@@ -723,6 +623,147 @@ class InspectorPanel(QFrame):
         bw.setLayout(row)
         form.addRow(bw)
 
+    # block-type settings – for one block or several blocks of the same type --------------------
+    def _build_params(self, form, blocks: list[Block]):
+        b = blocks[0]
+        prm = b.params
+        ids = [x.id for x in blocks]
+        bid = ids if len(blocks) > 1 else b.id
+        single = len(blocks) == 1
+        L = lambda text, *keys: self._row_label(text, blocks, *keys)  # noqa: E731
+        if b.kind in ("image", "rating"):
+            self._section(form, "PICTURE")
+            if single:
+                pick = ImagePicker(prm.get("path", ""))
+                pick.pathChanged.connect(lambda path: self._set(bid, path=path))
+                form.addRow(pick)
+            sc = dspin(float(prm.get("scale", .8)) * 100, 5, 100, 5, 0, " %")
+            sc.setToolTip("How much of the screen the picture may fill")
+            sc.valueChanged.connect(lambda v: self._set(bid, scale=v / 100))
+            form.addRow(L("Size", "scale"), sc)
+        if b.kind == "fixation":
+            self._section(form, "APPEARANCE")
+            sym = QComboBox()
+            sym.setEditable(True)
+            sym.addItems(["+", "•", "×", "○"])
+            sym.setCurrentText(prm.get("symbol", "+"))
+            sym.activated.connect(lambda _i: self._set(bid, symbol=sym.currentText() or "+"))
+            sym.lineEdit().editingFinished.connect(
+                lambda: sym.currentText() != prm.get("symbol", "+") and self._set(bid, symbol=sym.currentText() or "+"))
+            form.addRow(L("Symbol", "symbol"), sym)
+            size = ispin(int(prm.get("size", 72)), 8, 600)
+            size.setSuffix(" px")
+            size.valueChanged.connect(lambda v: self._set(bid, size=v))
+            form.addRow(L("Size", "size"), size)
+            col = ColorButton(prm.get("color", "#FFFFFF"))
+            col.colorChanged.connect(lambda c: self._set(bid, color=c))
+            form.addRow(L("Colour", "color"), col)
+        if b.kind == "text":
+            self._section(form, "TEXT")
+            mixed_txt = self._mixed(blocks, "text", "")
+            txt = CommitTextEdit("" if mixed_txt else prm.get("text", ""))
+            txt.setFixedHeight(90)
+            if mixed_txt:
+                txt.setPlaceholderText("Different texts – type here to give all selected blocks the same text.\n"
+                                       "(To change only a word everywhere: Edit → Find and replace)")
+            start_txt = txt.toPlainText()
+            txt.committed.connect(lambda s: s != start_txt and self._set(bid, text=s))
+            form.addRow(L("Text", "text"))
+            form.addRow(txt)
+            size = ispin(int(prm.get("size", 40)), 8, 300)
+            size.setSuffix(" px")
+            size.valueChanged.connect(lambda v: self._set(bid, size=v))
+            form.addRow(L("Size", "size"), size)
+            col = ColorButton(prm.get("color", "#FFFFFF"))
+            col.colorChanged.connect(lambda c: self._set(bid, color=c))
+            form.addRow(L("Colour", "color"), col)
+        if b.kind == "rating":
+            self._section(form, "RATING SCALE")
+            form.addRow(L("Question", "question"), self._line(blocks, "question"))
+            rng = QHBoxLayout()
+            lo = ispin(int(prm.get("min", 1)), -100, 100)
+            hi = ispin(int(prm.get("max", 4)), -100, 100)
+            lo.valueChanged.connect(lambda v: self._set(bid, min=v))
+            hi.valueChanged.connect(lambda v: self._set(bid, max=v))
+            rng.addWidget(lo)
+            rng.addWidget(QLabel("to"))
+            rng.addWidget(hi)
+            rng.setContentsMargins(0, 0, 0, 0)
+            rw2 = QWidget()
+            rw2.setLayout(rng)
+            form.addRow(L("Values", "min", "max"), rw2)
+            form.addRow(L("Left label", "left_label"), self._line(blocks, "left_label"))
+            form.addRow(L("Right label", "right_label"), self._line(blocks, "right_label"))
+            mode = self._combo(blocks, "mode", [("One grip button per value", "direct"),
+                                                ("Move cursor ◀ ▶ and confirm", "cursor")], "direct")
+            mode.activated.connect(lambda _i: QTimer.singleShot(0, self.rebuild))
+            form.addRow(L("Answer with", "mode"), mode)
+            hw_ = self.doc.paradigm.hardware
+            if self._mixed(blocks, "mode", "direct"):
+                expl = "Some selected ratings use buttons, some the cursor."
+            elif prm.get("mode", "direct") == "direct":
+                lines = [f"{lo_v} = {n}" for lo_v, n in
+                         zip(range(int(prm.get("min", 1)), int(prm.get("max", 4)) + 1), hw_.button_names())]
+                expl = "Grips:  " + "  ·  ".join(lines)
+                if int(prm.get("max", 4)) - int(prm.get("min", 1)) + 1 > len(hw_.buttons):
+                    expl += "\n⚠ more values than grip buttons – use cursor mode"
+            else:
+                expl = f"◀ {hw_.move_left}   ▶ {hw_.move_right}   ✓ {hw_.confirm}"
+            ex = QLabel(expl)
+            ex.setObjectName("Hint")
+            ex.setWordWrap(True)
+            form.addRow("", ex)
+        if b.kind == "match":
+            self._section(form, "PICTURES  –  TOP IS THE TARGET" if single else "MATCHING TRIALS")
+            for key, title in ((("top", "Top (target)"), ("left", "Bottom left"), ("right", "Bottom right"))
+                               if single else ()):
+                pk = ImagePicker(prm.get(key, ""), 72)
+                pk.pathChanged.connect(lambda path, k=key: self._set(bid, **{k: path}))
+                cap = QLabel(title)
+                cap.setObjectName("Hint")
+                form.addRow(cap)
+                form.addRow(pk)
+            if single:
+                corr = self._combo(blocks, "correct", [("Bottom left", "left"), ("Bottom right", "right")], "left")
+                form.addRow("Correct match", corr)
+            frame = self._combo(blocks, "show_choice", [("Frame the chosen picture", True),
+                                                        ("No frame", False)], True)
+            form.addRow(L("Feedback", "show_choice"), frame)
+            fcol = ColorButton(prm.get("choice_color", "#FFD23F"))
+            fcol.colorChanged.connect(lambda c: self._set(bid, choice_color=c))
+            form.addRow(L("Frame colour", "choice_color"), fcol)
+            names = [(n, n) for n in self.doc.paradigm.hardware.button_names()]
+            for key, title, dflt in (("left_button", "Button = left", "Left index"),
+                                     ("right_button", "Button = right", "Right index")):
+                form.addRow(L(title, key), self._combo(blocks, key, names, dflt))
+        if b.kind == "gonogo":
+            self._section(form, "GO / NO-GO")
+            trial = self._combo(blocks, "trial", [("Go  – participant presses", "go"),
+                                                  ("No-Go  – participant holds back", "nogo")], "go")
+            form.addRow(L("Trial", "trial"), trial)
+            form.addRow(L("Stimulus", "text"), self._line(blocks, "text", "letter or word"))
+            st = dspin(float(prm.get("stim_time", 0.5)), 0.05, 60, 0.1, 2)
+            st.setToolTip("How long the stimulus is visible; the rest of the trial shows the fixation symbol.")
+            st.valueChanged.connect(lambda v: self._set(bid, stim_time=v))
+            form.addRow(L("Visible for", "stim_time"), st)
+            names = [("Any grip button", "any")] + [(n, n) for n in self.doc.paradigm.hardware.button_names()]
+            form.addRow(L("Go button", "button"), self._combo(blocks, "button", names, "any"))
+            if single:
+                pk = ImagePicker(prm.get("path", ""), 72)
+                pk.pathChanged.connect(lambda path: self._set(bid, path=path))
+                cap = QLabel("…or show a picture instead of the text")
+                cap.setObjectName("Hint")
+                form.addRow(cap)
+                form.addRow(pk)
+        if b.kind == "response":
+            self._section(form, "RESPONSE")
+            names = [(n, n) for n in self.doc.paradigm.hardware.button_names()]
+            form.addRow(L("Accept", "buttons"),
+                        self._combo(blocks, "buttons", [("Any grip button", "any")] + names, "any"))
+            form.addRow(L("Correct", "correct"),
+                        self._combo(blocks, "correct", [("– (no correct answer)", "")] + names, ""))
+
+
     def _round_tr(self, bid):
         tr = self.doc.paradigm.tr
 
@@ -731,31 +772,69 @@ class InspectorPanel(QFrame):
             b.start = round(b.start / tr) * tr
             b.duration = max(tr, round(b.duration / tr) * tr)
         self._apply(fn)
-        self.rebuild()
+        QTimer.singleShot(0, self.rebuild)
 
     # many blocks -----------------------------------------------------------------
     def _build_multi(self, form, blocks):
-        t = QLabel(f"{len(blocks)} blocks")
+        kind_set = {b.kind for b in blocks}
+        head = QHBoxLayout()
+        if len(kind_set) == 1:
+            ic = QLabel()
+            ic.setPixmap(theme.kind_icon(blocks[0].kind, size=34).pixmap(34, 34))
+            head.addWidget(ic)
+        t = QLabel(f"{len(blocks)} {blocks[0].type.title} blocks" if len(kind_set) == 1 else f"{len(blocks)} blocks")
         t.setObjectName("Big")
-        form.addRow(t)
+        head.addWidget(t, 1)
+        hw = QWidget()
+        hw.setLayout(head)
+        form.addRow(hw)
         span = max(b.end for b in blocks) - min(b.start for b in blocks)
         h = QLabel(f"Span {span:.2f}s · starting at {min(b.start for b in blocks):.2f}s\n"
                    "Changes below apply to all selected blocks.")
         h.setObjectName("Hint")
         form.addRow(h)
         ids = [b.id for b in blocks]
+        kinds = {}
+        for b in blocks:
+            kinds.setdefault(b.kind, []).append(b.id)
+        if len(kinds) > 1:
+            box = QLabel("Different block types are selected. To change type-specific settings (e.g. how a "
+                         "rating is answered) for all of them at once, keep only one type:")
+            box.setObjectName("Hint")
+            box.setWordWrap(True)
+            form.addRow(box)
+            grid = QGridLayout()
+            grid.setContentsMargins(0, 0, 0, 0)
+            for i, (kind, kids) in enumerate(sorted(kinds.items(), key=lambda kv: -len(kv[1]))):
+                btn = QPushButton(f"{len(kids)} × {BLOCK_TYPES[kind].title}")
+                btn.setIcon(theme.kind_icon(kind, size=18))
+                btn.setToolTip(f"Keep only the {BLOCK_TYPES[kind].title} blocks selected")
+                btn.clicked.connect(lambda _=False, k=kids: self.doc.select(k))
+                grid.addWidget(btn, i // 2, i % 2)
+            gw = QWidget()
+            gw.setLayout(grid)
+            form.addRow(gw)
         cond = QComboBox()
         cond.setEditable(True)
         cond.addItems([""] + self.doc.paradigm.conditions())
         shared = {b.condition for b in blocks}
-        cond.setCurrentText(shared.pop() if len(shared) == 1 else "")
+        cond_mixed = len(shared) > 1
+        cond.setCurrentText("" if cond_mixed else shared.pop())
+        if cond_mixed:
+            cond.lineEdit().setPlaceholderText("different – type to set all")
+        initial_cond = cond.currentText()
 
         def set_cond():
             c = cond.currentText().strip()
+            if c == initial_cond.strip():      # nothing typed: keep every block's own condition
+                return
             self._apply(lambda par: [setattr(par.block(i), "condition", c) for i in ids])
         cond.lineEdit().editingFinished.connect(set_cond)
         cond.activated.connect(lambda _i: set_cond())
-        form.addRow("Condition", cond)
+        clab = QLabel("Condition ≠" if cond_mixed else "Condition")
+        if cond_mixed:
+            clab.setStyleSheet(f"color: {theme.ACCENT};")
+        form.addRow(clab, cond)
         durs = {round(b.duration, 4) for b in blocks}
         dur = dspin(durs.pop() if len(durs) == 1 else blocks[0].duration, 0.05, 100000,
                     self.doc.paradigm.tr or .5, 3)
@@ -777,6 +856,8 @@ class InspectorPanel(QFrame):
         note.setObjectName("Hint")
         note.setWordWrap(True)
         form.addRow("", note)
+        if len(kinds) == 1:
+            self._build_params(form, blocks)
         row = QHBoxLayout()
         row.setContentsMargins(0, 0, 0, 0)
         for text, slot in (("Duplicate", lambda: self.window().timeline.duplicate_selected()),

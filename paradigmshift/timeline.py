@@ -47,6 +47,7 @@ class TimelineView(QAbstractScrollArea):
         self.pps = 18.0            # pixels per second (zoom)
         self.playhead = 0.0
         self.snap = True
+        self.snap_px = SNAP_PX
         self.setAcceptDrops(True)
         self.viewport().setAcceptDrops(True)
         self.viewport().setMouseTracking(True)
@@ -181,7 +182,7 @@ class TimelineView(QAbstractScrollArea):
             if b.id not in exclude:
                 cands += [b.start, b.end]
         best = min(cands, key=lambda c: abs(c - t))
-        if abs(best - t) * self.pps <= SNAP_PX:
+        if abs(best - t) * self.pps <= self.snap_px:
             self._snap_line = best
             return best
         g = self.grid_step()
@@ -738,6 +739,15 @@ class TimelineView(QAbstractScrollArea):
         m = QMenu(self)
         if b is not None:
             m.addAction("Edit properties…\tdouble-click", self.openInspector.emit)
+            same = [o.id for o in self.p.blocks if o.kind == b.kind]
+            if len(same) > 1:
+                m.addAction(f"Select all {len(same)} {b.type.title} blocks  (edit together)",
+                            lambda: self.doc.select(same))
+            if b.condition:
+                same_c = [o.id for o in self.p.blocks if o.kind == b.kind and o.condition == b.condition]
+                if 1 < len(same_c) < len(same):
+                    m.addAction(f"Select all {len(same_c)} {b.type.title} blocks of “{b.condition}”",
+                                lambda: self.doc.select(same_c))
             m.addAction("Duplicate\tCtrl+D", self.duplicate_selected)
             m.addAction("Repeat ×N…", self.repeat_selected)
             m.addAction("Split at playhead\tS", self.split_at_playhead)

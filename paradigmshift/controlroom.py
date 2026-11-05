@@ -98,14 +98,27 @@ class ProgressStrip(QWidget):
             if b.track != 0:   # response windows: a thin green line underneath
                 p.fillRect(QRectF(r.left() + b.start * sx, r.bottom() - 4, max(1.0, b.duration * sx), 4),
                            QColor(theme.OK))
-        t = self.c.elapsed() if self.c.phase in ("running", "done") else 0.0
-        if self.c.phase == "done" and not self.c.aborted:
-            t = dur
-        t = min(t, dur)
+        t = min(self.c.elapsed() if self.c.phase in ("running", "done") else 0.0, dur)
         x = r.left() + t * sx
         p.fillRect(QRectF(r.left(), r.top(), x - r.left(), r.height()), QColor(0, 0, 0, 140))
-        p.setPen(QPen(QColor(theme.ACCENT), 2))
+        aborted = self.c.phase == "done" and self.c.aborted
+        if aborted:   # the part that never ran: greyed out and hatched
+            rest = QRectF(x, r.top(), r.right() - x, r.height())
+            p.fillRect(rest, QColor(20, 22, 27, 200))
+            p.save()
+            p.setClipRect(rest)
+            p.setPen(QPen(QColor(240, 80, 110, 90), 2))
+            xx = rest.left() - rest.height()
+            while xx < rest.right():
+                p.drawLine(QPointF(xx, rest.bottom()), QPointF(xx + rest.height(), rest.top()))
+                xx += 9
+            p.restore()
+        p.setPen(QPen(QColor(theme.DANGER if aborted else theme.ACCENT), 3 if aborted else 2))
         p.drawLine(QPointF(x, r.top() - 3), QPointF(x, r.bottom() + 3))
+        if aborted:
+            p.setFont(theme.ui_font(8, True))
+            p.setPen(QColor(theme.DANGER))
+            p.drawText(QRectF(x + 4, r.bottom() + 2, 200, 14), Qt.AlignLeft, f"ABORTED at {fmt_time(t)}")
         p.setPen(QColor(theme.TEXT_DIM))
         p.setFont(theme.ui_font(8))
         p.drawText(QRectF(r.left(), r.bottom() + 2, 80, 14), Qt.AlignLeft, "00:00")
@@ -233,10 +246,15 @@ class ControlRoomWindow(QWidget):
         self._abort_armed = False
         c.changed.connect(self.refresh)
         c.abortArmed.connect(self._on_abort_armed)
-        c.finished.connect(lambda _f: self.refresh())
+        c.finished.connect(self._on_finished)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.refresh)
-        self.timer.start(100)
+        self.timer.start(int(s.get("control_refresh_ms", 100)))
+        self.refresh()
+
+    def _on_finished(self, _files):
+        self.timer.stop()        # nothing changes any more – the display stays frozen at the end
+        self._abort_armed = False
         self.refresh()
 
     # ------------------------------------------------------------------ actions
@@ -293,17 +311,25 @@ class ControlRoomWindow(QWidget):
         elif ph == "running":
             self._set_pill("● RUNNING", theme.OK)
         else:
-            self._set_pill("ABORTED" if c.aborted else "FINISHED", theme.DANGER if c.aborted else "#7FB2FF")
+            if c.aborted:
+                self._set_pill(f"■ ABORTED at {fmt_time(t)}", theme.DANGER)
+            else:
+                self._set_pill("✓ FINISHED", "#7FB2FF")
+            self.setWindowTitle(f"Control room – {par.name} – {'ABORTED' if c.aborted else 'finished'}")
         self.start_btn.setVisible(ph in ("waiting", "dummy"))
         self.abort_btn.setVisible(ph != "done")
         self.folder_btn.setVisible(ph == "done" and bool(c.files))
         self.close_btn.setVisible(ph == "done")
 
         # cards
-        shown_t = dur if ph == "done" and not c.aborted else min(t, dur)
-        self.card_elapsed.set(fmt_time(shown_t), f"of {fmt_time(dur)}")
-        self.card_left.set(fmt_time(max(0.0, dur - shown_t)),
-                           f"{shown_t / dur:.0%} done" if dur else "")
+        shown_t = min(t, dur)
+        if ph == "done" and c.aborted:
+            self.card_elapsed.set(fmt_time(shown_t), f"stopped – of {fmt_time(dur)}", theme.DANGER)
+            self.card_left.set("—", f"aborted after {shown_t / dur:.0%}" if dur else "aborted", theme.DANGER)
+        else:
+            self.card_elapsed.set(fmt_time(shown_t), f"of {fmt_time(dur)}")
+            self.card_left.set(fmt_time(max(0.0, dur - shown_t)),
+                               f"{shown_t / dur:.0%} done" if dur else "")
         total_vol = par.volumes
         cur_vol = min(total_vol, int(shown_t // tr) + 1) if tr > 0 and ph == "running" else st.volumes_seen()
         self.card_vol.set(f"{cur_vol} / {total_vol}", f"{st.volumes_seen()} counted by trigger")
@@ -338,6 +364,9 @@ class ControlRoomWindow(QWidget):
                                       + (f" · {n.condition}" if n.condition else "") + f"  in {n.start - t:.1f} s")
             else:
                 self.next_lbl.setText("NEXT  end of run")
+        elif ph == "done" and c.aborted:
+            self.now_lbl.setText("<b>Participant sees:</b> an empty screen (run aborted)")
+            self.next_lbl.setText("")
         elif ph == "done":
             self.now_lbl.setText(f"<b>Participant sees:</b> end screen “{par.end_text}”" if par.end_text
                                  else "<b>Participant sees:</b> empty background")
@@ -353,7 +382,14 @@ class ControlRoomWindow(QWidget):
         app_state = QGuiApplication.applicationState()
         last_trig = now() - st.triggers[-1] if st.triggers else None
         if ph == "done":
-            msg = ("Run aborted – the data recorded so far was saved." if c.aborted else "Run complete.")
+            if c.aborted and st.t0 is None:
+                msg = "<b>Run aborted</b> before the scanner started."
+            elif c.aborted:
+                vol = int(t // tr) + 1 if tr > 0 else 0
+                msg = (f"<b>Run aborted at {fmt_time(t)}</b> (volume {vol} of {par.volumes}). The clock has "
+                       "stopped and the data recorded until then was saved (file names end in _ABORTED).")
+            else:
+                msg = "<b>Run complete.</b>"
             if c.files:
                 msg += "<br>Saved: " + ", ".join(os.path.basename(f) for f in c.files)
             elif not c.error:
@@ -368,7 +404,8 @@ class ControlRoomWindow(QWidget):
         elif par.hardware.sync_mode == "keyboard" and app_state != Qt.ApplicationActive:
             self._banner("⚠ ParadigmShift is not the active application – SyncBox triggers and grip presses "
                          "arrive as key presses and will be lost. Click this window.", theme.DANGER)
-        elif ph == "running" and tr > 0 and last_trig is not None and last_trig > 2.5 * tr and t < dur:
+        elif (ph == "running" and tr > 0 and last_trig is not None and t < dur
+              and last_trig > float(c.settings.get("trigger_warning_trs", 2.5)) * tr):
             self._banner(f"⚠ No scanner trigger for {last_trig:.1f} s – has the scanner stopped?", theme.ACCENT)
         elif ph == "waiting":
             hw = par.hardware
@@ -398,7 +435,7 @@ class ControlRoomWindow(QWidget):
             w = self.perf_body.takeAt(0).widget()
             if w:
                 w.deleteLater()
-        lines = live_stats(self.c.state, t)
+        lines = live_stats(self.c.state, t, int(self.c.settings.get("watchdog_trials", 5)))
         if not lines:
             empty = QLabel("Nothing to score yet – answers appear here as soon as trials end.")
             empty.setObjectName("Hint")
