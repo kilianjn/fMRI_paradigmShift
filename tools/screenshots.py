@@ -84,6 +84,8 @@ def main():
     app.setStyleSheet(theme.STYLESHEET)
 
     # 1 – empty editor, first launch
+    from PySide6.QtCore import QSettings
+    QSettings("ParadigmShift", "ParadigmShift").remove("controlroom/folded")
     win = MainWindow()
     win.prefs.reset()
     win.apply_prefs()
@@ -390,6 +392,42 @@ def main():
     settle(app)
     shot(win, "33_task_blocks_sequences.png")
     win.library.tabs.setCurrentIndex(0)
+
+    # 34 – blurred previews for unpleasant pictures
+    win.doc.dirty = False
+    win.open_file(os.path.join(ex, "emotion_regulation.paradigm.json"))
+    win._set_pref("blur_previews", True)
+    settle(app)
+    pic = [b for b in win.doc.paradigm.blocks if b.condition == "decrease_negative"][0]
+    win.doc.select([pic.id])
+    win.timeline.set_zoom(16)
+    win.timeline.horizontalScrollBar().setValue(int(max(0, pic.start - 30) * 16))
+    win.timeline.set_playhead(pic.start + 2)
+    settle(app)
+    shot(win, "34_blurred_previews.png")
+    win._set_pref("blur_previews", False)
+
+    # 35 – preferences: blur options
+    pd = PreferencesDialog(win.prefs, win)
+    pd.show()
+    settle(app)
+    shot(pd, "35_preferences_blur.png")
+    pd.reject()
+
+    # 36 – control room with folded sections
+    hp = Paradigm.load(os.path.join(ex, "hariri_face_matching.paradigm.json"))
+    c = fake_run(hp, 101.3, hariri_answer)
+    cr = ControlRoomWindow(c, None)
+    cr.show()
+    for key in ("mirror", "progress"):
+        cr.sections[key].set_folded(True)
+    cr.refresh()
+    settle(app)
+    shot(cr, "36_control_room_folded.png")
+    for sec in cr.sections.values():
+        sec.set_folded(False)
+    cr.timer.stop()
+    cr.hide()
 
     win.doc.dirty = False
     QTimer.singleShot(0, app.quit)

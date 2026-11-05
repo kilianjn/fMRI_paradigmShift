@@ -572,13 +572,16 @@ class RunController(QObject):
             self.changed.emit()
 
     # -- shared drawing ----------------------------------------------------------
-    def paint_participant(self, p: QPainter, r: QRectF, ref_height: float | None = None):
-        """Exactly what the participant sees – used by their screen and the control room mirror."""
+    def paint_participant(self, p: QPainter, r: QRectF, ref_height: float | None = None, blur: bool = False):
+        """Exactly what the participant sees – used by their screen and the control room mirror.
+
+        *blur* is only ever used for the control-room mirror, never for the participant screen."""
         ref = ref_height or r.height()
         ph = self.phase
         if ph == "running":
             t = self.elapsed()
-            paint_stimulus(p, r, self.p, self.current, self.state.paint_state(self.current, t), ref_height=ref)
+            paint_stimulus(p, r, self.p, self.current, self.state.paint_state(self.current, t), ref_height=ref,
+                           blur=blur)
         elif ph == "done":   # aborted: neutral empty screen instead of the "thank you" text
             paint_waiting(p, r, self.p, "" if self.aborted else (self.p.end_text or ""), ref_height=ref)
         else:

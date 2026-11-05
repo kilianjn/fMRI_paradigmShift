@@ -140,3 +140,81 @@ def test_mixed_conditions_survive_focus_out(win, app):
     _lab, cond = _combo_for(win.inspector, "Condition")
     cond.lineEdit().editingFinished.emit()
     assert [win.doc.paradigm.block(i).condition for i in ratings] == before
+
+
+def test_blur_previews(win, app, tmp_path):
+    from PySide6.QtGui import QColor, QImage
+
+    from paradigmshift import stimulus
+    img = QImage(200, 100, QImage.Format_RGB32)
+    for x in range(200):
+        for y in range(100):
+            img.setPixelColor(x, y, QColor("#000000") if (x // 10 + y // 10) % 2 else QColor("#FFFFFF"))
+    f = str(tmp_path / "check.png")
+    img.save(f)
+    sharp = stimulus.thumbnail(f, 100, blur=False).toImage()
+    soft = stimulus.thumbnail(f, 100, blur=True).toImage()
+    spread = lambda im: max(QColor(im.pixel(x, 50)).lightness() for x in range(20, 180)) - \
+        min(QColor(im.pixel(x, 50)).lightness() for x in range(20, 180))  # noqa: E731
+    assert spread(sharp) > 200 and spread(soft) < 120
+    win._set_pref("blur_previews", True)
+    assert stimulus.EDITOR_BLUR and win.a_blur.isChecked()
+    win._set_pref("blur_previews", False)
+    assert not stimulus.EDITOR_BLUR
+
+
+def test_participant_screen_is_never_blurred(app, tmp_path):
+    from PySide6.QtCore import QRectF
+    from PySide6.QtGui import QColor, QImage, QPainter
+
+    from paradigmshift import stimulus
+    from paradigmshift.runner import RunController
+    img = QImage(400, 225, QImage.Format_RGB32)
+    for x in range(400):
+        for y in range(225):
+            img.setPixelColor(x, y, QColor("#000000") if (x // 20) % 2 else QColor("#FFFFFF"))
+    f = str(tmp_path / "stripes.png")
+    img.save(f)
+    par = Paradigm(dummy_scans=0)
+    par.blocks.append(Block.create("image", 0, 10, path=f, scale=1.0))
+    stimulus.EDITOR_BLUR = True
+    try:
+        c = RunController(par, {"out_dir": str(tmp_path)})
+        c.state.force_start(0.0)
+        c.current = par.blocks[0]
+
+        def render(blur):
+            out = QImage(400, 225, QImage.Format_RGB32)
+            p = QPainter(out)
+            c.paint_participant(p, QRectF(0, 0, 400, 225), blur=blur)
+            p.end()
+            return {QColor(out.pixel(x, 112)).lightness() for x in range(40, 360)}
+        assert min(render(False)) < 20 and max(render(False)) > 235      # crisp stripes
+        soft = render(True)                                               # the control-room mirror can blur
+        assert max(soft) - min(soft) < 150
+    finally:
+        stimulus.EDITOR_BLUR = False
+
+
+def test_control_room_sections_fold_and_remember(app, tmp_path):
+    from paradigmshift.controlroom import ControlRoomWindow
+    from paradigmshift.runner import RunController
+    par = Paradigm(dummy_scans=0)
+    par.blocks.append(Block.create("fixation", 0, 10))
+    c = RunController(par, {"out_dir": str(tmp_path)})
+    cr = ControlRoomWindow(c)
+    cr.show()
+    assert set(cr.sections) == {"status", "progress", "mirror", "nownext", "perf", "answers"}
+    cr.sections["mirror"].set_folded(True)
+    cr.sections["status"].set_folded(True)
+    cr.refresh()
+    app.processEvents()
+    assert not cr.mirror.isVisible() and cr.sections["mirror"].summary.isVisible()
+    assert "triggers" in cr.sections["status"].summary.text()
+    cr.timer.stop()
+    cr.hide()
+    cr2 = ControlRoomWindow(RunController(par, {"out_dir": str(tmp_path)}))
+    assert cr2.sections["mirror"].folded and cr2.sections["status"].folded and not cr2.sections["answers"].folded
+    for sec in cr2.sections.values():
+        sec.set_folded(False)
+    cr2.timer.stop()

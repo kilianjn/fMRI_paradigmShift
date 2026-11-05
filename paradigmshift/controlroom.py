@@ -8,11 +8,11 @@ from __future__ import annotations
 
 import os
 
-from PySide6.QtCore import QPointF, QRectF, Qt, QTimer, QUrl
+from PySide6.QtCore import QPointF, QRectF, QSettings, Qt, QTimer, QUrl, Signal
 from PySide6.QtGui import QColor, QDesktopServices, QGuiApplication, QPainter, QPen
 from PySide6.QtWidgets import (QAbstractItemView, QFrame, QGridLayout, QHBoxLayout, QHeaderView, QLabel,
-                               QMessageBox, QPushButton, QSizePolicy, QTableWidget, QTableWidgetItem,
-                               QVBoxLayout, QWidget)
+                               QMenu, QMessageBox, QPushButton, QSizePolicy, QSplitter, QTableWidget,
+                               QTableWidgetItem, QToolButton, QVBoxLayout, QWidget)
 
 from . import theme
 from .hardware import now
@@ -50,6 +50,51 @@ class StatCard(QFrame):
                                  + (f"color: {color};" if color else ""))
 
 
+class Section(QFrame):
+    """A control-room panel that folds to its title bar (with a one-line summary)."""
+    foldedChanged = Signal(bool)
+
+    def __init__(self, key: str, title: str, content: QWidget, folded: bool = False, plain: bool = False):
+        super().__init__()
+        self.key, self.title, self.content = key, title, content
+        self.setObjectName("Panel")
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(12, 6, 12, 10)
+        lay.setSpacing(6)
+        head = QHBoxLayout()
+        self.btn = QToolButton()
+        self.btn.setStyleSheet(f"QToolButton {{ border: none; padding: 2px 4px; color: {theme.TEXT_DIM};"
+                               "font-size: 11px; font-weight: 600; letter-spacing: 1px; }"
+                               f"QToolButton:hover {{ color: {theme.TEXT}; }}")
+        self.btn.setToolButtonStyle(Qt.ToolButtonTextOnly)
+        self.btn.setCursor(Qt.PointingHandCursor)
+        self.btn.setToolTip("Click to fold / unfold")
+        self.btn.clicked.connect(lambda: self.set_folded(not self.folded))
+        head.addWidget(self.btn)
+        self.summary = QLabel()
+        self.summary.setObjectName("Hint")
+        head.addWidget(self.summary, 1)
+        head.addStretch()
+        lay.addLayout(head)
+        lay.addWidget(content, 1)
+        self.folded = None
+        self.set_folded(folded, emit=False)
+
+    def set_folded(self, folded: bool, emit: bool = True):
+        if folded == self.folded:
+            return
+        self.folded = folded
+        self.content.setVisible(not folded)
+        self.summary.setVisible(folded)
+        self.btn.setText(("▸  " if folded else "▾  ") + self.title.upper().replace("&", "&&"))
+        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum if folded else QSizePolicy.Preferred)
+        if emit:
+            self.foldedChanged.emit(folded)
+
+    def set_summary(self, text: str):
+        self.summary.setText(text)
+
+
 class MirrorView(QWidget):
     """A small copy of the participant screen."""
 
@@ -58,6 +103,7 @@ class MirrorView(QWidget):
         self.c = c
         self.setMinimumSize(360, 210)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.blur = bool(c.settings.get("blur_control_mirror", False))
         c.stimulusChanged.connect(self.update)
 
     def paintEvent(self, _e):
@@ -68,7 +114,7 @@ class MirrorView(QWidget):
         w = min(r.width(), r.height() * 16 / 9)
         box = QRectF(0, 0, w, w * 9 / 16)
         box.moveCenter(r.center())
-        self.c.paint_participant(p, box, ref_height=box.height())
+        self.c.paint_participant(p, box, ref_height=box.height(), blur=self.blur)
         p.setPen(QPen(QColor(theme.BORDER), 1))
         p.setBrush(Qt.NoBrush)
         p.drawRect(box)
@@ -177,8 +223,12 @@ class ControlRoomWindow(QWidget):
         self.banner.hide()
         root.addWidget(self.banner)
 
-        # stat cards -------------------------------------------------------------
-        cards = QHBoxLayout()
+        # foldable sections ------------------------------------------------------------
+        self.sections: dict[str, Section] = {}
+
+        cards_w = QWidget()
+        cards = QHBoxLayout(cards_w)
+        cards.setContentsMargins(0, 0, 0, 0)
         cards.setSpacing(8)
         self.card_elapsed = StatCard("Elapsed")
         self.card_left = StatCard("Remaining")
@@ -187,43 +237,24 @@ class ControlRoomWindow(QWidget):
         self.card_tr = StatCard("Measured TR")
         for card in (self.card_elapsed, self.card_left, self.card_vol, self.card_trig, self.card_tr):
             cards.addWidget(card)
-        root.addLayout(cards)
+        root.addWidget(self._section("status", "Status  ·  time, volumes, triggers", cards_w, plain=True))
         self.strip = ProgressStrip(c)
-        root.addWidget(self.strip)
+        root.addWidget(self._section("progress", "Run progress", self.strip, plain=True))
 
-        # body ---------------------------------------------------------------------
-        body = QHBoxLayout()
-        body.setSpacing(10)
-        left = QFrame()
-        left.setObjectName("Panel")
-        ll = QVBoxLayout(left)
-        ll.setContentsMargins(12, 10, 12, 12)
-        ll.addWidget(_title("Participant screen  (live mirror)"))
         self.mirror = MirrorView(c)
-        ll.addWidget(self.mirror, 1)
         self.now_lbl = QLabel()
         self.now_lbl.setStyleSheet("font-size: 14px;")
         self.next_lbl = QLabel()
         self.next_lbl.setObjectName("Hint")
-        ll.addWidget(self.now_lbl)
-        ll.addWidget(self.next_lbl)
-        body.addWidget(left, 5)
+        nn = QWidget()
+        nl = QVBoxLayout(nn)
+        nl.setContentsMargins(0, 0, 0, 0)
+        nl.addWidget(self.now_lbl)
+        nl.addWidget(self.next_lbl)
 
-        right = QVBoxLayout()
-        right.setSpacing(10)
-        perf = QFrame()
-        perf.setObjectName("Panel")
-        self.perf_lay = QVBoxLayout(perf)
-        self.perf_lay.setContentsMargins(12, 10, 12, 12)
-        self.perf_lay.addWidget(_title("Performance so far"))
-        self.perf_body = QVBoxLayout()
-        self.perf_lay.addLayout(self.perf_body)
-        right.addWidget(perf)
-        feed = QFrame()
-        feed.setObjectName("Panel")
-        fl = QVBoxLayout(feed)
-        fl.setContentsMargins(12, 10, 12, 12)
-        fl.addWidget(_title("Answers  (newest first)"))
+        perf_w = QWidget()
+        self.perf_body = QVBoxLayout(perf_w)
+        self.perf_body.setContentsMargins(0, 0, 0, 0)
         self.table = QTableWidget(0, 6)
         self.table.setHorizontalHeaderLabels(["Time", "Trial", "Condition", "Answer", "RT", "Result"])
         self.table.verticalHeader().setVisible(False)
@@ -233,13 +264,47 @@ class ControlRoomWindow(QWidget):
         hh = self.table.horizontalHeader()
         hh.setSectionResizeMode(QHeaderView.ResizeToContents)
         hh.setSectionResizeMode(1, QHeaderView.Stretch)
-        fl.addWidget(self.table, 1)
-        right.addWidget(feed, 1)
-        rw = QWidget()
-        rw.setLayout(right)
-        right.setContentsMargins(0, 0, 0, 0)
-        body.addWidget(rw, 4)
-        root.addLayout(body, 1)
+
+        self.columns = []
+        self.splitter = QSplitter(Qt.Horizontal)
+        for spec in ((("mirror", "Participant screen  (live mirror)", self.mirror, True),
+                      ("nownext", "Now & next", nn, False)),
+                     (("perf", "Performance so far", perf_w, False),
+                      ("answers", "Answers  (newest first)", self.table, True))):
+            col = QWidget()
+            cl = QVBoxLayout(col)
+            cl.setContentsMargins(0, 0, 0, 0)
+            cl.setSpacing(10)
+            keys = []
+            for key, title, w, stretchy in spec:
+                sec = self._section(key, title, w, stretchy=stretchy)
+                cl.addWidget(sec)
+                keys.append(key)
+            cl.addStretch(0)
+            self.columns.append((col, cl, keys))
+            self.splitter.addWidget(col)
+        self.splitter.setChildrenCollapsible(False)
+        self.splitter.setSizes([800, 620])
+        root.addWidget(self.splitter, 1)
+
+        # header menu to show / hide sections
+        self.sections_btn = QToolButton()
+        self.sections_btn.setText("☰ Sections")
+        self.sections_btn.setPopupMode(QToolButton.InstantPopup)
+        menu = QMenu(self.sections_btn)
+        for key, sec in self.sections.items():
+            a = menu.addAction(sec.title)
+            a.setCheckable(True)
+            a.setChecked(not sec.folded)
+            a.toggled.connect(lambda on, k=key: self.sections[k].set_folded(not on))
+            sec.foldedChanged.connect(lambda folded, a=a: (a.blockSignals(True), a.setChecked(not folded),
+                                                           a.blockSignals(False)))
+        menu.addSeparator()
+        menu.addAction("Unfold all", lambda: [x.set_folded(False) for x in self.sections.values()])
+        menu.addAction("Fold all", lambda: [x.set_folded(True) for x in self.sections.values()])
+        self.sections_btn.setMenu(menu)
+        head.insertWidget(head.count() - 4, self.sections_btn)
+        self._relayout()
 
         self._shown_version = -1
         self._shown_rows = -1
@@ -256,6 +321,45 @@ class ControlRoomWindow(QWidget):
         self.timer.stop()        # nothing changes any more – the display stays frozen at the end
         self._abort_armed = False
         self.refresh()
+
+    # ------------------------------------------------------------------ sections
+    def _section(self, key, title, widget, stretchy=False, plain=False) -> Section:
+        folded = key in self._folded_keys()
+        sec = Section(key, title, widget, folded, plain)
+        sec.stretchy = stretchy
+        sec.foldedChanged.connect(lambda _f: (self._save_folded(), self._relayout()))
+        self.sections[key] = sec
+        return sec
+
+    @staticmethod
+    def _folded_keys() -> set:
+        v = QSettings("ParadigmShift", "ParadigmShift").value("controlroom/folded", [])
+        if isinstance(v, str):
+            v = [v] if v else []
+        return set(v or [])
+
+    def _save_folded(self):
+        QSettings("ParadigmShift", "ParadigmShift").setValue(
+            "controlroom/folded", [k for k, sct in self.sections.items() if sct.folded])
+
+    def _relayout(self):
+        """Give the space of folded sections to the open ones; shrink a column that is fully folded."""
+        open_cols = []
+        for col, cl, keys in self.columns:
+            any_stretch = False
+            for key in keys:
+                sec = self.sections[key]
+                grow = sec.stretchy and not sec.folded
+                cl.setStretchFactor(sec, 1 if grow else 0)
+                any_stretch |= grow
+            cl.setStretch(cl.count() - 1, 0 if any_stretch else 1)   # trailing spacer keeps folded bars on top
+            open_cols.append(any_stretch)   # a column with only small open sections needs little width
+        total = max(1, sum(self.splitter.sizes()) or self.width())
+        if all(open_cols) or not any(open_cols):
+            self.splitter.setSizes([int(total * .56), int(total * .44)])
+        else:
+            narrow = 440
+            self.splitter.setSizes([total - narrow, narrow] if open_cols[0] else [narrow, total - narrow])
 
     # ------------------------------------------------------------------ actions
     def _start_now(self):
@@ -423,6 +527,8 @@ class ControlRoomWindow(QWidget):
         else:
             self._banner("", theme.OK)
 
+        self._update_summaries(ph, t, dur)
+
         # performance + feed (only when something changed)
         rows_done = sum(1 for i in st.events if (b := par.block(i)) and b.kind in SCORED_KINDS and t >= b.end)
         if st.version != self._shown_version or rows_done != self._shown_rows or ph == "done":
@@ -430,12 +536,32 @@ class ControlRoomWindow(QWidget):
             self._refresh_perf(None if ph == "done" else t)
             self._refresh_feed(None if ph == "done" else t)
 
+    def _update_summaries(self, ph, t, dur):
+        """One-line versions of each section, shown while it is folded."""
+        import re as _re
+        c, par, st = self.c, self.c.p, self.c.state
+        sec = self.sections
+        shown = min(t, dur)
+        pill = self.pill.text()
+        sec["status"].set_summary(f"{pill}  ·  {fmt_time(shown)} / {fmt_time(dur)}  ·  "
+                                  f"volume {self.card_vol.value.text()}  ·  {len(st.triggers)} triggers")
+        sec["progress"].set_summary(f"{shown / dur:.0%} done" if dur else "")
+        b = c.current if ph == "running" else None
+        sec["mirror"].set_summary(f"showing: {b.type.title} – {b.display_label}" if b else
+                                  ("waiting screen" if ph in ("waiting", "dummy") else "end screen"))
+        sec["nownext"].set_summary(_re.sub("<[^>]+>", "", self.now_lbl.text()))
+        n = self.table.rowCount()
+        last = self.table.item(0, 5).text() if n and self.table.item(0, 5) else ""
+        sec["answers"].set_summary(f"{n} answers" + (f"  ·  latest: {last}" if last else ""))
+
     def _refresh_perf(self, t):
         while self.perf_body.count():
             w = self.perf_body.takeAt(0).widget()
             if w:
                 w.deleteLater()
         lines = live_stats(self.c.state, t, int(self.c.settings.get("watchdog_trials", 5)))
+        self.sections["perf"].set_summary(
+            "  ·  ".join(f"{title}: {text.splitlines()[0]}" for title, text, _ in lines[:2]) or "nothing scored yet")
         if not lines:
             empty = QLabel("Nothing to score yet – answers appear here as soon as trials end.")
             empty.setObjectName("Hint")

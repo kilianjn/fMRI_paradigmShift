@@ -96,6 +96,10 @@ F1 lists the keyboard shortcuts.
   * warnings when the participant stops answering, when no trigger arrives, or when another app has the
     keyboard focus (SyncBox keys would be lost).
 
+  Every section can be **folded** by clicking its title or via **☰ Sections**: status, run progress,
+  participant mirror, now & next, performance and answers. A folded section keeps a one-line summary in
+  its title bar, and the folding is remembered for the next run.
+
   Aborting takes two clicks or two presses of Esc (configurable). After an abort, the clock stops, the
   control room clearly shows *ABORTED at mm:ss*, the part of the run that never happened is hatched, and the
   participant sees an empty screen.
@@ -140,6 +144,12 @@ timeline or double-click them. If a block has variants, a small menu asks which 
   stay as they are. One Ctrl+Z undoes the whole change.
 * **Edit → Find and replace text** (Ctrl+H) changes words or sentences in all instructions, rating questions,
   rating labels and block labels at once.
+
+## Unpleasant pictures
+
+**Options → Blur picture previews** (Ctrl+Shift+B, also in Preferences) blurs every picture preview in the
+editor: timeline thumbnails, picture bin, inspector and participant-view preview. A separate preference
+blurs the control-room mirror. The participant's screen always shows the real pictures.
 
 ## Options & preferences
 
@@ -197,6 +207,7 @@ Paradigms are saved as `*.paradigm.json` (picture paths stored relative to the f
 | ![](docs/screenshots/26_mid_editor.png) MID in the editor: cue → anticipation → target → feedback | ![](docs/screenshots/27_nback_editor.png) N-back in the editor |
 | ![](docs/screenshots/28_participant_stroop.png) Stroop trial | ![](docs/screenshots/29_participant_flanker.png) Flanker trial (incongruent) |
 | ![](docs/screenshots/30_participant_mid_feedback.png) MID feedback after a hit | ![](docs/screenshots/31_participant_checkerboard.png) Visual checkerboard |
+| ![](docs/screenshots/34_blurred_previews.png) Blurred previews (emotion regulation) | ![](docs/screenshots/36_control_room_folded.png) Control room with folded sections |
 | ![](docs/screenshots/32_task_blocks_stroop.png) Task blocks tab; a Stroop trial with its task settings | ![](docs/screenshots/33_task_blocks_sequences.png) Resting + 3 MID trials + tapping block, inserted from the library |
 
 Screenshots are generated with `QT_QPA_PLATFORM=offscreen python tools/screenshots.py`.

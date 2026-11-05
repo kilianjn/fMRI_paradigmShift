@@ -8,6 +8,32 @@ from .model import Block, Paradigm
 
 _cache: dict[str, QPixmap] = {}
 
+# Editor previews (timeline thumbnails, picture bin, inspector, participant-view preview) are blurred
+# when this is on (Preferences → "Blur picture previews"). The participant's screen is never blurred.
+EDITOR_BLUR = False
+_painting_blurred = False      # set by paint_stimulus(blur=True) while it draws
+
+
+def blurred(pm: QPixmap) -> QPixmap:
+    """Strongly blurred copy: shrink to a few pixels, then scale back up smoothly."""
+    small = pm.scaled(max(1, pm.width() // 40), max(1, pm.height() // 40), Qt.IgnoreAspectRatio,
+                      Qt.SmoothTransformation)
+    small = small.scaled(max(1, pm.width() // 8), max(1, pm.height() // 8), Qt.IgnoreAspectRatio,
+                         Qt.SmoothTransformation)
+    return small.scaled(pm.width(), pm.height(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+
+
+def load_blurred(path: str) -> QPixmap | None:
+    key = f"{path}@blur"
+    pm = _cache.get(key)
+    if pm is None:
+        src = load_pixmap(path)
+        if src is None:
+            return None
+        pm = blurred(src.scaledToHeight(min(src.height(), 360), Qt.SmoothTransformation))
+        _cache[key] = pm
+    return pm
+
 
 def load_pixmap(path: str) -> QPixmap | None:
     if not path:
@@ -21,21 +47,25 @@ def load_pixmap(path: str) -> QPixmap | None:
     return pm
 
 
-def thumbnail(path: str, height: int) -> QPixmap | None:
-    key = f"{path}@thumb{height}"
+def thumbnail(path: str, height: int, blur: bool | None = None) -> QPixmap | None:
+    """Small preview for the editor. *blur* None = follow the EDITOR_BLUR preference."""
+    blur = EDITOR_BLUR if blur is None else blur
+    key = f"{path}@thumb{height}" + ("@blur" if blur else "")
     pm = _cache.get(key)
     if pm is None:
         src = load_pixmap(path)
         if src is None:
             return None
         pm = src.scaledToHeight(height, Qt.SmoothTransformation)
+        if blur:
+            pm = blurred(pm)
         _cache[key] = pm
     return pm
 
 
 def _draw_image(p: QPainter, rect: QRectF, path: str, scale: float, area: QRectF | None = None) -> QRectF:
     area = area or rect
-    pm = load_pixmap(path)
+    pm = load_blurred(path) if _painting_blurred else load_pixmap(path)
     box = QRectF(0, 0, area.width() * scale, area.height() * scale)
     box.moveCenter(area.center())
     if pm is None:
@@ -61,13 +91,24 @@ def _font(rect: QRectF, frac: float, bold: bool = False) -> QFont:
 
 
 def paint_stimulus(p: QPainter, rect: QRectF, paradigm: Paradigm, block: Block | None,
-                   state: dict | None = None, ref_height: float = 1080.0) -> None:
+                   state: dict | None = None, ref_height: float = 1080.0, blur: bool = False) -> None:
     """Paint *block* into *rect*.
 
     ``ref_height`` is the screen height the pixel sizes in the block params refer
     to, so the small editor preview looks like a scaled-down scanner screen.
     ``state`` carries live rating info (``value`` / ``confirmed``) during a run.
+    ``blur`` blurs pictures (previews only – never used for the participant screen).
     """
+    global _painting_blurred
+    before, _painting_blurred = _painting_blurred, blur
+    try:
+        _paint_stimulus(p, rect, paradigm, block, state, ref_height)
+    finally:
+        _painting_blurred = before
+
+
+def _paint_stimulus(p: QPainter, rect: QRectF, paradigm: Paradigm, block: Block | None,
+                    state: dict | None, ref_height: float) -> None:
     p.save()
     p.setRenderHint(QPainter.Antialiasing)
     p.setRenderHint(QPainter.SmoothPixmapTransform)

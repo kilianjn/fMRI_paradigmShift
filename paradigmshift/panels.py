@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QColorDialog, QComb
 from . import theme
 from .document import Document
 from .model import BLOCK_TYPES, Block
+from . import stimulus as stimulus_mod
 from .stimulus import paint_stimulus, thumbnail
 from .timeline import IMAGE_EXT, fmt_time, is_image, start_kind_drag
 
@@ -126,6 +127,13 @@ class MediaBin(QListWidget):
 
     def files(self) -> list[str]:
         return [self.item(i).data(Qt.UserRole) for i in range(self.count())]
+
+    def refresh_icons(self):
+        """Re-render the thumbnails (e.g. after switching the blur preference)."""
+        for i in range(self.count()):
+            it = self.item(i)
+            th = thumbnail(it.data(Qt.UserRole), 48)
+            it.setIcon(QIcon(th) if th else QIcon())
 
     def mimeData(self, items):
         m = QMimeData()
@@ -271,7 +279,7 @@ class MonitorView(QWidget):
             state = {"value": (lo + hi + 1) // 2} if b.params.get("mode") == "cursor" else {}
         if b is not None:
             state["t"] = self.t - b.start
-        paint_stimulus(p, r, par, b, state)
+        paint_stimulus(p, r, par, b, state, blur=stimulus_mod.EDITOR_BLUR)
         p.setPen(QPen(QColor(theme.BORDER), 1))
         p.setBrush(Qt.NoBrush)
         p.drawRect(r)

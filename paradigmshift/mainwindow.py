@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (QApplication, QFileDialog, QFrame, QHBoxLayout, Q
                                QPushButton, QSizePolicy, QSplitter, QToolBar, QToolButton, QVBoxLayout,
                                QWidget)
 
+from . import stimulus as stimulus_mod
 from . import theme
 from .dialogs import (FindReplaceDialog, HardwareDialog, PreferencesDialog, QuickDesignDialog, RunDialog,
                       TemplateDialog)
@@ -75,6 +76,12 @@ class MainWindow(QMainWindow):
         for mode, a in self.a_rating_mode.items():
             a.setChecked(p.get("rating_mode") == mode)
         apply_block_defaults(p)
+        if stimulus_mod.EDITOR_BLUR != p.get("blur_previews"):
+            stimulus_mod.EDITOR_BLUR = p.get("blur_previews")
+            self.library.media.refresh_icons()
+            self.inspector.rebuild()
+            self.monitor.update()
+        self.a_blur.setChecked(p.get("blur_previews"))
         mins = p.get("autosave_minutes")
         if mins > 0:
             self._autosave.start(mins * 60_000)
@@ -209,6 +216,9 @@ class MainWindow(QMainWindow):
         m.addAction(self.a_snap)
         self.a_hints = m.addAction("Show usage hints", lambda: self._set_pref("show_hints", self.a_hints.isChecked()))
         self.a_hints.setCheckable(True)
+        self.a_blur = m.addAction("Blur picture previews (unpleasant images)",
+                                  lambda: self._set_pref("blur_previews", self.a_blur.isChecked()), "Ctrl+Shift+B")
+        self.a_blur.setCheckable(True)
         rm = m.addMenu("New rating blocks are answered with")
         self.a_rating_mode = {}
         for mode, text in (("direct", "One grip button per value"), ("cursor", "Cursor ◀ ▶ and confirm")):
@@ -528,7 +538,7 @@ class MainWindow(QMainWindow):
         s = dlg.settings()
         self.prefs.set("data_dir", s["out_dir"])
         for k in ("confirm_abort", "save_paradigm_with_data", "watchdog_trials", "trigger_warning_trs",
-                  "control_refresh_ms"):
+                  "control_refresh_ms", "blur_control_mirror"):
             s[k] = self.prefs.get(k)
         keys = ("dummy_scans", "waiting_screen", "waiting_text", "end_text")
         if any(getattr(par, k) != s[k] for k in keys):   # remember the scanner-start settings in the paradigm

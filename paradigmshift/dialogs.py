@@ -1147,6 +1147,11 @@ class PreferencesDialog(QDialog):
             ("Text size", "ui_scale", combo("ui_scale", [("Small (90 %)", 90), ("Normal (100 %)", 100),
                                                          ("Large (115 %)", 115), ("Extra large (130 %)", 130)])),
             ("", "show_hints", check("show_hints", "Show usage hints above the timeline")),
+            "Unpleasant pictures",
+            ("", "blur_previews", check("blur_previews", "Blur picture previews in the editor "
+                                                          "(timeline, picture bin, inspector, preview)")),
+            ("", "blur_control_mirror", check("blur_control_mirror", "Blur pictures in the control-room mirror")),
+            ("", "_blur_note", _hint("The participant's screen always shows the real pictures.")),
             "Files",
             ("", "open_last_file", check("open_last_file", "Open the last paradigm when the app starts")),
             ("Autosave", "autosave_minutes", spin("autosave_minutes", 0, 60, " min  (0 = off)")),
@@ -1203,7 +1208,7 @@ class PreferencesDialog(QDialog):
         from .panels import ColorButton
         out = {"data_dir": self.data_dir.text().strip() or self._defaults_values["data_dir"]}
         for key, w in self.w.items():
-            if key == "data_dir":
+            if key == "data_dir" or key.startswith("_"):
                 continue
             if isinstance(w, QCheckBox):
                 out[key] = w.isChecked()

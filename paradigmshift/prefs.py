@@ -11,6 +11,8 @@ DEFAULTS: dict = {
     "open_last_file": True,
     "autosave_minutes": 5,           # 0 = off; writes <file>.autosave next to the paradigm
     "show_hints": True,
+    "blur_previews": False,          # blur pictures in the editor (thumbnails, picture bin, preview)
+    "blur_control_mirror": False,    # blur pictures in the control-room mirror
     # new paradigms / new blocks
     "new_tr": 2.0,
     "new_dummy_scans": 3,
