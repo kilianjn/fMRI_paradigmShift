@@ -218,6 +218,11 @@ class Hardware:
     trigger_key: str = "s"
     serial_port: str = ""
     baud_rate: int = 57600
+    # Serial mode: put the SyncBox into "computer mode", configure and start it for each run, and return it to
+    # manual mode afterwards (NNL's serial protocol, see hardware.py). Off = only listen.
+    syncbox_control: bool = True
+    syncbox_slices: int = 1          # slices per volume as configured on the scanner side
+    syncbox_pulse_ms: int = 100      # pulse length (used by the SyncBox's own simulation)
     # NNL ResponseGrips – their buttons reach the PC through the SyncBox the same way.
     buttons: list = field(default_factory=lambda: [
         GripButton("Left thumb", "1"),

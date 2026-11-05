@@ -514,7 +514,9 @@ class ControlRoomWindow(QWidget):
         elif ph == "waiting":
             hw = par.hardware
             src = (f"key “{hw.trigger_key}” (USB keyboard mode)" if hw.sync_mode == "keyboard"
-                   else f"serial port {hw.serial_port}")
+                   else f"serial port {hw.serial_port}, trigger “{hw.trigger_key}”")
+            if c.hw_status:
+                src += f"  ·  {c.hw_status}"
             self._banner(f"Waiting for the first trigger from the SyncBox via {src}. "
                          f"{par.dummy_scans} dummy scan(s) will be skipped, the paradigm starts with trigger "
                          f"{par.dummy_scans + 1}.", theme.ACCENT)

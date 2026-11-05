@@ -12,8 +12,8 @@ from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog, QDialogButtonBox, 
                                QVBoxLayout, QWidget, QHeaderView, QButtonGroup, QMessageBox, QScrollArea)
 
 from . import theme
-from .hardware import (MISSING_SERIAL, InputRouter, PortScanner, describe_ports, now,
-                       serial_available)
+from .hardware import (MISSING_SERIAL, NNL_BUTTON_KEYS, NNL_TRIGGER, InputRouter, PortScanner, describe_ports,
+                       now, serial_available)
 from .model import GripButton, Hardware, Paradigm, generate_block_design, generate_event_design
 from .panels import dspin, ispin
 from .timeline import IMAGE_EXT, fmt_time, is_image
@@ -169,6 +169,13 @@ class HardwareDialog(QDialog):
             self.baud.addItem(str(b), b)
         self.baud.setCurrentText(str(self.hw.baud_rate))
         form.addRow("Baud rate", self.baud)
+        self.ctrl = QCheckBox("Control the SyncBox from ParadigmShift  (NNL computer mode – recommended)")
+        self.ctrl.setChecked(self.hw.syncbox_control)
+        self.ctrl.setToolTip("Before each run the SyncBox is switched to computer mode, configured with the TR and the "
+                             "number of volumes, and started; afterwards it is stopped and returned to manual mode. "
+                             "Untick if the SyncBox should keep its own settings and ParadigmShift only listens.")
+        self.ctrl.toggled.connect(self._ctrl_toggled)
+        form.addRow("", self.ctrl)
         self.ser_note = _hint("" if serial_available() else "⚠ " + MISSING_SERIAL)
         form.addRow("", self.ser_note)
         lay.addLayout(form)
@@ -202,6 +209,7 @@ class HardwareDialog(QDialog):
             ser = self.rb_ser.isChecked()
             self.port.setEnabled(ser)
             self.baud.setEnabled(ser)
+            self.ctrl.setEnabled(ser)
             self.hw.sync_mode = "serial" if ser else "keyboard"
             self._restart_router()
         self.rb_kb.toggled.connect(mode_changed)
@@ -211,6 +219,7 @@ class HardwareDialog(QDialog):
         self.baud.currentIndexChanged.connect(lambda _i: self._port_changed())
         self.port.setEnabled(self.rb_ser.isChecked())
         self.baud.setEnabled(self.rb_ser.isChecked())
+        self.ctrl.setEnabled(self.rb_ser.isChecked())
 
         test = QFrame()
         test.setObjectName("Panel")
@@ -315,21 +324,43 @@ class HardwareDialog(QDialog):
         self.detect_cancel.hide()
         if results:
             r = max(results, key=lambda x: (x["trigger"] is not None, sum(x["chars"].values())))
+            for w_ in (self.rb_ser, self.rb_kb):
+                w_.blockSignals(True)
             self.rb_ser.setChecked(True)
+            for w_ in (self.rb_ser, self.rb_kb):
+                w_.blockSignals(False)
+            for w_ in (self.port, self.baud, self.ctrl):
+                w_.setEnabled(True)
             self.hw.sync_mode = "serial"
             self._refresh_ports(select=r["port"])
+            self.baud.blockSignals(True)
             self.baud.setCurrentText(str(r["baud"]))
+            self.baud.blockSignals(False)
             self.hw.serial_port, self.hw.baud_rate = r["port"], r["baud"]
+            nnl = r.get("protocol") == "nnl"
+            self.ctrl.blockSignals(True)
+            self.ctrl.setChecked(nnl)          # a box that answered the handshake is controlled; else just listen
+            self.ctrl.blockSignals(False)
+            self.hw.syncbox_control = nnl
             msg = f"✓ SyncBox found on {r['port']}" + (f" ({r['description']})" if r["description"] else "") + \
                 f" at {r['baud']} baud."
-            if r["trigger"]:
+            if nnl:
+                self._apply_nnl_keys()
+                msg += ("\nIt answered NNL's computer-mode handshake: ParadigmShift will configure and start it for "
+                        "each run. Trigger “s”; grip buttons set to a – d.\nClick “Simulate scanner” to let the "
+                        "SyncBox send test triggers at the paradigm TR.")
+            if r["trigger"] and not nnl:
                 self.hw.trigger_key = r["trigger"]
                 self.trig_btn.key = r["trigger"]
                 self.trig_btn._refresh()
                 msg += f"\nTrigger “{r['trigger']}”" + (f" every {r['tr']:.3f} s" if r["tr"] else "") + "."
                 if r["tr"] and abs(r["tr"] - self.tr) > 0.05:
                     msg += f"  ⚠ The paradigm TR is {self.tr:g} s."
-            else:
+            if nnl:
+                self.hw.trigger_key = NNL_TRIGGER
+                self.trig_btn.key = NNL_TRIGGER
+                self.trig_btn._refresh()
+            elif not r["trigger"]:
                 msg += ("\nNo regular trigger yet – start the scanner or the SyncBox simulation and run "
                         "auto-detect again, or click the trigger field and send one pulse.")
             others = [c for c in r["buttons"]]
@@ -355,7 +386,18 @@ class HardwareDialog(QDialog):
         self.detect_info.setText("✗ " + tips + ("\n" + "\n".join(dict.fromkeys(errors)) if errors else ""))
         self._restart_router()
 
+    def _ctrl_toggled(self, on):
+        self.hw.syncbox_control = on
+        if self.hw.sync_mode == "serial" and self._scanner is None:
+            self._restart_router()
+
+    def _hardware_sim(self) -> bool:
+        return self.hw.sync_mode == "serial" and self.hw.syncbox_control and bool(self.hw.serial_port)
+
     def _toggle_sim(self, on):
+        if self._hardware_sim():      # let the SyncBox itself generate triggers at the TR – tests the real cable
+            self._restart_router(simulate=on)
+            return
         if on:
             self._sim = QTimer(self)
             self._sim.timeout.connect(lambda: self._on_trigger(now()))
@@ -396,7 +438,15 @@ class HardwareDialog(QDialog):
             self._add_row(b)
         add = QPushButton("＋ Add button")
         add.clicked.connect(lambda: self._add_row(GripButton(f"Button {len(self._rows) + 1}", ""), new=True))
-        lay.addWidget(add, 0, Qt.AlignLeft)
+        nnl = QPushButton("Use NNL serial keys (a – d)")
+        nnl.setToolTip("In serial mode the SyncBox sends a = left thumb, b = left index, c = right index, "
+                       "d = right thumb.")
+        nnl.clicked.connect(self._apply_nnl_keys)
+        row_ = QHBoxLayout()
+        row_.addWidget(add)
+        row_.addWidget(nnl)
+        row_.addStretch()
+        lay.addLayout(row_)
 
         box = QFrame()
         box.setObjectName("Panel")
@@ -438,6 +488,13 @@ class HardwareDialog(QDialog):
         if new:
             self._refresh_combos()
 
+    def _apply_nnl_keys(self):
+        """NNL's serial keys: a/b/c/d for left thumb, left index, right index, right thumb."""
+        for i, (_lamp, _name, keybtn, _rm, b) in enumerate(self._rows):
+            k = NNL_BUTTON_KEYS.get(b.name) or ("abcd"[i] if i < 4 else b.key)
+            b.key = keybtn.key = k
+            keybtn._refresh()
+
     def _remove_row(self, row):
         for wdg in row[:4]:
             wdg.hide()
@@ -466,10 +523,11 @@ class HardwareDialog(QDialog):
         self.last.setText(f"Last button: {name}")
 
     # -- input -----------------------------------------------------------------
-    def _restart_router(self):
+    def _restart_router(self, simulate: bool = False):
         if self._router:
             self._router.stop()
-        self._router = InputRouter(self.hw, parent=self)
+        self._router = InputRouter(self.hw, simulate, self.tr, parent=self)
+        self._router.status.connect(lambda m: self.ser_note.setText("✓ " + m))
         self._router.trigger.connect(self._on_trigger)
         self._router.button.connect(self._on_button)
         self._router.other.connect(lambda k, _t: self.last.setText(f"Key “{k}” is not assigned to a button")

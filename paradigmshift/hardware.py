@@ -142,6 +142,20 @@ class PortScanner(QThread):
             self.finished_scan.emit([], ["No serial ports found. Is the SyncBox connected by USB and switched on? "
                                          "If it is set to USB keyboard mode, it does not appear as a serial port."])
             return
+        # 1) NNL handshake: a SyncBox answers the computer-mode command – no scanner needs to run
+        for dev in ports:
+            for baud in self.bauds:
+                if self._stop:
+                    break
+                self.progress.emit(f"Asking {dev} at {baud} baud whether it is an NNL SyncBox …")
+                if nnl_probe(dev, baud):
+                    res = {"port": dev, "baud": baud, "description": info.get(dev, {}).get("description", ""),
+                           "protocol": "nnl", "chars": {}, "trigger": NNL_TRIGGER, "tr": None, "buttons": [],
+                           "printable": 1.0}
+                    self.found.emit(res)
+                    self.finished_scan.emit([res], errors)
+                    return
+        # 2) fallback: listen for a device that sends on its own (scanner running / grips pressed)
         for baud in self.bauds:
             if self._stop:
                 break
@@ -191,33 +205,108 @@ class PortScanner(QThread):
         self.finished_scan.emit(results, errors)
 
 
+# =============================================================================
+# NordicNeuroLab SyncBox serial protocol (from NNL's py_syncbox, NordicNeuroLab.py)
+# =============================================================================
+# Every command byte is echoed by the SyncBox. "C" = computer mode, "R" + 48-byte configuration, "S" = start,
+# "A" = stop, "D" = back to manual mode. During a session it sends "s" for each trigger and "a"–"d" for the
+# ResponseGrip buttons.
+NNL_COMPUTER_MODE, NNL_CONFIGURE, NNL_START, NNL_STOP, NNL_MANUAL = b"C", b"R", b"S", b"A", b"D"
+NNL_TRIGGER = "s"
+NNL_BUTTON_KEYS = {"Left thumb": "a", "Left index": "b", "Right index": "c", "Right thumb": "d"}
+
+
+def nnl_payload(volumes: int, tr_ms: int, simulation: bool = False, slices: int = 1, pulse_ms: int = 100,
+                trigger_slice: int = 1, trigger_volume: int = 1, every_slice: int = 0, every_volume: int = 0) -> bytes:
+    """The 48-byte configuration: 12 values as 4-digit ASCII, in NNL's order."""
+    vals = [0, volumes, slices, pulse_ms, tr_ms, trigger_slice, trigger_volume, 0, 0, every_slice, every_volume,
+            0 if simulation else 1]
+    return b"".join(f"{max(0, min(9999, int(v))):04d}".encode() for v in vals)
+
+
+def nnl_command(ser, payload: bytes, timeout: float = 1.0) -> bool:
+    """Send *payload* and wait until the SyncBox echoes it."""
+    ser.write(payload)
+    buf = b""
+    end = now() + timeout
+    while now() < end:
+        buf += ser.read(max(1, len(payload) - len(buf)))
+        if payload in buf:
+            return True
+        if not buf:
+            time.sleep(0.005)
+    return False
+
+
+def nnl_probe(port: str, baud: int = 57600, timeout: float = 0.6) -> bool:
+    """Is there a SyncBox on *port*? (It answers the computer-mode command; it is put back to manual mode.)"""
+    if serial is None:
+        return False
+    try:
+        with serial.Serial(port, baud, timeout=0.02, write_timeout=1) as ser:
+            ser.reset_input_buffer()
+            if nnl_command(ser, NNL_COMPUTER_MODE, timeout):
+                nnl_command(ser, NNL_MANUAL, timeout)
+                return True
+    except Exception:  # noqa: BLE001 – busy / missing / not a serial device: not a SyncBox for us
+        return False
+    return False
+
+
 class SerialReader(QThread):
     received = Signal(str, float)
     failed = Signal(str)
+    status = Signal(str)
 
-    def __init__(self, port: str, baud: int, parent=None):
+    def __init__(self, port: str, baud: int, control: dict | None = None, parent=None):
+        """*control*: if given, run NNL's protocol (computer mode → configure → start) with these
+        :func:`nnl_payload` arguments, and stop / return to manual mode when finished."""
         super().__init__(parent)
-        self.port, self.baud = port, baud
+        self.port, self.baud, self.control = port, baud, control
         self._stop = False
+
+    def _handshake(self, ser) -> bool:
+        steps = [(NNL_COMPUTER_MODE, "computer mode"), (NNL_CONFIGURE, "configure"),
+                 (nnl_payload(**self.control), "configuration"), (NNL_START, "start")]
+        ser.reset_input_buffer()
+        for payload, name in steps:
+            if not nnl_command(ser, payload):
+                self.failed.emit(f"The SyncBox on {self.port} did not confirm “{name}”. Is it switched on and set "
+                                 "to serial mode, and is no other program (e.g. NNL software) using it?")
+                nnl_command(ser, NNL_MANUAL, 0.5)
+                return False
+        mode = "simulation" if self.control.get("simulation") else "synchronisation"
+        self.status.emit(f"SyncBox on {self.port}: computer mode, {mode}"
+                         + (f" at TR {self.control['tr_ms'] / 1000:g} s" if self.control.get("simulation") else "")
+                         + " – ready.")
+        return True
 
     def run(self):
         if serial is None:
             self.failed.emit(MISSING_SERIAL)
             return
         try:
-            with serial.Serial(self.port, self.baud, timeout=0.001) as ser:
-                ser.reset_input_buffer()
+            with serial.Serial(self.port, self.baud, timeout=0.02, write_timeout=1) as ser:
+                if self.control is not None and not self._handshake(ser):
+                    return
+                ser.timeout = 0.001
+                if self.control is None:
+                    ser.reset_input_buffer()
                 while not self._stop:
                     data = ser.read(64)
                     t = now()
                     for ch in data.decode("latin-1"):
                         self.received.emit(ch, t)
+                if self.control is not None:   # end the session and give the box back to its own menu
+                    ser.timeout = 0.02
+                    nnl_command(ser, NNL_STOP, 0.5)
+                    nnl_command(ser, NNL_MANUAL, 0.5)
         except Exception as exc:  # noqa: BLE001 – surface any port error to the UI
             self.failed.emit(friendly_serial_error(str(exc), self.port))
 
     def stop(self):
         self._stop = True
-        self.wait(500)
+        self.wait(2000)
 
 
 class InputRouter(QObject):
@@ -226,9 +315,15 @@ class InputRouter(QObject):
     other = Signal(str, float)       # unmapped key
     error = Signal(str)
 
-    def __init__(self, hw: Hardware, simulate_scanner: bool = False, tr: float = 2.0, parent=None):
+    status = Signal(str)
+
+    def __init__(self, hw: Hardware, simulate_scanner: bool = False, tr: float = 2.0, parent=None,
+                 volumes: int = 9999):
         super().__init__(parent)
         self.hw = hw
+        self.volumes = volumes
+        # a SyncBox we control simulates the scanner itself – then its triggers are real input
+        self.hardware_sim = bool(simulate_scanner and hw.sync_mode == "serial" and hw.syncbox_control)
         self._reader: SerialReader | None = None
         self._sim = QTimer(self)
         self._sim.setTimerType(Qt.PreciseTimer)
@@ -240,13 +335,18 @@ class InputRouter(QObject):
         if self.hw.sync_mode == "serial" and not self.hw.serial_port:
             self.error.emit("Serial mode is selected but no port is set – open Hardware and click Auto-detect.")
         if self.hw.sync_mode == "serial" and self.hw.serial_port:
-            self._reader = SerialReader(self.hw.serial_port, self.hw.baud_rate, self)
+            control = None
+            if self.hw.syncbox_control:
+                control = dict(volumes=self.volumes, tr_ms=int(round(self.tr * 1000)), simulation=self.hardware_sim,
+                               slices=self.hw.syncbox_slices, pulse_ms=self.hw.syncbox_pulse_ms)
+            self._reader = SerialReader(self.hw.serial_port, self.hw.baud_rate, control, self)
             self._reader.received.connect(self.feed)
             self._reader.failed.connect(self.error)
+            self._reader.status.connect(self.status)
             self._reader.start()
 
     def start_simulation(self):
-        if self.simulate_scanner and self.tr > 0:
+        if self.simulate_scanner and self.tr > 0 and not self.hardware_sim:
             self.trigger.emit(now())
             self._sim.start(int(round(self.tr * 1000)))
 
@@ -262,7 +362,7 @@ class InputRouter(QObject):
             return
         t = now() if t is None else t
         if text.lower() == self.hw.trigger_key.lower():
-            if not self.simulate_scanner:
+            if not self.simulate_scanner or self.hardware_sim:
                 self.trigger.emit(t)
             return
         name = self.hw.button_for_key(text)

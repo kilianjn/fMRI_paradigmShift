@@ -165,21 +165,21 @@ the paradigm with each run). **Options → Preferences…** (Ctrl+,) has the res
 ## Scanner hardware (NNL)
 
 * **SyncBox** – *USB keyboard mode* (default): the trigger arrives as a key, default `s`.
-  *Serial mode*: the SyncBox appears as a COM port (`/dev/ttyUSB…` on Linux). Click **🔍 Auto-detect SyncBox**
-  in the Hardware dialog. While the scanner (or the SyncBox's simulation mode) is running, or while you press
-  grip buttons, it listens on every serial port at the common baud rates and works out:
-  * the port and the baud rate;
-  * the trigger character: the one that arrives at a steady rhythm. The measured TR is compared with the
-    paradigm's TR.
-  * which other characters are grip buttons.
-
-  Ports whose USB description names NordicNeuroLab/SyncBox are marked ★ and tried first. If key presses
-  arrive instead of serial data, the SyncBox is in keyboard mode, and the dialog switches to that.
-  **↻ Refresh ports** re-reads the port list. Errors come with a fix:
-  * port not found → check the cable and power;
-  * port in use → close the other program, e.g. NNL software;
-  * no permission on Linux → join the `dialout` group.
-* **ResponseGrips** – four named buttons by default (`1`–`4`); rename, add, or re-learn keys in the Hardware dialog.
+  *Serial mode* follows **NordicNeuroLab's own serial protocol** (from NNL's
+  [py_syncbox](https://github.com/nordicneurolab/py_syncbox)): 57600 baud, trigger `s`, grips `a`–`d`.
+  * **🔍 Auto-detect SyncBox** sends NNL's computer-mode command to every serial port. The SyncBox answers it,
+    so it is found without the scanner running. Port, baud rate, trigger `s` and grip keys `a`–`d` are set.
+    If no box answers, the app falls back to listening for a device that sends on its own.
+  * With **Control the SyncBox from ParadigmShift** (on by default), each run switches the SyncBox to computer
+    mode and configures it with the paradigm's TR and number of volumes (+ dummy scans + margin). Then it
+    starts in synchronisation mode. After the run the box is stopped and returned to manual mode.
+  * **Simulate scanner** then uses the SyncBox's own simulation, which tests the real cable path. The same
+    happens in the run dialog's *Simulate scanner*.
+  * Errors say what to do: port not found, port in use (e.g. by NNL software), Linux `dialout` permission,
+    and "the SyncBox did not confirm …".
+* **ResponseGrips** – four named buttons. Default keys are `1`–`4` (keyboard mode). For serial mode,
+  *Use NNL serial keys (a – d)* sets them, which auto-detect also does. Rename, add, or re-learn keys in the
+  Hardware dialog.
 * **Rating scales** – *direct* (each grip button = one value) or *cursor* (move ◀ ▶, confirm ✓).
 * **Simulate scanner** – test any paradigm on a laptop; triggers are generated at the TR.
 

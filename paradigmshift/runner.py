@@ -430,7 +430,11 @@ class RunController(QObject):
         for b in paradigm.blocks:          # preload pictures – no disk access while running
             for f in b.image_files():
                 load_pixmap(f)
-        self.router = InputRouter(paradigm.hardware, settings.get("simulate", False), paradigm.tr, self)
+        # a controlled SyncBox is told how many volumes to expect (+ a margin, so it never stops early)
+        self.router = InputRouter(paradigm.hardware, settings.get("simulate", False), paradigm.tr, self,
+                                  volumes=paradigm.volumes + paradigm.dummy_scans + 20)
+        self.hw_status = ""
+        self.router.status.connect(self._on_hw_status)
         self.router.trigger.connect(self._on_trigger)
         self.router.button.connect(self._on_button)
         self.router.error.connect(self._on_error)
@@ -544,6 +548,10 @@ class RunController(QObject):
     def _on_button(self, name, t):
         if self.state.on_button(name, t):
             self.stimulusChanged.emit()
+        self.changed.emit()
+
+    def _on_hw_status(self, msg):
+        self.hw_status = msg
         self.changed.emit()
 
     def _on_error(self, msg):

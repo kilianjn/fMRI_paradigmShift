@@ -429,32 +429,22 @@ def main():
     cr.timer.stop()
     cr.hide()
 
-    # 37 – serial SyncBox auto-detection (a pseudo-terminal plays the SyncBox)
+    # 37 – serial SyncBox auto-detection via NNL's handshake (a pseudo-terminal plays the SyncBox)
     if hasattr(os, "openpty"):
-        import threading
-        import time as _time
-        import tty
         from PySide6.QtCore import QEventLoop
         from paradigmshift import dialogs as dlg_mod
         from paradigmshift.hardware import PortScanner
-        master, slave = os.openpty()
-        tty.setraw(slave)
-        dev = os.ttyname(slave)
-
-        def box():
-            for i in range(60):
-                os.write(master, b"s" + (b"3" if i % 3 == 1 else b""))
-                _time.sleep(0.5)
-        threading.Thread(target=box, daemon=True).start()
+        sys.path.insert(0, os.path.join(ROOT, "tests"))
+        from fake_syncbox import FakeNNLSyncBox
+        box = FakeNNLSyncBox()
 
         class ShotScanner(PortScanner):
             def __init__(self, *a, **kw):
-                kw.update(listen_s=2.5)
                 super().__init__(*a, **kw)
-                self.ports, self.bauds = [dev], (57600,)
+                self.ports, self.bauds = [box.device], (57600,)
         real = dlg_mod.PortScanner
         dlg_mod.PortScanner = ShotScanner
-        hd = HardwareDialog(par.hardware, 0.5, win)
+        hd = HardwareDialog(par.hardware, 2.0, win)
         hd.show()
         hd._auto_detect()
         loop = QEventLoop()
@@ -462,13 +452,18 @@ def main():
         poll.timeout.connect(lambda: hd._scanner is None and loop.quit())
         poll.start(50)
         loop.exec()
-        hd.port.setItemText(0, "★ COM4 – NordicNeuroLab SyncBox (example)") if hd.port.count() else None
+        for _ in range(40):           # let the SyncBox confirm computer mode
+            app.processEvents()
+            import time as _t
+            _t.sleep(0.05)
         hd.port.setEditText("COM4")
-        hd.detect_info.setText(hd.detect_info.text().replace(dev, "COM4"))
+        for lab in (hd.detect_info, hd.ser_note):
+            lab.setText(lab.text().replace(box.device, "COM4"))
         settle(app)
         shot(hd, "37_hardware_autodetect.png")
         hd.reject()
         dlg_mod.PortScanner = real
+        box.close()
 
     win.doc.dirty = False
     QTimer.singleShot(0, app.quit)

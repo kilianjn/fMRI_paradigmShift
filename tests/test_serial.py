@@ -125,3 +125,138 @@ def test_autodetect_recognises_keyboard_mode(app, monkeypatch):
     loop.exec()
     assert dlg.rb_kb.isChecked() and "keyboard mode" in dlg.detect_info.text()
     dlg.reject()
+
+
+# ------------------------------------------------------------------ NNL protocol (computer mode)
+from paradigmshift.hardware import (InputRouter, SerialReader, nnl_payload,  # noqa: E402
+                                    nnl_probe)
+
+
+def nnl_box():
+    sys.path.insert(0, os.path.dirname(__file__))
+    from fake_syncbox import FakeNNLSyncBox
+    return FakeNNLSyncBox()
+
+
+def wait_until(app, cond, timeout=6.0):
+    end = time.time() + timeout
+    while time.time() < end and not cond():
+        app.processEvents()
+        time.sleep(0.02)
+    return cond()
+
+
+def test_nnl_payload_layout():
+    p = nnl_payload(volumes=154, tr_ms=2000, simulation=True, slices=36)
+    assert len(p) == 48
+    vals = [int(p[i:i + 4]) for i in range(0, 48, 4)]
+    assert vals == [0, 154, 36, 100, 2000, 1, 1, 0, 0, 0, 0, 0]
+    assert int(nnl_payload(volumes=20000, tr_ms=1)[4:8]) == 9999 and nnl_payload(1, 1)[-4:] == b"0001"
+
+
+@needs_pty
+def test_probe_tells_syncbox_from_other_devices(app):
+    box = nnl_box()
+    assert nnl_probe(box.device) and box.received[:2] == ["C", "D"]     # asked, then returned to manual
+    master, other = fake_syncbox(n=3)                                  # a device that only streams
+    assert not nnl_probe(other, timeout=0.3)
+    box.close()
+    os.close(master)
+
+
+@needs_pty
+def test_scanner_finds_nnl_box_by_handshake(app):
+    box = nnl_box()
+    sc = PortScanner(ports=[box.device], listen_s=1.0, bauds=(57600,))
+    out = {}
+    sc.finished_scan.connect(lambda r, e: out.update(r=r))
+    sc.start()
+    assert wait_until(app, lambda: "r" in out, 10)
+    sc.wait()
+    assert out["r"][0]["protocol"] == "nnl" and out["r"][0]["port"] == box.device
+    box.close()
+
+
+@needs_pty
+def test_controlled_session_configures_starts_and_stops(app):
+    from paradigmshift.model import Hardware
+    box = nnl_box()
+    hw = Hardware(sync_mode="serial", serial_port=box.device)
+    for i, b in enumerate(hw.buttons):
+        b.key = "abcd"[i]
+    router = InputRouter(hw, simulate_scanner=True, tr=0.3, volumes=77)
+    trig, status, names = [], [], []
+    router.button.connect(lambda n, _t: names.append(n))
+    router.trigger.connect(trig.append)
+    router.status.connect(status.append)
+    router.start()
+    router.start_simulation()                       # must not add software triggers – the box simulates
+    assert wait_until(app, lambda: len(trig) >= 3, 8)
+    assert box.config[1] == 77 and box.config[4] == 300 and box.config[11] == 0
+    assert box.received[:4] == ["C", "R", "config", "S"] and "simulation" in status[0]
+    box.press("b")
+    assert wait_until(app, lambda: names == ["Left index"], 3)
+    router.stop()
+    assert box.received[-2:] == ["A", "D"]          # stopped and back in manual mode
+    box.close()
+
+
+@needs_pty
+def test_handshake_failure_is_reported(app):
+    from paradigmshift.model import Hardware
+    master, dev = fake_syncbox(n=2)                 # streams, but never answers commands
+    errs = []
+    r = SerialReader(dev, 57600, control=dict(volumes=10, tr_ms=2000))
+    r.failed.connect(errs.append)
+    r.start()
+    assert wait_until(app, lambda: bool(errs), 6)
+    r.wait()
+    assert "did not confirm" in errs[0]
+    os.close(master)
+
+
+@needs_pty
+def test_dialog_detects_nnl_box_and_simulates_with_it(app, monkeypatch):
+    box = nnl_box()
+
+    class Only(PortScanner):
+        def __init__(self, *a, **kw):
+            super().__init__(*a, **kw)
+            self.ports, self.bauds = [box.device], (57600,)
+    monkeypatch.setattr(dialogs, "PortScanner", Only)
+    dlg = dialogs.HardwareDialog(Hardware(), 0.3)
+    dlg._auto_detect()
+    assert wait_until(app, lambda: dlg._scanner is None, 10)
+    assert dlg.hw.syncbox_control and dlg.ctrl.isChecked() and dlg.hw.trigger_key == "s"
+    assert [b.key for b in dlg.hw.buttons] == ["a", "b", "c", "d"]
+    dlg.sim_btn.setChecked(True)                    # SyncBox's own simulation
+    assert wait_until(app, lambda: len(dlg._triggers) >= 3, 8)
+    assert box.config[11] == 0
+    dlg.reject()
+    assert box.received[-1] == "D"
+    box.close()
+
+
+@needs_pty
+def test_full_run_with_syncbox_simulation(app, tmp_path):
+    import csv
+
+    from paradigmshift.controlroom import open_run
+    from paradigmshift.model import Block, Paradigm
+    box = nnl_box()
+    par = Paradigm(tr=0.25, dummy_scans=1)
+    par.hardware.sync_mode, par.hardware.serial_port = "serial", box.device
+    for i, b in enumerate(par.hardware.buttons):
+        b.key = "abcd"[i]
+    par.blocks += [Block.create("fixation", 0, 0.5), Block.create("response", 0, 1.0)]
+    c, pw, cr = open_run(par, {"sub": "x", "run": 1, "out_dir": str(tmp_path), "simulate": True,
+                               "fullscreen": False, "screen": 0, "save_paradigm_with_data": False})
+    assert wait_until(app, lambda: c.phase == "running", 8)
+    box.press("b")
+    assert wait_until(app, lambda: c.phase == "done", 8)
+    rows = list(csv.DictReader(open(c.files[0]), delimiter="\t"))
+    assert [r["response"] for r in rows if r["block"] == "response"] == ["Left index"]
+    assert box.config[1] == par.volumes + 1 + 20 and box.received[-2:] == ["A", "D"]
+    assert "computer mode" in c.hw_status
+    cr.close()
+    box.close()
