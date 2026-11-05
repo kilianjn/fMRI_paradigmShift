@@ -9,7 +9,7 @@ from PySide6.QtGui import QColor, QGuiApplication, QPainter
 from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog, QFormLayout,
                                QFrame, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
                                QRadioButton, QSpinBox, QTableWidget, QTableWidgetItem, QTabWidget,
-                               QVBoxLayout, QWidget, QHeaderView, QButtonGroup, QMessageBox)
+                               QVBoxLayout, QWidget, QHeaderView, QButtonGroup, QMessageBox, QScrollArea)
 
 from . import theme
 from .hardware import InputRouter, list_serial_ports, now, serial_available
@@ -697,14 +697,33 @@ _OPT_LABELS = {
     "tr": ("TR", " s"), "face_blocks": ("Face blocks", ""), "trials_per_block": ("Trials per block", ""),
     "trial_dur": ("Trial length", " s"), "instruction_dur": ("Instruction", " s"),
     "faces_dir": ("Faces folder", ""), "shapes_dir": ("Shapes folder", ""), "seed": ("Random seed", ""),
-    "n_trials": ("Trials", ""), "nogo_percent": ("No-Go trials", " %"), "stim_time": ("Letter visible", " s"),
+    "n_trials": ("Trials", ""), "nogo_percent": ("No-Go trials", " %"), "stim_time": ("Stimulus visible", " s"),
     "go_letters": ("Go letters", ""), "nogo_letter": ("No-Go letter", ""),
     "rest_every": ("Rest after every", " trials"), "rest_dur": ("Rest length", " s"),
     "jitter_max": ("Extra jitter up to", " s"), "button": ("Go button", ""),
     "trials_per_condition": ("Trials per condition", ""), "include_increase": ("Add INCREASE condition", ""),
     "cue_dur": ("Cue", " s"), "picture_dur": ("Picture", " s"), "rating_dur": ("Rating", " s"),
-    "iti_min": ("Relax from", " s"), "iti_max": ("Relax up to", " s"), "rating_max": ("Rating scale 1 to", ""),
+    "iti_min": ("Pause between, from", " s"), "iti_max": ("Pause between, up to", " s"), "rating_max": ("Rating scale 1 to", ""),
     "neutral_dir": ("Neutral pictures", ""), "negative_dir": ("Negative pictures", ""),
+    # resting / motor / checkerboard
+    "minutes": ("Length", " min"), "fixation": ("Fixation cross (eyes open)", ""), "instruction": ("Instruction", ""),
+    "include_both": ("Add “both hands” blocks", ""), "block_dur": ("Block length", " s"),
+    "cycles": ("Cycles", ""), "random_order": ("Random order per cycle", ""),
+    "record_taps": ("Record taps (control room)", ""), "on_dur": ("Checkerboard ON", " s"),
+    "off_dur": ("Grey OFF", " s"), "flicker_hz": ("Flicker", " Hz"),
+    # n-back
+    "levels": ("N-back levels", ""), "blocks_per_level": ("Blocks per level", ""),
+    "target_percent": ("Targets", " %"), "letters": ("Letters", ""), "zero_back_target": ("0-back target", ""),
+    "target_button": ("Target button", ""),
+    # stroop / flanker
+    "incongruent_percent": ("Incongruent", " %"), "neutral_percent": ("Neutral", " %"),
+    "use_yellow": ("4 colours (incl. yellow)", ""), "words": ("Colour words", ""),
+    "red_button": ("Red ink →", ""), "green_button": ("Green ink →", ""), "blue_button": ("Blue ink →", ""),
+    "yellow_button": ("Yellow ink →", ""), "left_button": ("Left answer", ""), "right_button": ("Right answer", ""),
+    # MID
+    "amount": ("Amount", ""), "anticipation_min": ("Anticipation from", " s"),
+    "anticipation_max": ("Anticipation up to", " s"), "target_dur": ("Target visible", " s"),
+    "feedback_dur": ("Feedback", " s"),
 }
 _OPT_TIPS = {
     "faces_dir": "Folder with angry and fearful faces (e.g. NimStim or KDEF). Empty = built-in placeholder faces.",
@@ -714,6 +733,10 @@ _OPT_TIPS = {
     "nogo_percent": "Share of No-Go trials. They never follow each other directly.",
     "trial_dur": "Time per trial (stimulus onset to next onset).",
     "seed": "Change to get a different random order. Same seed = same paradigm.",
+    "levels": "Comma-separated memory loads, e.g. “0, 2” or “0, 1, 2”.",
+    "words": "One word per colour in the order red, green, blue, yellow – translate as needed.",
+    "target_dur": "Pressing while the target is visible counts as a hit. Typical: 0.2–0.4 s.",
+    "stim_time": "How long the stimulus stays on screen (0 = whole trial).",
 }
 
 
@@ -782,7 +805,7 @@ class TemplateDialog(QDialog):
         super().__init__(parent)
         from .templates import TEMPLATES
         self.setWindowTitle("New paradigm from template")
-        self.resize(940, 640)
+        self.resize(1000, 720)
         self.hw = hw
         self.stim_dir = stim_dir
         self.templates = {t.key: t for t in TEMPLATES}
@@ -794,19 +817,34 @@ class TemplateDialog(QDialog):
         root.addWidget(_hint("Pick a classic task, adjust the numbers, and get a complete, editable timeline. "
                              "Without your own stimulus folders, placeholder pictures are generated – replace "
                              "them with a validated set for real studies."))
+        from .templates import CATEGORIES
         body = QHBoxLayout()
         side = QVBoxLayout()
+        side.setSpacing(6)
         self.cards = {}
-        for tpl in TEMPLATES:
-            c = TemplateCard(tpl)
-            c.clicked.connect(self.select)
-            side.addWidget(c)
-            self.cards[tpl.key] = c
+        for cat in CATEGORIES + [""]:
+            group = [t for t in TEMPLATES if t.category == cat]
+            if not group:
+                continue
+            if cat:
+                head = QLabel(cat.upper())
+                head.setObjectName("PanelTitle")
+                head.setStyleSheet("margin-top: 6px;")
+                side.addWidget(head)
+            for tpl in group:
+                c = TemplateCard(tpl)
+                c.clicked.connect(self.select)
+                side.addWidget(c)
+                self.cards[tpl.key] = c
         side.addStretch()
         sw = QWidget()
         sw.setLayout(side)
-        sw.setFixedWidth(290)
-        body.addWidget(sw)
+        list_scroll = QScrollArea()
+        list_scroll.setWidget(sw)
+        list_scroll.setWidgetResizable(True)
+        list_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        list_scroll.setFixedWidth(300)
+        body.addWidget(list_scroll)
         right = QFrame()
         right.setObjectName("Panel")
         self.rlay = QVBoxLayout(right)
@@ -851,6 +889,8 @@ class TemplateDialog(QDialog):
         while self.form_host.count():
             w = self.form_host.takeAt(0).widget()
             if w:
+                w.hide()              # gone immediately, not only when the event loop gets to deleteLater
+                w.setParent(None)
                 w.deleteLater()
         holder = QWidget()
         form = QFormLayout(holder)
@@ -864,11 +904,15 @@ class TemplateDialog(QDialog):
             if f.name.endswith("_dir"):
                 w = FolderField(v)
                 w.changed.connect(self._update)
-            elif f.name == "button":
+            elif f.name == "button" or f.name.endswith("_button"):
                 w = QComboBox()
-                w.addItem("Any grip button", "any")
+                if f.name == "button":
+                    w.addItem("Any grip button", "any")
                 for n in self.hw.button_names():
                     w.addItem(n, n)
+                if w.findData(v) < 0:     # a default name that this hardware setup does not have
+                    w.addItem(v, v)
+                w.setCurrentIndex(max(0, w.findData(v)))
                 w.currentIndexChanged.connect(self._update)
             elif isinstance(v, bool):
                 w = QCheckBox()
@@ -888,7 +932,11 @@ class TemplateDialog(QDialog):
                 w.setToolTip(_OPT_TIPS[f.name])
             self.inputs[f.name] = w
             form.addRow(label, w)
-        self.form_host.addWidget(holder)
+        form_scroll = QScrollArea()
+        form_scroll.setWidget(holder)
+        form_scroll.setWidgetResizable(True)
+        form_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.form_host.addWidget(form_scroll)
         self._update()
 
     def options(self):

@@ -1,0 +1,1651 @@
+{
+  "name": "Motor localizer",
+  "tr": 2.0,
+  "dummy_scans": 3,
+  "background": "#000000",
+  "waiting_screen": "fixation",
+  "waiting_text": "The measurement will start in a moment.",
+  "end_text": "Thank you!",
+  "tracks": [
+    "Stimuli",
+    "Responses"
+  ],
+  "blocks": [
+    {
+      "kind": "text",
+      "start": 0.0,
+      "duration": 8.0,
+      "track": 0,
+      "label": "Instructions",
+      "condition": "instruction",
+      "params": {
+        "text": "When a hand is shown, tap your fingers against the thumb\nof that hand \u2013 quickly and steadily.\n\nWhen you see the cross, rest.",
+        "size": 34,
+        "color": "#FFFFFF"
+      },
+      "id": "46ebdf3d91"
+    },
+    {
+      "kind": "fixation",
+      "start": 8.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "aa88690ccb"
+    },
+    {
+      "kind": "text",
+      "start": 28.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "TAP LEFT HAND",
+      "condition": "tap_left",
+      "params": {
+        "text": "TAP\nLEFT HAND",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "748c614501"
+    },
+    {
+      "kind": "response",
+      "start": 28.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "926152f38b"
+    },
+    {
+      "kind": "response",
+      "start": 30.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "4c08e4fed9"
+    },
+    {
+      "kind": "response",
+      "start": 32.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "78fb2477a5"
+    },
+    {
+      "kind": "response",
+      "start": 34.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "06dd839d0d"
+    },
+    {
+      "kind": "response",
+      "start": 36.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "0264a5a4f9"
+    },
+    {
+      "kind": "response",
+      "start": 38.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "8f7bee623a"
+    },
+    {
+      "kind": "response",
+      "start": 40.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "e435fff773"
+    },
+    {
+      "kind": "response",
+      "start": 42.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "af30f37f33"
+    },
+    {
+      "kind": "response",
+      "start": 44.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "338ae4a87d"
+    },
+    {
+      "kind": "response",
+      "start": 46.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "c4e7c0e6e1"
+    },
+    {
+      "kind": "fixation",
+      "start": 48.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "0e4707e884"
+    },
+    {
+      "kind": "text",
+      "start": 68.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "TAP RIGHT HAND",
+      "condition": "tap_right",
+      "params": {
+        "text": "TAP\nRIGHT HAND",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "4079ae10c1"
+    },
+    {
+      "kind": "response",
+      "start": 68.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "65a6f1869c"
+    },
+    {
+      "kind": "response",
+      "start": 70.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "a1b585bef8"
+    },
+    {
+      "kind": "response",
+      "start": 72.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "e2c7c64624"
+    },
+    {
+      "kind": "response",
+      "start": 74.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "67cf62d84e"
+    },
+    {
+      "kind": "response",
+      "start": 76.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "92eea42dd6"
+    },
+    {
+      "kind": "response",
+      "start": 78.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "37cda43d75"
+    },
+    {
+      "kind": "response",
+      "start": 80.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "371e734ff0"
+    },
+    {
+      "kind": "response",
+      "start": 82.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "d68350d0aa"
+    },
+    {
+      "kind": "response",
+      "start": 84.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "b76b157f13"
+    },
+    {
+      "kind": "response",
+      "start": 86.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "79f9e35afe"
+    },
+    {
+      "kind": "fixation",
+      "start": 88.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "05c98222c2"
+    },
+    {
+      "kind": "text",
+      "start": 108.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "TAP LEFT HAND",
+      "condition": "tap_left",
+      "params": {
+        "text": "TAP\nLEFT HAND",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "0be42e369d"
+    },
+    {
+      "kind": "response",
+      "start": 108.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "2a18eda013"
+    },
+    {
+      "kind": "response",
+      "start": 110.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "7fbf8c8481"
+    },
+    {
+      "kind": "response",
+      "start": 112.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "2da258e6d1"
+    },
+    {
+      "kind": "response",
+      "start": 114.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "050b93260d"
+    },
+    {
+      "kind": "response",
+      "start": 116.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "0d8804a045"
+    },
+    {
+      "kind": "response",
+      "start": 118.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "46800254d1"
+    },
+    {
+      "kind": "response",
+      "start": 120.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "ac2310e140"
+    },
+    {
+      "kind": "response",
+      "start": 122.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "5900e33013"
+    },
+    {
+      "kind": "response",
+      "start": 124.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "b1057d447d"
+    },
+    {
+      "kind": "response",
+      "start": 126.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "ea51fe7dc3"
+    },
+    {
+      "kind": "fixation",
+      "start": 128.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "db353e92c9"
+    },
+    {
+      "kind": "text",
+      "start": 148.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "TAP RIGHT HAND",
+      "condition": "tap_right",
+      "params": {
+        "text": "TAP\nRIGHT HAND",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "ab82c6bfd1"
+    },
+    {
+      "kind": "response",
+      "start": 148.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "a6fadef24c"
+    },
+    {
+      "kind": "response",
+      "start": 150.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "2597954d5f"
+    },
+    {
+      "kind": "response",
+      "start": 152.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "9819fd3eb1"
+    },
+    {
+      "kind": "response",
+      "start": 154.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "cd51888671"
+    },
+    {
+      "kind": "response",
+      "start": 156.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "5475a38b28"
+    },
+    {
+      "kind": "response",
+      "start": 158.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "85bed733ee"
+    },
+    {
+      "kind": "response",
+      "start": 160.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "e3ea3b2b11"
+    },
+    {
+      "kind": "response",
+      "start": 162.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "f60737e6f3"
+    },
+    {
+      "kind": "response",
+      "start": 164.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "0715d549ea"
+    },
+    {
+      "kind": "response",
+      "start": 166.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "d4a8ece36a"
+    },
+    {
+      "kind": "fixation",
+      "start": 168.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "2897a0f347"
+    },
+    {
+      "kind": "text",
+      "start": 188.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "TAP LEFT HAND",
+      "condition": "tap_left",
+      "params": {
+        "text": "TAP\nLEFT HAND",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "f2249ab01c"
+    },
+    {
+      "kind": "response",
+      "start": 188.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "adbf6bb181"
+    },
+    {
+      "kind": "response",
+      "start": 190.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "7cef667993"
+    },
+    {
+      "kind": "response",
+      "start": 192.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "b9cd3b1322"
+    },
+    {
+      "kind": "response",
+      "start": 194.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "dcf4be3e86"
+    },
+    {
+      "kind": "response",
+      "start": 196.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "e60e07f0a0"
+    },
+    {
+      "kind": "response",
+      "start": 198.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "5bcf185d5b"
+    },
+    {
+      "kind": "response",
+      "start": 200.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "095d6de207"
+    },
+    {
+      "kind": "response",
+      "start": 202.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "25332c0a0f"
+    },
+    {
+      "kind": "response",
+      "start": 204.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "66f78fcb46"
+    },
+    {
+      "kind": "response",
+      "start": 206.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "fede11b790"
+    },
+    {
+      "kind": "fixation",
+      "start": 208.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3669478a90"
+    },
+    {
+      "kind": "text",
+      "start": 228.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "TAP RIGHT HAND",
+      "condition": "tap_right",
+      "params": {
+        "text": "TAP\nRIGHT HAND",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "7237af4b5f"
+    },
+    {
+      "kind": "response",
+      "start": 228.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "fca0926c8d"
+    },
+    {
+      "kind": "response",
+      "start": 230.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "66ac6dcf29"
+    },
+    {
+      "kind": "response",
+      "start": 232.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "21d9149462"
+    },
+    {
+      "kind": "response",
+      "start": 234.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "a524f07fc8"
+    },
+    {
+      "kind": "response",
+      "start": 236.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "19ea7648f1"
+    },
+    {
+      "kind": "response",
+      "start": 238.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "05f210996f"
+    },
+    {
+      "kind": "response",
+      "start": 240.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "72ae68b5bc"
+    },
+    {
+      "kind": "response",
+      "start": 242.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "766057ef86"
+    },
+    {
+      "kind": "response",
+      "start": 244.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "909431b799"
+    },
+    {
+      "kind": "response",
+      "start": 246.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "b1ef00d06d"
+    },
+    {
+      "kind": "fixation",
+      "start": 248.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "b195edfb0b"
+    },
+    {
+      "kind": "text",
+      "start": 268.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "TAP LEFT HAND",
+      "condition": "tap_left",
+      "params": {
+        "text": "TAP\nLEFT HAND",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "7ebfc23a01"
+    },
+    {
+      "kind": "response",
+      "start": 268.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "a7e7074fba"
+    },
+    {
+      "kind": "response",
+      "start": 270.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "f63754dc84"
+    },
+    {
+      "kind": "response",
+      "start": 272.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "0a34cac9b5"
+    },
+    {
+      "kind": "response",
+      "start": 274.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "14bb5c725b"
+    },
+    {
+      "kind": "response",
+      "start": 276.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "b3a268c09c"
+    },
+    {
+      "kind": "response",
+      "start": 278.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "b4f66da520"
+    },
+    {
+      "kind": "response",
+      "start": 280.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "eccf5e4b6b"
+    },
+    {
+      "kind": "response",
+      "start": 282.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "298ee7822a"
+    },
+    {
+      "kind": "response",
+      "start": 284.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "99c972fdf4"
+    },
+    {
+      "kind": "response",
+      "start": 286.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "894848e4d4"
+    },
+    {
+      "kind": "fixation",
+      "start": 288.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8f84a7aa43"
+    },
+    {
+      "kind": "text",
+      "start": 308.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "TAP RIGHT HAND",
+      "condition": "tap_right",
+      "params": {
+        "text": "TAP\nRIGHT HAND",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "64d6c75288"
+    },
+    {
+      "kind": "response",
+      "start": 308.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "4a947795a4"
+    },
+    {
+      "kind": "response",
+      "start": 310.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "e5451caf7c"
+    },
+    {
+      "kind": "response",
+      "start": 312.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "468b5775bb"
+    },
+    {
+      "kind": "response",
+      "start": 314.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "87790ee141"
+    },
+    {
+      "kind": "response",
+      "start": 316.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "3c61803384"
+    },
+    {
+      "kind": "response",
+      "start": 318.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "6ec1e03935"
+    },
+    {
+      "kind": "response",
+      "start": 320.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "5b919e2a46"
+    },
+    {
+      "kind": "response",
+      "start": 322.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "600d147aac"
+    },
+    {
+      "kind": "response",
+      "start": 324.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "b1b8058b17"
+    },
+    {
+      "kind": "response",
+      "start": 326.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "79265bc349"
+    },
+    {
+      "kind": "fixation",
+      "start": 328.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "098ba57caf"
+    },
+    {
+      "kind": "text",
+      "start": 348.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "TAP LEFT HAND",
+      "condition": "tap_left",
+      "params": {
+        "text": "TAP\nLEFT HAND",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "c6f755d61e"
+    },
+    {
+      "kind": "response",
+      "start": 348.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "0f7ff96862"
+    },
+    {
+      "kind": "response",
+      "start": 350.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "9c00933654"
+    },
+    {
+      "kind": "response",
+      "start": 352.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "7ae4ee8de7"
+    },
+    {
+      "kind": "response",
+      "start": 354.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "0f110116e9"
+    },
+    {
+      "kind": "response",
+      "start": 356.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "942406a832"
+    },
+    {
+      "kind": "response",
+      "start": 358.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "10167cb9ac"
+    },
+    {
+      "kind": "response",
+      "start": 360.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "8c695b7f07"
+    },
+    {
+      "kind": "response",
+      "start": 362.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "9b3ab9ec9e"
+    },
+    {
+      "kind": "response",
+      "start": 364.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "2529ea1a26"
+    },
+    {
+      "kind": "response",
+      "start": 366.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_left",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "647f1837b2"
+    },
+    {
+      "kind": "fixation",
+      "start": 368.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "016ced8908"
+    },
+    {
+      "kind": "text",
+      "start": 388.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "TAP RIGHT HAND",
+      "condition": "tap_right",
+      "params": {
+        "text": "TAP\nRIGHT HAND",
+        "size": 72,
+        "color": "#FFFFFF"
+      },
+      "id": "3d946001d7"
+    },
+    {
+      "kind": "response",
+      "start": 388.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "a352d5fe52"
+    },
+    {
+      "kind": "response",
+      "start": 390.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "dcb305b3d9"
+    },
+    {
+      "kind": "response",
+      "start": 392.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "3b4a52e683"
+    },
+    {
+      "kind": "response",
+      "start": 394.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "e8a4aa0557"
+    },
+    {
+      "kind": "response",
+      "start": 396.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "89dce10dde"
+    },
+    {
+      "kind": "response",
+      "start": 398.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "2491348c42"
+    },
+    {
+      "kind": "response",
+      "start": 400.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "fe85556398"
+    },
+    {
+      "kind": "response",
+      "start": 402.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "28fabcc3ac"
+    },
+    {
+      "kind": "response",
+      "start": 404.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "ad77fddf6b"
+    },
+    {
+      "kind": "response",
+      "start": 406.0,
+      "duration": 2.0,
+      "track": 1,
+      "label": "",
+      "condition": "tap_right",
+      "params": {
+        "buttons": "any",
+        "correct": ""
+      },
+      "id": "aa189be1ed"
+    },
+    {
+      "kind": "fixation",
+      "start": 408.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "d8fe57f147"
+    }
+  ],
+  "hardware": {
+    "sync_mode": "keyboard",
+    "trigger_key": "s",
+    "serial_port": "",
+    "baud_rate": 57600,
+    "buttons": [
+      {
+        "name": "Left thumb",
+        "key": "1"
+      },
+      {
+        "name": "Left index",
+        "key": "2"
+      },
+      {
+        "name": "Right index",
+        "key": "3"
+      },
+      {
+        "name": "Right thumb",
+        "key": "4"
+      }
+    ],
+    "move_left": "Left index",
+    "move_right": "Right index",
+    "confirm": "Right thumb"
+  },
+  "format": 1
+}

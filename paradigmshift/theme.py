@@ -147,6 +147,22 @@ def draw_kind_glyph(p: QPainter, kind: str, r: QRectF, color: QColor) -> None:
         p.drawEllipse(QPointF(r.left() + w * .32, c.y()), w * .15, w * .15)
         p.setBrush(color)
         p.drawEllipse(QPointF(r.right() - w * .32, c.y()), w * .15, w * .15)
+    elif kind == "choice":
+        bw = w * .3
+        for i, x in enumerate((r.left() + w * .14, r.right() - w * .14 - bw)):
+            p.drawRoundedRect(QRectF(x, c.y() - bw / 2, bw, bw), 2, 2)
+        p.drawLine(QPointF(r.right() - w * .14 - bw * .75, c.y()), QPointF(r.right() - w * .14 - bw * .5, c.y() + bw * .25))
+        p.drawLine(QPointF(r.right() - w * .14 - bw * .5, c.y() + bw * .25), QPointF(r.right() - w * .14 - bw * .15, c.y() - bw * .25))
+    elif kind == "feedback":
+        star = QPainterPath()
+        import math as _m
+        for i in range(10):
+            rad = (w * .34) if i % 2 == 0 else (w * .15)
+            a = -_m.pi / 2 + i * _m.pi / 5
+            pt = QPointF(c.x() + rad * _m.cos(a), c.y() + rad * _m.sin(a))
+            star.moveTo(pt) if i == 0 else star.lineTo(pt)
+        star.closeSubpath()
+        p.drawPath(star)
     elif kind == "trigger":
         path = QPainterPath(QPointF(r.left() + w * .12, c.y()))
         for i, x in enumerate((.3, .3, .5, .5, .7, .7, .88)):

@@ -22,18 +22,35 @@ python -m paradigmshift examples/emotional_rating.paradigm.json # example
 Start from a classic task with **▦ Templates** (Ctrl+T), set the numbers, and get a complete, editable
 timeline. Ready-made projects are in `examples/` (File → Open example).
 
-| Module | Design | What is logged |
-|---|---|---|
-| **Hariri face matching** (Hariri et al., 2002) | Blocks alternate *Shapes / Faces* (S F S F S F S F S). Each block has a 2 s instruction and 6 matching trials of 5 s. The participant picks which bottom face shows the same emotion (angry / fearful) as the top face; shape blocks are the control. → 4:48 min, 144 volumes at TR 2 s. | left / right answer, RT, correct |
-| **Go / No-Go** | Rapid event-related letters: 160 trials, 25 % No-Go (`X`), 0.5 s visible, 1.5 s per trial. The first trials are always Go, No-Go never repeats back to back, and there's a rest block every 40 trials. Optional jitter. | hit / miss / false alarm / correct rejection, RT |
-| **Emotion regulation** (Ochsner et al., 2002/2004) | Cue (`LOOK` / `DECREASE`, optionally `INCREASE`) 2 s → picture 7 s → rating "How negative do you feel?" 4 s → jittered relax 2–6 s. Conditions: `look_neutral`, `look_negative`, `decrease_negative`. Never more than two trials of the same condition in a row. | rating, RT per picture |
+Ten modules, grouped by research area:
 
-These rely on two block types that you can also use on their own in any paradigm:
+| Module | Default design | What is logged |
+|---|---|---|
+| **Emotion & reward** | | |
+| Hariri face matching (Hariri 2002) | S F S F … S blocks, 6 matching trials × 5 s each; angry/fearful faces vs. shapes · 4:48 min | left/right, RT, correct |
+| Emotion regulation (Ochsner 2002/04) | cue LOOK/DECREASE (opt. INCREASE) → picture 7 s → rating → jittered relax | rating, RT |
+| Monetary incentive delay (Knutson 2000/01) | cue (win/lose/nothing) → anticipation 2–2.5 s → target 0.3 s → feedback → ITI; 15 trials per condition | hit/miss, RT, feedback shown |
+| **Cognitive control** | | |
+| Go / No-Go | 160 letters, 25 % No-Go (X), never two No-Go in a row | hit, miss, false alarm, correct rejection |
+| Stroop | colour words in ink, 50 % incongruent (opt. neutral XXXX), 4 colours → 4 grip buttons, jittered ITI | correct/incorrect, RT per condition |
+| Eriksen flanker | arrows, 50 % incongruent (opt. neutral), left/right grip, jittered ITI | correct/incorrect, RT per condition |
+| **Working memory** | | |
+| N-back | blocks of 0-back and 2-back (any levels, e.g. "0, 1, 2"), 15 letters, 33 % targets, cue + rest | hit, miss, false alarm, correct rejection |
+| **Localizers & rest** | | |
+| Motor localizer | finger tapping LEFT / RIGHT (opt. BOTH) 20 s vs. rest 20 s, 5 cycles | taps per 2-s window (compliance) |
+| Visual checkerboard | 8 Hz flickering radial checkerboard 20 s vs. grey 20 s, red fixation dot | – |
+| Resting state | instruction, then 8 min fixation (eyes open) or empty screen | – |
+
+These rely on several block types that you can also use on their own in any paradigm:
 
 * **Matching trial** – three pictures (target on top, two choices below). You set the correct side and which
   grip buttons mean left and right.
 * **Go / No-Go trial** – a letter or picture that is visible for a set time, followed by a fixation symbol. No-Go
   trials are shown in red on the timeline.
+* **Choice trial** – a word, symbol or picture in any colour, plus the correct button, *any* button (hit) or
+  *no press* (withhold). Used by Stroop, flanker, N-back and the MID target.
+* **Feedback** – shows one text if the previous trial was done right and another if not (MID).
+* **Flickering image** – any image block can alternate with a second picture at a set rate (checkerboard).
 
 **Stimuli:** licensed sets such as NimStim, KDEF, IAPS or OASIS can't be redistributed, so the templates
 generate *placeholder* stimuli: schematic angry/fearful faces, geometric shapes, and abstract neutral/negative
@@ -152,6 +169,10 @@ Paradigms are saved as `*.paradigm.json` (picture paths stored relative to the f
 | ![](docs/screenshots/17_control_room_dummy_scans.png) Control room during dummy scans | ![](docs/screenshots/09_participant_waiting.png) …while the participant only sees the fixation cross |
 | ![](docs/screenshots/23_control_room_aborted.png) Aborted run: clock stopped, rest hatched | ![](docs/screenshots/20_bulk_edit_ratings.png) All 8 rating blocks edited together (≠ = different values) |
 | ![](docs/screenshots/21_find_replace.png) Find and replace in all texts | ![](docs/screenshots/22_preferences.png) Preferences |
+| ![](docs/screenshots/24_templates_stroop.png) Template list by category: Stroop | ![](docs/screenshots/25_templates_mid.png) Monetary incentive delay template |
+| ![](docs/screenshots/26_mid_editor.png) MID in the editor: cue → anticipation → target → feedback | ![](docs/screenshots/27_nback_editor.png) N-back in the editor |
+| ![](docs/screenshots/28_participant_stroop.png) Stroop trial | ![](docs/screenshots/29_participant_flanker.png) Flanker trial (incongruent) |
+| ![](docs/screenshots/30_participant_mid_feedback.png) MID feedback after a hit | ![](docs/screenshots/31_participant_checkerboard.png) Visual checkerboard |
 
 Screenshots are generated with `QT_QPA_PLATFORM=offscreen python tools/screenshots.py`.
 

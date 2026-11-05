@@ -21,8 +21,8 @@ from PySide6.QtGui import QGuiApplication, QPainter
 from PySide6.QtWidgets import QApplication, QWidget
 
 from .hardware import InputRouter, now
-from .model import Block, Paradigm
-from .stimulus import gonogo_visible, load_pixmap, paint_stimulus, paint_waiting
+from .model import SCORED_TRIAL_KINDS, Block, Paradigm
+from .stimulus import load_pixmap, paint_stimulus, paint_waiting, visual_key
 
 
 def bids_label(text: str) -> str:
@@ -38,6 +38,21 @@ def output_stem(paradigm: Paradigm, s: dict) -> str:
     return "_".join(parts)
 
 
+def trial_success(b: Block, ev: dict) -> bool:
+    """Was a finished trial done right? (Unanswered trials count as over – used for feedback blocks.)"""
+    answered = ev["response"] != "n/a"
+    if b.kind == "gonogo":
+        return answered == (b.params.get("trial", "go") == "go")
+    if b.kind == "choice":
+        corr = b.params.get("correct", "")
+        return (not answered) if corr == "" else (answered and ev["correct"] == 1)
+    if b.kind == "match":
+        return ev["correct"] == 1
+    if b.kind == "response":
+        return answered and (not b.params.get("correct") or ev["correct"] == 1)
+    return False
+
+
 class RunState:
     """Pure-Python bookkeeping of a run (kept separate from the window for testing)."""
 
@@ -48,6 +63,7 @@ class RunState:
         self.log: list[dict] = []          # raw log: triggers, buttons, onsets
         self.events: dict[str, dict] = {}  # block id -> event row
         self.ratings: dict[str, dict] = {}  # block id -> {"value", "confirmed", "rt"}
+        self.feedback: dict[str, bool] = {}  # feedback block id -> success of the trial it reports
         self.version = 0                   # bumped on every change, lets views refresh cheaply
 
     def on_trigger(self, t: float) -> bool:
@@ -99,6 +115,13 @@ class RunState:
             ev["stim_file"] = os.path.basename(b.params.get("top", "")) or "n/a"
         elif b.kind == "gonogo":
             ev["trial_type"] = b.condition or b.params.get("trial", "go")
+        elif b.kind == "feedback":
+            prev = self.p.previous_scored(b)
+            pev = self.events.get(prev.id) if prev else None
+            ok = bool(prev and pev and trial_success(prev, pev))
+            ev["outcome"] = "hit" if ok else "miss"
+            ev["label"] = b.params.get("hit_text" if ok else "miss_text", "")
+            self.feedback[b.id] = ok
         self.log.append({"time": self.rel(t), "type": "onset", "value": b.kind, "info": b.display_label})
         if b.kind == "rating":
             lo, hi = int(b.params.get("min", 1)), int(b.params.get("max", 4))
@@ -115,6 +138,8 @@ class RunState:
         ev = self.events.get(b.id)
         if b.kind == "match" and ev and ev["response"] in ("left", "right"):
             st["chosen"] = ev["response"]
+        if b.kind == "feedback":
+            st["success"] = self.feedback.get(b.id, False)
         return st
 
     def on_button(self, name: str, t: float) -> list[str]:
@@ -159,6 +184,21 @@ class RunState:
                 ev["outcome"] = "hit" if go else "false_alarm"
                 ev["correct"] = int(go)
                 changed.append(b.id)
+            elif b.kind == "choice":
+                want = b.params.get("buttons", "any")
+                if want not in ("any", name) or ev["response"] != "n/a":
+                    continue
+                corr = b.params.get("correct", "")
+                ev["response"] = name
+                ev["response_time"] = round(tt - ev["onset"], 4)
+                if corr == "":
+                    ev["outcome"], ev["correct"] = "false_alarm", 0
+                elif corr == "any":
+                    ev["outcome"], ev["correct"] = "hit", 1
+                else:
+                    ok = name == corr
+                    ev["outcome"], ev["correct"] = ("correct" if ok else "incorrect"), int(ok)
+                changed.append(b.id)
             elif b.kind == "rating":
                 st = self.ratings[b.id]
                 if st["confirmed"]:
@@ -197,6 +237,10 @@ class RunState:
                 go = b.params.get("trial", "go") == "go"
                 ev["outcome"] = "miss" if go else "correct_rejection"
                 ev["correct"] = int(not go)
+            elif b is not None and b.kind == "choice" and ev["response"] == "n/a":
+                expect = b.params.get("correct", "") != ""
+                ev["outcome"] = "miss" if expect else "correct_rejection"
+                ev["correct"] = int(not expect)
             elif b is not None and b.kind == "match" and ev["response"] == "n/a":
                 ev["outcome"] = "miss"
                 ev["correct"] = 0
@@ -219,7 +263,7 @@ class RunState:
 # =============================================================================
 # Live evaluation – used by the control room and the end-of-run summary
 # =============================================================================
-SCORED_KINDS = ("match", "gonogo", "rating", "response")
+SCORED_KINDS = ("match", "gonogo", "choice", "rating", "response")
 
 
 def live_result(b: Block, ev: dict, t: float | None) -> tuple[str, str]:
@@ -233,6 +277,17 @@ def live_result(b: Block, ev: dict, t: float | None) -> tuple[str, str]:
         if not over:
             return "…", "pending"
         return ("miss", "bad") if go else ("correct rejection", "ok")
+    if b.kind == "choice":
+        corr = b.params.get("correct", "")
+        if answered:
+            if corr == "":
+                return "false alarm", "bad"
+            if corr == "any":
+                return "hit", "ok"
+            return (f"{ev['response']} ✓", "ok") if ev["correct"] == 1 else (f"{ev['response']} ✗", "bad")
+        if not over:
+            return "…", "pending"
+        return ("correct rejection", "ok") if corr == "" else ("miss", "bad")
     if b.kind == "match":
         if answered:
             ok = ev["correct"] == 1
@@ -294,6 +349,20 @@ def live_stats(state: RunState, t: float | None = None, watchdog: int = 5) -> li
             rates.append(f"Go RT {rt:.2f}s")
         out.append(("Go / No-Go", text + "\n" + "  ·  ".join(rates),
                     "ok" if not go or n["hit"] / go >= .8 else "warn"))
+    ch = [(b, ev) for b, ev in rows if b.kind == "choice" and done(b)]
+    if ch:
+        ok = [(b, ev) for b, ev in ch if trial_success(b, ev)]
+        acc = len(ok) / len(ch)
+        per = []
+        for cond in dict.fromkeys(b.condition for b, _ in ch):
+            sub = [(b, ev) for b, ev in ch if b.condition == cond]
+            good = [(b, ev) for b, ev in sub if trial_success(b, ev)]
+            rt = _mean(ev["response_time"] for b, ev in good if ev["response"] != "n/a")
+            per.append(f"{cond or 'trials'} {len(good)}/{len(sub)}" + (f" RT {rt:.2f}s" if rt else ""))
+        fa = sum(ev["outcome"] == "false_alarm" for _, ev in ch)
+        miss = sum(b.params.get("correct", "") != "" and ev["response"] == "n/a" for b, ev in ch)
+        out.append(("Choice trials", f"{len(ok)}/{len(ch)} correct ({acc:.0%})  ·  {miss} misses  ·  "
+                    f"{fa} false alarms\n" + "  ·  ".join(per), "ok" if acc >= .8 else "warn"))
     rat = [(b, ev) for b, ev in rows if b.kind == "rating" and done(b)]
     if rat:
         given = [(b, ev) for b, ev in rat if ev["rating"] != "n/a"]
@@ -321,7 +390,8 @@ def live_stats(state: RunState, t: float | None = None, watchdog: int = 5) -> li
     # watchdog: participant stopped answering?
     if t is not None and watchdog > 0:
         recent = sorted(((b, ev) for b, ev in rows if b.kind in SCORED_KINDS and t >= b.end
-                         and not (b.kind == "gonogo" and b.params.get("trial") == "nogo")),
+                         and not (b.kind == "gonogo" and b.params.get("trial") == "nogo")
+                         and not (b.kind == "choice" and b.params.get("correct", "") == "")),
                         key=lambda x: x[0].start)[-watchdog:]
         if len(recent) == watchdog and all(ev["response"] == "n/a" for _, ev in recent):
             out.insert(0, ("Attention", f"No response in the last {watchdog} trials – check the grips and the "
@@ -355,7 +425,7 @@ class RunController(QObject):
         self.error = ""
         self._done = False
         self._t_end: float | None = None    # paradigm time at which the run ended (frozen clock)
-        self._visible = True
+        self._visual_key = ("init",)
         self._abort_armed_at = 0.0
         for b in paradigm.blocks:          # preload pictures – no disk access while running
             for f in b.image_files():
@@ -487,13 +557,10 @@ class RunController(QObject):
             self.finish()
             return
         b = self.p.stimulus_at(t)
-        changed = b is not self.current
         self.current = b
-        if b is not None and b.kind == "gonogo":
-            visible = gonogo_visible(b, t - b.start)
-            if visible != self._visible:
-                changed = True
-            self._visible = visible
+        key = visual_key(b, t - b.start) if b is not None else None
+        changed = key != self._visual_key
+        self._visual_key = key
         onset = False
         for blk in self.p.active_blocks(t):
             if blk.id not in self.state.events:

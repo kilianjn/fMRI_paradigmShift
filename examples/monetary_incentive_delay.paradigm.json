@@ -1,0 +1,3581 @@
+{
+  "name": "Monetary incentive delay",
+  "tr": 2.0,
+  "dummy_scans": 3,
+  "background": "#000000",
+  "waiting_screen": "fixation",
+  "waiting_text": "The measurement will start in a moment.",
+  "end_text": "Thank you!",
+  "tracks": [
+    "Stimuli",
+    "Responses"
+  ],
+  "blocks": [
+    {
+      "kind": "text",
+      "start": 0.0,
+      "duration": 12.0,
+      "track": 0,
+      "label": "Instructions",
+      "condition": "instruction",
+      "params": {
+        "text": "A shape tells you what is at stake:\ncircle = you can WIN 1 \u20ac   \u00b7   square = you can avoid LOSING 1 \u20ac   \u00b7   triangle = no money\n\nThen press a button as fast as you can when the white square appears.",
+        "size": 30,
+        "color": "#FFFFFF"
+      },
+      "id": "2cb7018fd3"
+    },
+    {
+      "kind": "fixation",
+      "start": 12.0,
+      "duration": 6.0,
+      "track": 0,
+      "label": "Get ready",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "d56745c887"
+    },
+    {
+      "kind": "image",
+      "start": 18.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "70b661378a"
+    },
+    {
+      "kind": "fixation",
+      "start": 20.0,
+      "duration": 2.1,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "b05234341e"
+    },
+    {
+      "kind": "choice",
+      "start": 22.1,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "da7f62ea82"
+    },
+    {
+      "kind": "feedback",
+      "start": 22.4,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "be4da51548"
+    },
+    {
+      "kind": "fixation",
+      "start": 24.4,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "300c9bf449"
+    },
+    {
+      "kind": "image",
+      "start": 27.65,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "33aea36263"
+    },
+    {
+      "kind": "fixation",
+      "start": 29.65,
+      "duration": 2.0,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8920dd6737"
+    },
+    {
+      "kind": "choice",
+      "start": 31.65,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "2d4534263e"
+    },
+    {
+      "kind": "feedback",
+      "start": 31.95,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "e8309622a7"
+    },
+    {
+      "kind": "fixation",
+      "start": 33.95,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "5257c3b8c0"
+    },
+    {
+      "kind": "image",
+      "start": 36.45,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "fc6ff463a3"
+    },
+    {
+      "kind": "fixation",
+      "start": 38.45,
+      "duration": 2.1,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "a64d0f8e26"
+    },
+    {
+      "kind": "choice",
+      "start": 40.55,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "7515ce28fe"
+    },
+    {
+      "kind": "feedback",
+      "start": 40.85,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "6f9c90cf4f"
+    },
+    {
+      "kind": "fixation",
+      "start": 42.85,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "2bfffcc617"
+    },
+    {
+      "kind": "image",
+      "start": 45.6,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "b558ed8392"
+    },
+    {
+      "kind": "fixation",
+      "start": 47.6,
+      "duration": 2.4,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "a28f798ec0"
+    },
+    {
+      "kind": "choice",
+      "start": 50.0,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "3485237b81"
+    },
+    {
+      "kind": "feedback",
+      "start": 50.3,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "6fb9dd5993"
+    },
+    {
+      "kind": "fixation",
+      "start": 52.3,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "0382a0a694"
+    },
+    {
+      "kind": "image",
+      "start": 56.05,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "610933f139"
+    },
+    {
+      "kind": "fixation",
+      "start": 58.05,
+      "duration": 2.0,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "cc250bcd05"
+    },
+    {
+      "kind": "choice",
+      "start": 60.05,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "ae51d68d99"
+    },
+    {
+      "kind": "feedback",
+      "start": 60.35,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "301ad29b27"
+    },
+    {
+      "kind": "fixation",
+      "start": 62.35,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "7c63d0d39a"
+    },
+    {
+      "kind": "image",
+      "start": 64.1,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "8d14a47a20"
+    },
+    {
+      "kind": "fixation",
+      "start": 66.1,
+      "duration": 2.4,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "edf594b8d6"
+    },
+    {
+      "kind": "choice",
+      "start": 68.5,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "600f807ce8"
+    },
+    {
+      "kind": "feedback",
+      "start": 68.8,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "e5715b62c7"
+    },
+    {
+      "kind": "fixation",
+      "start": 70.8,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3830b91d92"
+    },
+    {
+      "kind": "image",
+      "start": 72.3,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "09029fd6ed"
+    },
+    {
+      "kind": "fixation",
+      "start": 74.3,
+      "duration": 2.1,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "027f0603b0"
+    },
+    {
+      "kind": "choice",
+      "start": 76.4,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "c7252e52b5"
+    },
+    {
+      "kind": "feedback",
+      "start": 76.7,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "92c7536881"
+    },
+    {
+      "kind": "fixation",
+      "start": 78.7,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "0440b5f935"
+    },
+    {
+      "kind": "image",
+      "start": 80.45,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "db247f76dd"
+    },
+    {
+      "kind": "fixation",
+      "start": 82.45,
+      "duration": 2.0,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "7ced9c06a0"
+    },
+    {
+      "kind": "choice",
+      "start": 84.45,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "b0c2e6245d"
+    },
+    {
+      "kind": "feedback",
+      "start": 84.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "f943339d0e"
+    },
+    {
+      "kind": "fixation",
+      "start": 86.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "48dfbc9480"
+    },
+    {
+      "kind": "image",
+      "start": 88.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "cc193d82dc"
+    },
+    {
+      "kind": "fixation",
+      "start": 90.25,
+      "duration": 2.3,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "f212bd3219"
+    },
+    {
+      "kind": "choice",
+      "start": 92.55,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "26a82df66d"
+    },
+    {
+      "kind": "feedback",
+      "start": 92.85,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "cd9a70f713"
+    },
+    {
+      "kind": "fixation",
+      "start": 94.85,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "db6cfd9d42"
+    },
+    {
+      "kind": "image",
+      "start": 98.1,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "32a22a0173"
+    },
+    {
+      "kind": "fixation",
+      "start": 100.1,
+      "duration": 2.3,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "0969509517"
+    },
+    {
+      "kind": "choice",
+      "start": 102.4,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "814cd46f5c"
+    },
+    {
+      "kind": "feedback",
+      "start": 102.7,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "cf3ba53c71"
+    },
+    {
+      "kind": "fixation",
+      "start": 104.7,
+      "duration": 3.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "5bb490f2bb"
+    },
+    {
+      "kind": "image",
+      "start": 108.2,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "1fb7703eec"
+    },
+    {
+      "kind": "fixation",
+      "start": 110.2,
+      "duration": 2.3,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "f49a46571a"
+    },
+    {
+      "kind": "choice",
+      "start": 112.5,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "66fe9eed82"
+    },
+    {
+      "kind": "feedback",
+      "start": 112.8,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "e9e7e59a32"
+    },
+    {
+      "kind": "fixation",
+      "start": 114.8,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "048c34d9cc"
+    },
+    {
+      "kind": "image",
+      "start": 117.3,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "23da4107e6"
+    },
+    {
+      "kind": "fixation",
+      "start": 119.3,
+      "duration": 2.3,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "e92d23579b"
+    },
+    {
+      "kind": "choice",
+      "start": 121.6,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "20321db719"
+    },
+    {
+      "kind": "feedback",
+      "start": 121.9,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "ab422b813d"
+    },
+    {
+      "kind": "fixation",
+      "start": 123.9,
+      "duration": 4.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ddbc5a3daa"
+    },
+    {
+      "kind": "image",
+      "start": 127.9,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "b49f8e1518"
+    },
+    {
+      "kind": "fixation",
+      "start": 129.9,
+      "duration": 2.3,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c8bb3c2c59"
+    },
+    {
+      "kind": "choice",
+      "start": 132.2,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "5eff47e0fa"
+    },
+    {
+      "kind": "feedback",
+      "start": 132.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "c445207cba"
+    },
+    {
+      "kind": "fixation",
+      "start": 134.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "091c91628c"
+    },
+    {
+      "kind": "image",
+      "start": 136.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "efb0793097"
+    },
+    {
+      "kind": "fixation",
+      "start": 138.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "aaa6f7b942"
+    },
+    {
+      "kind": "choice",
+      "start": 140.5,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "f9589f7772"
+    },
+    {
+      "kind": "feedback",
+      "start": 140.8,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "2e4f2a4097"
+    },
+    {
+      "kind": "fixation",
+      "start": 142.8,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "5f10652da7"
+    },
+    {
+      "kind": "image",
+      "start": 146.55,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "98d5506de5"
+    },
+    {
+      "kind": "fixation",
+      "start": 148.55,
+      "duration": 2.3,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "2fd2b75ce7"
+    },
+    {
+      "kind": "choice",
+      "start": 150.85,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "fa7926351a"
+    },
+    {
+      "kind": "feedback",
+      "start": 151.15,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "3387ecb7b1"
+    },
+    {
+      "kind": "fixation",
+      "start": 153.15,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "768584469a"
+    },
+    {
+      "kind": "image",
+      "start": 155.4,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "ce927d55bc"
+    },
+    {
+      "kind": "fixation",
+      "start": 157.4,
+      "duration": 2.3,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "5ae4691857"
+    },
+    {
+      "kind": "choice",
+      "start": 159.7,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "eab4309c6c"
+    },
+    {
+      "kind": "feedback",
+      "start": 160.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "3e51887978"
+    },
+    {
+      "kind": "fixation",
+      "start": 162.0,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "493532b357"
+    },
+    {
+      "kind": "image",
+      "start": 165.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "1fde9ca7aa"
+    },
+    {
+      "kind": "fixation",
+      "start": 167.0,
+      "duration": 2.3,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "742e20567d"
+    },
+    {
+      "kind": "choice",
+      "start": 169.3,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "b3c31028f0"
+    },
+    {
+      "kind": "feedback",
+      "start": 169.6,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "8d5a237f93"
+    },
+    {
+      "kind": "fixation",
+      "start": 171.6,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "0c6a9a8cc7"
+    },
+    {
+      "kind": "image",
+      "start": 173.35,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "5f89ee5c04"
+    },
+    {
+      "kind": "fixation",
+      "start": 175.35,
+      "duration": 2.2,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "2f5799849a"
+    },
+    {
+      "kind": "choice",
+      "start": 177.55,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "e76930cc1c"
+    },
+    {
+      "kind": "feedback",
+      "start": 177.85,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "e378fafe42"
+    },
+    {
+      "kind": "fixation",
+      "start": 179.85,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "d83f916f62"
+    },
+    {
+      "kind": "image",
+      "start": 182.35,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "e806b9b622"
+    },
+    {
+      "kind": "fixation",
+      "start": 184.35,
+      "duration": 2.1,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "af9285781d"
+    },
+    {
+      "kind": "choice",
+      "start": 186.45,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "fb452efc40"
+    },
+    {
+      "kind": "feedback",
+      "start": 186.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "bde1396fc5"
+    },
+    {
+      "kind": "fixation",
+      "start": 188.75,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ad0d7f23f1"
+    },
+    {
+      "kind": "image",
+      "start": 192.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "40f517e4e6"
+    },
+    {
+      "kind": "fixation",
+      "start": 194.5,
+      "duration": 2.2,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "a87a5c5ab2"
+    },
+    {
+      "kind": "choice",
+      "start": 196.7,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "6d09366205"
+    },
+    {
+      "kind": "feedback",
+      "start": 197.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "22e24e3fa0"
+    },
+    {
+      "kind": "fixation",
+      "start": 199.0,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "a726160459"
+    },
+    {
+      "kind": "image",
+      "start": 202.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "db2d5ba779"
+    },
+    {
+      "kind": "fixation",
+      "start": 204.25,
+      "duration": 2.4,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "b15eb184ad"
+    },
+    {
+      "kind": "choice",
+      "start": 206.65,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "d521ffa819"
+    },
+    {
+      "kind": "feedback",
+      "start": 206.95,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "ecddfefa7a"
+    },
+    {
+      "kind": "fixation",
+      "start": 208.95,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "427c6847b8"
+    },
+    {
+      "kind": "image",
+      "start": 212.2,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "e2fb63de7b"
+    },
+    {
+      "kind": "fixation",
+      "start": 214.2,
+      "duration": 2.4,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "fe9a3aff73"
+    },
+    {
+      "kind": "choice",
+      "start": 216.6,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "505a54a786"
+    },
+    {
+      "kind": "feedback",
+      "start": 216.9,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "b15296792f"
+    },
+    {
+      "kind": "fixation",
+      "start": 218.9,
+      "duration": 3.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "661d681c90"
+    },
+    {
+      "kind": "image",
+      "start": 222.4,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "a069c6ea96"
+    },
+    {
+      "kind": "fixation",
+      "start": 224.4,
+      "duration": 2.1,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "92d6b94ca1"
+    },
+    {
+      "kind": "choice",
+      "start": 226.5,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "195930a572"
+    },
+    {
+      "kind": "feedback",
+      "start": 226.8,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "28ef692bbf"
+    },
+    {
+      "kind": "fixation",
+      "start": 228.8,
+      "duration": 4.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "fcf11088d2"
+    },
+    {
+      "kind": "image",
+      "start": 232.8,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "685910b0f8"
+    },
+    {
+      "kind": "fixation",
+      "start": 234.8,
+      "duration": 2.1,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "e38fdc47b6"
+    },
+    {
+      "kind": "choice",
+      "start": 236.9,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "449f1a0b04"
+    },
+    {
+      "kind": "feedback",
+      "start": 237.2,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "99a427de11"
+    },
+    {
+      "kind": "fixation",
+      "start": 239.2,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "6d9e7cbe11"
+    },
+    {
+      "kind": "image",
+      "start": 242.95,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "ca3f470f90"
+    },
+    {
+      "kind": "fixation",
+      "start": 244.95,
+      "duration": 2.4,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "d9154ae896"
+    },
+    {
+      "kind": "choice",
+      "start": 247.35,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "621ce36f78"
+    },
+    {
+      "kind": "feedback",
+      "start": 247.65,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "6319789b49"
+    },
+    {
+      "kind": "fixation",
+      "start": 249.65,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "960d466c62"
+    },
+    {
+      "kind": "image",
+      "start": 253.4,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "1c491195ff"
+    },
+    {
+      "kind": "fixation",
+      "start": 255.4,
+      "duration": 2.0,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "bcf4084f1f"
+    },
+    {
+      "kind": "choice",
+      "start": 257.4,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "ddd0caec67"
+    },
+    {
+      "kind": "feedback",
+      "start": 257.7,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "4c5ef9ec3d"
+    },
+    {
+      "kind": "fixation",
+      "start": 259.7,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ec844271ef"
+    },
+    {
+      "kind": "image",
+      "start": 261.45,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "fb4957cc42"
+    },
+    {
+      "kind": "fixation",
+      "start": 263.45,
+      "duration": 2.4,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "da0a1405cb"
+    },
+    {
+      "kind": "choice",
+      "start": 265.85,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "12d8321fc7"
+    },
+    {
+      "kind": "feedback",
+      "start": 266.15,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "f022153a0f"
+    },
+    {
+      "kind": "fixation",
+      "start": 268.15,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "9d40438b81"
+    },
+    {
+      "kind": "image",
+      "start": 270.9,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "812a69b81d"
+    },
+    {
+      "kind": "fixation",
+      "start": 272.9,
+      "duration": 2.2,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "33a1dfbacf"
+    },
+    {
+      "kind": "choice",
+      "start": 275.1,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "ce7725a72b"
+    },
+    {
+      "kind": "feedback",
+      "start": 275.4,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "256ea11689"
+    },
+    {
+      "kind": "fixation",
+      "start": 277.4,
+      "duration": 4.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "96ce79dacd"
+    },
+    {
+      "kind": "image",
+      "start": 281.4,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "957d3f2ebd"
+    },
+    {
+      "kind": "fixation",
+      "start": 283.4,
+      "duration": 2.0,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8adaeda2ad"
+    },
+    {
+      "kind": "choice",
+      "start": 285.4,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "54a5283333"
+    },
+    {
+      "kind": "feedback",
+      "start": 285.7,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "254de17761"
+    },
+    {
+      "kind": "fixation",
+      "start": 287.7,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3cae3b0c2b"
+    },
+    {
+      "kind": "image",
+      "start": 290.45,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "ad38497bea"
+    },
+    {
+      "kind": "fixation",
+      "start": 292.45,
+      "duration": 2.2,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3a2ba22d9f"
+    },
+    {
+      "kind": "choice",
+      "start": 294.65,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "31b64704a9"
+    },
+    {
+      "kind": "feedback",
+      "start": 294.95,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "3df91e0bee"
+    },
+    {
+      "kind": "fixation",
+      "start": 296.95,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "96577c4add"
+    },
+    {
+      "kind": "image",
+      "start": 298.7,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "f70995d0c6"
+    },
+    {
+      "kind": "fixation",
+      "start": 300.7,
+      "duration": 2.2,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "7e8d945909"
+    },
+    {
+      "kind": "choice",
+      "start": 302.9,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "a7a493ff31"
+    },
+    {
+      "kind": "feedback",
+      "start": 303.2,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "86429b4016"
+    },
+    {
+      "kind": "fixation",
+      "start": 305.2,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "1d879f97ec"
+    },
+    {
+      "kind": "image",
+      "start": 308.45,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "0c905cab82"
+    },
+    {
+      "kind": "fixation",
+      "start": 310.45,
+      "duration": 2.4,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "5214106440"
+    },
+    {
+      "kind": "choice",
+      "start": 312.85,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "3584788123"
+    },
+    {
+      "kind": "feedback",
+      "start": 313.15,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "d29d6dae9c"
+    },
+    {
+      "kind": "fixation",
+      "start": 315.15,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c164ac3cec"
+    },
+    {
+      "kind": "image",
+      "start": 316.65,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "d46ba79875"
+    },
+    {
+      "kind": "fixation",
+      "start": 318.65,
+      "duration": 2.3,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "fc6afcd4a9"
+    },
+    {
+      "kind": "choice",
+      "start": 320.95,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "897157b1c5"
+    },
+    {
+      "kind": "feedback",
+      "start": 321.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "04d03739c8"
+    },
+    {
+      "kind": "fixation",
+      "start": 323.25,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8d96ea4cdd"
+    },
+    {
+      "kind": "image",
+      "start": 325.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "8c5e154943"
+    },
+    {
+      "kind": "fixation",
+      "start": 327.0,
+      "duration": 2.4,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "9b47fe92fd"
+    },
+    {
+      "kind": "choice",
+      "start": 329.4,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "df5898c273"
+    },
+    {
+      "kind": "feedback",
+      "start": 329.7,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "3a40fa4268"
+    },
+    {
+      "kind": "fixation",
+      "start": 331.7,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "aa63923e41"
+    },
+    {
+      "kind": "image",
+      "start": 333.45,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "dade8a7815"
+    },
+    {
+      "kind": "fixation",
+      "start": 335.45,
+      "duration": 2.0,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "b78c16d61e"
+    },
+    {
+      "kind": "choice",
+      "start": 337.45,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "350354f2f1"
+    },
+    {
+      "kind": "feedback",
+      "start": 337.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "0a20d2ef54"
+    },
+    {
+      "kind": "fixation",
+      "start": 339.75,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "b8e6fe35d5"
+    },
+    {
+      "kind": "image",
+      "start": 342.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "cfcbc3d939"
+    },
+    {
+      "kind": "fixation",
+      "start": 344.25,
+      "duration": 2.4,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "7f2c5e8e27"
+    },
+    {
+      "kind": "choice",
+      "start": 346.65,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "9bc0e6a299"
+    },
+    {
+      "kind": "feedback",
+      "start": 346.95,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "15d7984161"
+    },
+    {
+      "kind": "fixation",
+      "start": 348.95,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "49d8bb2a25"
+    },
+    {
+      "kind": "image",
+      "start": 351.2,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "5276c1a900"
+    },
+    {
+      "kind": "fixation",
+      "start": 353.2,
+      "duration": 2.1,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3f5415308e"
+    },
+    {
+      "kind": "choice",
+      "start": 355.3,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "6fd47c4288"
+    },
+    {
+      "kind": "feedback",
+      "start": 355.6,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "472b5b7a7c"
+    },
+    {
+      "kind": "fixation",
+      "start": 357.6,
+      "duration": 3.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "476cce3aeb"
+    },
+    {
+      "kind": "image",
+      "start": 361.1,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "db39c8d4ac"
+    },
+    {
+      "kind": "fixation",
+      "start": 363.1,
+      "duration": 2.4,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "fed03eedc4"
+    },
+    {
+      "kind": "choice",
+      "start": 365.5,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "34f51175d5"
+    },
+    {
+      "kind": "feedback",
+      "start": 365.8,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "fb4d0e6937"
+    },
+    {
+      "kind": "fixation",
+      "start": 367.8,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "9cbb958ae9"
+    },
+    {
+      "kind": "image",
+      "start": 371.55,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "6ce768d41f"
+    },
+    {
+      "kind": "fixation",
+      "start": 373.55,
+      "duration": 2.2,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "fb6166f0cd"
+    },
+    {
+      "kind": "choice",
+      "start": 375.75,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "4ea60a5188"
+    },
+    {
+      "kind": "feedback",
+      "start": 376.05,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "d1ad762265"
+    },
+    {
+      "kind": "fixation",
+      "start": 378.05,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c40f323b5c"
+    },
+    {
+      "kind": "image",
+      "start": 380.55,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "4bb4e2fd12"
+    },
+    {
+      "kind": "fixation",
+      "start": 382.55,
+      "duration": 2.1,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "452267f7b4"
+    },
+    {
+      "kind": "choice",
+      "start": 384.65,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "caa99763a6"
+    },
+    {
+      "kind": "feedback",
+      "start": 384.95,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "f0a86d5721"
+    },
+    {
+      "kind": "fixation",
+      "start": 386.95,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "003b5c35d0"
+    },
+    {
+      "kind": "image",
+      "start": 389.95,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "06da75794a"
+    },
+    {
+      "kind": "fixation",
+      "start": 391.95,
+      "duration": 2.2,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "fbdf7e0823"
+    },
+    {
+      "kind": "choice",
+      "start": 394.15,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "d466084e57"
+    },
+    {
+      "kind": "feedback",
+      "start": 394.45,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "5ef240fbb5"
+    },
+    {
+      "kind": "fixation",
+      "start": 396.45,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "d18369b1b5"
+    },
+    {
+      "kind": "image",
+      "start": 398.7,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "959e4e66ac"
+    },
+    {
+      "kind": "fixation",
+      "start": 400.7,
+      "duration": 2.4,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "0013358ee5"
+    },
+    {
+      "kind": "choice",
+      "start": 403.1,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "82e462b0b0"
+    },
+    {
+      "kind": "feedback",
+      "start": 403.4,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "947c3865c7"
+    },
+    {
+      "kind": "fixation",
+      "start": 405.4,
+      "duration": 4.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "fdd6725a63"
+    },
+    {
+      "kind": "image",
+      "start": 409.4,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue gain",
+      "condition": "cue_gain",
+      "params": {
+        "path": "stimuli/mid/cue_gain.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "da849aa8d6"
+    },
+    {
+      "kind": "fixation",
+      "start": 411.4,
+      "duration": 2.3,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_gain",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "b239333bc1"
+    },
+    {
+      "kind": "choice",
+      "start": 413.7,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_gain",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "b33523c480"
+    },
+    {
+      "kind": "feedback",
+      "start": 414.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_gain",
+      "params": {
+        "hit_text": "+1 \u20ac",
+        "miss_text": "+0",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "aaca1afc74"
+    },
+    {
+      "kind": "fixation",
+      "start": 416.0,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "df7c2068cb"
+    },
+    {
+      "kind": "image",
+      "start": 417.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue neutral",
+      "condition": "cue_neutral",
+      "params": {
+        "path": "stimuli/mid/cue_neutral.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "19a8128c25"
+    },
+    {
+      "kind": "fixation",
+      "start": 419.75,
+      "duration": 2.3,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_neutral",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "5e6c35ed0f"
+    },
+    {
+      "kind": "choice",
+      "start": 422.05,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_neutral",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "9ab9b427ef"
+    },
+    {
+      "kind": "feedback",
+      "start": 422.35,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_neutral",
+      "params": {
+        "hit_text": "0",
+        "miss_text": "0",
+        "hit_color": "#CCCCCC",
+        "miss_color": "#CCCCCC",
+        "size": 96
+      },
+      "id": "d9d05affbc"
+    },
+    {
+      "kind": "fixation",
+      "start": 424.35,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "0528cc081c"
+    },
+    {
+      "kind": "image",
+      "start": 426.85,
+      "duration": 2.0,
+      "track": 0,
+      "label": "cue loss",
+      "condition": "cue_loss",
+      "params": {
+        "path": "stimuli/mid/cue_loss.png",
+        "scale": 0.45,
+        "flicker_path": "",
+        "flicker_hz": 0.0
+      },
+      "id": "b020386d6e"
+    },
+    {
+      "kind": "fixation",
+      "start": 428.85,
+      "duration": 2.5,
+      "track": 0,
+      "label": "anticipation",
+      "condition": "anticipation_loss",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "b73fae34f2"
+    },
+    {
+      "kind": "choice",
+      "start": 431.35,
+      "duration": 0.3,
+      "track": 0,
+      "label": "target",
+      "condition": "target_loss",
+      "params": {
+        "text": "\u25a0",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 220,
+        "stim_time": 0.0,
+        "correct": "any",
+        "buttons": "any",
+        "isi_symbol": ""
+      },
+      "id": "0dda174193"
+    },
+    {
+      "kind": "feedback",
+      "start": 431.65,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "feedback_loss",
+      "params": {
+        "hit_text": "\u22120",
+        "miss_text": "\u22121 \u20ac",
+        "hit_color": "#2FB37A",
+        "miss_color": "#F0506E",
+        "size": 96
+      },
+      "id": "8173b7bc06"
+    },
+    {
+      "kind": "fixation",
+      "start": 433.65,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "269f8e7570"
+    }
+  ],
+  "hardware": {
+    "sync_mode": "keyboard",
+    "trigger_key": "s",
+    "serial_port": "",
+    "baud_rate": 57600,
+    "buttons": [
+      {
+        "name": "Left thumb",
+        "key": "1"
+      },
+      {
+        "name": "Left index",
+        "key": "2"
+      },
+      {
+        "name": "Right index",
+        "key": "3"
+      },
+      {
+        "name": "Right thumb",
+        "key": "4"
+      }
+    ],
+    "move_left": "Left index",
+    "move_right": "Right index",
+    "confirm": "Right thumb"
+  },
+  "format": 1
+}

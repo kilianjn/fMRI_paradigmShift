@@ -3,6 +3,9 @@
   "tr": 2.0,
   "dummy_scans": 3,
   "background": "#000000",
+  "waiting_screen": "fixation",
+  "waiting_text": "The measurement will start in a moment.",
+  "end_text": "Thank you!",
   "tracks": [
     "Stimuli",
     "Responses"
@@ -20,7 +23,7 @@
         "size": 44,
         "color": "#FFFFFF"
       },
-      "id": "24b98ab27e"
+      "id": "131b031515"
     },
     {
       "kind": "fixation",
@@ -34,7 +37,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "184d664e7f"
+      "id": "7a232ed84c"
     },
     {
       "kind": "gonogo",
@@ -53,7 +56,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "07f1339e1a"
+      "id": "457f5427f6"
     },
     {
       "kind": "gonogo",
@@ -72,7 +75,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "a417ffac14"
+      "id": "a789f48509"
     },
     {
       "kind": "gonogo",
@@ -91,7 +94,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "a7ffe3bb47"
+      "id": "1c9d0320fc"
     },
     {
       "kind": "gonogo",
@@ -110,7 +113,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "d8d389769f"
+      "id": "b2769a497c"
     },
     {
       "kind": "gonogo",
@@ -129,7 +132,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "13c610d2bc"
+      "id": "b79a5996da"
     },
     {
       "kind": "gonogo",
@@ -148,7 +151,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "3bcf786b1c"
+      "id": "2108c4b554"
     },
     {
       "kind": "gonogo",
@@ -167,7 +170,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "8789f76572"
+      "id": "87fe759fe5"
     },
     {
       "kind": "gonogo",
@@ -186,7 +189,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "48fb24187f"
+      "id": "d677b8eac7"
     },
     {
       "kind": "gonogo",
@@ -205,7 +208,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "a496b55e98"
+      "id": "8637f088a2"
     },
     {
       "kind": "gonogo",
@@ -224,7 +227,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "d67b7f446e"
+      "id": "c22d08f41c"
     },
     {
       "kind": "gonogo",
@@ -243,7 +246,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "a3e8ce4781"
+      "id": "468cbfe1a8"
     },
     {
       "kind": "gonogo",
@@ -262,7 +265,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "c6b1f4e9b8"
+      "id": "f4420fa267"
     },
     {
       "kind": "gonogo",
@@ -281,7 +284,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "717e7d5bb9"
+      "id": "0edd8c17f4"
     },
     {
       "kind": "gonogo",
@@ -300,7 +303,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "4ffaeffed7"
+      "id": "5b8d818310"
     },
     {
       "kind": "gonogo",
@@ -319,7 +322,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "380b083629"
+      "id": "03548af0d1"
     },
     {
       "kind": "gonogo",
@@ -338,7 +341,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "b6036a8ae0"
+      "id": "68e42acec4"
     },
     {
       "kind": "gonogo",
@@ -357,7 +360,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "5ae8c3b382"
+      "id": "b6d9280c91"
     },
     {
       "kind": "gonogo",
@@ -376,7 +379,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "c29bb11698"
+      "id": "7f89c48d5e"
     },
     {
       "kind": "gonogo",
@@ -395,7 +398,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "534b5ccc60"
+      "id": "651732c8d1"
     },
     {
       "kind": "gonogo",
@@ -414,7 +417,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "c84e247d8b"
+      "id": "fa01b90006"
     },
     {
       "kind": "gonogo",
@@ -433,7 +436,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "f251abdff8"
+      "id": "bb91a7bc44"
     },
     {
       "kind": "gonogo",
@@ -452,7 +455,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "c8167488ea"
+      "id": "734c914c05"
     },
     {
       "kind": "gonogo",
@@ -471,7 +474,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "2baee0cdae"
+      "id": "37de7d9914"
     },
     {
       "kind": "gonogo",
@@ -490,7 +493,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "385cd81a7c"
+      "id": "73951472b4"
     },
     {
       "kind": "gonogo",
@@ -509,7 +512,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "d04c43e421"
+      "id": "cbf71abbc8"
     },
     {
       "kind": "gonogo",
@@ -528,7 +531,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "dc436ececd"
+      "id": "a7e8ce7944"
     },
     {
       "kind": "gonogo",
@@ -547,7 +550,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "0ece5fc153"
+      "id": "58685e5b0f"
     },
     {
       "kind": "gonogo",
@@ -566,7 +569,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "a05696d976"
+      "id": "329262f289"
     },
     {
       "kind": "gonogo",
@@ -585,7 +588,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "ecb5f85428"
+      "id": "5470f2cc6d"
     },
     {
       "kind": "gonogo",
@@ -604,7 +607,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "acfd37cac1"
+      "id": "b33363638c"
     },
     {
       "kind": "gonogo",
@@ -623,7 +626,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "e738237a26"
+      "id": "ddaa77156d"
     },
     {
       "kind": "gonogo",
@@ -642,7 +645,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "8a77e9afcb"
+      "id": "c1f155d404"
     },
     {
       "kind": "gonogo",
@@ -661,7 +664,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "64fd62c81f"
+      "id": "4a89118d77"
     },
     {
       "kind": "gonogo",
@@ -680,7 +683,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "98bac37551"
+      "id": "dae613847d"
     },
     {
       "kind": "gonogo",
@@ -699,7 +702,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "259ba37d03"
+      "id": "e49fa19bf0"
     },
     {
       "kind": "gonogo",
@@ -718,7 +721,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "7c13725bf9"
+      "id": "1620e724f3"
     },
     {
       "kind": "gonogo",
@@ -737,7 +740,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "75a7637636"
+      "id": "5156953567"
     },
     {
       "kind": "gonogo",
@@ -756,7 +759,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "cb15c545c1"
+      "id": "15debc1304"
     },
     {
       "kind": "gonogo",
@@ -775,7 +778,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "1bea1f90d1"
+      "id": "f1a443e01f"
     },
     {
       "kind": "gonogo",
@@ -794,7 +797,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "47d863cce9"
+      "id": "6edde4660c"
     },
     {
       "kind": "fixation",
@@ -808,7 +811,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0badeab3f8"
+      "id": "ad31457c74"
     },
     {
       "kind": "gonogo",
@@ -827,7 +830,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "2bf92fe70e"
+      "id": "d53596ea19"
     },
     {
       "kind": "gonogo",
@@ -846,7 +849,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "bf388e20ec"
+      "id": "c761d79602"
     },
     {
       "kind": "gonogo",
@@ -865,7 +868,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "805a159513"
+      "id": "5646c94812"
     },
     {
       "kind": "gonogo",
@@ -884,7 +887,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "25f781e191"
+      "id": "7483c0d9de"
     },
     {
       "kind": "gonogo",
@@ -903,7 +906,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "50d0695ba5"
+      "id": "f4a5411e8b"
     },
     {
       "kind": "gonogo",
@@ -922,7 +925,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "eb88ad3856"
+      "id": "286e717174"
     },
     {
       "kind": "gonogo",
@@ -941,7 +944,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "72599f0399"
+      "id": "e25a105f23"
     },
     {
       "kind": "gonogo",
@@ -960,7 +963,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "42b7b14516"
+      "id": "b8861d6472"
     },
     {
       "kind": "gonogo",
@@ -979,7 +982,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "6a97b8ddee"
+      "id": "2e1f497703"
     },
     {
       "kind": "gonogo",
@@ -998,7 +1001,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "a7e2fa43f2"
+      "id": "e1a67812f2"
     },
     {
       "kind": "gonogo",
@@ -1017,7 +1020,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "e83b60cd3a"
+      "id": "7490356b99"
     },
     {
       "kind": "gonogo",
@@ -1036,7 +1039,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "3826d8ff48"
+      "id": "559ae5eaef"
     },
     {
       "kind": "gonogo",
@@ -1055,7 +1058,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "e3e86f7344"
+      "id": "85a2d7865d"
     },
     {
       "kind": "gonogo",
@@ -1074,7 +1077,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "9b6b69d727"
+      "id": "f8fb7ba8a9"
     },
     {
       "kind": "gonogo",
@@ -1093,7 +1096,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "00c65aceea"
+      "id": "650ff2b3a0"
     },
     {
       "kind": "gonogo",
@@ -1112,7 +1115,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "fb9114d3df"
+      "id": "9876a8f2ee"
     },
     {
       "kind": "gonogo",
@@ -1131,7 +1134,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "7c96efed32"
+      "id": "f137cfcdee"
     },
     {
       "kind": "gonogo",
@@ -1150,7 +1153,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "e7ab3598d0"
+      "id": "fbf2f18bdf"
     },
     {
       "kind": "gonogo",
@@ -1169,7 +1172,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "c063fc6932"
+      "id": "58b3c5ed8f"
     },
     {
       "kind": "gonogo",
@@ -1188,7 +1191,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "a0a50da635"
+      "id": "f8d2680848"
     },
     {
       "kind": "gonogo",
@@ -1207,7 +1210,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "486f42aacc"
+      "id": "19a1cc17bf"
     },
     {
       "kind": "gonogo",
@@ -1226,7 +1229,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "fb46609bed"
+      "id": "de2b0af313"
     },
     {
       "kind": "gonogo",
@@ -1245,7 +1248,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "dde7c76449"
+      "id": "c156f89686"
     },
     {
       "kind": "gonogo",
@@ -1264,7 +1267,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "20e5517dfc"
+      "id": "678f199c68"
     },
     {
       "kind": "gonogo",
@@ -1283,7 +1286,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "e7b5541b9f"
+      "id": "79ec3acfd6"
     },
     {
       "kind": "gonogo",
@@ -1302,7 +1305,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "ed9c916005"
+      "id": "f4379742ae"
     },
     {
       "kind": "gonogo",
@@ -1321,7 +1324,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "80881a33bb"
+      "id": "fc1656904c"
     },
     {
       "kind": "gonogo",
@@ -1340,7 +1343,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "d683f2e2b8"
+      "id": "fb657ee538"
     },
     {
       "kind": "gonogo",
@@ -1359,7 +1362,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "c85c220ecb"
+      "id": "0311595689"
     },
     {
       "kind": "gonogo",
@@ -1378,7 +1381,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "14718eabbb"
+      "id": "483e15e2a4"
     },
     {
       "kind": "gonogo",
@@ -1397,7 +1400,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "4132251620"
+      "id": "8ab72cf5ea"
     },
     {
       "kind": "gonogo",
@@ -1416,7 +1419,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "6703ff7fc5"
+      "id": "d4468080d2"
     },
     {
       "kind": "gonogo",
@@ -1435,7 +1438,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "47f40cb1d5"
+      "id": "f920d27130"
     },
     {
       "kind": "gonogo",
@@ -1454,7 +1457,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "b2305ff9b4"
+      "id": "8d052a4381"
     },
     {
       "kind": "gonogo",
@@ -1473,7 +1476,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "6d3e7df4fa"
+      "id": "443552dc02"
     },
     {
       "kind": "gonogo",
@@ -1492,7 +1495,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "2dc8e89deb"
+      "id": "563b91ef0c"
     },
     {
       "kind": "gonogo",
@@ -1511,7 +1514,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "66f8c45ba2"
+      "id": "6ec5e79bc3"
     },
     {
       "kind": "gonogo",
@@ -1530,7 +1533,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "f88d9f8f14"
+      "id": "8b8871ad97"
     },
     {
       "kind": "gonogo",
@@ -1549,7 +1552,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "5d69332722"
+      "id": "9525878e93"
     },
     {
       "kind": "gonogo",
@@ -1568,7 +1571,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "cc7dfcbb0a"
+      "id": "e54c5bc990"
     },
     {
       "kind": "fixation",
@@ -1582,7 +1585,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0ee4a35aad"
+      "id": "e24eb4377d"
     },
     {
       "kind": "gonogo",
@@ -1601,7 +1604,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "4eaa046595"
+      "id": "e80931188b"
     },
     {
       "kind": "gonogo",
@@ -1620,7 +1623,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "c66b55a746"
+      "id": "eede430d77"
     },
     {
       "kind": "gonogo",
@@ -1639,7 +1642,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "65f68d5587"
+      "id": "9ff97c608b"
     },
     {
       "kind": "gonogo",
@@ -1658,7 +1661,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "7b70f4f89f"
+      "id": "8f9d833ad4"
     },
     {
       "kind": "gonogo",
@@ -1677,7 +1680,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "cbd8abf9d4"
+      "id": "d6c913bd58"
     },
     {
       "kind": "gonogo",
@@ -1696,7 +1699,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "50fc75c03a"
+      "id": "a587ddbd00"
     },
     {
       "kind": "gonogo",
@@ -1715,7 +1718,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "852ab798bc"
+      "id": "ea744246c4"
     },
     {
       "kind": "gonogo",
@@ -1734,7 +1737,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "c214c0868a"
+      "id": "5c922c9020"
     },
     {
       "kind": "gonogo",
@@ -1753,7 +1756,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "1258d46e2e"
+      "id": "ca8dd6c2ca"
     },
     {
       "kind": "gonogo",
@@ -1772,7 +1775,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "4767b58166"
+      "id": "1e756e980a"
     },
     {
       "kind": "gonogo",
@@ -1791,7 +1794,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "c674688921"
+      "id": "d3ff76ec83"
     },
     {
       "kind": "gonogo",
@@ -1810,7 +1813,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "fb57d9bc5a"
+      "id": "f0a1995690"
     },
     {
       "kind": "gonogo",
@@ -1829,7 +1832,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "7fe82c8967"
+      "id": "85634481bb"
     },
     {
       "kind": "gonogo",
@@ -1848,7 +1851,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "cd4d11da5b"
+      "id": "d164841b98"
     },
     {
       "kind": "gonogo",
@@ -1867,7 +1870,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "4bf8f58866"
+      "id": "bbd53eed67"
     },
     {
       "kind": "gonogo",
@@ -1886,7 +1889,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "6779fb086f"
+      "id": "c8d8494334"
     },
     {
       "kind": "gonogo",
@@ -1905,7 +1908,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "e79d375044"
+      "id": "5b63612681"
     },
     {
       "kind": "gonogo",
@@ -1924,7 +1927,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "d68ee65ad0"
+      "id": "19efe840be"
     },
     {
       "kind": "gonogo",
@@ -1943,7 +1946,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "45e48d54cb"
+      "id": "8fc51dfb11"
     },
     {
       "kind": "gonogo",
@@ -1962,7 +1965,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "3cd3b148d1"
+      "id": "43ef18998a"
     },
     {
       "kind": "gonogo",
@@ -1981,7 +1984,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "bcd1b0aa7e"
+      "id": "fd2c65f874"
     },
     {
       "kind": "gonogo",
@@ -2000,7 +2003,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "f2703b1867"
+      "id": "59946c9545"
     },
     {
       "kind": "gonogo",
@@ -2019,7 +2022,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "eed2cd3595"
+      "id": "ac64f10f1b"
     },
     {
       "kind": "gonogo",
@@ -2038,7 +2041,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "96b689728f"
+      "id": "004753ba88"
     },
     {
       "kind": "gonogo",
@@ -2057,7 +2060,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "5aee11476f"
+      "id": "049389c55b"
     },
     {
       "kind": "gonogo",
@@ -2076,7 +2079,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "b800cd3f3b"
+      "id": "dd9f2e0a02"
     },
     {
       "kind": "gonogo",
@@ -2095,7 +2098,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "aa71747ddf"
+      "id": "614b8e0ecc"
     },
     {
       "kind": "gonogo",
@@ -2114,7 +2117,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "f5fb09076d"
+      "id": "dd71b1858d"
     },
     {
       "kind": "gonogo",
@@ -2133,7 +2136,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "0e4ffe745f"
+      "id": "03e79e6d76"
     },
     {
       "kind": "gonogo",
@@ -2152,7 +2155,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "668495ac5b"
+      "id": "30277a67be"
     },
     {
       "kind": "gonogo",
@@ -2171,7 +2174,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "d5d034d2a5"
+      "id": "160452596d"
     },
     {
       "kind": "gonogo",
@@ -2190,7 +2193,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "ab5c6a3a99"
+      "id": "217c616029"
     },
     {
       "kind": "gonogo",
@@ -2209,7 +2212,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "cd8f180394"
+      "id": "6583df4d13"
     },
     {
       "kind": "gonogo",
@@ -2228,7 +2231,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "98cb52083d"
+      "id": "9f3a2ea270"
     },
     {
       "kind": "gonogo",
@@ -2247,7 +2250,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "d90269165c"
+      "id": "7bfd79621d"
     },
     {
       "kind": "gonogo",
@@ -2266,7 +2269,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "ca2533f464"
+      "id": "08a8fd3c56"
     },
     {
       "kind": "gonogo",
@@ -2285,7 +2288,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "a31f28b7c0"
+      "id": "7f67bd7f06"
     },
     {
       "kind": "gonogo",
@@ -2304,7 +2307,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "f07f934958"
+      "id": "ceb9097776"
     },
     {
       "kind": "gonogo",
@@ -2323,7 +2326,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "e9dea779d4"
+      "id": "f54401ac8c"
     },
     {
       "kind": "gonogo",
@@ -2342,7 +2345,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "e7cf4e4f06"
+      "id": "98dfe63571"
     },
     {
       "kind": "fixation",
@@ -2356,7 +2359,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "f91bd30d50"
+      "id": "bc2551627f"
     },
     {
       "kind": "gonogo",
@@ -2375,7 +2378,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "54e82f78d8"
+      "id": "560412ee73"
     },
     {
       "kind": "gonogo",
@@ -2394,7 +2397,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "904519bbaa"
+      "id": "9fcc40680b"
     },
     {
       "kind": "gonogo",
@@ -2413,7 +2416,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "9dea88ff17"
+      "id": "46107b6611"
     },
     {
       "kind": "gonogo",
@@ -2432,7 +2435,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "0b8bad1a35"
+      "id": "e6411533cc"
     },
     {
       "kind": "gonogo",
@@ -2451,7 +2454,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "50ea373eaa"
+      "id": "315725e58b"
     },
     {
       "kind": "gonogo",
@@ -2470,7 +2473,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "166c16b985"
+      "id": "643ee33f26"
     },
     {
       "kind": "gonogo",
@@ -2489,7 +2492,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "e46e0edabe"
+      "id": "8526440023"
     },
     {
       "kind": "gonogo",
@@ -2508,7 +2511,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "c83d04713c"
+      "id": "2299943435"
     },
     {
       "kind": "gonogo",
@@ -2527,7 +2530,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "24c5a2dc68"
+      "id": "2adc4c3181"
     },
     {
       "kind": "gonogo",
@@ -2546,7 +2549,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "b666417b35"
+      "id": "c9012adfdf"
     },
     {
       "kind": "gonogo",
@@ -2565,7 +2568,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "5a9eeb0785"
+      "id": "7194c4b55e"
     },
     {
       "kind": "gonogo",
@@ -2584,7 +2587,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "507567d332"
+      "id": "b60c046d39"
     },
     {
       "kind": "gonogo",
@@ -2603,7 +2606,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "d2256157f8"
+      "id": "9cb01c1616"
     },
     {
       "kind": "gonogo",
@@ -2622,7 +2625,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "f74b1c090f"
+      "id": "af9e28da35"
     },
     {
       "kind": "gonogo",
@@ -2641,7 +2644,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "04b4d6d551"
+      "id": "9cb8e89753"
     },
     {
       "kind": "gonogo",
@@ -2660,7 +2663,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "a128123ce1"
+      "id": "f1417a2e2b"
     },
     {
       "kind": "gonogo",
@@ -2679,7 +2682,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "6ab1f4439b"
+      "id": "2339bcd22c"
     },
     {
       "kind": "gonogo",
@@ -2698,7 +2701,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "7428222334"
+      "id": "a531470100"
     },
     {
       "kind": "gonogo",
@@ -2717,7 +2720,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "4d6e55f20f"
+      "id": "679f936e1b"
     },
     {
       "kind": "gonogo",
@@ -2736,7 +2739,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "02d955e6cb"
+      "id": "680809c5dd"
     },
     {
       "kind": "gonogo",
@@ -2755,7 +2758,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "8f0df5aa5a"
+      "id": "8a50f80a1c"
     },
     {
       "kind": "gonogo",
@@ -2774,7 +2777,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "237cdbfea4"
+      "id": "aa11ec8584"
     },
     {
       "kind": "gonogo",
@@ -2793,7 +2796,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "69da30c8c8"
+      "id": "300c83d196"
     },
     {
       "kind": "gonogo",
@@ -2812,7 +2815,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "468436a2e2"
+      "id": "0073b15a3a"
     },
     {
       "kind": "gonogo",
@@ -2831,7 +2834,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "9d60993c4a"
+      "id": "0b201e16ef"
     },
     {
       "kind": "gonogo",
@@ -2850,7 +2853,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "c50344c6e0"
+      "id": "6bdebc2f6d"
     },
     {
       "kind": "gonogo",
@@ -2869,7 +2872,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "cee6d0dfaf"
+      "id": "3e331bde6b"
     },
     {
       "kind": "gonogo",
@@ -2888,7 +2891,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "1be88cf83a"
+      "id": "62989dc1a8"
     },
     {
       "kind": "gonogo",
@@ -2907,7 +2910,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "22a74f0523"
+      "id": "75b74c53cb"
     },
     {
       "kind": "gonogo",
@@ -2926,7 +2929,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "ce3dc10bd3"
+      "id": "71d0b45bcd"
     },
     {
       "kind": "gonogo",
@@ -2945,7 +2948,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "eb50588f36"
+      "id": "3e3f5d085f"
     },
     {
       "kind": "gonogo",
@@ -2964,7 +2967,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "2446a512ed"
+      "id": "fd9b4e5e6e"
     },
     {
       "kind": "gonogo",
@@ -2983,7 +2986,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "4751ae37fb"
+      "id": "85d8982b55"
     },
     {
       "kind": "gonogo",
@@ -3002,7 +3005,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "148782be83"
+      "id": "da73b535bc"
     },
     {
       "kind": "gonogo",
@@ -3021,7 +3024,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "c84fe8eb31"
+      "id": "0cab8bebd7"
     },
     {
       "kind": "gonogo",
@@ -3040,7 +3043,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "ea494df7a7"
+      "id": "fcb95cffb4"
     },
     {
       "kind": "gonogo",
@@ -3059,7 +3062,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "b9197ed4cf"
+      "id": "4673aca31e"
     },
     {
       "kind": "gonogo",
@@ -3078,7 +3081,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "d3268cf887"
+      "id": "06668eafe2"
     },
     {
       "kind": "gonogo",
@@ -3097,7 +3100,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "d045205491"
+      "id": "78b338dbe1"
     },
     {
       "kind": "gonogo",
@@ -3116,7 +3119,7 @@
         "color": "#FFFFFF",
         "isi_symbol": "+"
       },
-      "id": "06a74d279f"
+      "id": "8e70997a8c"
     },
     {
       "kind": "fixation",
@@ -3130,7 +3133,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7fea40c66b"
+      "id": "80d1c0cb39"
     }
   ],
   "hardware": {

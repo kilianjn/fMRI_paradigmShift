@@ -1,0 +1,3253 @@
+{
+  "name": "Stroop",
+  "tr": 2.0,
+  "dummy_scans": 3,
+  "background": "#000000",
+  "waiting_screen": "fixation",
+  "waiting_text": "The measurement will start in a moment.",
+  "end_text": "Thank you!",
+  "tracks": [
+    "Stimuli",
+    "Responses"
+  ],
+  "blocks": [
+    {
+      "kind": "text",
+      "start": 0.0,
+      "duration": 12.0,
+      "track": 0,
+      "label": "Instructions",
+      "condition": "instruction",
+      "params": {
+        "text": "Press the button for the INK COLOUR of the word \u2013\nnot for what the word says.\n\nRED ink  \u2192  Left thumb\nGREEN ink  \u2192  Left index\nBLUE ink  \u2192  Right index\nYELLOW ink  \u2192  Right thumb",
+        "size": 32,
+        "color": "#FFFFFF"
+      },
+      "id": "8dbf55e290"
+    },
+    {
+      "kind": "fixation",
+      "start": 12.0,
+      "duration": 6.0,
+      "track": 0,
+      "label": "Get ready",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "16c7474a00"
+    },
+    {
+      "kind": "choice",
+      "start": 18.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in green",
+      "condition": "incongruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f11bcc0aea"
+    },
+    {
+      "kind": "fixation",
+      "start": 20.0,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "696c1564b6"
+    },
+    {
+      "kind": "choice",
+      "start": 21.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "3841f50d99"
+    },
+    {
+      "kind": "fixation",
+      "start": 23.25,
+      "duration": 3.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "f999b576f4"
+    },
+    {
+      "kind": "choice",
+      "start": 26.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in red",
+      "condition": "congruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "1aac80ddaa"
+    },
+    {
+      "kind": "fixation",
+      "start": 28.75,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "2936049329"
+    },
+    {
+      "kind": "choice",
+      "start": 31.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in yellow",
+      "condition": "congruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "6366eb1158"
+    },
+    {
+      "kind": "fixation",
+      "start": 33.25,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "2d74b6835e"
+    },
+    {
+      "kind": "choice",
+      "start": 35.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in blue",
+      "condition": "incongruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "ec63392fb6"
+    },
+    {
+      "kind": "fixation",
+      "start": 37.5,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "bb473d62d5"
+    },
+    {
+      "kind": "choice",
+      "start": 40.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4bde8b88a9"
+    },
+    {
+      "kind": "fixation",
+      "start": 42.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "2e75bbcfb7"
+    },
+    {
+      "kind": "choice",
+      "start": 43.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in green",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "8e9609a4b3"
+    },
+    {
+      "kind": "fixation",
+      "start": 45.5,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "130e4cb0f0"
+    },
+    {
+      "kind": "choice",
+      "start": 49.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in red",
+      "condition": "congruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "e2aadd4ca8"
+    },
+    {
+      "kind": "fixation",
+      "start": 51.25,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "6a34dc81ce"
+    },
+    {
+      "kind": "choice",
+      "start": 53.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "502da500b0"
+    },
+    {
+      "kind": "fixation",
+      "start": 55.0,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "101f47b24e"
+    },
+    {
+      "kind": "choice",
+      "start": 58.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "ac9302aa57"
+    },
+    {
+      "kind": "fixation",
+      "start": 60.0,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "4ed0e591de"
+    },
+    {
+      "kind": "choice",
+      "start": 63.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f42485f1b6"
+    },
+    {
+      "kind": "fixation",
+      "start": 65.0,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3eb92e88a3"
+    },
+    {
+      "kind": "choice",
+      "start": 67.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in green",
+      "condition": "incongruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "12bbdd8e41"
+    },
+    {
+      "kind": "fixation",
+      "start": 69.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "e4a3296567"
+    },
+    {
+      "kind": "choice",
+      "start": 71.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in green",
+      "condition": "incongruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "627fde4ed6"
+    },
+    {
+      "kind": "fixation",
+      "start": 73.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "e98f558eed"
+    },
+    {
+      "kind": "choice",
+      "start": 75.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in blue",
+      "condition": "incongruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "95d4bb5010"
+    },
+    {
+      "kind": "fixation",
+      "start": 77.0,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "a28c65be8e"
+    },
+    {
+      "kind": "choice",
+      "start": 80.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in yellow",
+      "condition": "congruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9fd35ccb28"
+    },
+    {
+      "kind": "fixation",
+      "start": 82.75,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "7b6945aaa6"
+    },
+    {
+      "kind": "choice",
+      "start": 84.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in red",
+      "condition": "congruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "8912035e62"
+    },
+    {
+      "kind": "fixation",
+      "start": 86.5,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8a88ca67a8"
+    },
+    {
+      "kind": "choice",
+      "start": 90.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in red",
+      "condition": "congruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "5df5afd44b"
+    },
+    {
+      "kind": "fixation",
+      "start": 92.25,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "da4374f453"
+    },
+    {
+      "kind": "choice",
+      "start": 94.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "0dcf576ceb"
+    },
+    {
+      "kind": "fixation",
+      "start": 96.75,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "33efe13644"
+    },
+    {
+      "kind": "choice",
+      "start": 98.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f21052ddf1"
+    },
+    {
+      "kind": "fixation",
+      "start": 100.5,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "5967d4f0fe"
+    },
+    {
+      "kind": "choice",
+      "start": 104.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in yellow",
+      "condition": "congruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "c43d220e05"
+    },
+    {
+      "kind": "fixation",
+      "start": 106.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "212ecc70d2"
+    },
+    {
+      "kind": "choice",
+      "start": 108.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "29fa383539"
+    },
+    {
+      "kind": "fixation",
+      "start": 110.25,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "dd8cbb2607"
+    },
+    {
+      "kind": "choice",
+      "start": 113.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in green",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4031f68fd8"
+    },
+    {
+      "kind": "fixation",
+      "start": 115.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "bc0976c7a1"
+    },
+    {
+      "kind": "choice",
+      "start": 116.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "b139c877f8"
+    },
+    {
+      "kind": "fixation",
+      "start": 118.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "7d9d6f7b6a"
+    },
+    {
+      "kind": "choice",
+      "start": 120.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "d6cb2ae4a8"
+    },
+    {
+      "kind": "fixation",
+      "start": 122.0,
+      "duration": 1.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "55ec4ba33b"
+    },
+    {
+      "kind": "choice",
+      "start": 123.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in green",
+      "condition": "congruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "bc7aef6f99"
+    },
+    {
+      "kind": "fixation",
+      "start": 125.0,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8647112dbc"
+    },
+    {
+      "kind": "choice",
+      "start": 127.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "b982736b69"
+    },
+    {
+      "kind": "fixation",
+      "start": 129.5,
+      "duration": 4.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ca527613e1"
+    },
+    {
+      "kind": "choice",
+      "start": 133.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in green",
+      "condition": "incongruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "a8208d0d71"
+    },
+    {
+      "kind": "fixation",
+      "start": 135.5,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c9bf754060"
+    },
+    {
+      "kind": "choice",
+      "start": 138.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in green",
+      "condition": "congruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "6caa00eccf"
+    },
+    {
+      "kind": "fixation",
+      "start": 140.75,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "abb2ab6c93"
+    },
+    {
+      "kind": "choice",
+      "start": 143.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in blue",
+      "condition": "incongruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "5e299f35fe"
+    },
+    {
+      "kind": "fixation",
+      "start": 145.5,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ebbb867aa4"
+    },
+    {
+      "kind": "choice",
+      "start": 149.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in yellow",
+      "condition": "congruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4f053e37fa"
+    },
+    {
+      "kind": "fixation",
+      "start": 151.25,
+      "duration": 1.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "05b28f1185"
+    },
+    {
+      "kind": "choice",
+      "start": 152.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in red",
+      "condition": "congruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "d312622b55"
+    },
+    {
+      "kind": "fixation",
+      "start": 154.25,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ed16f6318c"
+    },
+    {
+      "kind": "choice",
+      "start": 156.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in green",
+      "condition": "incongruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "6c1fd8eea2"
+    },
+    {
+      "kind": "fixation",
+      "start": 158.75,
+      "duration": 1.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "7e3dea29a6"
+    },
+    {
+      "kind": "choice",
+      "start": 159.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "638f68139c"
+    },
+    {
+      "kind": "fixation",
+      "start": 161.75,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "013fa6d9a5"
+    },
+    {
+      "kind": "choice",
+      "start": 164.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "302ce63a08"
+    },
+    {
+      "kind": "fixation",
+      "start": 166.0,
+      "duration": 1.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "59281a5e22"
+    },
+    {
+      "kind": "choice",
+      "start": 167.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9d01396df0"
+    },
+    {
+      "kind": "fixation",
+      "start": 169.0,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c55dd387bd"
+    },
+    {
+      "kind": "choice",
+      "start": 170.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in yellow",
+      "condition": "congruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "737c96310e"
+    },
+    {
+      "kind": "fixation",
+      "start": 172.25,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "f7c0db22fe"
+    },
+    {
+      "kind": "choice",
+      "start": 174.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "3f4ed68b2e"
+    },
+    {
+      "kind": "fixation",
+      "start": 176.0,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "31bc52d35e"
+    },
+    {
+      "kind": "choice",
+      "start": 178.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "25bed771d9"
+    },
+    {
+      "kind": "fixation",
+      "start": 180.75,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c8d7eae6ed"
+    },
+    {
+      "kind": "choice",
+      "start": 182.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in green",
+      "condition": "congruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "a1e847a9b1"
+    },
+    {
+      "kind": "fixation",
+      "start": 184.5,
+      "duration": 1.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "bda449b92e"
+    },
+    {
+      "kind": "choice",
+      "start": 185.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "77bc7b4cef"
+    },
+    {
+      "kind": "fixation",
+      "start": 187.5,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "62a96fa025"
+    },
+    {
+      "kind": "choice",
+      "start": 190.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "29be71cb2e"
+    },
+    {
+      "kind": "fixation",
+      "start": 192.75,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "901776b642"
+    },
+    {
+      "kind": "choice",
+      "start": 196.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "1a1d7a705f"
+    },
+    {
+      "kind": "fixation",
+      "start": 198.0,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3c2a0e06d9"
+    },
+    {
+      "kind": "choice",
+      "start": 201.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in blue",
+      "condition": "incongruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "40105a40a3"
+    },
+    {
+      "kind": "fixation",
+      "start": 203.0,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "6de9a16daa"
+    },
+    {
+      "kind": "choice",
+      "start": 205.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in green",
+      "condition": "congruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "d2845a915f"
+    },
+    {
+      "kind": "fixation",
+      "start": 207.5,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "a3be65ed58"
+    },
+    {
+      "kind": "choice",
+      "start": 209.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "7da39096cb"
+    },
+    {
+      "kind": "fixation",
+      "start": 211.25,
+      "duration": 1.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "1b35ac0355"
+    },
+    {
+      "kind": "choice",
+      "start": 212.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "21463b5dea"
+    },
+    {
+      "kind": "fixation",
+      "start": 214.25,
+      "duration": 3.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c0c08e6248"
+    },
+    {
+      "kind": "choice",
+      "start": 217.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in red",
+      "condition": "congruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "375e69cf20"
+    },
+    {
+      "kind": "fixation",
+      "start": 219.75,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3ea4edd13f"
+    },
+    {
+      "kind": "choice",
+      "start": 221.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in green",
+      "condition": "incongruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "3b1ca79a51"
+    },
+    {
+      "kind": "fixation",
+      "start": 223.0,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "4ed4d8b0cc"
+    },
+    {
+      "kind": "choice",
+      "start": 225.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4770efb795"
+    },
+    {
+      "kind": "fixation",
+      "start": 227.75,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "623c378b51"
+    },
+    {
+      "kind": "choice",
+      "start": 230.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in blue",
+      "condition": "incongruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f26092d4fd"
+    },
+    {
+      "kind": "fixation",
+      "start": 232.0,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "54870471e0"
+    },
+    {
+      "kind": "choice",
+      "start": 234.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4e0ebd5bdc"
+    },
+    {
+      "kind": "fixation",
+      "start": 236.25,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "a0fc60ff6a"
+    },
+    {
+      "kind": "choice",
+      "start": 239.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in yellow",
+      "condition": "congruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "18fc7aef2f"
+    },
+    {
+      "kind": "fixation",
+      "start": 241.0,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "853714c916"
+    },
+    {
+      "kind": "choice",
+      "start": 244.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "63c24e61f9"
+    },
+    {
+      "kind": "fixation",
+      "start": 246.75,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "35b79858e3"
+    },
+    {
+      "kind": "choice",
+      "start": 248.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "a7a25f502e"
+    },
+    {
+      "kind": "fixation",
+      "start": 250.5,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "441878d54f"
+    },
+    {
+      "kind": "choice",
+      "start": 251.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in yellow",
+      "condition": "congruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "940b3a32e2"
+    },
+    {
+      "kind": "fixation",
+      "start": 253.75,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "05c693905c"
+    },
+    {
+      "kind": "choice",
+      "start": 256.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in green",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f7b0f16179"
+    },
+    {
+      "kind": "fixation",
+      "start": 258.75,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "2fdfce2b4e"
+    },
+    {
+      "kind": "choice",
+      "start": 260.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in red",
+      "condition": "congruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "553d4b86c9"
+    },
+    {
+      "kind": "fixation",
+      "start": 262.5,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "da34ed04f6"
+    },
+    {
+      "kind": "choice",
+      "start": 264.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in green",
+      "condition": "congruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "7cf07f985b"
+    },
+    {
+      "kind": "fixation",
+      "start": 266.25,
+      "duration": 3.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "9f85ee3ea2"
+    },
+    {
+      "kind": "choice",
+      "start": 269.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in green",
+      "condition": "congruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "eaace09f3d"
+    },
+    {
+      "kind": "fixation",
+      "start": 271.75,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "820022bec5"
+    },
+    {
+      "kind": "choice",
+      "start": 275.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "55c5eb2c18"
+    },
+    {
+      "kind": "fixation",
+      "start": 277.5,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "0346cf5c02"
+    },
+    {
+      "kind": "choice",
+      "start": 280.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "367d275433"
+    },
+    {
+      "kind": "fixation",
+      "start": 282.75,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "1be056ec0a"
+    },
+    {
+      "kind": "choice",
+      "start": 284.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f60387784e"
+    },
+    {
+      "kind": "fixation",
+      "start": 286.0,
+      "duration": 3.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "6b6c164728"
+    },
+    {
+      "kind": "choice",
+      "start": 289.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in green",
+      "condition": "congruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "57c8f07cb9"
+    },
+    {
+      "kind": "fixation",
+      "start": 291.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "dfcb72c898"
+    },
+    {
+      "kind": "choice",
+      "start": 293.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "bac05ed7f7"
+    },
+    {
+      "kind": "fixation",
+      "start": 295.5,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "1373ac458f"
+    },
+    {
+      "kind": "choice",
+      "start": 299.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in blue",
+      "condition": "incongruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "18f0d622ef"
+    },
+    {
+      "kind": "fixation",
+      "start": 301.25,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3f1de0a5bd"
+    },
+    {
+      "kind": "choice",
+      "start": 305.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "e4e45c49e4"
+    },
+    {
+      "kind": "fixation",
+      "start": 307.0,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "efff7439bd"
+    },
+    {
+      "kind": "choice",
+      "start": 308.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "df785083f7"
+    },
+    {
+      "kind": "fixation",
+      "start": 310.25,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3b0df69844"
+    },
+    {
+      "kind": "choice",
+      "start": 311.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "d9a8277243"
+    },
+    {
+      "kind": "fixation",
+      "start": 313.5,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "82d06fa99b"
+    },
+    {
+      "kind": "choice",
+      "start": 316.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in red",
+      "condition": "congruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "ebc6dcc661"
+    },
+    {
+      "kind": "fixation",
+      "start": 318.0,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "bbd3bf7cb0"
+    },
+    {
+      "kind": "choice",
+      "start": 320.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in green",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "252ca66a36"
+    },
+    {
+      "kind": "fixation",
+      "start": 322.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c2c997c1e6"
+    },
+    {
+      "kind": "choice",
+      "start": 324.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "bb007ba5ab"
+    },
+    {
+      "kind": "fixation",
+      "start": 326.0,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "88ea86fa27"
+    },
+    {
+      "kind": "choice",
+      "start": 328.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "6553b13ed1"
+    },
+    {
+      "kind": "fixation",
+      "start": 330.5,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "69d736f34c"
+    },
+    {
+      "kind": "choice",
+      "start": 332.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4ba9d437ef"
+    },
+    {
+      "kind": "fixation",
+      "start": 334.75,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "81aea40e5b"
+    },
+    {
+      "kind": "choice",
+      "start": 337.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in green",
+      "condition": "congruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9fcefd070c"
+    },
+    {
+      "kind": "fixation",
+      "start": 339.0,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ea50635b8f"
+    },
+    {
+      "kind": "choice",
+      "start": 340.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "0d10054d8f"
+    },
+    {
+      "kind": "fixation",
+      "start": 342.25,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3948c4083d"
+    },
+    {
+      "kind": "choice",
+      "start": 345.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in green",
+      "condition": "incongruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "5d9016f11a"
+    },
+    {
+      "kind": "fixation",
+      "start": 347.0,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "578660b919"
+    },
+    {
+      "kind": "choice",
+      "start": 349.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in green",
+      "condition": "congruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "648a022767"
+    },
+    {
+      "kind": "fixation",
+      "start": 351.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "9eab8ef429"
+    },
+    {
+      "kind": "choice",
+      "start": 353.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "efd7dbea7a"
+    },
+    {
+      "kind": "fixation",
+      "start": 355.75,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "abd45f0e62"
+    },
+    {
+      "kind": "choice",
+      "start": 358.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in green",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "2340392af1"
+    },
+    {
+      "kind": "fixation",
+      "start": 360.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "464fe989ea"
+    },
+    {
+      "kind": "choice",
+      "start": 362.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "b8df352d5a"
+    },
+    {
+      "kind": "fixation",
+      "start": 364.0,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "4bb87c2a7a"
+    },
+    {
+      "kind": "choice",
+      "start": 367.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "1e63c00a3b"
+    },
+    {
+      "kind": "fixation",
+      "start": 369.75,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "89e8c8d35f"
+    },
+    {
+      "kind": "choice",
+      "start": 372.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in yellow",
+      "condition": "congruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "2075334f90"
+    },
+    {
+      "kind": "fixation",
+      "start": 374.5,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "5b2f29049c"
+    },
+    {
+      "kind": "choice",
+      "start": 377.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "a10d43853e"
+    },
+    {
+      "kind": "fixation",
+      "start": 379.5,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "92377df0cf"
+    },
+    {
+      "kind": "choice",
+      "start": 381.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in red",
+      "condition": "congruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "8ab84d5754"
+    },
+    {
+      "kind": "fixation",
+      "start": 383.25,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "16f87211e7"
+    },
+    {
+      "kind": "choice",
+      "start": 384.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "6e0f835df0"
+    },
+    {
+      "kind": "fixation",
+      "start": 386.5,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "108e526901"
+    },
+    {
+      "kind": "choice",
+      "start": 389.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in blue",
+      "condition": "incongruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "41484e1be9"
+    },
+    {
+      "kind": "fixation",
+      "start": 391.5,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "08ada16be0"
+    },
+    {
+      "kind": "choice",
+      "start": 395.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "169b4932d6"
+    },
+    {
+      "kind": "fixation",
+      "start": 397.25,
+      "duration": 1.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "99a4ef5df6"
+    },
+    {
+      "kind": "choice",
+      "start": 398.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "dbae399818"
+    },
+    {
+      "kind": "fixation",
+      "start": 400.25,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ea1fd714d6"
+    },
+    {
+      "kind": "choice",
+      "start": 403.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in green",
+      "condition": "congruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "c2f165b803"
+    },
+    {
+      "kind": "fixation",
+      "start": 405.0,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "77396b0824"
+    },
+    {
+      "kind": "choice",
+      "start": 406.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in green",
+      "condition": "congruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "929c0f83d2"
+    },
+    {
+      "kind": "fixation",
+      "start": 408.75,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "51ede3f550"
+    },
+    {
+      "kind": "choice",
+      "start": 411.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in yellow",
+      "condition": "incongruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "254b0237d2"
+    },
+    {
+      "kind": "fixation",
+      "start": 413.25,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3a181e0362"
+    },
+    {
+      "kind": "choice",
+      "start": 416.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in yellow",
+      "condition": "congruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#FDD835",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f71da232dd"
+    },
+    {
+      "kind": "fixation",
+      "start": 418.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "feaa70e887"
+    },
+    {
+      "kind": "choice",
+      "start": 419.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "GREEN in green",
+      "condition": "congruent",
+      "params": {
+        "text": "GREEN",
+        "path": "",
+        "color": "#43A047",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "7984c0ddc8"
+    },
+    {
+      "kind": "fixation",
+      "start": 421.75,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "27c954414a"
+    },
+    {
+      "kind": "choice",
+      "start": 424.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "YELLOW in red",
+      "condition": "incongruent",
+      "params": {
+        "text": "YELLOW",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "360a19f255"
+    },
+    {
+      "kind": "fixation",
+      "start": 426.5,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8e55e03169"
+    },
+    {
+      "kind": "choice",
+      "start": 429.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "RED in red",
+      "condition": "congruent",
+      "params": {
+        "text": "RED",
+        "path": "",
+        "color": "#E53935",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Left thumb",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "cdfe10e931"
+    },
+    {
+      "kind": "fixation",
+      "start": 431.5,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "788e71ca2c"
+    },
+    {
+      "kind": "choice",
+      "start": 434.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "BLUE in blue",
+      "condition": "congruent",
+      "params": {
+        "text": "BLUE",
+        "path": "",
+        "color": "#1E88E5",
+        "size": 110,
+        "stim_time": 0.0,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "6ae47d3fd3"
+    },
+    {
+      "kind": "fixation",
+      "start": 436.75,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "427fda495f"
+    },
+    {
+      "kind": "fixation",
+      "start": 440.5,
+      "duration": 10.0,
+      "track": 0,
+      "label": "End",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "88a88109a7"
+    }
+  ],
+  "hardware": {
+    "sync_mode": "keyboard",
+    "trigger_key": "s",
+    "serial_port": "",
+    "baud_rate": 57600,
+    "buttons": [
+      {
+        "name": "Left thumb",
+        "key": "1"
+      },
+      {
+        "name": "Left index",
+        "key": "2"
+      },
+      {
+        "name": "Right index",
+        "key": "3"
+      },
+      {
+        "name": "Right thumb",
+        "key": "4"
+      }
+    ],
+    "move_left": "Left index",
+    "move_right": "Right index",
+    "confirm": "Right thumb"
+  },
+  "format": 1
+}

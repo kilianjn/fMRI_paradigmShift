@@ -111,9 +111,11 @@ def main():
 
     # The classic task modules, built from their templates with placeholder stimuli.
     stim = os.path.join(ROOT, "stimuli")
-    for key, opts, fname in (("hariri", templates.HaririOptions(), "hariri_face_matching"),
-                             ("gonogo", templates.GoNoGoOptions(), "go_nogo"),
-                             ("emoreg", templates.EmoRegOptions(), "emotion_regulation")):
+    names = {"hariri": "hariri_face_matching", "gonogo": "go_nogo", "emoreg": "emotion_regulation",
+             "mid": "monetary_incentive_delay", "stroop": "stroop", "flanker": "flanker", "nback": "n_back",
+             "motor": "motor_localizer", "checkerboard": "visual_checkerboard", "resting": "resting_state"}
+    for tpl in templates.TEMPLATES:
+        key, opts, fname = tpl.key, tpl.options(), names[tpl.key]
         par = templates.build(key, opts, stim)
         out = os.path.join(ROOT, fname + ".paradigm.json")
         par.save(out)

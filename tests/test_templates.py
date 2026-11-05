@@ -128,6 +128,100 @@ def test_runner_scores_matching_and_gonogo(tmp_path):
 
 def test_example_projects_load():
     ex = os.path.join(os.path.dirname(__file__), "..", "examples")
-    for name in ("hariri_face_matching", "go_nogo", "emotion_regulation"):
+    for name in ("hariri_face_matching", "go_nogo", "emotion_regulation", "monetary_incentive_delay", "stroop",
+                 "flanker", "n_back", "motor_localizer", "visual_checkerboard", "resting_state"):
         par = Paradigm.load(os.path.join(ex, name + ".paradigm.json"))
         assert par.blocks and par.validate() == [], name
+
+
+# ---------------------------------------------------------------- more standard paradigms
+def test_every_template_builds_cleanly(stim):
+    for t in T.TEMPLATES:
+        par = T.build(t.key, t.options(), stim)
+        assert par.blocks and no_overlaps(par) and par.validate() == [], t.key
+        assert t.category in T.CATEGORIES, t.key
+
+
+def test_nback_targets_match_n_back():
+    rng = random.Random(2)
+    for n in (1, 2, 3):
+        seq = T.nback_sequence(n, 20, 6, "BCDFG", rng)
+        for i, (letter, target) in enumerate(seq):
+            if i >= n:
+                assert target == (letter == seq[i - n][0])
+        assert sum(t for _, t in seq) == 6
+    zero = T.nback_sequence(0, 15, 5, "BCDF", rng, "X")
+    assert all(t == (letter == "X") for letter, t in zero)
+    par = T.build_nback(T.NBackOptions(levels="0, 1, 2", blocks_per_level=2, trials_per_block=12))
+    trials = [b for b in par.blocks if b.kind == "choice"]
+    assert {b.condition for b in trials} == {"0back", "1back", "2back"}
+    assert all((b.params["correct"] != "") == b.label.endswith("(target)") for b in trials)
+
+
+def test_stroop_and_flanker_correct_answers():
+    o = T.StroopOptions(n_trials=40, words="ROT, GRÜN, BLAU, GELB")
+    par = T.build_stroop(o)
+    btn = {"red": o.red_button, "green": o.green_button, "blue": o.blue_button, "yellow": o.yellow_button}
+    word = dict(zip(["red", "green", "blue", "yellow"], ["ROT", "GRÜN", "BLAU", "GELB"]))
+    for b in (x for x in par.blocks if x.kind == "choice"):
+        ink = next(c for c, h in T.STROOP_INK.items() if h == b.params["color"])
+        assert b.params["correct"] == btn[ink]
+        assert (b.params["text"] == word[ink]) == (b.condition == "congruent")
+    fl = T.build_flanker(T.FlankerOptions(n_trials=40))
+    for b in (x for x in fl.blocks if x.kind == "choice"):
+        middle = b.params["text"][2]
+        assert b.params["correct"] == ("Left index" if middle == "←" else "Right index")
+        assert (len(set(b.params["text"])) == 1) == (b.condition == "congruent")
+
+
+def test_mid_structure_and_feedback_scoring():
+    par = T.build("mid", T.MIDOptions(trials_per_condition=4), str(os.path.join(os.path.dirname(__file__),
+                                                                               "..", "examples", "stimuli")))
+    fbs = [b for b in par.blocks if b.kind == "feedback"]
+    assert len(fbs) == 12
+    for fb in fbs:
+        prev = par.previous_scored(fb)
+        assert prev.kind == "choice" and prev.condition.replace("target", "feedback") == fb.condition
+    s = _started(par)
+    tgt = [b for b in par.blocks if b.kind == "choice"][:2]
+    for b in par.blocks:
+        if b.start <= tgt[1].end + 3:
+            s.onset(b, b.start) if b.kind != "feedback" else None
+    s.on_button("Right index", tgt[0].start + 0.15)          # hit on the first target, none on the second
+    for fb in fbs[:2]:
+        s.onset(fb, fb.start)
+    assert s.paint_state(fbs[0], fbs[0].start)["success"] is True
+    assert s.paint_state(fbs[1], fbs[1].start)["success"] is False
+    assert s.events[fbs[0].id]["outcome"] == "hit" and s.events[fbs[1].id]["outcome"] == "miss"
+
+
+def test_choice_scoring_outcomes(tmp_path):
+    par = Paradigm(dummy_scans=0)
+    right = Block.create("choice", 0, 2, text="A", correct="Left index")
+    wrong = Block.create("choice", 2, 2, text="B", correct="Left index")
+    fa = Block.create("choice", 4, 2, text="C", correct="")
+    cr = Block.create("choice", 6, 2, text="D", correct="")
+    miss = Block.create("choice", 8, 2, text="E", correct="Right thumb")
+    par.blocks += [right, wrong, fa, cr, miss]
+    s = _started(par)
+    for b in par.blocks:
+        s.onset(b, b.start)
+    s.on_button("Left index", 0.5)
+    s.on_button("Right index", 2.5)
+    s.on_button("Right index", 4.4)
+    s.write(str(tmp_path), "x")
+    e = s.events
+    assert (e[right.id]["outcome"], e[right.id]["correct"]) == ("correct", 1)
+    assert (e[wrong.id]["outcome"], e[wrong.id]["correct"]) == ("incorrect", 0)
+    assert e[fa.id]["outcome"] == "false_alarm" and e[cr.id]["outcome"] == "correct_rejection"
+    assert e[miss.id]["outcome"] == "miss"
+    assert "Choice trials" in " ".join(performance_summary(s))
+
+
+def test_flicker_changes_visual_key():
+    from paradigmshift.stimulus import flicker_phase, visual_key
+    b = Block.create("image", 0, 10, path="a.png", flicker_path="b.png", flicker_hz=8)
+    assert [flicker_phase(b, t) for t in (0.0, 0.13, 0.26)] == [0, 1, 0]
+    assert visual_key(b, 0.0) != visual_key(b, 0.13)
+    still = Block.create("image", 0, 10, path="a.png")
+    assert visual_key(still, 0.0) == visual_key(still, 5.0)

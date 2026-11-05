@@ -1,0 +1,3253 @@
+{
+  "name": "Flanker",
+  "tr": 2.0,
+  "dummy_scans": 3,
+  "background": "#000000",
+  "waiting_screen": "fixation",
+  "waiting_text": "The measurement will start in a moment.",
+  "end_text": "Thank you!",
+  "tracks": [
+    "Stimuli",
+    "Responses"
+  ],
+  "blocks": [
+    {
+      "kind": "text",
+      "start": 0.0,
+      "duration": 10.0,
+      "track": 0,
+      "label": "Instructions",
+      "condition": "instruction",
+      "params": {
+        "text": "Look at the MIDDLE arrow only.\n\n\u2190  points left:  Left index\n\u2192  points right:  Right index\n\nAnswer as fast and as accurately as you can.",
+        "size": 32,
+        "color": "#FFFFFF"
+      },
+      "id": "abf5a90326"
+    },
+    {
+      "kind": "fixation",
+      "start": 10.0,
+      "duration": 6.0,
+      "track": 0,
+      "label": "Get ready",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "914ed50801"
+    },
+    {
+      "kind": "choice",
+      "start": 16.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9151bd1af0"
+    },
+    {
+      "kind": "fixation",
+      "start": 17.5,
+      "duration": 3.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "7c0c8a05f9"
+    },
+    {
+      "kind": "choice",
+      "start": 21.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "3c30dd1d8a"
+    },
+    {
+      "kind": "fixation",
+      "start": 22.5,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "a0c388d08c"
+    },
+    {
+      "kind": "choice",
+      "start": 23.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "951cfc903c"
+    },
+    {
+      "kind": "fixation",
+      "start": 25.25,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "51838203de"
+    },
+    {
+      "kind": "choice",
+      "start": 27.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "616bc05f5e"
+    },
+    {
+      "kind": "fixation",
+      "start": 28.5,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "92f13ee69f"
+    },
+    {
+      "kind": "choice",
+      "start": 31.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "8a76cad140"
+    },
+    {
+      "kind": "fixation",
+      "start": 32.5,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "385cfb3879"
+    },
+    {
+      "kind": "choice",
+      "start": 35.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "e2d9f44ace"
+    },
+    {
+      "kind": "fixation",
+      "start": 37.25,
+      "duration": 3.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "572f32ddd1"
+    },
+    {
+      "kind": "choice",
+      "start": 40.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "ffa306a15f"
+    },
+    {
+      "kind": "fixation",
+      "start": 42.25,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "764bdb40cf"
+    },
+    {
+      "kind": "choice",
+      "start": 44.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "49f4dd1428"
+    },
+    {
+      "kind": "fixation",
+      "start": 46.25,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "6595485f7c"
+    },
+    {
+      "kind": "choice",
+      "start": 49.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "91332fb29d"
+    },
+    {
+      "kind": "fixation",
+      "start": 50.75,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c6e9f8f6f5"
+    },
+    {
+      "kind": "choice",
+      "start": 54.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "49a734f50d"
+    },
+    {
+      "kind": "fixation",
+      "start": 56.0,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "36a8f283e1"
+    },
+    {
+      "kind": "choice",
+      "start": 59.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "6b72db0ffb"
+    },
+    {
+      "kind": "fixation",
+      "start": 61.25,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3e539e01c5"
+    },
+    {
+      "kind": "choice",
+      "start": 63.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9f967f1937"
+    },
+    {
+      "kind": "fixation",
+      "start": 64.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "a3bbfee052"
+    },
+    {
+      "kind": "choice",
+      "start": 66.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "e775ee226b"
+    },
+    {
+      "kind": "fixation",
+      "start": 67.5,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "940d9dcd77"
+    },
+    {
+      "kind": "choice",
+      "start": 68.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "6eef022f43"
+    },
+    {
+      "kind": "fixation",
+      "start": 70.25,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "e1ecf13daa"
+    },
+    {
+      "kind": "choice",
+      "start": 72.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "fa19a6ddd6"
+    },
+    {
+      "kind": "fixation",
+      "start": 73.5,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "89085fad52"
+    },
+    {
+      "kind": "choice",
+      "start": 74.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "279eb9d741"
+    },
+    {
+      "kind": "fixation",
+      "start": 76.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8b6e21ded6"
+    },
+    {
+      "kind": "choice",
+      "start": 78.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "fc279cf649"
+    },
+    {
+      "kind": "fixation",
+      "start": 79.75,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "51238cb679"
+    },
+    {
+      "kind": "choice",
+      "start": 81.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "893649391b"
+    },
+    {
+      "kind": "fixation",
+      "start": 83.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c215391009"
+    },
+    {
+      "kind": "choice",
+      "start": 85.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "c6a7b2ff5b"
+    },
+    {
+      "kind": "fixation",
+      "start": 86.5,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8cfd38af28"
+    },
+    {
+      "kind": "choice",
+      "start": 90.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "0ab99961c3"
+    },
+    {
+      "kind": "fixation",
+      "start": 91.75,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "01bfffd7e4"
+    },
+    {
+      "kind": "choice",
+      "start": 93.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "cf6762b819"
+    },
+    {
+      "kind": "fixation",
+      "start": 95.0,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "88a0e23f40"
+    },
+    {
+      "kind": "choice",
+      "start": 98.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "7abc13473d"
+    },
+    {
+      "kind": "fixation",
+      "start": 100.25,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "cbcf533388"
+    },
+    {
+      "kind": "choice",
+      "start": 102.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "142eea980c"
+    },
+    {
+      "kind": "fixation",
+      "start": 104.25,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "7164cd3d70"
+    },
+    {
+      "kind": "choice",
+      "start": 106.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "d69b669efc"
+    },
+    {
+      "kind": "fixation",
+      "start": 108.25,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8713925768"
+    },
+    {
+      "kind": "choice",
+      "start": 110.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "64628e863c"
+    },
+    {
+      "kind": "fixation",
+      "start": 112.0,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "f19211a257"
+    },
+    {
+      "kind": "choice",
+      "start": 115.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "2c0332e009"
+    },
+    {
+      "kind": "fixation",
+      "start": 117.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "02564b59b1"
+    },
+    {
+      "kind": "choice",
+      "start": 119.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9ef60d1612"
+    },
+    {
+      "kind": "fixation",
+      "start": 120.75,
+      "duration": 2.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "cca2135216"
+    },
+    {
+      "kind": "choice",
+      "start": 122.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "fc87c64f9e"
+    },
+    {
+      "kind": "fixation",
+      "start": 124.25,
+      "duration": 4.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3ad92d4608"
+    },
+    {
+      "kind": "choice",
+      "start": 128.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "19a540edc3"
+    },
+    {
+      "kind": "fixation",
+      "start": 129.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "246b99c0ab"
+    },
+    {
+      "kind": "choice",
+      "start": 131.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "eaf4dbcc95"
+    },
+    {
+      "kind": "fixation",
+      "start": 132.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "dee5ccc912"
+    },
+    {
+      "kind": "choice",
+      "start": 134.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "c7fd0ad018"
+    },
+    {
+      "kind": "fixation",
+      "start": 135.75,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8d7b0ce5af"
+    },
+    {
+      "kind": "choice",
+      "start": 138.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "5fd11449e8"
+    },
+    {
+      "kind": "fixation",
+      "start": 140.0,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ce941767bf"
+    },
+    {
+      "kind": "choice",
+      "start": 142.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "3732eee3b8"
+    },
+    {
+      "kind": "fixation",
+      "start": 144.25,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c0b752c3b7"
+    },
+    {
+      "kind": "choice",
+      "start": 147.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "0f1b9195ce"
+    },
+    {
+      "kind": "fixation",
+      "start": 149.0,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "9f6600df12"
+    },
+    {
+      "kind": "choice",
+      "start": 151.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "e13706f999"
+    },
+    {
+      "kind": "fixation",
+      "start": 153.25,
+      "duration": 1.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "eac927becc"
+    },
+    {
+      "kind": "choice",
+      "start": 154.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "805877714a"
+    },
+    {
+      "kind": "fixation",
+      "start": 155.75,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "0f3ae79175"
+    },
+    {
+      "kind": "choice",
+      "start": 158.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "ac055bfe40"
+    },
+    {
+      "kind": "fixation",
+      "start": 160.0,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "2b370a76a0"
+    },
+    {
+      "kind": "choice",
+      "start": 162.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4037562fdc"
+    },
+    {
+      "kind": "fixation",
+      "start": 163.75,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "dad94506c0"
+    },
+    {
+      "kind": "choice",
+      "start": 167.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "8bd4132137"
+    },
+    {
+      "kind": "fixation",
+      "start": 169.0,
+      "duration": 1.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "e5e26eeb54"
+    },
+    {
+      "kind": "choice",
+      "start": 170.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "fe5100dd6b"
+    },
+    {
+      "kind": "fixation",
+      "start": 171.5,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "501c01619a"
+    },
+    {
+      "kind": "choice",
+      "start": 174.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "97f572767a"
+    },
+    {
+      "kind": "fixation",
+      "start": 175.5,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "86af564662"
+    },
+    {
+      "kind": "choice",
+      "start": 177.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f0007049fc"
+    },
+    {
+      "kind": "fixation",
+      "start": 178.75,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "f3e5ff8d52"
+    },
+    {
+      "kind": "choice",
+      "start": 182.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9b1039997e"
+    },
+    {
+      "kind": "fixation",
+      "start": 183.5,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "507d4e93c0"
+    },
+    {
+      "kind": "choice",
+      "start": 186.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "c84a11872b"
+    },
+    {
+      "kind": "fixation",
+      "start": 187.5,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "a7df14fbdb"
+    },
+    {
+      "kind": "choice",
+      "start": 191.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f9484845c1"
+    },
+    {
+      "kind": "fixation",
+      "start": 192.75,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "9440fcec07"
+    },
+    {
+      "kind": "choice",
+      "start": 196.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "1e07eebfb0"
+    },
+    {
+      "kind": "fixation",
+      "start": 197.5,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "43f1a88576"
+    },
+    {
+      "kind": "choice",
+      "start": 199.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "d8f87bc2f7"
+    },
+    {
+      "kind": "fixation",
+      "start": 200.75,
+      "duration": 3.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "df3a5785aa"
+    },
+    {
+      "kind": "choice",
+      "start": 204.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f0fbbaba83"
+    },
+    {
+      "kind": "fixation",
+      "start": 205.75,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "55137a8d1c"
+    },
+    {
+      "kind": "choice",
+      "start": 208.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4647394ec8"
+    },
+    {
+      "kind": "fixation",
+      "start": 210.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3a36750bce"
+    },
+    {
+      "kind": "choice",
+      "start": 214.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "e9fcd95931"
+    },
+    {
+      "kind": "fixation",
+      "start": 215.5,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "6cd3b04fbb"
+    },
+    {
+      "kind": "choice",
+      "start": 217.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "0577069b73"
+    },
+    {
+      "kind": "fixation",
+      "start": 218.75,
+      "duration": 1.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c733665f0c"
+    },
+    {
+      "kind": "choice",
+      "start": 219.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "03d6717354"
+    },
+    {
+      "kind": "fixation",
+      "start": 221.25,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "71db78631d"
+    },
+    {
+      "kind": "choice",
+      "start": 224.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "aa3718109b"
+    },
+    {
+      "kind": "fixation",
+      "start": 225.5,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ec8896984a"
+    },
+    {
+      "kind": "choice",
+      "start": 226.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "c2b645945f"
+    },
+    {
+      "kind": "fixation",
+      "start": 228.25,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "66d2a99792"
+    },
+    {
+      "kind": "choice",
+      "start": 232.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "54ce746f9b"
+    },
+    {
+      "kind": "fixation",
+      "start": 233.5,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "aaf9f010f7"
+    },
+    {
+      "kind": "choice",
+      "start": 236.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "0156098ff2"
+    },
+    {
+      "kind": "fixation",
+      "start": 238.25,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "d487248316"
+    },
+    {
+      "kind": "choice",
+      "start": 241.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "caf28f7a06"
+    },
+    {
+      "kind": "fixation",
+      "start": 242.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "6e9a3c22f2"
+    },
+    {
+      "kind": "choice",
+      "start": 244.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "b52152ca37"
+    },
+    {
+      "kind": "fixation",
+      "start": 245.75,
+      "duration": 1.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "85e3892f80"
+    },
+    {
+      "kind": "choice",
+      "start": 246.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "c1c6a627fb"
+    },
+    {
+      "kind": "fixation",
+      "start": 248.25,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "23603113ed"
+    },
+    {
+      "kind": "choice",
+      "start": 251.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "be863b4755"
+    },
+    {
+      "kind": "fixation",
+      "start": 252.5,
+      "duration": 1.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c45af5b1b8"
+    },
+    {
+      "kind": "choice",
+      "start": 253.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "d2c89fe48a"
+    },
+    {
+      "kind": "fixation",
+      "start": 255.0,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "2900443d68"
+    },
+    {
+      "kind": "choice",
+      "start": 258.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "c0e2b8e373"
+    },
+    {
+      "kind": "fixation",
+      "start": 259.5,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "f32d80949b"
+    },
+    {
+      "kind": "choice",
+      "start": 261.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "1be2c6eda6"
+    },
+    {
+      "kind": "fixation",
+      "start": 262.75,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "f3af9657e5"
+    },
+    {
+      "kind": "choice",
+      "start": 266.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "10787dfaad"
+    },
+    {
+      "kind": "fixation",
+      "start": 268.0,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "d045d7a9ab"
+    },
+    {
+      "kind": "choice",
+      "start": 270.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "5932e78776"
+    },
+    {
+      "kind": "fixation",
+      "start": 272.25,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "b445513ca1"
+    },
+    {
+      "kind": "choice",
+      "start": 274.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "6276e74576"
+    },
+    {
+      "kind": "fixation",
+      "start": 276.0,
+      "duration": 3.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "d8d8591219"
+    },
+    {
+      "kind": "choice",
+      "start": 279.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "22d8f54ac8"
+    },
+    {
+      "kind": "fixation",
+      "start": 281.0,
+      "duration": 3.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "e926c30b1a"
+    },
+    {
+      "kind": "choice",
+      "start": 284.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "2b324b0435"
+    },
+    {
+      "kind": "fixation",
+      "start": 285.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "85382d6957"
+    },
+    {
+      "kind": "choice",
+      "start": 287.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "364d9462fa"
+    },
+    {
+      "kind": "fixation",
+      "start": 289.0,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "7f9924a479"
+    },
+    {
+      "kind": "choice",
+      "start": 291.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f5d3934e1a"
+    },
+    {
+      "kind": "fixation",
+      "start": 293.25,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "44c908edbb"
+    },
+    {
+      "kind": "choice",
+      "start": 297.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "bfc1efe75f"
+    },
+    {
+      "kind": "fixation",
+      "start": 298.5,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "94467ae84d"
+    },
+    {
+      "kind": "choice",
+      "start": 300.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "72a9a22fbc"
+    },
+    {
+      "kind": "fixation",
+      "start": 301.75,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "36f0fd8f80"
+    },
+    {
+      "kind": "choice",
+      "start": 303.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "5591145b1e"
+    },
+    {
+      "kind": "fixation",
+      "start": 305.0,
+      "duration": 2.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "2639cba048"
+    },
+    {
+      "kind": "choice",
+      "start": 307.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "1e60047f47"
+    },
+    {
+      "kind": "fixation",
+      "start": 309.25,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "1a2b897fd4"
+    },
+    {
+      "kind": "choice",
+      "start": 310.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "320b82dd04"
+    },
+    {
+      "kind": "fixation",
+      "start": 312.0,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "9e7e932c3d"
+    },
+    {
+      "kind": "choice",
+      "start": 313.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "e6998fdb6e"
+    },
+    {
+      "kind": "fixation",
+      "start": 315.25,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "61cea685ad"
+    },
+    {
+      "kind": "choice",
+      "start": 317.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "c7634fd410"
+    },
+    {
+      "kind": "fixation",
+      "start": 318.5,
+      "duration": 3.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "0a7c6a551c"
+    },
+    {
+      "kind": "choice",
+      "start": 322.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "defc358758"
+    },
+    {
+      "kind": "fixation",
+      "start": 323.5,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8e8442a985"
+    },
+    {
+      "kind": "choice",
+      "start": 327.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4802c2f1c5"
+    },
+    {
+      "kind": "fixation",
+      "start": 328.75,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "33df0c00ed"
+    },
+    {
+      "kind": "choice",
+      "start": 332.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "8f8026aab3"
+    },
+    {
+      "kind": "fixation",
+      "start": 333.5,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "51f20fd9fa"
+    },
+    {
+      "kind": "choice",
+      "start": 336.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "5caf2d5b6b"
+    },
+    {
+      "kind": "fixation",
+      "start": 338.25,
+      "duration": 2.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "bfc476b0cb"
+    },
+    {
+      "kind": "choice",
+      "start": 340.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "060ddfd291"
+    },
+    {
+      "kind": "fixation",
+      "start": 341.75,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ffdcda8717"
+    },
+    {
+      "kind": "choice",
+      "start": 344.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "c70cfd918f"
+    },
+    {
+      "kind": "fixation",
+      "start": 345.5,
+      "duration": 3.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ed3ffea9f0"
+    },
+    {
+      "kind": "choice",
+      "start": 349.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f88901779f"
+    },
+    {
+      "kind": "fixation",
+      "start": 350.5,
+      "duration": 2.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "b006304119"
+    },
+    {
+      "kind": "choice",
+      "start": 352.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "e728675650"
+    },
+    {
+      "kind": "fixation",
+      "start": 354.0,
+      "duration": 3.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "79649e7259"
+    },
+    {
+      "kind": "choice",
+      "start": 357.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4a4f142489"
+    },
+    {
+      "kind": "fixation",
+      "start": 359.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "feeadc6d5e"
+    },
+    {
+      "kind": "choice",
+      "start": 360.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "badefca8b6"
+    },
+    {
+      "kind": "fixation",
+      "start": 362.25,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "88b2578b99"
+    },
+    {
+      "kind": "choice",
+      "start": 365.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "46c86ff512"
+    },
+    {
+      "kind": "fixation",
+      "start": 367.0,
+      "duration": 1.75,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "80cea5371e"
+    },
+    {
+      "kind": "choice",
+      "start": 368.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4e11eca7b4"
+    },
+    {
+      "kind": "fixation",
+      "start": 370.25,
+      "duration": 1.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "9fdcd0e707"
+    },
+    {
+      "kind": "choice",
+      "start": 371.5,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "b1b2de6ef8"
+    },
+    {
+      "kind": "fixation",
+      "start": 373.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "922f6e5ef3"
+    },
+    {
+      "kind": "choice",
+      "start": 377.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2192\u2190\u2190 (right)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2190\u2190\u2192\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9f8c40b3f5"
+    },
+    {
+      "kind": "fixation",
+      "start": 378.5,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "6d5c7d2e74"
+    },
+    {
+      "kind": "choice",
+      "start": 381.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "30262c59c4"
+    },
+    {
+      "kind": "fixation",
+      "start": 382.5,
+      "duration": 2.5,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "755200c471"
+    },
+    {
+      "kind": "choice",
+      "start": 385.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2192\u2192\u2192 (right)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2192\u2192\u2192\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "dc2ee4c15b"
+    },
+    {
+      "kind": "fixation",
+      "start": 386.5,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "37b5cf9a7e"
+    },
+    {
+      "kind": "choice",
+      "start": 388.75,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2192\u2192\u2190\u2192\u2192 (left)",
+      "condition": "incongruent",
+      "params": {
+        "text": "\u2192\u2192\u2190\u2192\u2192",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "462199583b"
+    },
+    {
+      "kind": "fixation",
+      "start": 390.25,
+      "duration": 4.0,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3b7aa6b776"
+    },
+    {
+      "kind": "choice",
+      "start": 394.25,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "d82acd28c8"
+    },
+    {
+      "kind": "fixation",
+      "start": 395.75,
+      "duration": 3.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "cc3c52ecf9"
+    },
+    {
+      "kind": "choice",
+      "start": 399.0,
+      "duration": 1.5,
+      "track": 0,
+      "label": "\u2190\u2190\u2190\u2190\u2190 (left)",
+      "condition": "congruent",
+      "params": {
+        "text": "\u2190\u2190\u2190\u2190\u2190",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 110,
+        "stim_time": 0.5,
+        "correct": "Left index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9084b46249"
+    },
+    {
+      "kind": "fixation",
+      "start": 400.5,
+      "duration": 2.25,
+      "track": 0,
+      "label": "ITI",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "b9e7483168"
+    },
+    {
+      "kind": "fixation",
+      "start": 402.75,
+      "duration": 10.0,
+      "track": 0,
+      "label": "End",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "82337d4c16"
+    }
+  ],
+  "hardware": {
+    "sync_mode": "keyboard",
+    "trigger_key": "s",
+    "serial_port": "",
+    "baud_rate": 57600,
+    "buttons": [
+      {
+        "name": "Left thumb",
+        "key": "1"
+      },
+      {
+        "name": "Left index",
+        "key": "2"
+      },
+      {
+        "name": "Right index",
+        "key": "3"
+      },
+      {
+        "name": "Right thumb",
+        "key": "4"
+      }
+    ],
+    "move_left": "Left index",
+    "move_right": "Right index",
+    "confirm": "Right thumb"
+  },
+  "format": 1
+}

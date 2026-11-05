@@ -3,6 +3,9 @@
   "tr": 2.0,
   "dummy_scans": 3,
   "background": "#000000",
+  "waiting_screen": "fixation",
+  "waiting_text": "The measurement will start in a moment.",
+  "end_text": "Thank you!",
   "tracks": [
     "Stimuli",
     "Responses"
@@ -20,7 +23,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "5b3dd1d617"
+      "id": "42f211b2b9"
     },
     {
       "kind": "match",
@@ -36,9 +39,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "9db3d04c0e"
+      "id": "fe30a9555b"
     },
     {
       "kind": "match",
@@ -54,9 +59,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "f6873bffc4"
+      "id": "6b09e84fba"
     },
     {
       "kind": "match",
@@ -72,9 +79,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "0c5b76c71b"
+      "id": "a76041afa1"
     },
     {
       "kind": "match",
@@ -90,9 +99,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "b54dc95dd0"
+      "id": "bf2d213a33"
     },
     {
       "kind": "match",
@@ -108,9 +119,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "3ed573721c"
+      "id": "0e56584c4f"
     },
     {
       "kind": "match",
@@ -126,9 +139,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "4a3906df59"
+      "id": "71ba5ed14e"
     },
     {
       "kind": "text",
@@ -142,7 +157,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "0e5d3ddc13"
+      "id": "f5a93e0084"
     },
     {
       "kind": "match",
@@ -158,9 +173,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "35c3b1f664"
+      "id": "ce07b65ca4"
     },
     {
       "kind": "match",
@@ -176,9 +193,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "900521aa04"
+      "id": "69b24b616f"
     },
     {
       "kind": "match",
@@ -194,9 +213,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "58330195f3"
+      "id": "f9330cf7a1"
     },
     {
       "kind": "match",
@@ -212,9 +233,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "0920122935"
+      "id": "7a9e647d27"
     },
     {
       "kind": "match",
@@ -230,9 +253,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "28808e16ca"
+      "id": "326ec19320"
     },
     {
       "kind": "match",
@@ -248,9 +273,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "deff59f957"
+      "id": "a6e18ea28b"
     },
     {
       "kind": "text",
@@ -264,7 +291,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "4ab237f61a"
+      "id": "0957fb7f12"
     },
     {
       "kind": "match",
@@ -280,9 +307,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "5bc68bf6c2"
+      "id": "ffdca40849"
     },
     {
       "kind": "match",
@@ -298,9 +327,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "0b4e76dad4"
+      "id": "82a3fa129b"
     },
     {
       "kind": "match",
@@ -316,9 +347,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "f3bf4a888b"
+      "id": "90551d9ffd"
     },
     {
       "kind": "match",
@@ -334,9 +367,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "b908b7ebc0"
+      "id": "ae403cbec7"
     },
     {
       "kind": "match",
@@ -352,9 +387,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "f3b87585c1"
+      "id": "42c050790f"
     },
     {
       "kind": "match",
@@ -370,9 +407,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "5d45d8205a"
+      "id": "5862a381dc"
     },
     {
       "kind": "text",
@@ -386,7 +425,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "6adec8b66a"
+      "id": "90e25b38cf"
     },
     {
       "kind": "match",
@@ -402,9 +441,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "bb7a8e107e"
+      "id": "a9c02df1af"
     },
     {
       "kind": "match",
@@ -420,9 +461,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "c4dcbee773"
+      "id": "6a3778e1f6"
     },
     {
       "kind": "match",
@@ -438,9 +481,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "4d5f8c5822"
+      "id": "08eabf12c8"
     },
     {
       "kind": "match",
@@ -456,9 +501,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "c9c093fd86"
+      "id": "84188e5dbb"
     },
     {
       "kind": "match",
@@ -474,9 +521,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "47b1fb9ee0"
+      "id": "0d531416ae"
     },
     {
       "kind": "match",
@@ -492,9 +541,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "122ff019b5"
+      "id": "ec84af73ef"
     },
     {
       "kind": "text",
@@ -508,7 +559,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "491ce18439"
+      "id": "f9b93cb303"
     },
     {
       "kind": "match",
@@ -524,9 +575,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "c644e3b303"
+      "id": "683a46c036"
     },
     {
       "kind": "match",
@@ -542,9 +595,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "f91e6cccd5"
+      "id": "22c8c7f678"
     },
     {
       "kind": "match",
@@ -560,9 +615,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "59f3c68c49"
+      "id": "e3aede85e3"
     },
     {
       "kind": "match",
@@ -578,9 +635,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "8ce269d0e7"
+      "id": "e165c60ec1"
     },
     {
       "kind": "match",
@@ -596,9 +655,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "3460f4eb9a"
+      "id": "4c789f5621"
     },
     {
       "kind": "match",
@@ -614,9 +675,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "14f3da7b65"
+      "id": "16325a817b"
     },
     {
       "kind": "text",
@@ -630,7 +693,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "67d1c0737c"
+      "id": "2ecc42b623"
     },
     {
       "kind": "match",
@@ -646,9 +709,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "98154bec0f"
+      "id": "caeff33bd6"
     },
     {
       "kind": "match",
@@ -664,9 +729,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "e468027fd1"
+      "id": "0a23238d04"
     },
     {
       "kind": "match",
@@ -682,9 +749,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "3365303e0b"
+      "id": "1b5a7b5c71"
     },
     {
       "kind": "match",
@@ -700,9 +769,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "95403703ef"
+      "id": "7aea4fffa6"
     },
     {
       "kind": "match",
@@ -718,9 +789,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "e55979d7c9"
+      "id": "aeb594fa4d"
     },
     {
       "kind": "match",
@@ -736,9 +809,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "03a82e1294"
+      "id": "eac38b2fc9"
     },
     {
       "kind": "text",
@@ -752,7 +827,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "9af77691c8"
+      "id": "b89b526677"
     },
     {
       "kind": "match",
@@ -768,9 +843,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "fd00e4e431"
+      "id": "4094604c6d"
     },
     {
       "kind": "match",
@@ -786,9 +863,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "94c80312fb"
+      "id": "26bd918091"
     },
     {
       "kind": "match",
@@ -804,9 +883,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "fb3c05b75f"
+      "id": "2bab42a7c1"
     },
     {
       "kind": "match",
@@ -822,9 +903,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "35feb12799"
+      "id": "8a529f194d"
     },
     {
       "kind": "match",
@@ -840,9 +923,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "873d528ad4"
+      "id": "d0dceb509f"
     },
     {
       "kind": "match",
@@ -858,9 +943,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "6a1319e463"
+      "id": "e8d86f7fd9"
     },
     {
       "kind": "text",
@@ -874,7 +961,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "3b59de4a6b"
+      "id": "c97ecdf6b3"
     },
     {
       "kind": "match",
@@ -890,9 +977,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "2f50036332"
+      "id": "cf1fb61ea9"
     },
     {
       "kind": "match",
@@ -908,9 +997,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "6af5e7fe7d"
+      "id": "d45251d024"
     },
     {
       "kind": "match",
@@ -926,9 +1017,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "ef0800e6bb"
+      "id": "b8ff7af3cd"
     },
     {
       "kind": "match",
@@ -944,9 +1037,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "09bc1774af"
+      "id": "8fa2e000c8"
     },
     {
       "kind": "match",
@@ -962,9 +1057,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "f156818841"
+      "id": "5371afd708"
     },
     {
       "kind": "match",
@@ -980,9 +1077,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "db61e2b453"
+      "id": "80964c5ada"
     },
     {
       "kind": "text",
@@ -996,7 +1095,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "8458296598"
+      "id": "3c74e75e3e"
     },
     {
       "kind": "match",
@@ -1012,9 +1111,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "78a8a122aa"
+      "id": "787cd3dcd9"
     },
     {
       "kind": "match",
@@ -1030,9 +1131,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "391319dd5d"
+      "id": "b3c46a6eac"
     },
     {
       "kind": "match",
@@ -1048,9 +1151,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "a52aba4ff6"
+      "id": "bec004281f"
     },
     {
       "kind": "match",
@@ -1066,9 +1171,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "d30b0d019a"
+      "id": "9a9297b6eb"
     },
     {
       "kind": "match",
@@ -1084,9 +1191,11 @@
         "correct": "left",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "38607fe7f4"
+      "id": "33abb83194"
     },
     {
       "kind": "match",
@@ -1102,9 +1211,11 @@
         "correct": "right",
         "left_button": "Left index",
         "right_button": "Right index",
-        "scale": 0.9
+        "scale": 0.9,
+        "show_choice": true,
+        "choice_color": "#FFD23F"
       },
-      "id": "1ff8d95065"
+      "id": "d5d54e640a"
     }
   ],
   "hardware": {

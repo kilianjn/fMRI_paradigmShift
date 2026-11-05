@@ -315,6 +315,54 @@ def main():
     shot(cr, "23_control_room_aborted.png")
     cr.hide()
 
+    # 24 – template list with categories
+    td = TemplateDialog(par.hardware, os.path.join(ROOT, "examples", "stimuli"), win)
+    td.show()
+    td.select("stroop")
+    settle(app)
+    shot(td, "24_templates_stroop.png")
+    td.select("mid")
+    settle(app)
+    shot(td, "25_templates_mid.png")
+    td.reject()
+
+    # 26/27 – new templates in the editor
+    for fname, kind, cond, zoom, outname in (
+            ("monetary_incentive_delay", "feedback", "feedback_gain", 30, "26_mid_editor.png"),
+            ("n_back", "choice", "2back", 22, "27_nback_editor.png")):
+        win.doc.dirty = False
+        win.open_file(os.path.join(ex, fname + ".paradigm.json"))
+        settle(app)
+        blk = [b for b in win.doc.paradigm.blocks if b.kind == kind and b.condition == cond][1]
+        win.doc.select([blk.id])
+        win.timeline.set_zoom(zoom)
+        win.timeline.horizontalScrollBar().setValue(int(max(0, blk.start - 12) * zoom))
+        win.timeline.set_playhead(blk.start + 0.1)
+        settle(app)
+        shot(win, outname)
+
+    # 28–31 – participant screens of the new paradigms
+    def participant(fname, pick, at_offset, outname, answer=lambda b, r: None):
+        pp = Paradigm.load(os.path.join(ex, fname + ".paradigm.json"))
+        blk = pick(pp)
+        cc = fake_run(pp, blk.start + at_offset, answer)
+        w_ = PresentationWindow(cc)
+        w_.resize(1280, 720)
+        w_.show()
+        settle(app)
+        shot(w_, outname)
+        w_.hide()
+
+    participant("stroop", lambda pp: [b for b in pp.blocks if b.condition == "incongruent"][0], .3,
+                "28_participant_stroop.png")
+    participant("flanker", lambda pp: [b for b in pp.blocks if b.condition == "incongruent"][0], .2,
+                "29_participant_flanker.png")
+    participant("monetary_incentive_delay", lambda pp: [b for b in pp.blocks if b.condition == "feedback_gain"][0],
+                .5, "30_participant_mid_feedback.png",
+                answer=lambda b, r: ("Right index", .1) if b.kind == "choice" else None)
+    participant("visual_checkerboard", lambda pp: [b for b in pp.blocks if b.kind == "image"][0], 1.0,
+                "31_participant_checkerboard.png")
+
     win.doc.dirty = False
     QTimer.singleShot(0, app.quit)
     app.exec()

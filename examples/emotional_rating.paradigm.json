@@ -3,6 +3,9 @@
   "tr": 2.0,
   "dummy_scans": 3,
   "background": "#000000",
+  "waiting_screen": "fixation",
+  "waiting_text": "The measurement will start in a moment.",
+  "end_text": "Thank you!",
   "tracks": [
     "Stimuli",
     "Responses"
@@ -20,7 +23,7 @@
         "size": 40,
         "color": "#FFFFFF"
       },
-      "id": "462686f171"
+      "id": "957d48cd26"
     },
     {
       "kind": "fixation",
@@ -34,7 +37,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "bba99bf219"
+      "id": "3baf8d9adf"
     },
     {
       "kind": "image",
@@ -45,9 +48,11 @@
       "condition": "positive",
       "params": {
         "path": "images/pos_sunrise.png",
-        "scale": 0.8
+        "scale": 0.8,
+        "flicker_path": "",
+        "flicker_hz": 0.0
       },
-      "id": "021673c265"
+      "id": "679e5043e6"
     },
     {
       "kind": "response",
@@ -60,7 +65,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "41fe065623"
+      "id": "52ba5c960e"
     },
     {
       "kind": "rating",
@@ -79,7 +84,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "04873e9284"
+      "id": "b939917731"
     },
     {
       "kind": "fixation",
@@ -93,7 +98,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "8fb6d12d01"
+      "id": "5d3a36e836"
     },
     {
       "kind": "image",
@@ -104,9 +109,11 @@
       "condition": "negative",
       "params": {
         "path": "images/neg_storm.png",
-        "scale": 0.8
+        "scale": 0.8,
+        "flicker_path": "",
+        "flicker_hz": 0.0
       },
-      "id": "86a5151eeb"
+      "id": "efab1143ba"
     },
     {
       "kind": "response",
@@ -119,7 +126,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "2e858b12c7"
+      "id": "bb76182b4d"
     },
     {
       "kind": "rating",
@@ -138,7 +145,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "1c6a3ef5f5"
+      "id": "b3b08bd899"
     },
     {
       "kind": "fixation",
@@ -152,7 +159,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "675849c874"
+      "id": "0380fba369"
     },
     {
       "kind": "image",
@@ -163,9 +170,11 @@
       "condition": "positive",
       "params": {
         "path": "images/pos_meadow.png",
-        "scale": 0.8
+        "scale": 0.8,
+        "flicker_path": "",
+        "flicker_hz": 0.0
       },
-      "id": "9fa75cbe1e"
+      "id": "bef8a3d652"
     },
     {
       "kind": "response",
@@ -178,7 +187,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "9c13b1d5e7"
+      "id": "46ddcc071b"
     },
     {
       "kind": "rating",
@@ -197,7 +206,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "bbf488dd5a"
+      "id": "aba5ec60b8"
     },
     {
       "kind": "fixation",
@@ -211,7 +220,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "e6541518a5"
+      "id": "5b2a5a68c5"
     },
     {
       "kind": "image",
@@ -222,9 +231,11 @@
       "condition": "negative",
       "params": {
         "path": "images/neg_ashes.png",
-        "scale": 0.8
+        "scale": 0.8,
+        "flicker_path": "",
+        "flicker_hz": 0.0
       },
-      "id": "1c880ae265"
+      "id": "51eb9bce22"
     },
     {
       "kind": "response",
@@ -237,7 +248,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "7bed7ee8d0"
+      "id": "a71ceccfb1"
     },
     {
       "kind": "rating",
@@ -256,7 +267,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "1abd028c9f"
+      "id": "bdd12b4474"
     },
     {
       "kind": "fixation",
@@ -270,7 +281,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ea3fce2b97"
+      "id": "63e0474fb3"
     },
     {
       "kind": "image",
@@ -281,9 +292,11 @@
       "condition": "negative",
       "params": {
         "path": "images/neg_fog.png",
-        "scale": 0.8
+        "scale": 0.8,
+        "flicker_path": "",
+        "flicker_hz": 0.0
       },
-      "id": "2c5b1b8bdc"
+      "id": "58c8435055"
     },
     {
       "kind": "response",
@@ -296,7 +309,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "515ee01a8f"
+      "id": "562ea05d2c"
     },
     {
       "kind": "rating",
@@ -315,7 +328,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "d1c7ede9f0"
+      "id": "8257599441"
     },
     {
       "kind": "fixation",
@@ -329,7 +342,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0edcc807ad"
+      "id": "3b5078e8f7"
     },
     {
       "kind": "image",
@@ -340,9 +353,11 @@
       "condition": "positive",
       "params": {
         "path": "images/pos_beach.png",
-        "scale": 0.8
+        "scale": 0.8,
+        "flicker_path": "",
+        "flicker_hz": 0.0
       },
-      "id": "54ef7a5283"
+      "id": "c0b23120eb"
     },
     {
       "kind": "response",
@@ -355,7 +370,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "82bf8e7624"
+      "id": "288579e834"
     },
     {
       "kind": "rating",
@@ -374,7 +389,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "96f2baddf5"
+      "id": "c713657286"
     },
     {
       "kind": "fixation",
@@ -388,7 +403,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7ae9332062"
+      "id": "4d6ed75a67"
     },
     {
       "kind": "image",
@@ -399,9 +414,11 @@
       "condition": "negative",
       "params": {
         "path": "images/neg_night.png",
-        "scale": 0.8
+        "scale": 0.8,
+        "flicker_path": "",
+        "flicker_hz": 0.0
       },
-      "id": "8eccfdcf31"
+      "id": "e88a9e18f2"
     },
     {
       "kind": "response",
@@ -414,7 +431,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "9470e52e8f"
+      "id": "8d8989f003"
     },
     {
       "kind": "rating",
@@ -433,7 +450,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "dc6bb681bf"
+      "id": "a0bd3206fb"
     },
     {
       "kind": "fixation",
@@ -447,7 +464,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0a4f66e6fb"
+      "id": "61a47e05d8"
     },
     {
       "kind": "image",
@@ -458,9 +475,11 @@
       "condition": "positive",
       "params": {
         "path": "images/pos_lavender.png",
-        "scale": 0.8
+        "scale": 0.8,
+        "flicker_path": "",
+        "flicker_hz": 0.0
       },
-      "id": "f9bb788312"
+      "id": "0005becfda"
     },
     {
       "kind": "response",
@@ -473,7 +492,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "02e8dea733"
+      "id": "9ce5db3a74"
     },
     {
       "kind": "rating",
@@ -492,7 +511,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "9773b74f07"
+      "id": "7c633af5a8"
     },
     {
       "kind": "fixation",
@@ -506,7 +525,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "860df2316f"
+      "id": "aaaf83a3ea"
     },
     {
       "kind": "rest",
@@ -516,7 +535,7 @@
       "label": "End baseline",
       "condition": "",
       "params": {},
-      "id": "324a11e526"
+      "id": "278e96be0f"
     }
   ],
   "hardware": {

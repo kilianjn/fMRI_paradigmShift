@@ -1,0 +1,71 @@
+{
+  "name": "Resting state",
+  "tr": 2.0,
+  "dummy_scans": 3,
+  "background": "#000000",
+  "waiting_screen": "fixation",
+  "waiting_text": "The measurement will start in a moment.",
+  "end_text": "Thank you!",
+  "tracks": [
+    "Stimuli",
+    "Responses"
+  ],
+  "blocks": [
+    {
+      "kind": "text",
+      "start": 0.0,
+      "duration": 8.0,
+      "track": 0,
+      "label": "Instructions",
+      "condition": "instruction",
+      "params": {
+        "text": "Please keep your eyes open and look at the cross.\nLie still, relax and let your thoughts wander.",
+        "size": 36,
+        "color": "#FFFFFF"
+      },
+      "id": "2c7d3f9a34"
+    },
+    {
+      "kind": "fixation",
+      "start": 8.0,
+      "duration": 480.0,
+      "track": 0,
+      "label": "Rest (eyes open)",
+      "condition": "rest",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c733eca4c7"
+    }
+  ],
+  "hardware": {
+    "sync_mode": "keyboard",
+    "trigger_key": "s",
+    "serial_port": "",
+    "baud_rate": 57600,
+    "buttons": [
+      {
+        "name": "Left thumb",
+        "key": "1"
+      },
+      {
+        "name": "Left index",
+        "key": "2"
+      },
+      {
+        "name": "Right index",
+        "key": "3"
+      },
+      {
+        "name": "Right thumb",
+        "key": "4"
+      }
+    ],
+    "move_left": "Left index",
+    "move_right": "Right index",
+    "confirm": "Right thumb"
+  },
+  "format": 1
+}

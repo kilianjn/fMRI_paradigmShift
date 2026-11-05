@@ -84,7 +84,10 @@ def paint_stimulus(p: QPainter, rect: QRectF, paradigm: Paradigm, block: Block |
         p.setPen(QColor(prm.get("color", "#FFFFFF")))
         p.drawText(rect, Qt.AlignCenter, prm.get("symbol", "+"))
     elif block.kind == "image":
-        _draw_image(p, rect, prm.get("path", ""), float(prm.get("scale", 0.8)))
+        path = prm.get("path", "")
+        if flicker_phase(block, (state or {}).get("t", 0.0)) == 1:
+            path = prm["flicker_path"]
+        _draw_image(p, rect, path, float(prm.get("scale", 0.8)))
     elif block.kind == "text":
         f = QFont("Inter")
         f.setPixelSize(max(4, int(prm.get("size", 40) * k)))
@@ -98,12 +101,61 @@ def paint_stimulus(p: QPainter, rect: QRectF, paradigm: Paradigm, block: Block |
         _paint_match(p, rect, block, (state or {}).get("chosen"))
     elif block.kind == "gonogo":
         _paint_gonogo(p, rect, block, (state or {}).get("t", 0.0), k)
+    elif block.kind == "choice":
+        _paint_choice(p, rect, block, (state or {}).get("t", 0.0), k)
+    elif block.kind == "feedback":
+        ok = (state or {}).get("success", True)
+        f = QFont("Inter")
+        f.setBold(True)
+        f.setPixelSize(max(4, int(prm.get("size", 72) * k)))
+        p.setFont(f)
+        p.setPen(QColor(prm.get("hit_color" if ok else "miss_color", "#FFFFFF")))
+        p.drawText(rect.adjusted(rect.width() * .08, 0, -rect.width() * .08, 0), Qt.AlignCenter | Qt.TextWordWrap,
+                   prm.get("hit_text" if ok else "miss_text", ""))
     p.restore()
 
 
 def gonogo_visible(block: Block, t_in_block: float) -> bool:
-    """Go/No-Go stimuli are only shown for ``stim_time`` seconds, then the ISI symbol."""
-    return t_in_block < float(block.params.get("stim_time", 0.5))
+    """Go/No-Go and choice stimuli are shown for ``stim_time`` seconds (0 = whole trial), then the ISI symbol."""
+    st = float(block.params.get("stim_time", 0.5))
+    return st <= 0 or t_in_block < st
+
+
+def flicker_phase(block: Block, t_in_block: float) -> int:
+    """0/1 for a flickering image (``flicker_hz`` reversals per second), always 0 otherwise."""
+    hz = float(block.params.get("flicker_hz", 0) or 0)
+    if block.kind != "image" or hz <= 0 or not block.params.get("flicker_path"):
+        return 0
+    return int(max(0.0, t_in_block) * hz) % 2
+
+
+def visual_key(block: Block | None, t_in_block: float):
+    """Changes exactly when the picture of *block* changes – lets the runner repaint only when needed."""
+    if block is None:
+        return None
+    if block.kind in ("gonogo", "choice"):
+        return block.id, gonogo_visible(block, t_in_block)
+    return block.id, flicker_phase(block, t_in_block)
+
+
+def _paint_choice(p: QPainter, rect: QRectF, block: Block, t: float, k: float) -> None:
+    prm = block.params
+    if gonogo_visible(block, t):
+        if prm.get("path"):
+            _draw_image(p, rect, prm["path"], 0.6)
+        if prm.get("text"):
+            f = QFont("DejaVu Sans")
+            f.setBold(True)
+            f.setPixelSize(max(4, int(prm.get("size", 120) * k)))
+            p.setFont(f)
+            p.setPen(QColor(prm.get("color", "#FFFFFF")))
+            p.drawText(rect, Qt.AlignCenter, prm["text"])
+    elif prm.get("isi_symbol"):
+        f = QFont("DejaVu Sans")
+        f.setPixelSize(max(4, int(72 * k)))
+        p.setFont(f)
+        p.setPen(QColor("#FFFFFF"))
+        p.drawText(rect, Qt.AlignCenter, prm["isi_symbol"])
 
 
 def _paint_gonogo(p: QPainter, rect: QRectF, block: Block, t: float, k: float) -> None:

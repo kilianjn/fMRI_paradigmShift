@@ -1,0 +1,2575 @@
+{
+  "name": "N-back",
+  "tr": 2.0,
+  "dummy_scans": 3,
+  "background": "#000000",
+  "waiting_screen": "fixation",
+  "waiting_text": "The measurement will start in a moment.",
+  "end_text": "Thank you!",
+  "tracks": [
+    "Stimuli",
+    "Responses"
+  ],
+  "blocks": [
+    {
+      "kind": "text",
+      "start": 0.0,
+      "duration": 10.0,
+      "track": 0,
+      "label": "Instructions",
+      "condition": "instruction",
+      "params": {
+        "text": "Letters will appear one after another.\n\n0-BACK: press when you see X.\n2-BACK: press when the letter is the same as two letters before.\n\nOtherwise do not press.",
+        "size": 32,
+        "color": "#FFFFFF"
+      },
+      "id": "ee034a58f4"
+    },
+    {
+      "kind": "fixation",
+      "start": 10.0,
+      "duration": 14.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "c00b364879"
+    },
+    {
+      "kind": "text",
+      "start": 24.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "2-BACK",
+      "condition": "cue",
+      "params": {
+        "text": "2-BACK\n\nsame as 2 before",
+        "size": 56,
+        "color": "#FFFFFF"
+      },
+      "id": "8e8b87e2ba"
+    },
+    {
+      "kind": "choice",
+      "start": 28.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "S",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f0aa4d570f"
+    },
+    {
+      "kind": "choice",
+      "start": 30.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "T",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "64a8591420"
+    },
+    {
+      "kind": "choice",
+      "start": 32.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "Q",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "e6256bf13e"
+    },
+    {
+      "kind": "choice",
+      "start": 34.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "T (target)",
+      "condition": "2back",
+      "params": {
+        "text": "T",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4e0c66f5cc"
+    },
+    {
+      "kind": "choice",
+      "start": 36.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "J",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "553f4d25ee"
+    },
+    {
+      "kind": "choice",
+      "start": 38.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "F",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "852fe2d381"
+    },
+    {
+      "kind": "choice",
+      "start": 40.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "J (target)",
+      "condition": "2back",
+      "params": {
+        "text": "J",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "75844f6ea0"
+    },
+    {
+      "kind": "choice",
+      "start": 42.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "V",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "2fc9168835"
+    },
+    {
+      "kind": "choice",
+      "start": 44.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "B",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "99d7c71cb2"
+    },
+    {
+      "kind": "choice",
+      "start": 46.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "V (target)",
+      "condition": "2back",
+      "params": {
+        "text": "V",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "1862ea7e35"
+    },
+    {
+      "kind": "choice",
+      "start": 48.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "R",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "0753ef9072"
+    },
+    {
+      "kind": "choice",
+      "start": 50.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "V (target)",
+      "condition": "2back",
+      "params": {
+        "text": "V",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9bc072be64"
+    },
+    {
+      "kind": "choice",
+      "start": 52.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "S",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "a5e0bce283"
+    },
+    {
+      "kind": "choice",
+      "start": 54.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "V (target)",
+      "condition": "2back",
+      "params": {
+        "text": "V",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "11216182c9"
+    },
+    {
+      "kind": "choice",
+      "start": 56.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "B",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "99abe7f0c9"
+    },
+    {
+      "kind": "fixation",
+      "start": 58.0,
+      "duration": 14.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "d4c6688409"
+    },
+    {
+      "kind": "text",
+      "start": 72.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "0-BACK",
+      "condition": "cue",
+      "params": {
+        "text": "0-BACK\n\npress for X",
+        "size": 56,
+        "color": "#FFFFFF"
+      },
+      "id": "a347b00d27"
+    },
+    {
+      "kind": "choice",
+      "start": 76.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "Z",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "bc1bf05961"
+    },
+    {
+      "kind": "choice",
+      "start": 78.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "F",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "72a7bc7b41"
+    },
+    {
+      "kind": "choice",
+      "start": 80.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "N",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "22fe85a0a3"
+    },
+    {
+      "kind": "choice",
+      "start": 82.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "078aa03536"
+    },
+    {
+      "kind": "choice",
+      "start": 84.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "72e689ae8c"
+    },
+    {
+      "kind": "choice",
+      "start": 86.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "B",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "dfbfd94258"
+    },
+    {
+      "kind": "choice",
+      "start": 88.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "B",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "3f8d85c150"
+    },
+    {
+      "kind": "choice",
+      "start": 90.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "390bc3e0a1"
+    },
+    {
+      "kind": "choice",
+      "start": 92.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "B",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "d0e5cf4eec"
+    },
+    {
+      "kind": "choice",
+      "start": 94.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "W",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "b21855e7d8"
+    },
+    {
+      "kind": "choice",
+      "start": 96.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "B",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9d4cd5d737"
+    },
+    {
+      "kind": "choice",
+      "start": 98.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "8580e68647"
+    },
+    {
+      "kind": "choice",
+      "start": 100.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "Q",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "ea9c6ae150"
+    },
+    {
+      "kind": "choice",
+      "start": 102.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "J",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9fd9b26c7f"
+    },
+    {
+      "kind": "choice",
+      "start": 104.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "2e9248ea0b"
+    },
+    {
+      "kind": "fixation",
+      "start": 106.0,
+      "duration": 14.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3a5f3feff2"
+    },
+    {
+      "kind": "text",
+      "start": 120.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "0-BACK",
+      "condition": "cue",
+      "params": {
+        "text": "0-BACK\n\npress for X",
+        "size": 56,
+        "color": "#FFFFFF"
+      },
+      "id": "937e4216f5"
+    },
+    {
+      "kind": "choice",
+      "start": 124.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "98d5eefc8f"
+    },
+    {
+      "kind": "choice",
+      "start": 126.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "T",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "c08beef4ba"
+    },
+    {
+      "kind": "choice",
+      "start": 128.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "W",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "6a96c4369a"
+    },
+    {
+      "kind": "choice",
+      "start": 130.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "75daa14037"
+    },
+    {
+      "kind": "choice",
+      "start": 132.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "K",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4c1cc2998c"
+    },
+    {
+      "kind": "choice",
+      "start": 134.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "P",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "fe827b815b"
+    },
+    {
+      "kind": "choice",
+      "start": 136.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "K",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f00a30f1f3"
+    },
+    {
+      "kind": "choice",
+      "start": 138.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f77dcb4eeb"
+    },
+    {
+      "kind": "choice",
+      "start": 140.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "625688daaa"
+    },
+    {
+      "kind": "choice",
+      "start": 142.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "K",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "3ed565fa9a"
+    },
+    {
+      "kind": "choice",
+      "start": 144.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "S",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9c8992a6ff"
+    },
+    {
+      "kind": "choice",
+      "start": 146.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "b4483c75e7"
+    },
+    {
+      "kind": "choice",
+      "start": 148.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "M",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "b03c2dfef7"
+    },
+    {
+      "kind": "choice",
+      "start": 150.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "B",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "56a8603c09"
+    },
+    {
+      "kind": "choice",
+      "start": 152.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "R",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "a7b1d6a29c"
+    },
+    {
+      "kind": "fixation",
+      "start": 154.0,
+      "duration": 14.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "7e6296677f"
+    },
+    {
+      "kind": "text",
+      "start": 168.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "2-BACK",
+      "condition": "cue",
+      "params": {
+        "text": "2-BACK\n\nsame as 2 before",
+        "size": 56,
+        "color": "#FFFFFF"
+      },
+      "id": "dec142e61d"
+    },
+    {
+      "kind": "choice",
+      "start": 172.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "F",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "d6b764cb7a"
+    },
+    {
+      "kind": "choice",
+      "start": 174.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "N",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f36deec489"
+    },
+    {
+      "kind": "choice",
+      "start": 176.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "W",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "08c319e290"
+    },
+    {
+      "kind": "choice",
+      "start": 178.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "N (target)",
+      "condition": "2back",
+      "params": {
+        "text": "N",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f7b6b4f831"
+    },
+    {
+      "kind": "choice",
+      "start": 180.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "W (target)",
+      "condition": "2back",
+      "params": {
+        "text": "W",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "399f4a47d6"
+    },
+    {
+      "kind": "choice",
+      "start": 182.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "S",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "a5f17ee57b"
+    },
+    {
+      "kind": "choice",
+      "start": 184.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "W (target)",
+      "condition": "2back",
+      "params": {
+        "text": "W",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "ce61a97fa1"
+    },
+    {
+      "kind": "choice",
+      "start": 186.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "W",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "ffcb32b0f5"
+    },
+    {
+      "kind": "choice",
+      "start": 188.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "J",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "430a0093d7"
+    },
+    {
+      "kind": "choice",
+      "start": 190.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "M",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "85118397c3"
+    },
+    {
+      "kind": "choice",
+      "start": 192.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "J (target)",
+      "condition": "2back",
+      "params": {
+        "text": "J",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "98b5fdcef3"
+    },
+    {
+      "kind": "choice",
+      "start": 194.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "N",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "12a4ac057a"
+    },
+    {
+      "kind": "choice",
+      "start": 196.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "J (target)",
+      "condition": "2back",
+      "params": {
+        "text": "J",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "fbc9c92d1c"
+    },
+    {
+      "kind": "choice",
+      "start": 198.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "V",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "064a2015ff"
+    },
+    {
+      "kind": "choice",
+      "start": 200.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "W",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "7982f07923"
+    },
+    {
+      "kind": "fixation",
+      "start": 202.0,
+      "duration": 14.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "d6e9f5558d"
+    },
+    {
+      "kind": "text",
+      "start": 216.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "0-BACK",
+      "condition": "cue",
+      "params": {
+        "text": "0-BACK\n\npress for X",
+        "size": 56,
+        "color": "#FFFFFF"
+      },
+      "id": "8c8dfb10c1"
+    },
+    {
+      "kind": "choice",
+      "start": 220.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "2b45c185cb"
+    },
+    {
+      "kind": "choice",
+      "start": 222.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "Q",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "57817c628c"
+    },
+    {
+      "kind": "choice",
+      "start": 224.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "R",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9fbb3b0e25"
+    },
+    {
+      "kind": "choice",
+      "start": 226.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "b8d6ef1088"
+    },
+    {
+      "kind": "choice",
+      "start": 228.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "H",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "7be057dfde"
+    },
+    {
+      "kind": "choice",
+      "start": 230.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "P",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "618b9a0d40"
+    },
+    {
+      "kind": "choice",
+      "start": 232.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "W",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "73cf92463b"
+    },
+    {
+      "kind": "choice",
+      "start": 234.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "134ba1868f"
+    },
+    {
+      "kind": "choice",
+      "start": 236.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "P",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "6688f87dcd"
+    },
+    {
+      "kind": "choice",
+      "start": 238.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "a5e67c021e"
+    },
+    {
+      "kind": "choice",
+      "start": 240.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "D",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4eb27fdb76"
+    },
+    {
+      "kind": "choice",
+      "start": 242.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "S",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "dc4cfb304b"
+    },
+    {
+      "kind": "choice",
+      "start": 244.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "V",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "dd5a85b9ef"
+    },
+    {
+      "kind": "choice",
+      "start": 246.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "94cc4c7104"
+    },
+    {
+      "kind": "choice",
+      "start": 248.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "F",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "b5ebff86b4"
+    },
+    {
+      "kind": "fixation",
+      "start": 250.0,
+      "duration": 14.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "ca19325647"
+    },
+    {
+      "kind": "text",
+      "start": 264.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "2-BACK",
+      "condition": "cue",
+      "params": {
+        "text": "2-BACK\n\nsame as 2 before",
+        "size": 56,
+        "color": "#FFFFFF"
+      },
+      "id": "3703c6b5c9"
+    },
+    {
+      "kind": "choice",
+      "start": 268.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "T",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f1b038b041"
+    },
+    {
+      "kind": "choice",
+      "start": 270.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "B",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "0a616ba729"
+    },
+    {
+      "kind": "choice",
+      "start": 272.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "V",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "62d7f3ad5e"
+    },
+    {
+      "kind": "choice",
+      "start": 274.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "D",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "db5be139a5"
+    },
+    {
+      "kind": "choice",
+      "start": 276.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "V (target)",
+      "condition": "2back",
+      "params": {
+        "text": "V",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "0349bf2cbb"
+    },
+    {
+      "kind": "choice",
+      "start": 278.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "N",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "1f9fa200da"
+    },
+    {
+      "kind": "choice",
+      "start": 280.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "Q",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f94f02799d"
+    },
+    {
+      "kind": "choice",
+      "start": 282.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "N (target)",
+      "condition": "2back",
+      "params": {
+        "text": "N",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9b2a9b2364"
+    },
+    {
+      "kind": "choice",
+      "start": 284.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "Q (target)",
+      "condition": "2back",
+      "params": {
+        "text": "Q",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "99c899f31b"
+    },
+    {
+      "kind": "choice",
+      "start": 286.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "H",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "0534d19ef9"
+    },
+    {
+      "kind": "choice",
+      "start": 288.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "Q (target)",
+      "condition": "2back",
+      "params": {
+        "text": "Q",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "cd506fef56"
+    },
+    {
+      "kind": "choice",
+      "start": 290.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "J",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "6048b3eb2c"
+    },
+    {
+      "kind": "choice",
+      "start": 292.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "W",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9d48ab55da"
+    },
+    {
+      "kind": "choice",
+      "start": 294.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "L",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "bb395c6eab"
+    },
+    {
+      "kind": "choice",
+      "start": 296.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "W (target)",
+      "condition": "2back",
+      "params": {
+        "text": "W",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "ea05b7ce65"
+    },
+    {
+      "kind": "fixation",
+      "start": 298.0,
+      "duration": 14.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "3ae1686d62"
+    },
+    {
+      "kind": "text",
+      "start": 312.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "2-BACK",
+      "condition": "cue",
+      "params": {
+        "text": "2-BACK\n\nsame as 2 before",
+        "size": 56,
+        "color": "#FFFFFF"
+      },
+      "id": "583a3d6199"
+    },
+    {
+      "kind": "choice",
+      "start": 316.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "Q",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "51383c0fb4"
+    },
+    {
+      "kind": "choice",
+      "start": 318.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "V",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "82c64d598f"
+    },
+    {
+      "kind": "choice",
+      "start": 320.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "P",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "ad7f57b499"
+    },
+    {
+      "kind": "choice",
+      "start": 322.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "P",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "9d325d4a66"
+    },
+    {
+      "kind": "choice",
+      "start": 324.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "T",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "c141ec185f"
+    },
+    {
+      "kind": "choice",
+      "start": 326.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "P (target)",
+      "condition": "2back",
+      "params": {
+        "text": "P",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "861550626a"
+    },
+    {
+      "kind": "choice",
+      "start": 328.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "L",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "16a4991d4d"
+    },
+    {
+      "kind": "choice",
+      "start": 330.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "Z",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "8a393956e8"
+    },
+    {
+      "kind": "choice",
+      "start": 332.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "B",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "1a9efe7006"
+    },
+    {
+      "kind": "choice",
+      "start": 334.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "Q",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "79111b6302"
+    },
+    {
+      "kind": "choice",
+      "start": 336.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "B (target)",
+      "condition": "2back",
+      "params": {
+        "text": "B",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f2f4af48b7"
+    },
+    {
+      "kind": "choice",
+      "start": 338.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "2back",
+      "params": {
+        "text": "W",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4b0bd7d27b"
+    },
+    {
+      "kind": "choice",
+      "start": 340.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "B (target)",
+      "condition": "2back",
+      "params": {
+        "text": "B",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "0ab645079b"
+    },
+    {
+      "kind": "choice",
+      "start": 342.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "W (target)",
+      "condition": "2back",
+      "params": {
+        "text": "W",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "85f482477a"
+    },
+    {
+      "kind": "choice",
+      "start": 344.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "B (target)",
+      "condition": "2back",
+      "params": {
+        "text": "B",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "372be541e9"
+    },
+    {
+      "kind": "fixation",
+      "start": 346.0,
+      "duration": 14.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "d5bea3de0e"
+    },
+    {
+      "kind": "text",
+      "start": 360.0,
+      "duration": 4.0,
+      "track": 0,
+      "label": "0-BACK",
+      "condition": "cue",
+      "params": {
+        "text": "0-BACK\n\npress for X",
+        "size": 56,
+        "color": "#FFFFFF"
+      },
+      "id": "b0028b541f"
+    },
+    {
+      "kind": "choice",
+      "start": 364.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "R",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "6d79818e84"
+    },
+    {
+      "kind": "choice",
+      "start": 366.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "C",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "355f4cad4b"
+    },
+    {
+      "kind": "choice",
+      "start": 368.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "278f335b42"
+    },
+    {
+      "kind": "choice",
+      "start": 370.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "4344570434"
+    },
+    {
+      "kind": "choice",
+      "start": 372.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "T",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "17c43653c8"
+    },
+    {
+      "kind": "choice",
+      "start": 374.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "P",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "b1cb3fcac7"
+    },
+    {
+      "kind": "choice",
+      "start": 376.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "Z",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "c238df7625"
+    },
+    {
+      "kind": "choice",
+      "start": 378.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "W",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "906ebcd240"
+    },
+    {
+      "kind": "choice",
+      "start": 380.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "ab52e4b7f5"
+    },
+    {
+      "kind": "choice",
+      "start": 382.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "J",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "16dafe31cd"
+    },
+    {
+      "kind": "choice",
+      "start": 384.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "V",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "1d979d28d9"
+    },
+    {
+      "kind": "choice",
+      "start": 386.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "R",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "b8cbbdc180"
+    },
+    {
+      "kind": "choice",
+      "start": 388.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f4f373d8c8"
+    },
+    {
+      "kind": "choice",
+      "start": 390.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "",
+      "condition": "0back",
+      "params": {
+        "text": "T",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f146afed0c"
+    },
+    {
+      "kind": "choice",
+      "start": 392.0,
+      "duration": 2.0,
+      "track": 0,
+      "label": "X (target)",
+      "condition": "0back",
+      "params": {
+        "text": "X",
+        "path": "",
+        "color": "#FFFFFF",
+        "size": 140,
+        "stim_time": 0.5,
+        "correct": "Right index",
+        "buttons": "any",
+        "isi_symbol": "+"
+      },
+      "id": "f0ad2e1388"
+    },
+    {
+      "kind": "fixation",
+      "start": 394.0,
+      "duration": 14.0,
+      "track": 0,
+      "label": "Rest",
+      "condition": "",
+      "params": {
+        "symbol": "+",
+        "color": "#FFFFFF",
+        "size": 72
+      },
+      "id": "8edf1425b3"
+    }
+  ],
+  "hardware": {
+    "sync_mode": "keyboard",
+    "trigger_key": "s",
+    "serial_port": "",
+    "baud_rate": 57600,
+    "buttons": [
+      {
+        "name": "Left thumb",
+        "key": "1"
+      },
+      {
+        "name": "Left index",
+        "key": "2"
+      },
+      {
+        "name": "Right index",
+        "key": "3"
+      },
+      {
+        "name": "Right thumb",
+        "key": "4"
+      }
+    ],
+    "move_left": "Left index",
+    "move_right": "Right index",
+    "confirm": "Right thumb"
+  },
+  "format": 1
+}

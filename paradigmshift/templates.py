@@ -255,6 +255,345 @@ def build_emoreg(o: EmoRegOptions, stim_dir: str) -> Paradigm:
 
 
 # =============================================================================
+# Resting state
+# =============================================================================
+@dataclass
+class RestingOptions:
+    tr: float = 2.0
+    minutes: float = 8.0
+    fixation: bool = True            # fixation cross (eyes open); off = empty screen
+    instruction: str = ("Please keep your eyes open and look at the cross.\n"
+                        "Lie still, relax and let your thoughts wander.")
+    instruction_dur: float = 8.0
+
+
+def build_resting(o: RestingOptions) -> Paradigm:
+    """Resting-state run: optional instruction, then one long fixation (eyes open) or empty screen."""
+    par = Paradigm(name="Resting state", tr=o.tr, dummy_scans=3,
+                   waiting_screen="fixation" if o.fixation else "blank")
+    seq = _Seq(par)
+    if o.instruction.strip() and o.instruction_dur > 0:
+        seq.add("text", o.instruction_dur, "instruction", "Instructions", text=o.instruction, size=36)
+    dur = o.minutes * 60
+    if o.tr > 0:
+        dur = round(dur / o.tr) * o.tr
+    if o.fixation:
+        seq.add("fixation", dur, "rest", "Rest (eyes open)")
+    else:
+        seq.add("rest", dur, "rest", "Rest")
+    return par
+
+
+# =============================================================================
+# Motor localizer (finger tapping)
+# =============================================================================
+@dataclass
+class MotorOptions:
+    tr: float = 2.0
+    include_both: bool = False       # add a "both hands" condition
+    block_dur: float = 20.0
+    rest_dur: float = 20.0
+    cycles: int = 5
+    random_order: bool = False
+    record_taps: bool = True         # response windows check that the participant is tapping
+    seed: int = 1
+
+
+def build_motor(o: MotorOptions) -> Paradigm:
+    """Blocked finger tapping (left / right [/ both]) alternating with rest."""
+    rng = random.Random(o.seed)
+    conds = [("tap_left", "TAP\nLEFT HAND"), ("tap_right", "TAP\nRIGHT HAND")]
+    if o.include_both:
+        conds.append(("tap_both", "TAP\nBOTH HANDS"))
+    par = Paradigm(name="Motor localizer", tr=o.tr, dummy_scans=3)
+    seq = _Seq(par)
+    seq.add("text", 8.0, "instruction", "Instructions",
+            text="When a hand is shown, tap your fingers against the thumb\nof that hand – quickly and steadily.\n\n"
+                 "When you see the cross, rest.", size=34)
+    seq.add("fixation", o.rest_dur, label="Rest")
+    for _ in range(o.cycles):
+        order = list(conds)
+        if o.random_order:
+            rng.shuffle(order)
+        for cond, text in order:
+            b = seq.add("text", o.block_dur, cond, text.replace("\n", " "), text=text, size=72)
+            if o.record_taps:   # 2-s windows: shows in the control room whether taps keep coming
+                t, step = b.start, 2.0
+                while t < b.end - 1e-6:
+                    w = Block.create("response", t, min(step, b.end - t), track=1, condition=cond)
+                    par.blocks.append(w)
+                    t = round(t + step, 4)
+            seq.add("fixation", o.rest_dur, label="Rest")
+    return par
+
+
+# =============================================================================
+# Visual localizer (flickering checkerboard)
+# =============================================================================
+@dataclass
+class CheckerboardOptions:
+    tr: float = 2.0
+    on_dur: float = 20.0
+    off_dur: float = 20.0
+    cycles: int = 6
+    flicker_hz: float = 8.0          # contrast reversals per second
+    seed: int = 1
+
+
+def build_checkerboard(o: CheckerboardOptions, stim_dir: str) -> Paradigm:
+    """Flickering radial checkerboard ON vs. grey screen OFF, red fixation dot throughout."""
+    from . import placeholders as ph
+    a, b = ph.checkerboards(os.path.join(stim_dir, "checkerboard"))
+    par = Paradigm(name="Visual checkerboard", tr=o.tr, dummy_scans=3, background="#808080")
+    seq = _Seq(par)
+    dot = dict(symbol="•", color="#E53935", size=40)
+    seq.add("fixation", o.off_dur, label="Off", **dot)
+    for _ in range(o.cycles):
+        seq.add("image", o.on_dur, "checkerboard", "Checkerboard", path=a, flicker_path=b,
+                flicker_hz=o.flicker_hz, scale=1.0)
+        seq.add("fixation", o.off_dur, label="Off", **dot)
+    return par
+
+
+# =============================================================================
+# N-back working memory
+# =============================================================================
+@dataclass
+class NBackOptions:
+    tr: float = 2.0
+    levels: str = "0, 2"             # e.g. "0, 1, 2"
+    blocks_per_level: int = 4
+    trials_per_block: int = 15
+    target_percent: float = 33.0
+    stim_time: float = 0.5
+    trial_dur: float = 2.0
+    instruction_dur: float = 4.0
+    rest_dur: float = 14.0
+    letters: str = "BCDFGHJKLMNPQRSTVWZ"
+    zero_back_target: str = "X"
+    target_button: str = "Right index"
+    seed: int = 1
+
+
+def nback_sequence(n: int, count: int, n_targets: int, letters: str, rng: random.Random,
+                   zero_target: str = "X") -> list[tuple[str, bool]]:
+    """``[(letter, is_target), …]`` for one block. n = 0: target is *zero_target*."""
+    pool = [c for c in letters.upper() if c.strip() and c != zero_target.upper()]
+    if n == 0:
+        tpos = set(rng.sample(range(count), min(n_targets, count)))
+        return [(zero_target.upper() if i in tpos else rng.choice(pool), i in tpos) for i in range(count)]
+    if n_targets > count - n:
+        raise ValueError(f"Too many targets for a {n}-back block of {count} trials.")
+    tpos = set(rng.sample(range(n, count), n_targets))
+    seq: list[tuple[str, bool]] = []
+    for i in range(count):
+        if i in tpos:
+            seq.append((seq[i - n][0], True))
+        else:
+            avoid = {seq[i - n][0]} if i >= n else set()
+            seq.append((rng.choice([c for c in pool if c not in avoid]), False))
+    return seq
+
+
+def build_nback(o: NBackOptions) -> Paradigm:
+    """Blocked N-back: a cue names the level, letters follow; press only for targets."""
+    rng = random.Random(o.seed)
+    try:
+        levels = [int(x) for x in o.levels.replace(";", ",").split(",") if x.strip()]
+    except ValueError:
+        raise ValueError("Levels must be numbers, e.g. “0, 2”.") from None
+    if not levels:
+        raise ValueError("Give at least one N-back level, e.g. “0, 2”.")
+    par = Paradigm(name="N-back", tr=o.tr, dummy_scans=3)
+    seq = _Seq(par)
+    seq.add("text", 10.0, "instruction", "Instructions",
+            text="Letters will appear one after another.\n\n"
+                 f"0-BACK: press when you see {o.zero_back_target}.\n"
+                 "2-BACK: press when the letter is the same as two letters before.\n\n"
+                 "Otherwise do not press.", size=32)
+    seq.add("fixation", o.rest_dur, label="Rest")
+    n_targets = round(o.trials_per_block * o.target_percent / 100)
+    for _ in range(o.blocks_per_level):
+        order = list(levels)
+        rng.shuffle(order)
+        for n in order:
+            cond = f"{n}back"
+            rule = f"press for {o.zero_back_target}" if n == 0 else \
+                f"same as {n} before" if n > 1 else "same as the one before"
+            seq.add("text", o.instruction_dur, "cue", f"{n}-BACK", text=f"{n}-BACK\n\n{rule}", size=56)
+            for letter, target in nback_sequence(n, o.trials_per_block, n_targets, o.letters, rng,
+                                                 o.zero_back_target):
+                seq.add("choice", o.trial_dur, cond, f"{letter} (target)" if target else "", text=letter,
+                        stim_time=o.stim_time, correct=o.target_button if target else "",
+                        buttons="any", size=140)
+            seq.add("fixation", o.rest_dur, label="Rest")
+    return par
+
+
+# =============================================================================
+# Stroop (colour-word)
+# =============================================================================
+STROOP_INK = {"red": "#E53935", "green": "#43A047", "blue": "#1E88E5", "yellow": "#FDD835"}
+
+
+@dataclass
+class StroopOptions:
+    tr: float = 2.0
+    n_trials: int = 96
+    incongruent_percent: float = 50.0
+    neutral_percent: float = 0.0     # "XXXX" printed in colour
+    use_yellow: bool = True          # 4 colours (else red, green, blue)
+    words: str = "RED, GREEN, BLUE, YELLOW"
+    stim_time: float = 0.0           # 0 = word stays for the whole trial
+    trial_dur: float = 2.0
+    iti_min: float = 1.0
+    iti_max: float = 4.0
+    red_button: str = "Left thumb"
+    green_button: str = "Left index"
+    blue_button: str = "Right index"
+    yellow_button: str = "Right thumb"
+    seed: int = 1
+
+
+def build_stroop(o: StroopOptions) -> Paradigm:
+    """Colour-word Stroop: name the INK colour with the grips; congruent vs incongruent (vs neutral)."""
+    rng = random.Random(o.seed)
+    colors = ["red", "green", "blue"] + (["yellow"] if o.use_yellow else [])
+    words = [w.strip() for w in o.words.split(",")]
+    if len(words) < len(colors):
+        raise ValueError(f"Give one word per colour ({', '.join(colors)}).")
+    word = dict(zip(["red", "green", "blue", "yellow"], words))
+    button = {"red": o.red_button, "green": o.green_button, "blue": o.blue_button, "yellow": o.yellow_button}
+    n_inc = round(o.n_trials * o.incongruent_percent / 100)
+    n_neu = round(o.n_trials * o.neutral_percent / 100)
+    n_con = o.n_trials - n_inc - n_neu
+    if n_con < 0:
+        raise ValueError("Incongruent + neutral percentages exceed 100 %.")
+    conds = _no_long_runs(["congruent"] * n_con + ["incongruent"] * n_inc + ["neutral"] * n_neu, rng, 3)
+    par = Paradigm(name="Stroop", tr=o.tr, dummy_scans=3)
+    seq = _Seq(par)
+    mapping = "\n".join(f"{word[c]} ink  →  {button[c]}" for c in colors)
+    seq.add("text", 12.0, "instruction", "Instructions",
+            text="Press the button for the INK COLOUR of the word –\nnot for what the word says.\n\n" + mapping,
+            size=32)
+    seq.add("fixation", 6.0, label="Get ready")
+    inks = _balanced(colors, len(conds), rng)
+    for cond, ink in zip(conds, inks):
+        if cond == "congruent":
+            text = word[ink]
+        elif cond == "incongruent":
+            text = word[rng.choice([c for c in colors if c != ink])]
+        else:
+            text = "XXXX"
+        seq.add("choice", o.trial_dur, cond, f"{text} in {ink}", text=text, color=STROOP_INK[ink], size=110,
+                stim_time=o.stim_time, correct=button[ink], buttons="any")
+        lo, hi = sorted((o.iti_min, o.iti_max))
+        iti = _q(rng.uniform(lo, hi), 0.25)
+        if iti > 0:
+            seq.add("fixation", iti, label="ITI")
+    seq.add("fixation", 10.0, label="End")
+    return par
+
+
+# =============================================================================
+# Eriksen flanker
+# =============================================================================
+@dataclass
+class FlankerOptions:
+    tr: float = 2.0
+    n_trials: int = 96
+    incongruent_percent: float = 50.0
+    neutral_percent: float = 0.0     # "– – ← – –"
+    stim_time: float = 0.5
+    trial_dur: float = 1.5
+    iti_min: float = 1.0
+    iti_max: float = 4.0
+    left_button: str = "Left index"
+    right_button: str = "Right index"
+    seed: int = 1
+
+
+def build_flanker(o: FlankerOptions) -> Paradigm:
+    """Arrow flanker: respond to the direction of the middle arrow."""
+    rng = random.Random(o.seed)
+    n_inc = round(o.n_trials * o.incongruent_percent / 100)
+    n_neu = round(o.n_trials * o.neutral_percent / 100)
+    n_con = o.n_trials - n_inc - n_neu
+    if n_con < 0:
+        raise ValueError("Incongruent + neutral percentages exceed 100 %.")
+    conds = _no_long_runs(["congruent"] * n_con + ["incongruent"] * n_inc + ["neutral"] * n_neu, rng, 3)
+    arrow = {"left": "←", "right": "→"}
+    par = Paradigm(name="Flanker", tr=o.tr, dummy_scans=3)
+    seq = _Seq(par)
+    seq.add("text", 10.0, "instruction", "Instructions",
+            text="Look at the MIDDLE arrow only.\n\n"
+                 f"←  points left:  {o.left_button}\n→  points right:  {o.right_button}\n\n"
+                 "Answer as fast and as accurately as you can.", size=32)
+    seq.add("fixation", 6.0, label="Get ready")
+    sides = _balanced(["left", "right"], len(conds), rng)
+    for cond, side in zip(conds, sides):
+        other = "right" if side == "left" else "left"
+        flank = {"congruent": arrow[side], "incongruent": arrow[other], "neutral": "–"}[cond]
+        text = flank * 2 + arrow[side] + flank * 2
+        seq.add("choice", o.trial_dur, cond, f"{text} ({side})", text=text, size=110, stim_time=o.stim_time,
+                correct=o.left_button if side == "left" else o.right_button, buttons="any")
+        lo, hi = sorted((o.iti_min, o.iti_max))
+        iti = _q(rng.uniform(lo, hi), 0.25)
+        if iti > 0:
+            seq.add("fixation", iti, label="ITI")
+    seq.add("fixation", 10.0, label="End")
+    return par
+
+
+# =============================================================================
+# Monetary incentive delay (MID)
+# =============================================================================
+@dataclass
+class MIDOptions:
+    tr: float = 2.0
+    trials_per_condition: int = 15
+    amount: str = "1 €"
+    cue_dur: float = 2.0
+    anticipation_min: float = 2.0
+    anticipation_max: float = 2.5
+    target_dur: float = 0.3          # press while the target is visible = hit (fixed, not adaptive)
+    feedback_dur: float = 2.0
+    iti_min: float = 1.5
+    iti_max: float = 4.0
+    seed: int = 1
+
+
+def build_mid(o: MIDOptions, stim_dir: str) -> Paradigm:
+    """Knutson-style MID: cue (win / lose / nothing) → anticipation → brief target → feedback."""
+    from . import placeholders as ph
+    rng = random.Random(o.seed)
+    cues = ph.mid_cues(os.path.join(stim_dir, "mid"))
+    amt = o.amount.strip()
+    fb = {"gain": (f"+{amt}", "+0"), "loss": ("−0", f"−{amt}"), "neutral": ("0", "0")}
+    par = Paradigm(name="Monetary incentive delay", tr=o.tr, dummy_scans=3)
+    seq = _Seq(par)
+    seq.add("text", 12.0, "instruction", "Instructions",
+            text="A shape tells you what is at stake:\n"
+                 f"circle = you can WIN {amt}   ·   square = you can avoid LOSING {amt}   ·   triangle = no money\n\n"
+                 "Then press a button as fast as you can when the white square appears.", size=30)
+    seq.add("fixation", 6.0, label="Get ready")
+    order = _no_long_runs(["gain", "loss", "neutral"] * o.trials_per_condition, rng, 2)
+    for c in order:
+        seq.add("image", o.cue_dur, f"cue_{c}", f"cue {c}", path=cues[c], scale=0.45)
+        lo, hi = sorted((o.anticipation_min, o.anticipation_max))
+        seq.add("fixation", _q(rng.uniform(lo, hi), 0.1), f"anticipation_{c}", "anticipation")
+        seq.add("choice", o.target_dur, f"target_{c}", "target", text="■", size=220, stim_time=0.0,
+                correct="any", buttons="any", isi_symbol="")
+        hit, miss = fb[c]
+        seq.add("feedback", o.feedback_dur, f"feedback_{c}", "", hit_text=hit, miss_text=miss,
+                hit_color="#2FB37A" if c != "neutral" else "#CCCCCC",
+                miss_color="#F0506E" if c != "neutral" else "#CCCCCC", size=96)
+        lo, hi = sorted((o.iti_min, o.iti_max))
+        seq.add("fixation", _q(rng.uniform(lo, hi), 0.25), label="ITI")
+    return par
+
+
+# =============================================================================
 # Registry used by the template dialog
 # =============================================================================
 @dataclass
@@ -269,6 +608,7 @@ class Template:
     needs_stim_dir: bool = True
     color: str = "#1FA8B8"
     kinds: list = field(default_factory=list)
+    category: str = ""
 
 
 TEMPLATES = [
@@ -277,20 +617,62 @@ TEMPLATES = [
              "face. Shape-matching blocks are the sensorimotor control. Blocks alternate Shapes / Faces, each "
              "starting with a short instruction. Answers: left / right grip button.",
              "Hariri AR et al. (2002) Science 297:400–403",
-             HaririOptions, build_hariri, True, "#1FA8B8", ["match"]),
+             HaririOptions, build_hariri, True, "#1FA8B8", ["match"], "Emotion & reward"),
     Template("gonogo", "Go / No-Go", "response inhibition · event-related",
              "Letters flash briefly. Press for every letter except the No-Go letter. No-Go trials never follow "
              "each other and the run starts with Go trials. Logged as hits, misses, false alarms and correct "
              "rejections.",
              "e.g. Garavan H et al. (1999) PNAS 96:8301–8306; Simmonds DJ et al. (2008) Neuropsychologia 46:224",
-             GoNoGoOptions, build_gonogo, False, "#6BBF3A", ["gonogo"]),
+             GoNoGoOptions, build_gonogo, False, "#6BBF3A", ["gonogo"], "Cognitive control"),
     Template("emoreg", "Emotion regulation", "cognitive reappraisal · event-related",
              "Each trial: a cue (LOOK or DECREASE, optionally INCREASE), a neutral or negative picture, a rating "
              "of how negative the participant feels, and a jittered relax period. Conditions: look_neutral, "
              "look_negative, decrease_negative.",
              "Ochsner KN et al. (2002) J Cogn Neurosci 14:1215–1229; Ochsner KN et al. (2004) NeuroImage 23:483",
-             EmoRegOptions, build_emoreg, True, "#D45C9E", ["text", "image", "rating"]),
+             EmoRegOptions, build_emoreg, True, "#D45C9E", ["text", "image", "rating"], "Emotion & reward"),
+    Template("mid", "Monetary incentive delay", "reward anticipation · event-related",
+             "A cue shows what is at stake (circle = win, square = avoid a loss, triangle = nothing). After a "
+             "jittered anticipation phase a white square flashes briefly – pressing while it is visible is a "
+             "hit. Feedback shows the outcome. Separate conditions for cue, anticipation, target and feedback. "
+             "Note: the target duration is fixed (not adapted to performance).",
+             "Knutson B et al. (2000) NeuroImage 12:20–27; Knutson B et al. (2001) J Neurosci 21:RC159",
+             MIDOptions, build_mid, True, "#B565D8", ["feedback"], "Emotion & reward"),
+    Template("stroop", "Stroop", "interference · event-related",
+             "Colour words in coloured ink. Press the button for the INK colour. Congruent (RED in red) vs. "
+             "incongruent (RED in blue), optionally neutral (XXXX). Jittered fixation between trials. "
+             "Words can be translated, e.g. “ROT, GRÜN, BLAU, GELB”.",
+             "Stroop JR (1935) J Exp Psychol 18:643; e.g. Leung HC et al. (2000) Cereb Cortex 10:552",
+             StroopOptions, build_stroop, False, "#E5B53B", ["choice"], "Cognitive control"),
+    Template("flanker", "Eriksen flanker", "conflict monitoring · event-related",
+             "Five arrows; the middle one gives the answer (left / right grip). Flankers point the same way "
+             "(congruent) or the other way (incongruent), optionally neutral dashes. Jittered fixation.",
+             "Eriksen BA & Eriksen CW (1974) Percept Psychophys 16:143; e.g. Hazeltine E et al. (2000) Brain 123:1929",
+             FlankerOptions, build_flanker, False, "#E59A3B", ["choice"], "Cognitive control"),
+    Template("nback", "N-back", "working memory · blocked",
+             "Blocks of letters at different memory loads (default 0-back and 2-back), each starting with a cue. "
+             "Press only for targets: the letter X (0-back) or a letter that matches the one N positions back. "
+             "Rest blocks in between. Logged as hits, misses, false alarms and correct rejections.",
+             "Braver TS et al. (1997) NeuroImage 5:49–62; Owen AM et al. (2005) Hum Brain Mapp 25:46",
+             NBackOptions, build_nback, False, "#3BA7E5", ["choice"], "Working memory"),
+    Template("motor", "Motor localizer", "finger tapping · blocked",
+             "Blocks of finger tapping with the left or right hand (optionally both) alternate with rest. "
+             "2-s response windows record whether the participant keeps tapping, visible live in the control "
+             "room.",
+             "e.g. Rao SM et al. (1993) Neurology 43:2311",
+             MotorOptions, build_motor, False, "#2FB37A", ["response"], "Localizers & rest"),
+    Template("checkerboard", "Visual checkerboard", "visual cortex localizer · blocked",
+             "A radial checkerboard flickers (default 8 Hz contrast reversal) in ON blocks and alternates with "
+             "a grey screen. A red fixation dot stays in the centre throughout.",
+             "e.g. Fox PT & Raichle ME (1984) J Neurophysiol 51:1109",
+             CheckerboardOptions, build_checkerboard, True, "#9AA3AD", ["image"], "Localizers & rest"),
+    Template("resting", "Resting state", "intrinsic connectivity · continuous",
+             "A short instruction, then a fixation cross (eyes open) or an empty screen for the whole run. "
+             "Default 8 minutes.",
+             "Biswal B et al. (1995) Magn Reson Med 34:537",
+             RestingOptions, build_resting, False, "#4C8DF6", ["fixation"], "Localizers & rest"),
 ]
+
+CATEGORIES = ["Emotion & reward", "Cognitive control", "Working memory", "Localizers & rest"]
 
 
 def build(key: str, options, stim_dir: str) -> Paradigm:

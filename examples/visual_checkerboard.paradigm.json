@@ -1,0 +1,231 @@
+{
+  "name": "Visual checkerboard",
+  "tr": 2.0,
+  "dummy_scans": 3,
+  "background": "#808080",
+  "waiting_screen": "fixation",
+  "waiting_text": "The measurement will start in a moment.",
+  "end_text": "Thank you!",
+  "tracks": [
+    "Stimuli",
+    "Responses"
+  ],
+  "blocks": [
+    {
+      "kind": "fixation",
+      "start": 0.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Off",
+      "condition": "",
+      "params": {
+        "symbol": "\u2022",
+        "color": "#E53935",
+        "size": 40
+      },
+      "id": "6fd8cb2957"
+    },
+    {
+      "kind": "image",
+      "start": 20.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Checkerboard",
+      "condition": "checkerboard",
+      "params": {
+        "path": "stimuli/checkerboard/checkerboard_0.png",
+        "scale": 1.0,
+        "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
+        "flicker_hz": 8.0
+      },
+      "id": "7e2ce56d37"
+    },
+    {
+      "kind": "fixation",
+      "start": 40.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Off",
+      "condition": "",
+      "params": {
+        "symbol": "\u2022",
+        "color": "#E53935",
+        "size": 40
+      },
+      "id": "4f0476c433"
+    },
+    {
+      "kind": "image",
+      "start": 60.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Checkerboard",
+      "condition": "checkerboard",
+      "params": {
+        "path": "stimuli/checkerboard/checkerboard_0.png",
+        "scale": 1.0,
+        "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
+        "flicker_hz": 8.0
+      },
+      "id": "8abf0c2680"
+    },
+    {
+      "kind": "fixation",
+      "start": 80.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Off",
+      "condition": "",
+      "params": {
+        "symbol": "\u2022",
+        "color": "#E53935",
+        "size": 40
+      },
+      "id": "4de23f4d4b"
+    },
+    {
+      "kind": "image",
+      "start": 100.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Checkerboard",
+      "condition": "checkerboard",
+      "params": {
+        "path": "stimuli/checkerboard/checkerboard_0.png",
+        "scale": 1.0,
+        "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
+        "flicker_hz": 8.0
+      },
+      "id": "995c54abdf"
+    },
+    {
+      "kind": "fixation",
+      "start": 120.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Off",
+      "condition": "",
+      "params": {
+        "symbol": "\u2022",
+        "color": "#E53935",
+        "size": 40
+      },
+      "id": "6be7ccdf1c"
+    },
+    {
+      "kind": "image",
+      "start": 140.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Checkerboard",
+      "condition": "checkerboard",
+      "params": {
+        "path": "stimuli/checkerboard/checkerboard_0.png",
+        "scale": 1.0,
+        "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
+        "flicker_hz": 8.0
+      },
+      "id": "fb7a24f0b4"
+    },
+    {
+      "kind": "fixation",
+      "start": 160.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Off",
+      "condition": "",
+      "params": {
+        "symbol": "\u2022",
+        "color": "#E53935",
+        "size": 40
+      },
+      "id": "08b5ac441d"
+    },
+    {
+      "kind": "image",
+      "start": 180.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Checkerboard",
+      "condition": "checkerboard",
+      "params": {
+        "path": "stimuli/checkerboard/checkerboard_0.png",
+        "scale": 1.0,
+        "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
+        "flicker_hz": 8.0
+      },
+      "id": "8272ea73e0"
+    },
+    {
+      "kind": "fixation",
+      "start": 200.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Off",
+      "condition": "",
+      "params": {
+        "symbol": "\u2022",
+        "color": "#E53935",
+        "size": 40
+      },
+      "id": "945055306b"
+    },
+    {
+      "kind": "image",
+      "start": 220.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Checkerboard",
+      "condition": "checkerboard",
+      "params": {
+        "path": "stimuli/checkerboard/checkerboard_0.png",
+        "scale": 1.0,
+        "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
+        "flicker_hz": 8.0
+      },
+      "id": "7248f44955"
+    },
+    {
+      "kind": "fixation",
+      "start": 240.0,
+      "duration": 20.0,
+      "track": 0,
+      "label": "Off",
+      "condition": "",
+      "params": {
+        "symbol": "\u2022",
+        "color": "#E53935",
+        "size": 40
+      },
+      "id": "a77d3eafd6"
+    }
+  ],
+  "hardware": {
+    "sync_mode": "keyboard",
+    "trigger_key": "s",
+    "serial_port": "",
+    "baud_rate": 57600,
+    "buttons": [
+      {
+        "name": "Left thumb",
+        "key": "1"
+      },
+      {
+        "name": "Left index",
+        "key": "2"
+      },
+      {
+        "name": "Right index",
+        "key": "3"
+      },
+      {
+        "name": "Right thumb",
+        "key": "4"
+      }
+    ],
+    "move_left": "Left index",
+    "move_right": "Right index",
+    "confirm": "Right thumb"
+  },
+  "format": 1
+}

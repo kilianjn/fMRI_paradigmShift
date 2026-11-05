@@ -41,7 +41,7 @@ BLOCK_TYPES: dict[str, BlockType] = {
         BlockType(
             "image", "Image", "#E0913A",
             "Shows a picture. Drop image files straight onto the timeline.",
-            4.0, 0, {"path": "", "scale": 0.8},
+            4.0, 0, {"path": "", "scale": 0.8, "flicker_path": "", "flicker_hz": 0.0},
         ),
         BlockType(
             "rating", "Rating", "#D45C9E",
@@ -84,14 +84,32 @@ BLOCK_TYPES: dict[str, BlockType] = {
             {"trial": "go", "text": "A", "path": "", "stim_time": 0.5, "button": "any",
              "size": 140, "color": "#FFFFFF", "isi_symbol": "+"},
         ),
+        BlockType(
+            "choice", "Choice trial", "#E5B53B",
+            "A word, symbol or picture plus the button that is correct – or no press at all. "
+            "Used for Stroop, Flanker, N-back, MID targets …",
+            2.0, 0,
+            {"text": "", "path": "", "color": "#FFFFFF", "size": 120, "stim_time": 0.0,
+             "correct": "Right index", "buttons": "any", "isi_symbol": "+"},
+        ),
+        BlockType(
+            "feedback", "Feedback", "#B565D8",
+            "Shows one text after a successful and another after a missed previous trial (e.g. MID).",
+            2.0, 0,
+            {"hit_text": "Correct!", "miss_text": "Missed", "hit_color": "#2FB37A", "miss_color": "#F0506E",
+             "size": 72},
+        ),
     ]
 }
+
+# Kinds whose trials are scored (they have a right/wrong or hit/miss outcome)
+SCORED_TRIAL_KINDS = ("match", "gonogo", "choice", "response")
 
 # Preference-driven defaults for *new* blocks, e.g. {"rating": {"mode": "cursor"}} (see prefs.py)
 PARAM_OVERRIDES: dict[str, dict] = {}
 
-STIMULUS_KINDS = ("fixation", "image", "rating", "text", "rest", "match", "gonogo")
-IMAGE_PARAMS = ("path", "top", "left", "right")   # params that hold picture files
+STIMULUS_KINDS = ("fixation", "image", "rating", "text", "rest", "match", "gonogo", "choice", "feedback")
+IMAGE_PARAMS = ("path", "top", "left", "right", "flicker_path")   # params that hold picture files
 NOGO_COLOR = "#E5484D"
 
 
@@ -134,6 +152,10 @@ class Block:
             return ("NO-GO " if self.params.get("trial") == "nogo" else "GO ") + self.params.get("text", "")
         if self.kind == "match" and self.params.get("top"):
             return os.path.basename(self.params["top"])
+        if self.kind == "choice" and self.params.get("text"):
+            return self.params["text"].replace("\n", " ")
+        if self.kind == "feedback":
+            return f"{self.params.get('hit_text', '')} / {self.params.get('miss_text', '')}"
         return self.type.title
 
     @property
@@ -265,6 +287,11 @@ class Paradigm:
                 return b
         return None
 
+    def previous_scored(self, b: Block) -> Block | None:
+        """The scored trial that ended last before *b* starts – what a feedback block reports on."""
+        prev = [o for o in self.blocks if o.kind in SCORED_TRIAL_KINDS and o.end <= b.start + 1e-6]
+        return max(prev, key=lambda o: (o.end, o.start)) if prev else None
+
     def conditions(self) -> list[str]:
         seen = []
         for b in sorted(self.blocks, key=lambda b: b.start):
@@ -317,6 +344,10 @@ class Paradigm:
             where = f"{b.display_label} @ {b.start:.2f}s"
             if b.kind == "image" and not b.params.get("path"):
                 problems.append(f"{where}: no image chosen")
+            if b.kind == "choice" and not (b.params.get("text") or b.params.get("path")):
+                problems.append(f"{where}: choice trial shows nothing (no text or picture)")
+            if b.kind == "feedback" and self.previous_scored(b) is None:
+                problems.append(f"{where}: feedback has no scored trial before it")
             if b.kind == "match" and not all(b.params.get(k) for k in ("top", "left", "right")):
                 problems.append(f"{where}: needs a top, left and right picture")
             if any(not os.path.exists(f) for f in b.image_files()):

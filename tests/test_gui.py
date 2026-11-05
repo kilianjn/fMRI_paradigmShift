@@ -219,7 +219,8 @@ def test_template_dialog_and_examples_in_editor(win, app, tmp_path):
     from paradigmshift.dialogs import TemplateDialog
 
     dlg = TemplateDialog(win.doc.paradigm.hardware, str(tmp_path), win)
-    for key in ("hariri", "gonogo", "emoreg"):
+    from paradigmshift.templates import TEMPLATES
+    for key in [t.key for t in TEMPLATES]:
         dlg.select(key)
         app.processEvents()
         assert dlg.paradigm is not None and dlg.ok.isEnabled()
@@ -228,7 +229,8 @@ def test_template_dialog_and_examples_in_editor(win, app, tmp_path):
     assert dlg.paradigm is None and not dlg.ok.isEnabled()
     dlg.reject()
     ex = os.path.join(os.path.dirname(__file__), "..", "examples")
-    for name in ("hariri_face_matching", "go_nogo", "emotion_regulation"):
+    for name in ("hariri_face_matching", "go_nogo", "emotion_regulation", "monetary_incentive_delay", "stroop",
+                 "flanker", "n_back", "motor_localizer", "visual_checkerboard", "resting_state"):
         win.doc.dirty = False
         win.open_file(os.path.join(ex, name + ".paradigm.json"))
         seen = set()
@@ -265,4 +267,35 @@ def test_abort_freezes_clock(app, tmp_path):
     assert cr.pill.text().startswith("■ ABORTED at")
     assert "aborted" in cr.banner.text().lower() and cr.card_left.value.text() == "—"
     assert c.state.log[-1]["type"] == "abort"
+    cr.close()
+
+
+def test_mid_like_run_end_to_end(app, tmp_path):
+    import csv
+
+    from PySide6.QtCore import QEventLoop, QTimer
+
+    from paradigmshift.controlroom import open_run
+    from paradigmshift.model import Block, Paradigm
+
+    par = Paradigm(tr=0.25, dummy_scans=0)
+    par.blocks += [Block.create("fixation", 0, 0.5),
+                   Block.create("choice", 0.5, 0.8, text="■", correct="any", stim_time=0),
+                   Block.create("feedback", 1.3, 0.3, hit_text="+1", miss_text="+0"),
+                   Block.create("choice", 1.6, 0.4, text="■", correct="any", stim_time=0),
+                   Block.create("feedback", 2.0, 0.3, hit_text="+1", miss_text="+0")]
+    c, pw, cr = open_run(par, {"sub": "x", "run": 1, "out_dir": str(tmp_path), "simulate": True,
+                               "fullscreen": False, "screen": 0, "save_paradigm_with_data": False})
+    got = []
+    loop = QEventLoop()
+    c.finished.connect(lambda f: (got.extend(f), loop.quit()))
+    QTimer.singleShot(10000, loop.quit)
+    # simulated scanner starts after 1.5 s; press during the first target only
+    QTimer.singleShot(1500 + 900, lambda: c.router.feed("3"))
+    loop.exec()
+    rows = list(csv.DictReader(open(got[0]), delimiter="\t"))
+    fb = [r for r in rows if r["block"] == "feedback"]
+    assert [r["outcome"] for r in fb] == ["hit", "miss"] and [r["label"] for r in fb] == ["+1", "+0"]
+    tg = [r for r in rows if r["block"] == "choice"]
+    assert [r["outcome"] for r in tg] == ["hit", "miss"]
     cr.close()

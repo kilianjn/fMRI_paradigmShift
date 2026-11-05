@@ -185,3 +185,61 @@ def scenes(folder: str, valence: str, n: int) -> list[str]:
     off = 0 if valence == "neutral" else 1000
     return [_ensure(os.path.join(folder, f"{valence}_{i + 1:02d}.png"), draw_scene, valence, off + i)
             for i in range(n)]
+
+
+# ---------------------------------------------------------------------------- localizers / MID
+def draw_checkerboard(out: str, phase: int, rings: int = 8, wedges: int = 24) -> None:
+    """Radial (polar) checkerboard with a red fixation dot; *phase* 0/1 are contrast-reversed."""
+    w, h = 1920, 1080
+    img, p = _canvas(w, h, "#808080")
+    c = QPointF(w / 2, h / 2)
+    rmax = h * .5
+    p.setPen(Qt.NoPen)
+    for ring in range(rings, 0, -1):
+        # rings get wider towards the periphery (roughly cortical magnification)
+        r = rmax * (ring / rings) ** 1.4
+        for k in range(wedges):
+            black = (ring + k + phase) % 2 == 0
+            p.setBrush(QColor("#000000" if black else "#FFFFFF"))
+            p.drawPie(QRectF(c.x() - r, c.y() - r, 2 * r, 2 * r), int(k * 360 / wedges * 16),
+                      int(360 / wedges * 16) + 1)
+    p.setBrush(QColor("#808080"))
+    p.drawEllipse(c, rmax * .045, rmax * .045)
+    p.setBrush(QColor("#E53935"))
+    p.drawEllipse(c, rmax * .018, rmax * .018)
+    p.end()
+    img.save(out)
+
+
+def checkerboards(folder: str) -> tuple[str, str]:
+    return tuple(_ensure(os.path.join(folder, f"checkerboard_{i}.png"), draw_checkerboard, i) for i in (0, 1))
+
+
+def draw_mid_cue(out: str, shape: str, lines: int) -> None:
+    """Knutson-style incentive cue: circle = win, square = lose, triangle = nothing; lines = amount."""
+    w, h = 500, 500
+    img, p = _canvas(w, h, "#000000")
+    p.setPen(QPen(QColor("#FFFFFF"), 6))
+    p.setBrush(QColor("#E0E0E0") if shape != "triangle" else QColor("#B0B0B0"))
+    r = QRectF(100, 100, 300, 300)
+    if shape == "circle":
+        p.drawEllipse(r)
+    elif shape == "square":
+        p.drawRect(r)
+    else:
+        path = QPainterPath(QPointF(250, 95))
+        path.lineTo(405, 395)
+        path.lineTo(95, 395)
+        path.closeSubpath()
+        p.drawPath(path)
+    p.setPen(QPen(QColor("#000000"), 10))
+    for i in range(lines):
+        y = 250 - (lines - 1) * 18 + i * 36
+        p.drawLine(QPointF(170, y), QPointF(330, y))
+    p.end()
+    img.save(out)
+
+
+def mid_cues(folder: str) -> dict[str, str]:
+    spec = {"gain": ("circle", 1), "loss": ("square", 1), "neutral": ("triangle", 0)}
+    return {k: _ensure(os.path.join(folder, f"cue_{k}.png"), draw_mid_cue, *v) for k, v in spec.items()}

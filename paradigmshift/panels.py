@@ -641,6 +641,19 @@ class InspectorPanel(QFrame):
             sc.setToolTip("How much of the screen the picture may fill")
             sc.valueChanged.connect(lambda v: self._set(bid, scale=v / 100))
             form.addRow(L("Size", "scale"), sc)
+            if b.kind == "image":
+                hz = dspin(float(prm.get("flicker_hz", 0) or 0), 0, 60, 1, 1, " Hz")
+                hz.setToolTip("Alternate with a second picture this many times per second (e.g. 8 Hz checkerboard). "
+                              "0 = no flicker.")
+                hz.valueChanged.connect(lambda v: self._set(bid, flicker_hz=v))
+                form.addRow(L("Flicker", "flicker_hz"), hz)
+                if single and float(prm.get("flicker_hz", 0) or 0) > 0:
+                    fp = ImagePicker(prm.get("flicker_path", ""), 72)
+                    fp.pathChanged.connect(lambda path: self._set(bid, flicker_path=path))
+                    cap = QLabel("Alternates with")
+                    cap.setObjectName("Hint")
+                    form.addRow(cap)
+                    form.addRow(fp)
         if b.kind == "fixation":
             self._section(form, "APPEARANCE")
             sym = QComboBox()
@@ -755,6 +768,52 @@ class InspectorPanel(QFrame):
                 cap.setObjectName("Hint")
                 form.addRow(cap)
                 form.addRow(pk)
+        if b.kind == "choice":
+            self._section(form, "STIMULUS")
+            form.addRow(L("Text", "text"), self._line(blocks, "text", "word, letter or symbol"))
+            col = ColorButton(prm.get("color", "#FFFFFF"))
+            col.colorChanged.connect(lambda c: self._set(bid, color=c))
+            form.addRow(L("Colour", "color"), col)
+            size = ispin(int(prm.get("size", 120)), 8, 600)
+            size.setSuffix(" px")
+            size.valueChanged.connect(lambda v: self._set(bid, size=v))
+            form.addRow(L("Size", "size"), size)
+            st = dspin(float(prm.get("stim_time", 0) or 0), 0, 60, 0.1, 2)
+            st.setSpecialValueText("whole trial")
+            st.setToolTip("How long the stimulus is visible; afterwards the fixation symbol. 0 = whole trial.")
+            st.valueChanged.connect(lambda v: self._set(bid, stim_time=v))
+            form.addRow(L("Visible for", "stim_time"), st)
+            self._section(form, "ANSWER")
+            names = [(n, n) for n in self.doc.paradigm.hardware.button_names()]
+            form.addRow(L("Correct", "correct"), self._combo(
+                blocks, "correct", [("Any button (hit)", "any")] + names + [("No press (withhold)", "")],
+                "Right index"))
+            form.addRow(L("Accept", "buttons"),
+                        self._combo(blocks, "buttons", [("Any grip button", "any")] + names, "any"))
+            if single:
+                pk = ImagePicker(prm.get("path", ""), 72)
+                pk.pathChanged.connect(lambda path: self._set(bid, path=path))
+                cap = QLabel("…or a picture")
+                cap.setObjectName("Hint")
+                form.addRow(cap)
+                form.addRow(pk)
+        if b.kind == "feedback":
+            self._section(form, "FEEDBACK  –  ABOUT THE PREVIOUS TRIAL")
+            form.addRow(L("If done right", "hit_text"), self._line(blocks, "hit_text"))
+            hc = ColorButton(prm.get("hit_color", "#2FB37A"))
+            hc.colorChanged.connect(lambda c: self._set(bid, hit_color=c))
+            form.addRow(L("Colour", "hit_color"), hc)
+            form.addRow(L("If missed / wrong", "miss_text"), self._line(blocks, "miss_text"))
+            mc = ColorButton(prm.get("miss_color", "#F0506E"))
+            mc.colorChanged.connect(lambda c: self._set(bid, miss_color=c))
+            form.addRow(L("Colour", "miss_color"), mc)
+            if single:
+                prev = self.doc.paradigm.previous_scored(b)
+                info = QLabel(f"Reports on: {prev.type.title} “{prev.display_label}” at {fmt_time(prev.start)}"
+                              if prev else "⚠ No scored trial before this block.")
+                info.setObjectName("Hint")
+                info.setWordWrap(True)
+                form.addRow("", info)
         if b.kind == "response":
             self._section(form, "RESPONSE")
             names = [(n, n) for n in self.doc.paradigm.hardware.button_names()]
