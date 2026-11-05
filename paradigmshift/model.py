@@ -324,6 +324,28 @@ class Paradigm:
                         o.start += shift
         self.blocks.append(block)
 
+    def insert_group(self, blocks: list[Block]) -> None:
+        """Insert a sequence of blocks (possibly on several tracks) as one unit.
+
+        If it lands inside a stimulus block it moves behind that block; everything
+        from the insertion point on – on all tracks – moves right to make room.
+        """
+        if not blocks:
+            return
+        t0 = min(b.start for b in blocks)
+        inside = [o for o in self.blocks if o.track == 0 and o.start < t0 - 1e-9 < o.end - 2e-9]
+        if inside:
+            shift = max(o.end for o in inside) - t0
+            for b in blocks:
+                b.start = round(b.start + shift, 4)
+            t0 += shift
+        span = max(b.end for b in blocks) - t0
+        if any(o.end > t0 + 1e-9 and o.start < t0 + span - 1e-9 for o in self.blocks):
+            for o in self.blocks:
+                if o.start >= t0 - 1e-9:
+                    o.start = round(o.start + span, 4)
+        self.blocks.extend(blocks)
+
     def ripple_delete(self, ids: set[str]) -> None:
         removed = [b for b in self.blocks if b.id in ids]
         self.blocks = [b for b in self.blocks if b.id not in ids]

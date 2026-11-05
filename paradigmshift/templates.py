@@ -14,6 +14,7 @@ import re
 from dataclasses import dataclass, field
 
 from .model import Block, Paradigm
+from .presets import STROOP_INK, derive  # noqa: F401  (STROOP_INK is re-exported for callers/tests)
 
 IMAGE_RE = re.compile(r"\.(png|jpe?g|bmp|gif|tiff?|webp)$", re.I)
 
@@ -423,9 +424,9 @@ def build_nback(o: NBackOptions) -> Paradigm:
             seq.add("text", o.instruction_dur, "cue", f"{n}-BACK", text=f"{n}-BACK\n\n{rule}", size=56)
             for letter, target in nback_sequence(n, o.trials_per_block, n_targets, o.letters, rng,
                                                  o.zero_back_target):
-                seq.add("choice", o.trial_dur, cond, f"{letter} (target)" if target else "", text=letter,
-                        stim_time=o.stim_time, correct=o.target_button if target else "",
-                        buttons="any", size=140)
+                b = seq.add("choice", o.trial_dur, cond, preset="nback", letter=letter, target=target, level=n,
+                            target_button=o.target_button, stim_time=o.stim_time, buttons="any", size=140)
+                derive(b)
             seq.add("fixation", o.rest_dur, label="Rest")
     return par
 
@@ -433,9 +434,6 @@ def build_nback(o: NBackOptions) -> Paradigm:
 # =============================================================================
 # Stroop (colour-word)
 # =============================================================================
-STROOP_INK = {"red": "#E53935", "green": "#43A047", "blue": "#1E88E5", "yellow": "#FDD835"}
-
-
 @dataclass
 class StroopOptions:
     tr: float = 2.0
@@ -479,14 +477,11 @@ def build_stroop(o: StroopOptions) -> Paradigm:
     seq.add("fixation", 6.0, label="Get ready")
     inks = _balanced(colors, len(conds), rng)
     for cond, ink in zip(conds, inks):
-        if cond == "congruent":
-            text = word[ink]
-        elif cond == "incongruent":
-            text = word[rng.choice([c for c in colors if c != ink])]
-        else:
-            text = "XXXX"
-        seq.add("choice", o.trial_dur, cond, f"{text} in {ink}", text=text, color=STROOP_INK[ink], size=110,
-                stim_time=o.stim_time, correct=button[ink], buttons="any")
+        wk = ink if cond == "congruent" else "neutral" if cond == "neutral" else \
+            rng.choice([c for c in colors if c != ink])
+        b = seq.add("choice", o.trial_dur, cond, preset="stroop", word=wk, ink=ink, words=dict(word),
+                    ink_buttons=dict(button), size=110, stim_time=o.stim_time, buttons="any")
+        derive(b)
         lo, hi = sorted((o.iti_min, o.iti_max))
         iti = _q(rng.uniform(lo, hi), 0.25)
         if iti > 0:
@@ -522,7 +517,6 @@ def build_flanker(o: FlankerOptions) -> Paradigm:
     if n_con < 0:
         raise ValueError("Incongruent + neutral percentages exceed 100 %.")
     conds = _no_long_runs(["congruent"] * n_con + ["incongruent"] * n_inc + ["neutral"] * n_neu, rng, 3)
-    arrow = {"left": "←", "right": "→"}
     par = Paradigm(name="Flanker", tr=o.tr, dummy_scans=3)
     seq = _Seq(par)
     seq.add("text", 10.0, "instruction", "Instructions",
@@ -532,11 +526,9 @@ def build_flanker(o: FlankerOptions) -> Paradigm:
     seq.add("fixation", 6.0, label="Get ready")
     sides = _balanced(["left", "right"], len(conds), rng)
     for cond, side in zip(conds, sides):
-        other = "right" if side == "left" else "left"
-        flank = {"congruent": arrow[side], "incongruent": arrow[other], "neutral": "–"}[cond]
-        text = flank * 2 + arrow[side] + flank * 2
-        seq.add("choice", o.trial_dur, cond, f"{text} ({side})", text=text, size=110, stim_time=o.stim_time,
-                correct=o.left_button if side == "left" else o.right_button, buttons="any")
+        b = seq.add("choice", o.trial_dur, cond, preset="flanker", direction=side, congruency=cond, size=110,
+                    stim_time=o.stim_time, left_button=o.left_button, right_button=o.right_button, buttons="any")
+        derive(b)
         lo, hi = sorted((o.iti_min, o.iti_max))
         iti = _q(rng.uniform(lo, hi), 0.25)
         if iti > 0:

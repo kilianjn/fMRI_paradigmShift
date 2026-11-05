@@ -4,7 +4,7 @@ from __future__ import annotations
 import math
 import os
 
-from PySide6.QtCore import QMimeData, QPoint, QPointF, QRectF, Qt, Signal
+from PySide6.QtCore import QMimeData, QPoint, QPointF, QRectF, Qt, QTimer, Signal
 from PySide6.QtGui import (QAction, QBrush, QColor, QCursor, QDrag, QFont, QLinearGradient,
                            QPainter, QPainterPath, QPen)
 from PySide6.QtWidgets import QAbstractScrollArea, QInputDialog, QMenu, QToolTip
@@ -707,6 +707,9 @@ class TimelineView(QAbstractScrollArea):
         self.doc.edit(fn)
 
     def add_block(self, kind: str, start: float | None = None, track: int | None = None, **params) -> Block:
+        if kind.startswith("preset:"):
+            blocks = self.add_preset(kind.split(":", 1)[1], start)
+            return blocks[0] if blocks else None
         bt = BLOCK_TYPES[kind]
         track = bt.default_track if track is None else track
         track = min(track, len(self.p.tracks) - 1)
@@ -720,6 +723,37 @@ class TimelineView(QAbstractScrollArea):
         self.doc.select([b.id])
         return b
 
+    # ------------------------------------------------------------------ task blocks
+    def preset_ctx(self) -> dict:
+        from .presets import default_stim_dir
+        return {"stim_dir": getattr(self, "stim_dir", None) or default_stim_dir()}
+
+    def choose_variant(self, preset, at=None):
+        """Ask which variant to insert (e.g. win / lose / nothing). None = cancelled."""
+        if len(preset.variants) <= 1:
+            return preset.variants[0][1] if preset.variants else None, True
+        m = QMenu(self)
+        m.addSection(preset.title)
+        chosen = {}
+        for label, value in preset.variants:
+            m.addAction(label, lambda v=value: chosen.setdefault("v", v))
+        m.exec(at or QCursor.pos())
+        return chosen.get("v"), "v" in chosen
+
+    def add_preset(self, key: str, start: float | None = None, variant=None, ask: bool = True) -> list:
+        from .presets import PRESET_BY_KEY
+        preset = PRESET_BY_KEY[key]
+        if variant is None and ask:
+            variant, ok = self.choose_variant(preset)
+            if not ok:
+                return []
+        if start is None:
+            start = self.p.track_end(0)
+        blocks = preset.build(start, variant, self.preset_ctx())
+        self.doc.edit(lambda par: par.insert_group(blocks))
+        self.doc.select([b.id for b in blocks])
+        return blocks
+
     def _add_menu(self, t: float, track: int) -> QMenu:
         m = QMenu(self)
         m.addSection(f"Add at {fmt_time(t)}")
@@ -727,6 +761,12 @@ class TimelineView(QAbstractScrollArea):
             a = QAction(theme.kind_icon(kind), bt.title, m)
             a.triggered.connect(lambda _=False, k=kind: self.add_block(k, t, track))
             m.addAction(a)
+        from .presets import PRESETS
+        sub = m.addMenu("Task blocks")
+        for pr in PRESETS:
+            a = QAction(theme.kind_icon(pr.icon_kind, pr.color), pr.title, sub)
+            a.triggered.connect(lambda _=False, k=pr.key: self.add_preset(k, t))
+            sub.addAction(a)
         return m
 
     def contextMenuEvent(self, e):
@@ -784,6 +824,9 @@ class TimelineView(QAbstractScrollArea):
         kind, data = payload
         track = self.track_at(pos.y())
         t = max(0.0, self.snap_time(self.t_of(pos.x())))
+        if kind == "kind" and data.startswith("preset:"):
+            from .presets import PRESET_BY_KEY
+            return PRESET_BY_KEY[data.split(":", 1)[1]].build(t, None, self.preset_ctx())
         if kind == "kind":
             bt = BLOCK_TYPES[data]
             b = Block.create(data, t, track=bt.default_track if track is None else track)
@@ -824,10 +867,19 @@ class TimelineView(QAbstractScrollArea):
     def dropEvent(self, e):
         if not self._ghost:
             return
-        blocks = self._ghost_blocks(self._ghost["payload"], e.position())
+        payload = self._ghost["payload"]
+        blocks = self._ghost_blocks(payload, e.position())
         self._ghost = None
         self._snap_line = None
         if self.track_at(e.position().y()) is None and e.position().y() < RULER_H:
+            return
+        if payload[0] == "kind" and payload[1].startswith("preset:"):
+            e.acceptProposedAction()
+            key = payload[1].split(":", 1)[1]
+            start = min(b.start for b in blocks)
+            # the variant menu must not run inside the drop event (the drag is still active)
+            QTimer.singleShot(0, lambda: (self.add_preset(key, start), self.setFocus()))
+            self.viewport().update()
             return
 
         def fn(par):
@@ -839,10 +891,10 @@ class TimelineView(QAbstractScrollArea):
         self.setFocus()
 
 
-def start_kind_drag(widget, kind: str):
+def start_kind_drag(widget, kind: str, icon_kind: str | None = None, color: str | None = None):
     drag = QDrag(widget)
     mime = QMimeData()
     mime.setData(MIME_KIND, kind.encode())
     drag.setMimeData(mime)
-    drag.setPixmap(theme.kind_icon(kind, size=36).pixmap(36, 36))
+    drag.setPixmap(theme.kind_icon(icon_kind or kind, color, size=36).pixmap(36, 36))
     drag.exec(Qt.CopyAction)

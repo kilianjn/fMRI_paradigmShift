@@ -4,7 +4,7 @@ from __future__ import annotations
 import csv
 import os
 
-from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, QTimer
+from PySide6.QtCore import QSettings, QSize, Qt, QTimer
 from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import (QApplication, QFileDialog, QFrame, QHBoxLayout, QLabel, QMainWindow, QMessageBox,
                                QPushButton, QSizePolicy, QSplitter, QToolBar, QToolButton, QVBoxLayout,
@@ -442,8 +442,8 @@ class MainWindow(QMainWindow):
     def new_from_template(self, key: str = "hariri"):
         if not self._confirm_discard():
             return
-        stim_dir = os.path.join(QStandardPaths.writableLocation(QStandardPaths.AppDataLocation),
-                                "placeholder-stimuli")
+        from .presets import default_stim_dir
+        stim_dir = default_stim_dir()
         hw = self.doc.paradigm.hardware
         dlg = TemplateDialog(hw, stim_dir, self, start=key if isinstance(key, str) else "hariri")
         if not dlg.exec() or dlg.paradigm is None:

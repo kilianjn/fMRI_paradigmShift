@@ -23,7 +23,7 @@
         "size": 32,
         "color": "#FFFFFF"
       },
-      "id": "ee034a58f4"
+      "id": "3bd84a906a"
     },
     {
       "kind": "fixation",
@@ -37,7 +37,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c00b364879"
+      "id": "a50057b38c"
     },
     {
       "kind": "text",
@@ -51,7 +51,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "8e8b87e2ba"
+      "id": "474785b273"
     },
     {
       "kind": "choice",
@@ -68,9 +68,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "S",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "f0aa4d570f"
+      "id": "a34bcbd82b"
     },
     {
       "kind": "choice",
@@ -87,9 +92,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "T",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "64a8591420"
+      "id": "9b545046ab"
     },
     {
       "kind": "choice",
@@ -106,9 +116,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "Q",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "e6256bf13e"
+      "id": "6ce168a87d"
     },
     {
       "kind": "choice",
@@ -125,9 +140,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "T",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "4e0c66f5cc"
+      "id": "f55f86b536"
     },
     {
       "kind": "choice",
@@ -144,9 +164,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "J",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "553f4d25ee"
+      "id": "002054de60"
     },
     {
       "kind": "choice",
@@ -163,9 +188,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "F",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "852fe2d381"
+      "id": "bb52d5d6ee"
     },
     {
       "kind": "choice",
@@ -182,9 +212,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "J",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "75844f6ea0"
+      "id": "433db866ce"
     },
     {
       "kind": "choice",
@@ -201,9 +236,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "V",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "2fc9168835"
+      "id": "0f362ac6cd"
     },
     {
       "kind": "choice",
@@ -220,9 +260,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "B",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "99d7c71cb2"
+      "id": "e15332e628"
     },
     {
       "kind": "choice",
@@ -239,9 +284,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "V",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "1862ea7e35"
+      "id": "99cbc0e8e0"
     },
     {
       "kind": "choice",
@@ -258,9 +308,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "R",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "0753ef9072"
+      "id": "7e9b012b6d"
     },
     {
       "kind": "choice",
@@ -277,9 +332,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "V",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "9bc072be64"
+      "id": "7827dbead0"
     },
     {
       "kind": "choice",
@@ -296,9 +356,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "S",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "a5e0bce283"
+      "id": "dab9e1dd7a"
     },
     {
       "kind": "choice",
@@ -315,9 +380,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "V",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "11216182c9"
+      "id": "ae4f7baab9"
     },
     {
       "kind": "choice",
@@ -334,9 +404,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "B",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "99abe7f0c9"
+      "id": "ecbcd86b4b"
     },
     {
       "kind": "fixation",
@@ -350,7 +425,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "d4c6688409"
+      "id": "4066c4d858"
     },
     {
       "kind": "text",
@@ -364,7 +439,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "a347b00d27"
+      "id": "a32f4d9f50"
     },
     {
       "kind": "choice",
@@ -381,9 +456,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "Z",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "bc1bf05961"
+      "id": "2202589b86"
     },
     {
       "kind": "choice",
@@ -400,9 +480,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "F",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "72a7bc7b41"
+      "id": "e06f179e62"
     },
     {
       "kind": "choice",
@@ -419,9 +504,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "N",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "22fe85a0a3"
+      "id": "3d08342906"
     },
     {
       "kind": "choice",
@@ -438,9 +528,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "078aa03536"
+      "id": "a075195567"
     },
     {
       "kind": "choice",
@@ -457,9 +552,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "72e689ae8c"
+      "id": "6363647a45"
     },
     {
       "kind": "choice",
@@ -476,9 +576,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "B",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "dfbfd94258"
+      "id": "351b6184fd"
     },
     {
       "kind": "choice",
@@ -495,9 +600,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "B",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "3f8d85c150"
+      "id": "da315f8909"
     },
     {
       "kind": "choice",
@@ -514,9 +624,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "390bc3e0a1"
+      "id": "a19226140a"
     },
     {
       "kind": "choice",
@@ -533,9 +648,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "B",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "d0e5cf4eec"
+      "id": "96c5f873a1"
     },
     {
       "kind": "choice",
@@ -552,9 +672,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "W",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "b21855e7d8"
+      "id": "21b350f7d8"
     },
     {
       "kind": "choice",
@@ -571,9 +696,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "B",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "9d4cd5d737"
+      "id": "d977f761e3"
     },
     {
       "kind": "choice",
@@ -590,9 +720,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "8580e68647"
+      "id": "1267623ef4"
     },
     {
       "kind": "choice",
@@ -609,9 +744,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "Q",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "ea9c6ae150"
+      "id": "35377b8930"
     },
     {
       "kind": "choice",
@@ -628,9 +768,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "J",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "9fd9b26c7f"
+      "id": "9da1e56480"
     },
     {
       "kind": "choice",
@@ -647,9 +792,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "2e9248ea0b"
+      "id": "b7a1f1726d"
     },
     {
       "kind": "fixation",
@@ -663,7 +813,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3a5f3feff2"
+      "id": "d7beb413ce"
     },
     {
       "kind": "text",
@@ -677,7 +827,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "937e4216f5"
+      "id": "425437e214"
     },
     {
       "kind": "choice",
@@ -694,9 +844,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "98d5eefc8f"
+      "id": "fbb75f942d"
     },
     {
       "kind": "choice",
@@ -713,9 +868,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "T",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "c08beef4ba"
+      "id": "2f2f56ea0f"
     },
     {
       "kind": "choice",
@@ -732,9 +892,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "W",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "6a96c4369a"
+      "id": "7142367d59"
     },
     {
       "kind": "choice",
@@ -751,9 +916,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "75daa14037"
+      "id": "07c04a669a"
     },
     {
       "kind": "choice",
@@ -770,9 +940,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "K",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "4c1cc2998c"
+      "id": "b1a94cc8a7"
     },
     {
       "kind": "choice",
@@ -789,9 +964,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "P",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "fe827b815b"
+      "id": "842ccb9bbc"
     },
     {
       "kind": "choice",
@@ -808,9 +988,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "K",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "f00a30f1f3"
+      "id": "aaf63253a5"
     },
     {
       "kind": "choice",
@@ -827,9 +1012,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "f77dcb4eeb"
+      "id": "012731db90"
     },
     {
       "kind": "choice",
@@ -846,9 +1036,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "625688daaa"
+      "id": "ec2cb7d323"
     },
     {
       "kind": "choice",
@@ -865,9 +1060,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "K",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "3ed565fa9a"
+      "id": "22914d28c6"
     },
     {
       "kind": "choice",
@@ -884,9 +1084,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "S",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "9c8992a6ff"
+      "id": "b6addcaa61"
     },
     {
       "kind": "choice",
@@ -903,9 +1108,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "b4483c75e7"
+      "id": "4b9a29cba6"
     },
     {
       "kind": "choice",
@@ -922,9 +1132,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "M",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "b03c2dfef7"
+      "id": "5ce628888b"
     },
     {
       "kind": "choice",
@@ -941,9 +1156,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "B",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "56a8603c09"
+      "id": "b2b94a94e8"
     },
     {
       "kind": "choice",
@@ -960,9 +1180,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "R",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "a7b1d6a29c"
+      "id": "c6164e0e18"
     },
     {
       "kind": "fixation",
@@ -976,7 +1201,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7e6296677f"
+      "id": "1220b5f4b0"
     },
     {
       "kind": "text",
@@ -990,7 +1215,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "dec142e61d"
+      "id": "0daaa45244"
     },
     {
       "kind": "choice",
@@ -1007,9 +1232,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "F",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "d6b764cb7a"
+      "id": "2e30b3ff8e"
     },
     {
       "kind": "choice",
@@ -1026,9 +1256,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "N",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "f36deec489"
+      "id": "22848923c8"
     },
     {
       "kind": "choice",
@@ -1045,9 +1280,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "W",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "08c319e290"
+      "id": "fdc3537cc5"
     },
     {
       "kind": "choice",
@@ -1064,9 +1304,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "N",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "f7b6b4f831"
+      "id": "79c4748a29"
     },
     {
       "kind": "choice",
@@ -1083,9 +1328,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "W",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "399f4a47d6"
+      "id": "ddd616b2c5"
     },
     {
       "kind": "choice",
@@ -1102,9 +1352,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "S",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "a5f17ee57b"
+      "id": "d59dd1e1ee"
     },
     {
       "kind": "choice",
@@ -1121,9 +1376,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "W",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "ce61a97fa1"
+      "id": "f4c7a1aae6"
     },
     {
       "kind": "choice",
@@ -1140,9 +1400,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "W",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "ffcb32b0f5"
+      "id": "cdca42d783"
     },
     {
       "kind": "choice",
@@ -1159,9 +1424,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "J",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "430a0093d7"
+      "id": "14c9978d76"
     },
     {
       "kind": "choice",
@@ -1178,9 +1448,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "M",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "85118397c3"
+      "id": "b4c59cfd83"
     },
     {
       "kind": "choice",
@@ -1197,9 +1472,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "J",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "98b5fdcef3"
+      "id": "e6311b64ad"
     },
     {
       "kind": "choice",
@@ -1216,9 +1496,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "N",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "12a4ac057a"
+      "id": "8dfea4f329"
     },
     {
       "kind": "choice",
@@ -1235,9 +1520,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "J",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "fbc9c92d1c"
+      "id": "3ea09694ac"
     },
     {
       "kind": "choice",
@@ -1254,9 +1544,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "V",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "064a2015ff"
+      "id": "cbdc51039c"
     },
     {
       "kind": "choice",
@@ -1273,9 +1568,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "W",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "7982f07923"
+      "id": "7677105095"
     },
     {
       "kind": "fixation",
@@ -1289,7 +1589,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "d6e9f5558d"
+      "id": "82ebaae842"
     },
     {
       "kind": "text",
@@ -1303,7 +1603,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "8c8dfb10c1"
+      "id": "c870bfd898"
     },
     {
       "kind": "choice",
@@ -1320,9 +1620,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "2b45c185cb"
+      "id": "0d2380df0e"
     },
     {
       "kind": "choice",
@@ -1339,9 +1644,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "Q",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "57817c628c"
+      "id": "dfafcdac61"
     },
     {
       "kind": "choice",
@@ -1358,9 +1668,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "R",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "9fbb3b0e25"
+      "id": "ee5c3ea4af"
     },
     {
       "kind": "choice",
@@ -1377,9 +1692,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "b8d6ef1088"
+      "id": "7e54d6a16a"
     },
     {
       "kind": "choice",
@@ -1396,9 +1716,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "H",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "7be057dfde"
+      "id": "4884da949a"
     },
     {
       "kind": "choice",
@@ -1415,9 +1740,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "P",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "618b9a0d40"
+      "id": "74878e275a"
     },
     {
       "kind": "choice",
@@ -1434,9 +1764,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "W",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "73cf92463b"
+      "id": "9aac5a6f13"
     },
     {
       "kind": "choice",
@@ -1453,9 +1788,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "134ba1868f"
+      "id": "bc62996416"
     },
     {
       "kind": "choice",
@@ -1472,9 +1812,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "P",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "6688f87dcd"
+      "id": "255933923a"
     },
     {
       "kind": "choice",
@@ -1491,9 +1836,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "a5e67c021e"
+      "id": "fd51a253d7"
     },
     {
       "kind": "choice",
@@ -1510,9 +1860,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "D",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "4eb27fdb76"
+      "id": "0a039a3d91"
     },
     {
       "kind": "choice",
@@ -1529,9 +1884,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "S",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "dc4cfb304b"
+      "id": "b298fabdc9"
     },
     {
       "kind": "choice",
@@ -1548,9 +1908,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "V",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "dd5a85b9ef"
+      "id": "7a5f70fcde"
     },
     {
       "kind": "choice",
@@ -1567,9 +1932,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "94cc4c7104"
+      "id": "ffef79b144"
     },
     {
       "kind": "choice",
@@ -1586,9 +1956,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "F",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "b5ebff86b4"
+      "id": "f76c45ff93"
     },
     {
       "kind": "fixation",
@@ -1602,7 +1977,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ca19325647"
+      "id": "22b2362d20"
     },
     {
       "kind": "text",
@@ -1616,7 +1991,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "3703c6b5c9"
+      "id": "20577d89b4"
     },
     {
       "kind": "choice",
@@ -1633,9 +2008,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "T",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "f1b038b041"
+      "id": "5fa29acb80"
     },
     {
       "kind": "choice",
@@ -1652,9 +2032,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "B",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "0a616ba729"
+      "id": "f0dbe8104f"
     },
     {
       "kind": "choice",
@@ -1671,9 +2056,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "V",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "62d7f3ad5e"
+      "id": "03117acd83"
     },
     {
       "kind": "choice",
@@ -1690,9 +2080,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "D",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "db5be139a5"
+      "id": "4eec458f09"
     },
     {
       "kind": "choice",
@@ -1709,9 +2104,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "V",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "0349bf2cbb"
+      "id": "5b628d3b1b"
     },
     {
       "kind": "choice",
@@ -1728,9 +2128,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "N",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "1f9fa200da"
+      "id": "ce4cc90539"
     },
     {
       "kind": "choice",
@@ -1747,9 +2152,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "Q",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "f94f02799d"
+      "id": "3ad03813d6"
     },
     {
       "kind": "choice",
@@ -1766,9 +2176,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "N",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "9b2a9b2364"
+      "id": "1f9d96b328"
     },
     {
       "kind": "choice",
@@ -1785,9 +2200,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "Q",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "99c899f31b"
+      "id": "9ef9426f27"
     },
     {
       "kind": "choice",
@@ -1804,9 +2224,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "H",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "0534d19ef9"
+      "id": "300ca93273"
     },
     {
       "kind": "choice",
@@ -1823,9 +2248,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "Q",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "cd506fef56"
+      "id": "96d833a5e0"
     },
     {
       "kind": "choice",
@@ -1842,9 +2272,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "J",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "6048b3eb2c"
+      "id": "87a115cde8"
     },
     {
       "kind": "choice",
@@ -1861,9 +2296,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "W",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "9d48ab55da"
+      "id": "28113fa54a"
     },
     {
       "kind": "choice",
@@ -1880,9 +2320,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "L",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "bb395c6eab"
+      "id": "a2664beae2"
     },
     {
       "kind": "choice",
@@ -1899,9 +2344,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "W",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "ea05b7ce65"
+      "id": "91bb62b0ca"
     },
     {
       "kind": "fixation",
@@ -1915,7 +2365,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3ae1686d62"
+      "id": "451cb14276"
     },
     {
       "kind": "text",
@@ -1929,7 +2379,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "583a3d6199"
+      "id": "5396d614a5"
     },
     {
       "kind": "choice",
@@ -1946,9 +2396,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "Q",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "51383c0fb4"
+      "id": "c246f62163"
     },
     {
       "kind": "choice",
@@ -1965,9 +2420,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "V",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "82c64d598f"
+      "id": "7757c6600e"
     },
     {
       "kind": "choice",
@@ -1984,9 +2444,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "P",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "ad7f57b499"
+      "id": "b46f039e98"
     },
     {
       "kind": "choice",
@@ -2003,9 +2468,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "P",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "9d325d4a66"
+      "id": "ad9c0e4b4d"
     },
     {
       "kind": "choice",
@@ -2022,9 +2492,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "T",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "c141ec185f"
+      "id": "15ee3e8b66"
     },
     {
       "kind": "choice",
@@ -2041,9 +2516,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "P",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "861550626a"
+      "id": "8700f9c54f"
     },
     {
       "kind": "choice",
@@ -2060,9 +2540,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "L",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "16a4991d4d"
+      "id": "e95badbfe5"
     },
     {
       "kind": "choice",
@@ -2079,9 +2564,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "Z",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "8a393956e8"
+      "id": "3268fd3409"
     },
     {
       "kind": "choice",
@@ -2098,9 +2588,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "B",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "1a9efe7006"
+      "id": "33333f110d"
     },
     {
       "kind": "choice",
@@ -2117,9 +2612,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "Q",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "79111b6302"
+      "id": "c9d8b6baa3"
     },
     {
       "kind": "choice",
@@ -2136,9 +2636,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "B",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "f2f4af48b7"
+      "id": "8f54660202"
     },
     {
       "kind": "choice",
@@ -2155,9 +2660,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "W",
+        "target": false,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "4b0bd7d27b"
+      "id": "71cd9a15d5"
     },
     {
       "kind": "choice",
@@ -2174,9 +2684,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "B",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "0ab645079b"
+      "id": "8883bdf12b"
     },
     {
       "kind": "choice",
@@ -2193,9 +2708,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "W",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "85f482477a"
+      "id": "2e2a3cf80c"
     },
     {
       "kind": "choice",
@@ -2212,9 +2732,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "B",
+        "target": true,
+        "level": 2,
+        "target_button": "Right index"
       },
-      "id": "372be541e9"
+      "id": "e2fd4d9ef7"
     },
     {
       "kind": "fixation",
@@ -2228,7 +2753,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "d5bea3de0e"
+      "id": "daf55bf261"
     },
     {
       "kind": "text",
@@ -2242,7 +2767,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "b0028b541f"
+      "id": "f71649d3e6"
     },
     {
       "kind": "choice",
@@ -2259,9 +2784,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "R",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "6d79818e84"
+      "id": "0960162934"
     },
     {
       "kind": "choice",
@@ -2278,9 +2808,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "C",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "355f4cad4b"
+      "id": "53854daae4"
     },
     {
       "kind": "choice",
@@ -2297,9 +2832,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "278f335b42"
+      "id": "65ed9623ba"
     },
     {
       "kind": "choice",
@@ -2316,9 +2856,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "4344570434"
+      "id": "4c33e96c54"
     },
     {
       "kind": "choice",
@@ -2335,9 +2880,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "T",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "17c43653c8"
+      "id": "31ffe3b26f"
     },
     {
       "kind": "choice",
@@ -2354,9 +2904,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "P",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "b1cb3fcac7"
+      "id": "515e8a9261"
     },
     {
       "kind": "choice",
@@ -2373,9 +2928,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "Z",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "c238df7625"
+      "id": "d548a012de"
     },
     {
       "kind": "choice",
@@ -2392,9 +2952,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "W",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "906ebcd240"
+      "id": "a711ba518c"
     },
     {
       "kind": "choice",
@@ -2411,9 +2976,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "ab52e4b7f5"
+      "id": "f494e1923a"
     },
     {
       "kind": "choice",
@@ -2430,9 +3000,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "J",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "16dafe31cd"
+      "id": "75cbf1ee82"
     },
     {
       "kind": "choice",
@@ -2449,9 +3024,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "V",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "1d979d28d9"
+      "id": "ab0ab88845"
     },
     {
       "kind": "choice",
@@ -2468,9 +3048,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "R",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "b8cbbdc180"
+      "id": "12b0cfd535"
     },
     {
       "kind": "choice",
@@ -2487,9 +3072,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "f4f373d8c8"
+      "id": "c9c201f0ec"
     },
     {
       "kind": "choice",
@@ -2506,9 +3096,14 @@
         "stim_time": 0.5,
         "correct": "",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "T",
+        "target": false,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "f146afed0c"
+      "id": "d3752f482b"
     },
     {
       "kind": "choice",
@@ -2525,9 +3120,14 @@
         "stim_time": 0.5,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "nback",
+        "letter": "X",
+        "target": true,
+        "level": 0,
+        "target_button": "Right index"
       },
-      "id": "f0ad2e1388"
+      "id": "610c4a170a"
     },
     {
       "kind": "fixation",
@@ -2541,7 +3141,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "8edf1425b3"
+      "id": "cbc398c1c8"
     }
   ],
   "hardware": {

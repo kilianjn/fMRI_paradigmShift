@@ -23,7 +23,7 @@
         "size": 32,
         "color": "#FFFFFF"
       },
-      "id": "8dbf55e290"
+      "id": "250a599dd3"
     },
     {
       "kind": "fixation",
@@ -37,7 +37,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "16c7474a00"
+      "id": "38832eb569"
     },
     {
       "kind": "choice",
@@ -54,9 +54,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "f11bcc0aea"
+      "id": "c34b29453c"
     },
     {
       "kind": "fixation",
@@ -70,7 +85,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "696c1564b6"
+      "id": "f66508fcf0"
     },
     {
       "kind": "choice",
@@ -87,9 +102,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "3841f50d99"
+      "id": "6d9e3cf8f4"
     },
     {
       "kind": "fixation",
@@ -103,7 +133,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "f999b576f4"
+      "id": "1e14b255de"
     },
     {
       "kind": "choice",
@@ -120,9 +150,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "1aac80ddaa"
+      "id": "89255bc66b"
     },
     {
       "kind": "fixation",
@@ -136,7 +181,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "2936049329"
+      "id": "353f7c8ee0"
     },
     {
       "kind": "choice",
@@ -153,9 +198,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "6366eb1158"
+      "id": "9882972800"
     },
     {
       "kind": "fixation",
@@ -169,7 +229,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "2d74b6835e"
+      "id": "5a98dcdca7"
     },
     {
       "kind": "choice",
@@ -186,9 +246,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "ec63392fb6"
+      "id": "13b2ec754e"
     },
     {
       "kind": "fixation",
@@ -202,7 +277,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "bb473d62d5"
+      "id": "e2889308c7"
     },
     {
       "kind": "choice",
@@ -219,9 +294,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "4bde8b88a9"
+      "id": "72a65312d7"
     },
     {
       "kind": "fixation",
@@ -235,7 +325,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "2e75bbcfb7"
+      "id": "f61c148276"
     },
     {
       "kind": "choice",
@@ -252,9 +342,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "8e9609a4b3"
+      "id": "1a2edd56ac"
     },
     {
       "kind": "fixation",
@@ -268,7 +373,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "130e4cb0f0"
+      "id": "5f81e95a4f"
     },
     {
       "kind": "choice",
@@ -285,9 +390,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "e2aadd4ca8"
+      "id": "3070d240e6"
     },
     {
       "kind": "fixation",
@@ -301,7 +421,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "6a34dc81ce"
+      "id": "710531d6f8"
     },
     {
       "kind": "choice",
@@ -318,9 +438,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "502da500b0"
+      "id": "69c999505a"
     },
     {
       "kind": "fixation",
@@ -334,7 +469,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "101f47b24e"
+      "id": "79aaae82f4"
     },
     {
       "kind": "choice",
@@ -351,9 +486,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "ac9302aa57"
+      "id": "645546eee5"
     },
     {
       "kind": "fixation",
@@ -367,7 +517,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "4ed0e591de"
+      "id": "31652b8d76"
     },
     {
       "kind": "choice",
@@ -384,9 +534,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "f42485f1b6"
+      "id": "3c891c3950"
     },
     {
       "kind": "fixation",
@@ -400,7 +565,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3eb92e88a3"
+      "id": "4871620500"
     },
     {
       "kind": "choice",
@@ -417,9 +582,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "12bbdd8e41"
+      "id": "c97360660c"
     },
     {
       "kind": "fixation",
@@ -433,7 +613,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "e4a3296567"
+      "id": "e55ce14c0f"
     },
     {
       "kind": "choice",
@@ -450,9 +630,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "627fde4ed6"
+      "id": "49a7cebaad"
     },
     {
       "kind": "fixation",
@@ -466,7 +661,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "e98f558eed"
+      "id": "304de40f5e"
     },
     {
       "kind": "choice",
@@ -483,9 +678,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "95d4bb5010"
+      "id": "d99e6677bb"
     },
     {
       "kind": "fixation",
@@ -499,7 +709,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "a28c65be8e"
+      "id": "95c9c49929"
     },
     {
       "kind": "choice",
@@ -516,9 +726,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "9fd35ccb28"
+      "id": "95ec75b5b0"
     },
     {
       "kind": "fixation",
@@ -532,7 +757,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7b6945aaa6"
+      "id": "cc1b656f5c"
     },
     {
       "kind": "choice",
@@ -549,9 +774,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "8912035e62"
+      "id": "594bd749f7"
     },
     {
       "kind": "fixation",
@@ -565,7 +805,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "8a88ca67a8"
+      "id": "2f26646ee5"
     },
     {
       "kind": "choice",
@@ -582,9 +822,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "5df5afd44b"
+      "id": "3cf3979820"
     },
     {
       "kind": "fixation",
@@ -598,7 +853,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "da4374f453"
+      "id": "12ca3bc5ef"
     },
     {
       "kind": "choice",
@@ -615,9 +870,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "0dcf576ceb"
+      "id": "fa2195ffe6"
     },
     {
       "kind": "fixation",
@@ -631,7 +901,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "33efe13644"
+      "id": "d64cda2152"
     },
     {
       "kind": "choice",
@@ -648,9 +918,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "f21052ddf1"
+      "id": "070ef8ed1b"
     },
     {
       "kind": "fixation",
@@ -664,7 +949,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "5967d4f0fe"
+      "id": "3f09e0225a"
     },
     {
       "kind": "choice",
@@ -681,9 +966,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "c43d220e05"
+      "id": "4bd2c7d93e"
     },
     {
       "kind": "fixation",
@@ -697,7 +997,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "212ecc70d2"
+      "id": "7f6049a18b"
     },
     {
       "kind": "choice",
@@ -714,9 +1014,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "29fa383539"
+      "id": "be66f371d9"
     },
     {
       "kind": "fixation",
@@ -730,7 +1045,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "dd8cbb2607"
+      "id": "a8b27f0c2a"
     },
     {
       "kind": "choice",
@@ -747,9 +1062,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "4031f68fd8"
+      "id": "e005ea85a2"
     },
     {
       "kind": "fixation",
@@ -763,7 +1093,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "bc0976c7a1"
+      "id": "06f3ac4a99"
     },
     {
       "kind": "choice",
@@ -780,9 +1110,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "b139c877f8"
+      "id": "6915e196bd"
     },
     {
       "kind": "fixation",
@@ -796,7 +1141,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7d9d6f7b6a"
+      "id": "9a27ec3170"
     },
     {
       "kind": "choice",
@@ -813,9 +1158,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "d6cb2ae4a8"
+      "id": "9c3143e1ad"
     },
     {
       "kind": "fixation",
@@ -829,7 +1189,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "55ec4ba33b"
+      "id": "36fe00cb2e"
     },
     {
       "kind": "choice",
@@ -846,9 +1206,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "bc7aef6f99"
+      "id": "30214b6a15"
     },
     {
       "kind": "fixation",
@@ -862,7 +1237,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "8647112dbc"
+      "id": "aa4bf7abbd"
     },
     {
       "kind": "choice",
@@ -879,9 +1254,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "b982736b69"
+      "id": "92be479c55"
     },
     {
       "kind": "fixation",
@@ -895,7 +1285,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ca527613e1"
+      "id": "af4af25395"
     },
     {
       "kind": "choice",
@@ -912,9 +1302,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "a8208d0d71"
+      "id": "6ba01fb78c"
     },
     {
       "kind": "fixation",
@@ -928,7 +1333,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c9bf754060"
+      "id": "976919b49e"
     },
     {
       "kind": "choice",
@@ -945,9 +1350,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "6caa00eccf"
+      "id": "010b97d8bf"
     },
     {
       "kind": "fixation",
@@ -961,7 +1381,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "abb2ab6c93"
+      "id": "7db9664a20"
     },
     {
       "kind": "choice",
@@ -978,9 +1398,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "5e299f35fe"
+      "id": "2ee56f1da7"
     },
     {
       "kind": "fixation",
@@ -994,7 +1429,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ebbb867aa4"
+      "id": "323a03da9b"
     },
     {
       "kind": "choice",
@@ -1011,9 +1446,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "4f053e37fa"
+      "id": "6a981fd859"
     },
     {
       "kind": "fixation",
@@ -1027,7 +1477,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "05b28f1185"
+      "id": "947a40498c"
     },
     {
       "kind": "choice",
@@ -1044,9 +1494,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "d312622b55"
+      "id": "ad846d4484"
     },
     {
       "kind": "fixation",
@@ -1060,7 +1525,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ed16f6318c"
+      "id": "377ed96b35"
     },
     {
       "kind": "choice",
@@ -1077,9 +1542,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "6c1fd8eea2"
+      "id": "4392fb58a8"
     },
     {
       "kind": "fixation",
@@ -1093,7 +1573,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7e3dea29a6"
+      "id": "ddae713bb7"
     },
     {
       "kind": "choice",
@@ -1110,9 +1590,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "638f68139c"
+      "id": "c8037f2564"
     },
     {
       "kind": "fixation",
@@ -1126,7 +1621,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "013fa6d9a5"
+      "id": "992f40635f"
     },
     {
       "kind": "choice",
@@ -1143,9 +1638,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "302ce63a08"
+      "id": "2617d0c122"
     },
     {
       "kind": "fixation",
@@ -1159,7 +1669,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "59281a5e22"
+      "id": "76451d979b"
     },
     {
       "kind": "choice",
@@ -1176,9 +1686,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "9d01396df0"
+      "id": "30f3ebbbc7"
     },
     {
       "kind": "fixation",
@@ -1192,7 +1717,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c55dd387bd"
+      "id": "559253b6e5"
     },
     {
       "kind": "choice",
@@ -1209,9 +1734,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "737c96310e"
+      "id": "960ff9b5fe"
     },
     {
       "kind": "fixation",
@@ -1225,7 +1765,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "f7c0db22fe"
+      "id": "5a48569fd7"
     },
     {
       "kind": "choice",
@@ -1242,9 +1782,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "3f4ed68b2e"
+      "id": "c958d6b6cc"
     },
     {
       "kind": "fixation",
@@ -1258,7 +1813,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "31bc52d35e"
+      "id": "2b3f6b0155"
     },
     {
       "kind": "choice",
@@ -1275,9 +1830,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "25bed771d9"
+      "id": "312ed26144"
     },
     {
       "kind": "fixation",
@@ -1291,7 +1861,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c8d7eae6ed"
+      "id": "38a152491f"
     },
     {
       "kind": "choice",
@@ -1308,9 +1878,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "a1e847a9b1"
+      "id": "a604df58d5"
     },
     {
       "kind": "fixation",
@@ -1324,7 +1909,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "bda449b92e"
+      "id": "f047e74a3f"
     },
     {
       "kind": "choice",
@@ -1341,9 +1926,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "77bc7b4cef"
+      "id": "448600787f"
     },
     {
       "kind": "fixation",
@@ -1357,7 +1957,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "62a96fa025"
+      "id": "c12c778faa"
     },
     {
       "kind": "choice",
@@ -1374,9 +1974,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "29be71cb2e"
+      "id": "ffe9136710"
     },
     {
       "kind": "fixation",
@@ -1390,7 +2005,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "901776b642"
+      "id": "21bfe59de8"
     },
     {
       "kind": "choice",
@@ -1407,9 +2022,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "1a1d7a705f"
+      "id": "9b343a3eef"
     },
     {
       "kind": "fixation",
@@ -1423,7 +2053,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3c2a0e06d9"
+      "id": "c5fa494f1d"
     },
     {
       "kind": "choice",
@@ -1440,9 +2070,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "40105a40a3"
+      "id": "b026911ae5"
     },
     {
       "kind": "fixation",
@@ -1456,7 +2101,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "6de9a16daa"
+      "id": "ba0de9ace7"
     },
     {
       "kind": "choice",
@@ -1473,9 +2118,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "d2845a915f"
+      "id": "7b827bb571"
     },
     {
       "kind": "fixation",
@@ -1489,7 +2149,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "a3be65ed58"
+      "id": "f8f48dd658"
     },
     {
       "kind": "choice",
@@ -1506,9 +2166,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "7da39096cb"
+      "id": "6970f7ed39"
     },
     {
       "kind": "fixation",
@@ -1522,7 +2197,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "1b35ac0355"
+      "id": "78136114a5"
     },
     {
       "kind": "choice",
@@ -1539,9 +2214,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "21463b5dea"
+      "id": "400acac0db"
     },
     {
       "kind": "fixation",
@@ -1555,7 +2245,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c0c08e6248"
+      "id": "c694eec46d"
     },
     {
       "kind": "choice",
@@ -1572,9 +2262,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "375e69cf20"
+      "id": "34fd8a319c"
     },
     {
       "kind": "fixation",
@@ -1588,7 +2293,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3ea4edd13f"
+      "id": "27cb44e5e9"
     },
     {
       "kind": "choice",
@@ -1605,9 +2310,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "3b1ca79a51"
+      "id": "13a716ac38"
     },
     {
       "kind": "fixation",
@@ -1621,7 +2341,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "4ed4d8b0cc"
+      "id": "dd97f34b3d"
     },
     {
       "kind": "choice",
@@ -1638,9 +2358,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "4770efb795"
+      "id": "acfabbf91e"
     },
     {
       "kind": "fixation",
@@ -1654,7 +2389,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "623c378b51"
+      "id": "2cf27dfa9b"
     },
     {
       "kind": "choice",
@@ -1671,9 +2406,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "f26092d4fd"
+      "id": "c408eca2c9"
     },
     {
       "kind": "fixation",
@@ -1687,7 +2437,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "54870471e0"
+      "id": "377bd291e7"
     },
     {
       "kind": "choice",
@@ -1704,9 +2454,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "4e0ebd5bdc"
+      "id": "c9eacba3c6"
     },
     {
       "kind": "fixation",
@@ -1720,7 +2485,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "a0fc60ff6a"
+      "id": "c99df0d072"
     },
     {
       "kind": "choice",
@@ -1737,9 +2502,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "18fc7aef2f"
+      "id": "f5ddb38181"
     },
     {
       "kind": "fixation",
@@ -1753,7 +2533,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "853714c916"
+      "id": "2cec0cc160"
     },
     {
       "kind": "choice",
@@ -1770,9 +2550,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "63c24e61f9"
+      "id": "f19beffe40"
     },
     {
       "kind": "fixation",
@@ -1786,7 +2581,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "35b79858e3"
+      "id": "62b2710678"
     },
     {
       "kind": "choice",
@@ -1803,9 +2598,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "a7a25f502e"
+      "id": "da8cd0e5a9"
     },
     {
       "kind": "fixation",
@@ -1819,7 +2629,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "441878d54f"
+      "id": "63609cc544"
     },
     {
       "kind": "choice",
@@ -1836,9 +2646,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "940b3a32e2"
+      "id": "d7e94ace4f"
     },
     {
       "kind": "fixation",
@@ -1852,7 +2677,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "05c693905c"
+      "id": "d164c55fb0"
     },
     {
       "kind": "choice",
@@ -1869,9 +2694,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "f7b0f16179"
+      "id": "1999a99aee"
     },
     {
       "kind": "fixation",
@@ -1885,7 +2725,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "2fdfce2b4e"
+      "id": "9b17777e52"
     },
     {
       "kind": "choice",
@@ -1902,9 +2742,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "553d4b86c9"
+      "id": "ab56401478"
     },
     {
       "kind": "fixation",
@@ -1918,7 +2773,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "da34ed04f6"
+      "id": "bdf1a253b9"
     },
     {
       "kind": "choice",
@@ -1935,9 +2790,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "7cf07f985b"
+      "id": "e773fb0b04"
     },
     {
       "kind": "fixation",
@@ -1951,7 +2821,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "9f85ee3ea2"
+      "id": "d193bc775d"
     },
     {
       "kind": "choice",
@@ -1968,9 +2838,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "eaace09f3d"
+      "id": "569bbf1724"
     },
     {
       "kind": "fixation",
@@ -1984,7 +2869,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "820022bec5"
+      "id": "42c0c6ffc6"
     },
     {
       "kind": "choice",
@@ -2001,9 +2886,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "55c5eb2c18"
+      "id": "992be47bfd"
     },
     {
       "kind": "fixation",
@@ -2017,7 +2917,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0346cf5c02"
+      "id": "b8e18e0233"
     },
     {
       "kind": "choice",
@@ -2034,9 +2934,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "367d275433"
+      "id": "be92f103f9"
     },
     {
       "kind": "fixation",
@@ -2050,7 +2965,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "1be056ec0a"
+      "id": "f0f8102be4"
     },
     {
       "kind": "choice",
@@ -2067,9 +2982,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "f60387784e"
+      "id": "ade0cf39b0"
     },
     {
       "kind": "fixation",
@@ -2083,7 +3013,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "6b6c164728"
+      "id": "0541216756"
     },
     {
       "kind": "choice",
@@ -2100,9 +3030,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "57c8f07cb9"
+      "id": "f6acf2e66f"
     },
     {
       "kind": "fixation",
@@ -2116,7 +3061,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "dfcb72c898"
+      "id": "954acd96de"
     },
     {
       "kind": "choice",
@@ -2133,9 +3078,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "bac05ed7f7"
+      "id": "80efce1d5e"
     },
     {
       "kind": "fixation",
@@ -2149,7 +3109,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "1373ac458f"
+      "id": "6b28091d2f"
     },
     {
       "kind": "choice",
@@ -2166,9 +3126,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "18f0d622ef"
+      "id": "cef92dd0fa"
     },
     {
       "kind": "fixation",
@@ -2182,7 +3157,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3f1de0a5bd"
+      "id": "ff73d23699"
     },
     {
       "kind": "choice",
@@ -2199,9 +3174,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "e4e45c49e4"
+      "id": "2cdcaf0653"
     },
     {
       "kind": "fixation",
@@ -2215,7 +3205,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "efff7439bd"
+      "id": "53daa4a9cb"
     },
     {
       "kind": "choice",
@@ -2232,9 +3222,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "df785083f7"
+      "id": "84e9a57416"
     },
     {
       "kind": "fixation",
@@ -2248,7 +3253,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3b0df69844"
+      "id": "a68c46fbea"
     },
     {
       "kind": "choice",
@@ -2265,9 +3270,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "d9a8277243"
+      "id": "e2485aa507"
     },
     {
       "kind": "fixation",
@@ -2281,7 +3301,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "82d06fa99b"
+      "id": "41bb5ba9af"
     },
     {
       "kind": "choice",
@@ -2298,9 +3318,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "ebc6dcc661"
+      "id": "f361258456"
     },
     {
       "kind": "fixation",
@@ -2314,7 +3349,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "bbd3bf7cb0"
+      "id": "75c02830e8"
     },
     {
       "kind": "choice",
@@ -2331,9 +3366,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "252ca66a36"
+      "id": "5ca6789cf1"
     },
     {
       "kind": "fixation",
@@ -2347,7 +3397,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c2c997c1e6"
+      "id": "d64d3295ce"
     },
     {
       "kind": "choice",
@@ -2364,9 +3414,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "bb007ba5ab"
+      "id": "2ecac38c3a"
     },
     {
       "kind": "fixation",
@@ -2380,7 +3445,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "88ea86fa27"
+      "id": "8e4d3069c0"
     },
     {
       "kind": "choice",
@@ -2397,9 +3462,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "6553b13ed1"
+      "id": "b2d1f97ed2"
     },
     {
       "kind": "fixation",
@@ -2413,7 +3493,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "69d736f34c"
+      "id": "5a8a3de57a"
     },
     {
       "kind": "choice",
@@ -2430,9 +3510,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "4ba9d437ef"
+      "id": "6dfe3caddd"
     },
     {
       "kind": "fixation",
@@ -2446,7 +3541,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "81aea40e5b"
+      "id": "e5fc44ade4"
     },
     {
       "kind": "choice",
@@ -2463,9 +3558,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "9fcefd070c"
+      "id": "797686c87e"
     },
     {
       "kind": "fixation",
@@ -2479,7 +3589,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ea50635b8f"
+      "id": "7977e262a6"
     },
     {
       "kind": "choice",
@@ -2496,9 +3606,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "0d10054d8f"
+      "id": "4c4b6ada40"
     },
     {
       "kind": "fixation",
@@ -2512,7 +3637,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3948c4083d"
+      "id": "2743124d4e"
     },
     {
       "kind": "choice",
@@ -2529,9 +3654,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "5d9016f11a"
+      "id": "f9ad5e2cd4"
     },
     {
       "kind": "fixation",
@@ -2545,7 +3685,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "578660b919"
+      "id": "364992035c"
     },
     {
       "kind": "choice",
@@ -2562,9 +3702,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "648a022767"
+      "id": "acdc65ff9b"
     },
     {
       "kind": "fixation",
@@ -2578,7 +3733,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "9eab8ef429"
+      "id": "1f09716be5"
     },
     {
       "kind": "choice",
@@ -2595,9 +3750,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "efd7dbea7a"
+      "id": "861914ccd4"
     },
     {
       "kind": "fixation",
@@ -2611,7 +3781,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "abd45f0e62"
+      "id": "5ab208eb07"
     },
     {
       "kind": "choice",
@@ -2628,9 +3798,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "2340392af1"
+      "id": "15c10c2c1a"
     },
     {
       "kind": "fixation",
@@ -2644,7 +3829,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "464fe989ea"
+      "id": "73e3e9c747"
     },
     {
       "kind": "choice",
@@ -2661,9 +3846,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "b8df352d5a"
+      "id": "9e602673e4"
     },
     {
       "kind": "fixation",
@@ -2677,7 +3877,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "4bb87c2a7a"
+      "id": "b6a20ec6fc"
     },
     {
       "kind": "choice",
@@ -2694,9 +3894,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "1e63c00a3b"
+      "id": "bb49b5ace9"
     },
     {
       "kind": "fixation",
@@ -2710,7 +3925,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "89e8c8d35f"
+      "id": "7efcfb715c"
     },
     {
       "kind": "choice",
@@ -2727,9 +3942,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "2075334f90"
+      "id": "9d89d344cc"
     },
     {
       "kind": "fixation",
@@ -2743,7 +3973,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "5b2f29049c"
+      "id": "2c6dbc42c1"
     },
     {
       "kind": "choice",
@@ -2760,9 +3990,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "a10d43853e"
+      "id": "d67986abed"
     },
     {
       "kind": "fixation",
@@ -2776,7 +4021,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "92377df0cf"
+      "id": "98ede45ab2"
     },
     {
       "kind": "choice",
@@ -2793,9 +4038,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "8ab84d5754"
+      "id": "3ca984fab3"
     },
     {
       "kind": "fixation",
@@ -2809,7 +4069,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "16f87211e7"
+      "id": "c2a9910204"
     },
     {
       "kind": "choice",
@@ -2826,9 +4086,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "6e0f835df0"
+      "id": "9458774070"
     },
     {
       "kind": "fixation",
@@ -2842,7 +4117,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "108e526901"
+      "id": "9a4b383344"
     },
     {
       "kind": "choice",
@@ -2859,9 +4134,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "41484e1be9"
+      "id": "b19fda8b99"
     },
     {
       "kind": "fixation",
@@ -2875,7 +4165,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "08ada16be0"
+      "id": "bb115739bc"
     },
     {
       "kind": "choice",
@@ -2892,9 +4182,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "169b4932d6"
+      "id": "1acc31b766"
     },
     {
       "kind": "fixation",
@@ -2908,7 +4213,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "99a4ef5df6"
+      "id": "3adb713e6e"
     },
     {
       "kind": "choice",
@@ -2925,9 +4230,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "dbae399818"
+      "id": "c199fd4916"
     },
     {
       "kind": "fixation",
@@ -2941,7 +4261,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ea1fd714d6"
+      "id": "4cc4dcd187"
     },
     {
       "kind": "choice",
@@ -2958,9 +4278,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "c2f165b803"
+      "id": "98f9581444"
     },
     {
       "kind": "fixation",
@@ -2974,7 +4309,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "77396b0824"
+      "id": "c170390901"
     },
     {
       "kind": "choice",
@@ -2991,9 +4326,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "929c0f83d2"
+      "id": "c948ba9aeb"
     },
     {
       "kind": "fixation",
@@ -3007,7 +4357,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "51ede3f550"
+      "id": "3f0713d658"
     },
     {
       "kind": "choice",
@@ -3024,9 +4374,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "254b0237d2"
+      "id": "b544ae410d"
     },
     {
       "kind": "fixation",
@@ -3040,7 +4405,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3a181e0362"
+      "id": "8b70abec36"
     },
     {
       "kind": "choice",
@@ -3057,9 +4422,24 @@
         "stim_time": 0.0,
         "correct": "Right thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "yellow",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "f71da232dd"
+      "id": "90c5d502d5"
     },
     {
       "kind": "fixation",
@@ -3073,7 +4453,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "feaa70e887"
+      "id": "f39f579766"
     },
     {
       "kind": "choice",
@@ -3090,9 +4470,24 @@
         "stim_time": 0.0,
         "correct": "Left index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "green",
+        "ink": "green",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "7984c0ddc8"
+      "id": "b463e27bab"
     },
     {
       "kind": "fixation",
@@ -3106,7 +4501,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "27c954414a"
+      "id": "bc9e46524d"
     },
     {
       "kind": "choice",
@@ -3123,9 +4518,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "yellow",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "360a19f255"
+      "id": "c0d2c9d6fd"
     },
     {
       "kind": "fixation",
@@ -3139,7 +4549,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "8e55e03169"
+      "id": "6846c06f6d"
     },
     {
       "kind": "choice",
@@ -3156,9 +4566,24 @@
         "stim_time": 0.0,
         "correct": "Left thumb",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "red",
+        "ink": "red",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "cdfe10e931"
+      "id": "2bd6297096"
     },
     {
       "kind": "fixation",
@@ -3172,7 +4597,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "788e71ca2c"
+      "id": "ce1beec01c"
     },
     {
       "kind": "choice",
@@ -3189,9 +4614,24 @@
         "stim_time": 0.0,
         "correct": "Right index",
         "buttons": "any",
-        "isi_symbol": "+"
+        "isi_symbol": "+",
+        "preset": "stroop",
+        "word": "blue",
+        "ink": "blue",
+        "words": {
+          "red": "RED",
+          "green": "GREEN",
+          "blue": "BLUE",
+          "yellow": "YELLOW"
+        },
+        "ink_buttons": {
+          "red": "Left thumb",
+          "green": "Left index",
+          "blue": "Right index",
+          "yellow": "Right thumb"
+        }
       },
-      "id": "6ae47d3fd3"
+      "id": "f749c17fff"
     },
     {
       "kind": "fixation",
@@ -3205,7 +4645,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "427fda495f"
+      "id": "fd4d74041d"
     },
     {
       "kind": "fixation",
@@ -3219,7 +4659,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "88a88109a7"
+      "id": "b3418a030f"
     }
   ],
   "hardware": {

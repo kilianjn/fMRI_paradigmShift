@@ -363,6 +363,34 @@ def main():
     participant("visual_checkerboard", lambda pp: [b for b in pp.blocks if b.kind == "image"][0], 1.0,
                 "31_participant_checkerboard.png")
 
+    # 32/33 – task blocks in the library + task fields in the inspector
+    win.doc.dirty = False
+    win.open_file(os.path.join(ex, "stroop.paradigm.json"))
+    settle(app)
+    win.library.tabs.setCurrentIndex(1)
+    trial = [b for b in win.doc.paradigm.blocks if b.kind == "choice" and b.condition == "incongruent"][2]
+    win.doc.select([trial.id])
+    win.timeline.set_zoom(40)
+    win.timeline.horizontalScrollBar().setValue(int(max(0, trial.start - 10) * 40))
+    win.timeline.set_playhead(trial.start + 0.2)
+    settle(app)
+    shot(win, "32_task_blocks_stroop.png")
+
+    win.doc.dirty = False
+    win.new_file()
+    win.timeline.stim_dir = os.path.join(ROOT, "examples", "stimuli")
+    win.timeline.add_preset("resting", start=0, variant=0.5, ask=False)
+    for v in ("gain", "loss", "neutral"):
+        win.timeline.add_preset("mid_trial", variant=v, ask=False)
+    win.timeline.add_preset("tapping", variant="left", ask=False)
+    fb = [b for b in win.doc.paradigm.blocks if b.kind == "feedback"][1]
+    win.doc.select([fb.id])
+    win.timeline.zoom_fit()
+    win.timeline.set_playhead(fb.start + 0.5)
+    settle(app)
+    shot(win, "33_task_blocks_sequences.png")
+    win.library.tabs.setCurrentIndex(0)
+
     win.doc.dirty = False
     QTimer.singleShot(0, app.quit)
     app.exec()

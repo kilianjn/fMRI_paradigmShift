@@ -8,7 +8,7 @@ from PySide6.QtGui import QColor, QIcon, QPainter, QPen
 from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QColorDialog, QComboBox, QDoubleSpinBox,
                                QFileDialog, QFormLayout, QFrame, QGridLayout, QHBoxLayout, QLabel, QLineEdit,
                                QListWidget, QListWidgetItem, QPlainTextEdit, QPushButton, QScrollArea,
-                               QSizePolicy, QSpinBox, QVBoxLayout, QWidget)
+                               QSizePolicy, QSpinBox, QTabWidget, QVBoxLayout, QWidget)
 
 from . import theme
 from .document import Document
@@ -43,27 +43,37 @@ class BlockCard(QFrame):
     """A draggable block type. Drag onto the timeline, or double-click to append."""
     activated = Signal(str)
 
-    def __init__(self, kind: str):
+    def __init__(self, kind: str, preset=None):
         super().__init__()
-        self.kind = kind
-        bt = BLOCK_TYPES[kind]
+        if preset is not None:     # a task block from presets.py
+            self.kind = "preset:" + preset.key
+            self.icon_kind, color = preset.icon_kind, preset.color
+            title, subtitle, desc = preset.title, preset.subtitle, preset.description
+            if preset.variants:
+                desc += "<br>Variants: " + ", ".join(v[0] for v in preset.variants) + " (chosen when you drop it)"
+        else:
+            bt = BLOCK_TYPES[kind]
+            self.kind, self.icon_kind, color = kind, kind, bt.color
+            title, desc = bt.title, bt.description
+            subtitle = f"{bt.default_duration:g}s · {'stimulus' if bt.default_track == 0 else 'response track'}"
+        self.color = color
         self.setCursor(Qt.OpenHandCursor)
-        self.setToolTip(f"<b>{bt.title}</b><br>{bt.description}<br><br>"
+        self.setToolTip(f"<b>{title}</b><br>{desc}<br><br>"
                         "<span style='color:#8C93A3'>Drag onto the timeline · double-click to add at the end</span>")
         self.setStyleSheet(f"""
             BlockCard {{ background: {theme.PANEL_2}; border: 1px solid {theme.BORDER}; border-radius: 8px; }}
-            BlockCard:hover {{ border-color: {bt.color}; background: #2B303B; }}""")
+            BlockCard:hover {{ border-color: {color}; background: #2B303B; }}""")
         lay = QHBoxLayout(self)
         lay.setContentsMargins(8, 4, 8, 4)
         lay.setSpacing(10)
         icon = QLabel()
-        icon.setPixmap(theme.kind_icon(kind, size=26).pixmap(26, 26))
+        icon.setPixmap(theme.kind_icon(self.icon_kind, color, size=26).pixmap(26, 26))
         lay.addWidget(icon)
         txt = QVBoxLayout()
         txt.setSpacing(0)
-        name = QLabel(bt.title)
+        name = QLabel(title)
         name.setStyleSheet("font-weight: 600; background: transparent; border: none;")
-        sub = QLabel(f"{bt.default_duration:g}s · {'stimulus' if bt.default_track == 0 else 'response track'}")
+        sub = QLabel(subtitle)
         sub.setStyleSheet(f"color: {theme.TEXT_DIM}; font-size: 11px; background: transparent; border: none;")
         txt.addWidget(name)
         txt.addWidget(sub)
@@ -76,7 +86,7 @@ class BlockCard(QFrame):
     def mouseMoveEvent(self, e):
         if self._press is not None and (e.position().toPoint() - self._press).manhattanLength() > 6:
             self._press = None
-            start_kind_drag(self, self.kind)
+            start_kind_drag(self, self.kind, self.icon_kind, self.color)
 
     def mouseReleaseEvent(self, e):
         self._press = None
@@ -165,13 +175,47 @@ class LibraryPanel(QFrame):
         outer = QVBoxLayout(self)
         outer.setContentsMargins(0, 0, 0, 0)
         outer.setSpacing(8)
+        from .presets import PRESETS
         f, lay = panel("Blocks", hint="drag ➜ timeline")
-        lay.setSpacing(5)
-        for kind in BLOCK_TYPES:
-            card = BlockCard(kind)
-            card.activated.connect(self.addKind)
-            lay.addWidget(card)
-        outer.addWidget(f)
+        self.tabs = QTabWidget()
+        self.tabs.setDocumentMode(True)
+        lay.addWidget(self.tabs, 1)
+
+        def scroll_page(build):
+            page = QWidget()
+            pl = QVBoxLayout(page)
+            pl.setContentsMargins(0, 6, 4, 0)
+            pl.setSpacing(5)
+            build(pl)
+            pl.addStretch()
+            sc = QScrollArea()
+            sc.setWidget(page)
+            sc.setWidgetResizable(True)
+            sc.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            return sc
+
+        def basic(pl):
+            for kind in BLOCK_TYPES:
+                card = BlockCard(kind)
+                card.activated.connect(self.addKind)
+                pl.addWidget(card)
+
+        def tasks(pl):
+            cat = None
+            for pr in PRESETS:
+                if pr.category != cat:
+                    cat = pr.category
+                    head = QLabel(cat.upper())
+                    head.setObjectName("PanelTitle")
+                    head.setStyleSheet("margin-top: 4px;")
+                    pl.addWidget(head)
+                card = BlockCard("", preset=pr)
+                card.activated.connect(self.addKind)
+                pl.addWidget(card)
+
+        self.tabs.addTab(scroll_page(basic), "Basic")
+        self.tabs.addTab(scroll_page(tasks), "Task blocks")
+        outer.addWidget(f, 3)
         m, mlay = panel("Pictures")
         self.media = MediaBin()
         mlay.addWidget(self.media, 1)
@@ -179,7 +223,7 @@ class LibraryPanel(QFrame):
         b.clicked.connect(self._import)
         mlay.addWidget(b)
         outer.addWidget(m, 1)
-        self.setMinimumWidth(230)
+        self.setMinimumWidth(240)
         self.setMaximumWidth(300)
 
     def _import(self):
@@ -236,7 +280,8 @@ class MonitorView(QWidget):
         resp = [x for x in par.active_blocks(self.t) if x.kind == "response"]
         tags = []
         if b is not None:
-            title = b.display_label if b.kind == "gonogo" else b.type.title
+            from .presets import TRIAL_TITLES
+            title = b.display_label if b.kind == "gonogo" else TRIAL_TITLES.get(b.params.get("preset"), b.type.title)
             tags.append((title + (f" · {b.condition}" if b.condition else ""), b.color))
         else:
             tags.append(("background", "#5B6577"))
@@ -554,7 +599,8 @@ class InspectorPanel(QFrame):
         ic = QLabel()
         ic.setPixmap(theme.kind_icon(b.kind, size=34).pixmap(34, 34))
         head.addWidget(ic)
-        t = QLabel(bt.title)
+        from .presets import TRIAL_TITLES
+        t = QLabel(TRIAL_TITLES.get(b.params.get("preset"), bt.title))
         t.setObjectName("Big")
         head.addWidget(t, 1)
         hw = QWidget()
@@ -623,6 +669,55 @@ class InspectorPanel(QFrame):
         bw.setLayout(row)
         form.addRow(bw)
 
+    # task trials (Stroop / Flanker / N-back) ---------------------------------------------------
+    def _set_task(self, ids, key, value):
+        from .presets import derive
+
+        def fn(par):
+            for i in ids:
+                b = par.block(i)
+                if b is not None:
+                    b.params[key] = value
+                    derive(b)
+        self._apply(fn)
+        QTimer.singleShot(0, self.rebuild)   # text, colour, correct answer and condition changed too
+
+    def _build_task_fields(self, form, blocks):
+        from .presets import TRIAL_FIELDS, TRIAL_TITLES
+        presets = {b.params.get("preset") for b in blocks}
+        if len(presets) != 1 or next(iter(presets)) not in TRIAL_FIELDS:
+            return
+        key = next(iter(presets))
+        ids = [b.id for b in blocks]
+        self._section(form, TRIAL_TITLES[key].upper() + ("" if len(blocks) == 1 else f"  ·  {len(blocks)} TRIALS"))
+        for param, label, spec in TRIAL_FIELDS[key]:
+            lab = self._row_label(label, blocks, param)
+            cur = blocks[0].params.get(param)
+            if spec == "text":
+                w = self._line(blocks, param)
+                w.editingFinished.disconnect()
+                start_text = w.text()
+                w.editingFinished.connect(lambda w=w, p_=param, st=start_text:
+                                          w.text() != st and self._set_task(ids, p_, w.text()))
+            elif spec == "int":
+                w = ispin(int(cur or 0), 0, 9)
+                w.valueChanged.connect(lambda v, p_=param: self._set_task(ids, p_, v))
+            else:
+                w = QComboBox()
+                for text, data in spec:
+                    w.addItem(text, data)
+                if self._mixed(blocks, param):
+                    w.setCurrentIndex(-1)
+                    w.setPlaceholderText("different – choose to set all")
+                else:
+                    w.setCurrentIndex(max(0, w.findData(cur)))
+                w.activated.connect(lambda i, w=w, p_=param: self._set_task(ids, p_, w.itemData(i)))
+            form.addRow(lab, w)
+        hint = QLabel("Text, colour, correct button and condition follow these settings automatically.")
+        hint.setObjectName("Hint")
+        hint.setWordWrap(True)
+        form.addRow("", hint)
+
     # block-type settings – for one block or several blocks of the same type --------------------
     def _build_params(self, form, blocks: list[Block]):
         b = blocks[0]
@@ -631,6 +726,7 @@ class InspectorPanel(QFrame):
         bid = ids if len(blocks) > 1 else b.id
         single = len(blocks) == 1
         L = lambda text, *keys: self._row_label(text, blocks, *keys)  # noqa: E731
+        self._build_task_fields(form, blocks)
         if b.kind in ("image", "rating"):
             self._section(form, "PICTURE")
             if single:
