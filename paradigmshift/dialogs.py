@@ -12,7 +12,8 @@ from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog, QDialogButtonBox, 
                                QVBoxLayout, QWidget, QHeaderView, QButtonGroup, QMessageBox, QScrollArea)
 
 from . import theme
-from .hardware import InputRouter, list_serial_ports, now, serial_available
+from .hardware import (MISSING_SERIAL, InputRouter, PortScanner, describe_ports, now,
+                       serial_available)
 from .model import GripButton, Hardware, Paradigm, generate_block_design, generate_event_design
 from .panels import dspin, ispin
 from .timeline import IMAGE_EXT, fmt_time, is_image
@@ -101,7 +102,7 @@ class HardwareDialog(QDialog):
         self.setWindowTitle("Scanner hardware – NNL SyncBox & ResponseGrips")
         self.hw = copy.deepcopy(hw)
         self.tr = tr
-        self.resize(720, 560)
+        self.resize(780, 740)
         lay = QVBoxLayout(self)
         lay.setSpacing(12)
         head = QLabel("Scanner hardware")
@@ -152,19 +153,50 @@ class HardwareDialog(QDialog):
         form.addRow("Trigger key / character", self.trig_btn)
         self.port = QComboBox()
         self.port.setEditable(True)
-        for dev, desc in list_serial_ports():
-            self.port.addItem(desc, dev)
-        self.port.setCurrentText(self.hw.serial_port)
         self.port.lineEdit().setPlaceholderText("e.g. COM3 or /dev/ttyUSB0")
-        form.addRow("Serial port", self.port)
+        refresh = QPushButton("↻ Refresh ports")
+        refresh.setToolTip("Look again for connected serial devices")
+        refresh.clicked.connect(self._refresh_ports)
+        prow = QHBoxLayout()
+        prow.setContentsMargins(0, 0, 0, 0)
+        prow.addWidget(self.port, 1)
+        prow.addWidget(refresh)
+        pw_ = QWidget()
+        pw_.setLayout(prow)
+        form.addRow("Serial port", pw_)
         self.baud = QComboBox()
         for b in (9600, 19200, 38400, 57600, 115200):
             self.baud.addItem(str(b), b)
         self.baud.setCurrentText(str(self.hw.baud_rate))
         form.addRow("Baud rate", self.baud)
-        self.ser_note = _hint("" if serial_available() else "⚠ Serial mode needs the 'pyserial' package (pip install pyserial).")
+        self.ser_note = _hint("" if serial_available() else "⚠ " + MISSING_SERIAL)
         form.addRow("", self.ser_note)
         lay.addLayout(form)
+
+        detect = QFrame()
+        detect.setObjectName("Panel")
+        dl = QGridLayout(detect)
+        dl.setContentsMargins(14, 10, 14, 10)
+        dt = QLabel("AUTO-DETECT")
+        dt.setObjectName("PanelTitle")
+        dl.addWidget(dt, 0, 0, 1, 3)
+        self.detect_btn = QPushButton("🔍  Auto-detect SyncBox")
+        self.detect_btn.setObjectName("Primary")
+        self.detect_btn.clicked.connect(self._auto_detect)
+        dl.addWidget(self.detect_btn, 1, 0)
+        self.detect_cancel = QPushButton("Cancel")
+        self.detect_cancel.clicked.connect(self._cancel_detect)
+        self.detect_cancel.hide()
+        dl.addWidget(self.detect_cancel, 1, 1)
+        self.detect_info = _hint("Listens on every serial port while the scanner runs (or the SyncBox simulates "
+                                 "triggers) – or simply press a few grip buttons during the scan. Finds the port, "
+                                 "the baud rate, the trigger character and the TR.")
+        dl.addWidget(self.detect_info, 2, 0, 1, 3)
+        dl.setColumnStretch(2, 1)
+        lay.addWidget(detect)
+        self._scanner = None
+        self._scan_keys: list[str] = []
+        self._refresh_ports(select=self.hw.serial_port)
 
         def mode_changed():
             ser = self.rb_ser.isChecked()
@@ -173,7 +205,9 @@ class HardwareDialog(QDialog):
             self.hw.sync_mode = "serial" if ser else "keyboard"
             self._restart_router()
         self.rb_kb.toggled.connect(mode_changed)
-        self.port.currentTextChanged.connect(lambda _t: self._port_changed())
+        # reconnect only once a port is chosen / typed completely – not on every keystroke
+        self.port.activated.connect(lambda _i: self._port_changed())
+        self.port.lineEdit().editingFinished.connect(self._port_changed)
         self.baud.currentIndexChanged.connect(lambda _i: self._port_changed())
         self.port.setEnabled(self.rb_ser.isChecked())
         self.baud.setEnabled(self.rb_ser.isChecked())
@@ -206,11 +240,120 @@ class HardwareDialog(QDialog):
         lay.addStretch()
         return w
 
+    def _selected_port(self) -> str:
+        text = self.port.currentText().strip()
+        i = self.port.findText(text)
+        if i >= 0 and self.port.itemData(i):
+            return self.port.itemData(i)
+        return text.lstrip("★ ").split(" – ")[0].strip()
+
     def _port_changed(self):
-        self.hw.serial_port = self.port.currentData() or self.port.currentText().split(" ")[0]
-        self.hw.baud_rate = int(self.baud.currentData() or 57600)
-        if self.hw.sync_mode == "serial":
+        port, baud = self._selected_port(), int(self.baud.currentData() or 57600)
+        if (port, baud) == (self.hw.serial_port, self.hw.baud_rate) and self._router is not None:
+            return
+        self.hw.serial_port, self.hw.baud_rate = port, baud
+        if self.hw.sync_mode == "serial" and self._scanner is None:
+            self.ser_note.setText("")
             self._restart_router()
+
+    def _refresh_ports(self, select: str | None = None):
+        current = select if select is not None else self._selected_port()
+        self.port.blockSignals(True)
+        self.port.clear()
+        ports = describe_ports()
+        for d in ports:
+            label = ("★ " if d["likely"] else "") + f"{d['device']} – {d['description'] or 'serial port'}"
+            self.port.addItem(label, d["device"])
+            tip = d["description"] + (f"\nmanufacturer: {d['manufacturer']}" if d["manufacturer"] else "")
+            if d["vid"] is not None:
+                tip += f"\nUSB {d['vid']:04X}:{d['pid']:04X}"
+            if d["likely"]:
+                tip += "\n★ looks like an NNL SyncBox"
+            self.port.setItemData(self.port.count() - 1, tip, Qt.ToolTipRole)
+        i = self.port.findData(current) if current else -1
+        if i >= 0:
+            self.port.setCurrentIndex(i)
+        else:
+            self.port.setCurrentText(current or "")
+        self.port.blockSignals(False)
+        if not serial_available():
+            return
+        if not ports:
+            self.ser_note.setText("No serial ports found. Is the SyncBox connected by USB and switched on? "
+                                  "(In USB keyboard mode it does not show up as a serial port.)")
+        elif select is None:
+            self.ser_note.setText(f"{len(ports)} serial port(s) found"
+                                  + (" – ★ marks a likely SyncBox." if any(d['likely'] for d in ports) else "."))
+
+    # -- auto-detect ---------------------------------------------------------------
+    def _auto_detect(self):
+        if not serial_available():
+            self.detect_info.setText("⚠ " + MISSING_SERIAL)
+            return
+        if self._router:            # free the port we may hold ourselves
+            self._router.stop()
+            self._router = None
+        self._scan_keys = []
+        self._scanner = PortScanner(listen_s=max(4.0, 2.5 * self.tr), trigger_hint=self.hw.trigger_key,
+                                    parent=self)
+        self._scanner.progress.connect(lambda m: self.detect_info.setText(
+            "🔍 " + m + "\nNow: run the scanner / SyncBox simulation, or press grip buttons."))
+        self._scanner.finished_scan.connect(self._scan_done)
+        self.detect_btn.setEnabled(False)
+        self.detect_cancel.show()
+        self.detect_info.setText("🔍 Looking for serial ports …")
+        self._scanner.start()
+
+    def _cancel_detect(self):
+        if self._scanner:
+            self._scanner.cancel()
+
+    def _scan_done(self, results, errors):
+        self._scanner.wait(2000)
+        self._scanner = None
+        self.detect_btn.setEnabled(True)
+        self.detect_cancel.hide()
+        if results:
+            r = max(results, key=lambda x: (x["trigger"] is not None, sum(x["chars"].values())))
+            self.rb_ser.setChecked(True)
+            self.hw.sync_mode = "serial"
+            self._refresh_ports(select=r["port"])
+            self.baud.setCurrentText(str(r["baud"]))
+            self.hw.serial_port, self.hw.baud_rate = r["port"], r["baud"]
+            msg = f"✓ SyncBox found on {r['port']}" + (f" ({r['description']})" if r["description"] else "") + \
+                f" at {r['baud']} baud."
+            if r["trigger"]:
+                self.hw.trigger_key = r["trigger"]
+                self.trig_btn.key = r["trigger"]
+                self.trig_btn._refresh()
+                msg += f"\nTrigger “{r['trigger']}”" + (f" every {r['tr']:.3f} s" if r["tr"] else "") + "."
+                if r["tr"] and abs(r["tr"] - self.tr) > 0.05:
+                    msg += f"  ⚠ The paradigm TR is {self.tr:g} s."
+            else:
+                msg += ("\nNo regular trigger yet – start the scanner or the SyncBox simulation and run "
+                        "auto-detect again, or click the trigger field and send one pulse.")
+            others = [c for c in r["buttons"]]
+            if others:
+                known = [f"“{c}” = {self.hw.button_for_key(c)}" if self.hw.button_for_key(c) else f"“{c}”"
+                         for c in others]
+                msg += "\nAlso received: " + ", ".join(known) + "  (grip buttons – assign them on the "\
+                    "ResponseGrips tab if needed)."
+            self.detect_info.setText(msg)
+            self.ser_note.setText("")
+            self._restart_router()
+            return
+        keys = [k for k in self._scan_keys if k.strip()]
+        if keys:
+            self.rb_kb.setChecked(True)
+            self.detect_info.setText(
+                "No serial data, but key presses arrived via USB: " + ", ".join(f"“{k}”" for k in dict.fromkeys(keys))
+                + ".\nYour SyncBox is in USB keyboard mode – switched to keyboard mode. Check the trigger key above.")
+            return
+        tips = ("No SyncBox data received. Check: USB cable and power · SyncBox set to serial (not keyboard) "
+                "output · the scanner or SyncBox simulation is running, or press grip buttons during the scan · "
+                "no other program (e.g. NNL software) has the port open.")
+        self.detect_info.setText("✗ " + tips + ("\n" + "\n".join(dict.fromkeys(errors)) if errors else ""))
+        self._restart_router()
 
     def _toggle_sim(self, on):
         if on:
@@ -338,6 +481,9 @@ class HardwareDialog(QDialog):
         text = e.text()
         if e.key() in (Qt.Key_Escape, Qt.Key_Return, Qt.Key_Enter) or not text or not text.isprintable():
             return super().keyPressEvent(e)
+        if self._scanner is not None:      # remember keys: tells us the SyncBox is in keyboard mode
+            self._scan_keys.append(text)
+            return
         captors = [self.trig_btn] + [r[2] for r in self._rows]
         for c in captors:
             if c.take(text):
@@ -346,6 +492,9 @@ class HardwareDialog(QDialog):
             self._router.feed(text, now())
 
     def done(self, r):
+        if self._scanner:
+            self._scanner.cancel()
+            self._scanner.wait(3000)
         if self._router:
             self._router.stop()
         if getattr(self, "_sim", None):

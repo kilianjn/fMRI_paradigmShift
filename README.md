@@ -165,8 +165,20 @@ the paradigm with each run). **Options → Preferences…** (Ctrl+,) has the res
 ## Scanner hardware (NNL)
 
 * **SyncBox** – *USB keyboard mode* (default): the trigger arrives as a key, default `s`.
-  *Serial mode*: choose the COM port / baud rate (needs `pyserial`). Set the trigger character to whatever your
-  SyncBox is configured to send – click the field and send a pulse (or press the key) to learn it.
+  *Serial mode*: the SyncBox appears as a COM port (`/dev/ttyUSB…` on Linux). Click **🔍 Auto-detect SyncBox**
+  in the Hardware dialog. While the scanner (or the SyncBox's simulation mode) is running, or while you press
+  grip buttons, it listens on every serial port at the common baud rates and works out:
+  * the port and the baud rate;
+  * the trigger character: the one that arrives at a steady rhythm. The measured TR is compared with the
+    paradigm's TR.
+  * which other characters are grip buttons.
+
+  Ports whose USB description names NordicNeuroLab/SyncBox are marked ★ and tried first. If key presses
+  arrive instead of serial data, the SyncBox is in keyboard mode, and the dialog switches to that.
+  **↻ Refresh ports** re-reads the port list. Errors come with a fix:
+  * port not found → check the cable and power;
+  * port in use → close the other program, e.g. NNL software;
+  * no permission on Linux → join the `dialout` group.
 * **ResponseGrips** – four named buttons by default (`1`–`4`); rename, add, or re-learn keys in the Hardware dialog.
 * **Rating scales** – *direct* (each grip button = one value) or *cursor* (move ◀ ▶, confirm ✓).
 * **Simulate scanner** – test any paradigm on a laptop; triggers are generated at the TR.
