@@ -98,9 +98,6 @@ def main():
     for (cond, i), iti in zip(order, itis):
         img = paths[cond][i]
         b = add("image", 4.0, cond=cond, path=img)
-        resp = Block.create("response", b.start, 4.0, track=1)
-        resp.condition = cond
-        par.blocks.append(resp)
         add("rating", 4.0, cond=cond, path=img, question="How do you feel?",
             left_label="very bad", right_label="very good")
         add("fixation", iti, label="ITI")

@@ -6,10 +6,7 @@ from paradigmshift.runner import RunState, output_stem
 
 def paradigm():
     p = Paradigm(name="Emo rating!", tr=2.0, dummy_scans=2)
-    p.blocks.append(Block.create("image", 0, 4, path="x.png"))
-    r = Block.create("response", 0, 4, track=1)
-    r.params["correct"] = "Left index"
-    p.blocks.append(r)
+    p.blocks.append(Block.create("image", 0, 4, path="x.png", label="picture"))
     rating = Block.create("rating", 4, 4, path="x.png")
     rating.condition = "pos"
     p.blocks.append(rating)
@@ -27,20 +24,19 @@ def test_dummy_scans_and_t0():
     assert not s.on_trigger(106.0)
 
 
-def test_response_window_records_first_press_and_correctness():
+def test_every_press_is_recorded_with_context():
     p = paradigm()
     s = RunState(p)
+    early = s.record_press("a", "Left thumb", 1.0, t_open=0.5)       # before the paradigm started
+    assert early["time"] == "n/a" and early["block"] == "before start" and early["time_since_open"] == 0.5
     s.on_trigger(0.0)
     s.on_trigger(2.0)
     s.on_trigger(4.0)  # t0
-    for b in p.active_blocks(0):
-        s.onset(b, 4.0)
-    s.on_button("Left index", 5.25)
-    s.on_button("Right index", 6.0)
-    resp = s.events[p.blocks[1].id]
-    assert resp["response"] == "Left index"
-    assert resp["response_time"] == 1.25
-    assert resp["correct"] == 1
+    row = s.record_press("b", "Left index", 5.25, t_open=0.5)
+    assert row["time"] == 1.25 and row["block"] == "picture" and row["block_kind"] == "image" and row["volume"] == 1
+    odd = s.record_press("x", "", 9.0, t_open=0.5)
+    assert odd["button"] == "unassigned" and odd["key"] == "x"
+    assert len(s.presses) == 3
 
 
 def test_direct_rating_maps_buttons_to_values():
@@ -49,7 +45,7 @@ def test_direct_rating_maps_buttons_to_values():
     s.on_trigger(0.0)
     s.on_trigger(0.0)
     s.on_trigger(0.0)
-    rating = p.blocks[2]
+    rating = p.blocks[1]
     s.onset(rating, 4.0)
     s.on_button("Right index", 5.0)       # 3rd button -> value 3
     assert s.events[rating.id]["rating"] == 3
@@ -62,7 +58,7 @@ def test_cursor_rating_moves_and_confirms(tmp_path):
     s = RunState(p)
     for _ in range(3):
         s.on_trigger(0.0)
-    cur = p.blocks[3]
+    cur = p.blocks[2]
     s.onset(cur, 8.0)
     assert s.ratings[cur.id]["value"] == 3   # starts in the middle
     s.on_button("Left index", 8.5)

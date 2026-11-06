@@ -210,12 +210,7 @@ def _hariri_block(start, cond, ctx):
 def _tapping(start, hand, _ctx):
     text = {"left": "TAP\nLEFT HAND", "right": "TAP\nRIGHT HAND", "both": "TAP\nBOTH HANDS"}[hand]
     cond = f"tap_{hand}"
-    out = [Block.create("text", start, 20.0, condition=cond, label=text.replace("\n", " "), text=text, size=72)]
-    t = start
-    while t < start + 20.0 - 1e-6:
-        out.append(Block.create("response", t, 2.0, track=1, condition=cond))
-        t += 2.0
-    return out
+    return [Block.create("text", start, 20.0, condition=cond, label=text.replace("\n", " "), text=text, size=72)]
 
 
 def _checkerboard(start, _v, ctx):
@@ -251,8 +246,8 @@ PRESETS = [
     Preset("hariri_block", "Hariri block", "instruction + 6 matching trials", "One block of the Hariri task "
            "(2 s instruction, 6 × 5 s trials).", "match", "#1FA8B8", "Task sequences", _hariri_block,
            [("Faces", "faces"), ("Shapes", "shapes")]),
-    Preset("tapping", "Tapping block", "20 s finger tapping", "Finger-tapping instruction for 20 s with 2-s "
-           "response windows that show in the control room whether the participant taps.", "response", "#2FB37A",
+    Preset("tapping", "Tapping block", "20 s finger tapping", "Finger-tapping instruction for 20 s. Taps are "
+           "logged as grip presses and counted live in the control room.", "response", "#2FB37A",
            "Task sequences", _tapping, [("Left hand", "left"), ("Right hand", "right"), ("Both hands", "both")]),
     Preset("checkerboard", "Checkerboard", "20 s, 8 Hz flicker", "Flickering radial checkerboard with a red "
            "fixation dot. Set a grey background in the paradigm settings for the OFF periods.", "image", "#9AA3AD",

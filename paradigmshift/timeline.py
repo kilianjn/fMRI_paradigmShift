@@ -56,7 +56,7 @@ class TimelineView(QAbstractScrollArea):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.horizontalScrollBar().valueChanged.connect(self.viewport().update)
         self.verticalScrollBar().valueChanged.connect(self.viewport().update)
-        self.setMinimumHeight(RULER_H + 2 * TRACK_H + 16)
+        self.setMinimumHeight(RULER_H + TRACK_H + 16)
 
         self._drag = None          # interactive drag state
         self._ghost = None         # (kind/list, start, track) while dragging from library
@@ -367,14 +367,6 @@ class TimelineView(QAbstractScrollArea):
                         break
                 p.setOpacity(.55 if ghost else 1)
                 p.fillRect(QRectF(r.left(), r.top(), r.width(), 18), base.darker(115))
-        # response window: hatching for "recording"
-        if b.kind == "response":
-            p.setPen(QPen(QColor(255, 255, 255, 30), 2))
-            step = 10
-            x = r.left() - r.height()
-            while x < r.right():
-                p.drawLine(QPointF(x, r.bottom()), QPointF(x + r.height(), r.top()))
-                x += step
         # label
         if r.width() > 22:
             theme.draw_kind_glyph(p, b.kind, QRectF(r.left() + 4, r.top() + 1, 16, 16), QColor("white"))
@@ -716,7 +708,7 @@ class TimelineView(QAbstractScrollArea):
         if start is None:
             start = self.p.track_end(track) if track == 0 else self.playhead
         b = Block.create(kind, start, track=track, **params)
-        if self.p.tr > 0 and kind != "response" and abs(bt.default_duration % self.p.tr) > 1e-6 \
+        if self.p.tr > 0 and abs(bt.default_duration % self.p.tr) > 1e-6 \
                 and bt.default_duration > self.p.tr:
             b.duration = round(bt.default_duration / self.p.tr) * self.p.tr
         self.doc.edit(lambda par: par.ripple_insert(b))

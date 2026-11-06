@@ -65,11 +65,6 @@ BLOCK_TYPES: dict[str, BlockType] = {
             12.0, 0, {},
         ),
         BlockType(
-            "response", "Response window", "#2FB37A",
-            "Records grip presses while it runs (place it under a stimulus).",
-            4.0, 1, {"buttons": "any", "correct": ""},
-        ),
-        BlockType(
             "match", "Matching trial", "#1FA8B8",
             "Three pictures: which of the two bottom ones matches the top one? (Hariri task)",
             5.0, 0,
@@ -103,7 +98,7 @@ BLOCK_TYPES: dict[str, BlockType] = {
 }
 
 # Kinds whose trials are scored (they have a right/wrong or hit/miss outcome)
-SCORED_TRIAL_KINDS = ("match", "gonogo", "choice", "response")
+SCORED_TRIAL_KINDS = ("match", "gonogo", "choice")
 
 # Preference-driven defaults for *new* blocks, e.g. {"rating": {"mode": "cursor"}} (see prefs.py)
 PARAM_OVERRIDES: dict[str, dict] = {}
@@ -198,7 +193,7 @@ class Block:
                 and self.start < other.end - eps and other.start < self.end - eps)
 
 
-DEFAULT_TRACKS = ["Stimuli", "Responses"]
+DEFAULT_TRACKS = ["Stimuli"]
 
 
 # --------------------------------------------------------------------------
@@ -392,6 +387,11 @@ class Paradigm:
 
     @classmethod
     def from_dict(cls, d: dict) -> "Paradigm":
+        # Older files had "response window" blocks on a second track. Every button press is now logged on its own,
+        # so those blocks are dropped, and with them a track that only held them.
+        blocks = [Block(**b) for b in d.get("blocks", []) if b.get("kind") in BLOCK_TYPES]
+        names = list(d.get("tracks", DEFAULT_TRACKS)) or list(DEFAULT_TRACKS)
+        tracks = names[:max([b.track for b in blocks] + [0]) + 1]
         hw = dict(d.get("hardware", {}))
         hw["buttons"] = [GripButton(**b) for b in hw.get("buttons", [])] or Hardware().buttons
         return cls(
@@ -402,8 +402,8 @@ class Paradigm:
             waiting_text=d.get("waiting_text", cls.waiting_text),
             end_text=d.get("end_text", cls.end_text),
             background=d.get("background", "#000000"),
-            tracks=list(d.get("tracks", DEFAULT_TRACKS)),
-            blocks=[Block(**b) for b in d.get("blocks", [])],
+            tracks=tracks,
+            blocks=blocks,
             hardware=Hardware(**hw),
         )
 
@@ -505,8 +505,6 @@ def generate_event_design(images: list[str], stim_dur: float, iti_min: float, it
         b = Block.create(kind, t, stim_dur, path=img)
         b.condition = condition
         blocks.append(b)
-        if kind == "image":
-            blocks.append(Block.create("response", t, stim_dur))
         t += stim_dur
         iti = rng.uniform(iti_min, iti_max)
         if tr > 0:  # keep the jitter on a 1/4-TR grid – easier for modelling

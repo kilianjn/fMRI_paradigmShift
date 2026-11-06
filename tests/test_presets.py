@@ -61,7 +61,7 @@ def test_insert_task_sequence_in_editor(app, tmp_path):
     assert blocks[3].params["miss_text"].startswith("−")
     assert not any(par.has_overlap(b) for b in par.blocks)
     tap = win.timeline.add_preset("tapping", variant="right", ask=False)
-    assert {b.track for b in tap} == {0, 1} and all(b.condition == "tap_right" for b in tap)
+    assert {b.track for b in tap} == {0} and all(b.condition == "tap_right" for b in tap)
     win.doc.undo()
     assert not any(b.condition == "tap_right" for b in win.doc.paradigm.blocks)
     win.doc.dirty = False

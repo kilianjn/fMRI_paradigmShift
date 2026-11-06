@@ -503,7 +503,7 @@ class MainWindow(QMainWindow):
     def validate(self):
         problems = self.doc.paradigm.validate()
         par = self.doc.paradigm
-        off_grid = [b for b in par.blocks if par.tr > 0 and b.kind != "response"
+        off_grid = [b for b in par.blocks if par.tr > 0
                     and abs(b.start / par.tr - round(b.start / par.tr)) > 1e-6]
         msg = "\n".join("• " + p for p in problems) if problems else "✓ No problems found."
         if off_grid:

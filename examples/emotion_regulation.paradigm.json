@@ -7,8 +7,7 @@
   "waiting_text": "The measurement will start in a moment.",
   "end_text": "Thank you!",
   "tracks": [
-    "Stimuli",
-    "Responses"
+    "Stimuli"
   ],
   "blocks": [
     {
@@ -23,7 +22,7 @@
         "size": 32,
         "color": "#FFFFFF"
       },
-      "id": "35bcc725d2"
+      "id": "f0bbf2bb16"
     },
     {
       "kind": "fixation",
@@ -37,7 +36,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "4aae9ce33c"
+      "id": "32bfaf8526"
     },
     {
       "kind": "text",
@@ -51,7 +50,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "14db30b5d8"
+      "id": "f8fd628903"
     },
     {
       "kind": "image",
@@ -66,7 +65,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "6bd644fc3a"
+      "id": "33709ad811"
     },
     {
       "kind": "rating",
@@ -85,7 +84,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "7f63cd4558"
+      "id": "2765ba66bf"
     },
     {
       "kind": "fixation",
@@ -99,7 +98,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7d8b60349e"
+      "id": "73eede7d07"
     },
     {
       "kind": "text",
@@ -113,7 +112,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "f7403a09a2"
+      "id": "dc212dc301"
     },
     {
       "kind": "image",
@@ -128,7 +127,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "b7c01902cb"
+      "id": "5f123fd86a"
     },
     {
       "kind": "rating",
@@ -147,7 +146,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "fd0e2aaf13"
+      "id": "8d1bac3e84"
     },
     {
       "kind": "fixation",
@@ -161,7 +160,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "4d7bddb665"
+      "id": "651626e55a"
     },
     {
       "kind": "text",
@@ -175,7 +174,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "96caaaf21b"
+      "id": "3345f5adf9"
     },
     {
       "kind": "image",
@@ -190,7 +189,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "05f2b927f6"
+      "id": "55ed525722"
     },
     {
       "kind": "rating",
@@ -209,7 +208,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "1052fbdf6f"
+      "id": "78e1930fa9"
     },
     {
       "kind": "fixation",
@@ -223,7 +222,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7491ad7dc6"
+      "id": "b61919494b"
     },
     {
       "kind": "text",
@@ -237,7 +236,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "7aa1a2930d"
+      "id": "3abcca9e92"
     },
     {
       "kind": "image",
@@ -252,7 +251,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "da917fcadb"
+      "id": "58b47a53d6"
     },
     {
       "kind": "rating",
@@ -271,7 +270,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "1c534cb9f1"
+      "id": "5847c88f47"
     },
     {
       "kind": "fixation",
@@ -285,7 +284,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "cd99f73147"
+      "id": "636ba28f7c"
     },
     {
       "kind": "text",
@@ -299,7 +298,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "ebf860c448"
+      "id": "d06959031d"
     },
     {
       "kind": "image",
@@ -314,7 +313,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "57082d6ebf"
+      "id": "67420d182a"
     },
     {
       "kind": "rating",
@@ -333,7 +332,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "fdfa6c8d55"
+      "id": "e65af4dffa"
     },
     {
       "kind": "fixation",
@@ -347,7 +346,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "52ae20036e"
+      "id": "3635296b02"
     },
     {
       "kind": "text",
@@ -361,7 +360,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "a9fbf5a54f"
+      "id": "a09b109f41"
     },
     {
       "kind": "image",
@@ -376,7 +375,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "c88a9c9bd3"
+      "id": "da8b45157f"
     },
     {
       "kind": "rating",
@@ -395,7 +394,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "8261a70dec"
+      "id": "c4031dbd15"
     },
     {
       "kind": "fixation",
@@ -409,7 +408,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "631d9beae5"
+      "id": "fd7eaaf8e2"
     },
     {
       "kind": "text",
@@ -423,7 +422,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "d5a1a6f3ac"
+      "id": "a964991803"
     },
     {
       "kind": "image",
@@ -438,7 +437,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "177b2515b8"
+      "id": "4ea6051ca7"
     },
     {
       "kind": "rating",
@@ -457,7 +456,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "7413077c1d"
+      "id": "2a398ceed2"
     },
     {
       "kind": "fixation",
@@ -471,7 +470,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0b5254e16b"
+      "id": "fab4b22463"
     },
     {
       "kind": "text",
@@ -485,7 +484,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "c65fbfc4d5"
+      "id": "dc2bab829e"
     },
     {
       "kind": "image",
@@ -500,7 +499,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "4153853e6e"
+      "id": "802fbdd045"
     },
     {
       "kind": "rating",
@@ -519,7 +518,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "4a42bac4b5"
+      "id": "bfcb2fefaa"
     },
     {
       "kind": "fixation",
@@ -533,7 +532,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "d09e8593fe"
+      "id": "1ff78c6256"
     },
     {
       "kind": "text",
@@ -547,7 +546,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "75c669cceb"
+      "id": "3c85a089cd"
     },
     {
       "kind": "image",
@@ -562,7 +561,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "6ef3f1c53b"
+      "id": "79b36579c9"
     },
     {
       "kind": "rating",
@@ -581,7 +580,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "a1c954a2bb"
+      "id": "0cd53be62b"
     },
     {
       "kind": "fixation",
@@ -595,7 +594,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "6cbfeb4767"
+      "id": "c30d9975a0"
     },
     {
       "kind": "text",
@@ -609,7 +608,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "b2850b1b67"
+      "id": "72ff47f5b3"
     },
     {
       "kind": "image",
@@ -624,7 +623,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "e51e0460f8"
+      "id": "d2b2a1466c"
     },
     {
       "kind": "rating",
@@ -643,7 +642,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "91c3832279"
+      "id": "116b886610"
     },
     {
       "kind": "fixation",
@@ -657,7 +656,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ba8da71780"
+      "id": "9f7a75896b"
     },
     {
       "kind": "text",
@@ -671,7 +670,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "c7a8b330d8"
+      "id": "39ea2ad8a2"
     },
     {
       "kind": "image",
@@ -686,7 +685,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "a62dccaa7d"
+      "id": "89437544cc"
     },
     {
       "kind": "rating",
@@ -705,7 +704,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "997b9d8bf4"
+      "id": "98184125be"
     },
     {
       "kind": "fixation",
@@ -719,7 +718,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ea28542aa4"
+      "id": "89a6504334"
     },
     {
       "kind": "text",
@@ -733,7 +732,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "ec465bf89a"
+      "id": "b9080369c7"
     },
     {
       "kind": "image",
@@ -748,7 +747,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "59fa23a247"
+      "id": "5756585642"
     },
     {
       "kind": "rating",
@@ -767,7 +766,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "3657602b59"
+      "id": "dbf140d3ad"
     },
     {
       "kind": "fixation",
@@ -781,7 +780,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "1cdb4aff06"
+      "id": "b210e4d66a"
     },
     {
       "kind": "text",
@@ -795,7 +794,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "ca49c6953c"
+      "id": "cd4047abb9"
     },
     {
       "kind": "image",
@@ -810,7 +809,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "f8137c7a2b"
+      "id": "3da2fcec82"
     },
     {
       "kind": "rating",
@@ -829,7 +828,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "367ddba2d8"
+      "id": "8c2b959647"
     },
     {
       "kind": "fixation",
@@ -843,7 +842,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "fe1afd07be"
+      "id": "b757e3cb6f"
     },
     {
       "kind": "text",
@@ -857,7 +856,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "283f062566"
+      "id": "cd50ffb717"
     },
     {
       "kind": "image",
@@ -872,7 +871,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "d8a93af040"
+      "id": "16c6dbf414"
     },
     {
       "kind": "rating",
@@ -891,7 +890,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "473c194487"
+      "id": "f196a4f85b"
     },
     {
       "kind": "fixation",
@@ -905,7 +904,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "52e5d82fe5"
+      "id": "9be2b107cf"
     },
     {
       "kind": "text",
@@ -919,7 +918,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "218c3a3ce1"
+      "id": "e550921398"
     },
     {
       "kind": "image",
@@ -934,7 +933,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "59b6c287a2"
+      "id": "fb8d6da5f0"
     },
     {
       "kind": "rating",
@@ -953,7 +952,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "d09c083a75"
+      "id": "631256b611"
     },
     {
       "kind": "fixation",
@@ -967,7 +966,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ba2c27e4ae"
+      "id": "1d9bb1a2f8"
     },
     {
       "kind": "text",
@@ -981,7 +980,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "3025faa414"
+      "id": "c4d3b2c965"
     },
     {
       "kind": "image",
@@ -996,7 +995,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "208d497430"
+      "id": "90f6c7ca02"
     },
     {
       "kind": "rating",
@@ -1015,7 +1014,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "459c227bee"
+      "id": "7220c28134"
     },
     {
       "kind": "fixation",
@@ -1029,7 +1028,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "8b40c5b0d9"
+      "id": "34ce350031"
     },
     {
       "kind": "text",
@@ -1043,7 +1042,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "32eee01469"
+      "id": "3ddf07e017"
     },
     {
       "kind": "image",
@@ -1058,7 +1057,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "88179c96b2"
+      "id": "a0810a78b0"
     },
     {
       "kind": "rating",
@@ -1077,7 +1076,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "f9698514f6"
+      "id": "c508448986"
     },
     {
       "kind": "fixation",
@@ -1091,7 +1090,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "24e27a0847"
+      "id": "fa3feb4328"
     },
     {
       "kind": "text",
@@ -1105,7 +1104,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "037315348b"
+      "id": "3db74ba4bd"
     },
     {
       "kind": "image",
@@ -1120,7 +1119,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "51a96fec50"
+      "id": "c2bbad3814"
     },
     {
       "kind": "rating",
@@ -1139,7 +1138,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "6b535089e5"
+      "id": "6f4aa9d594"
     },
     {
       "kind": "fixation",
@@ -1153,7 +1152,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "95fe4627dc"
+      "id": "af6e1db5ef"
     },
     {
       "kind": "text",
@@ -1167,7 +1166,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "86f1010525"
+      "id": "7769ef6c41"
     },
     {
       "kind": "image",
@@ -1182,7 +1181,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "9e7d950908"
+      "id": "622583587e"
     },
     {
       "kind": "rating",
@@ -1201,7 +1200,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "a5e3f4b8ef"
+      "id": "8dd0ebbf58"
     },
     {
       "kind": "fixation",
@@ -1215,7 +1214,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "8934e40888"
+      "id": "9e74f3762b"
     },
     {
       "kind": "text",
@@ -1229,7 +1228,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "ab100d003c"
+      "id": "c0b24616c7"
     },
     {
       "kind": "image",
@@ -1244,7 +1243,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "c71ff74968"
+      "id": "38be3f184e"
     },
     {
       "kind": "rating",
@@ -1263,7 +1262,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "996c02dda6"
+      "id": "48b4b99632"
     },
     {
       "kind": "fixation",
@@ -1277,7 +1276,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "a9967a39df"
+      "id": "7ba9a549d7"
     },
     {
       "kind": "text",
@@ -1291,7 +1290,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "da2dc2a031"
+      "id": "00df0b67ef"
     },
     {
       "kind": "image",
@@ -1306,7 +1305,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "303d61840a"
+      "id": "7252c3202f"
     },
     {
       "kind": "rating",
@@ -1325,7 +1324,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "aabdc2ab36"
+      "id": "2fd08fd758"
     },
     {
       "kind": "fixation",
@@ -1339,7 +1338,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0d51f8ec51"
+      "id": "5af4fd483e"
     },
     {
       "kind": "text",
@@ -1353,7 +1352,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "f6caa19d8b"
+      "id": "7dd2b47877"
     },
     {
       "kind": "image",
@@ -1368,7 +1367,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "0a3b2b4cc6"
+      "id": "4d85111483"
     },
     {
       "kind": "rating",
@@ -1387,7 +1386,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "fe5b01b1c1"
+      "id": "e6f3155e2e"
     },
     {
       "kind": "fixation",
@@ -1401,7 +1400,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "4305cf8b87"
+      "id": "c7f523a555"
     },
     {
       "kind": "text",
@@ -1415,7 +1414,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "457e69f8de"
+      "id": "58af7dd9cd"
     },
     {
       "kind": "image",
@@ -1430,7 +1429,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "9f200abeb6"
+      "id": "e38f78d5cb"
     },
     {
       "kind": "rating",
@@ -1449,7 +1448,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "33e42b1442"
+      "id": "217dd65fbd"
     },
     {
       "kind": "fixation",
@@ -1463,7 +1462,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3821cb0a84"
+      "id": "a8b1072830"
     },
     {
       "kind": "text",
@@ -1477,7 +1476,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "ffa6e6494b"
+      "id": "cf42010ffe"
     },
     {
       "kind": "image",
@@ -1492,7 +1491,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "adc32107bd"
+      "id": "3603c72715"
     },
     {
       "kind": "rating",
@@ -1511,7 +1510,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "f6b6c22747"
+      "id": "c7eb2f3d6b"
     },
     {
       "kind": "fixation",
@@ -1525,7 +1524,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c17c3d7ab1"
+      "id": "81cf818ab2"
     },
     {
       "kind": "fixation",
@@ -1539,7 +1538,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "5d6a54c542"
+      "id": "ae9cc27c4c"
     }
   ],
   "hardware": {

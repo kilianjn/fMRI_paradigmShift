@@ -7,8 +7,7 @@
   "waiting_text": "The measurement will start in a moment.",
   "end_text": "Thank you!",
   "tracks": [
-    "Stimuli",
-    "Responses"
+    "Stimuli"
   ],
   "blocks": [
     {
@@ -23,7 +22,7 @@
         "size": 34,
         "color": "#FFFFFF"
       },
-      "id": "fb544ca066"
+      "id": "1bd145f786"
     },
     {
       "kind": "fixation",
@@ -37,7 +36,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "5cc75ea355"
+      "id": "03c6a1c87a"
     },
     {
       "kind": "text",
@@ -51,137 +50,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "6724e480c4"
-    },
-    {
-      "kind": "response",
-      "start": 28.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "fb533e8f97"
-    },
-    {
-      "kind": "response",
-      "start": 30.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "9ab23daa75"
-    },
-    {
-      "kind": "response",
-      "start": 32.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "3db49732e5"
-    },
-    {
-      "kind": "response",
-      "start": 34.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "08d219ed82"
-    },
-    {
-      "kind": "response",
-      "start": 36.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "c55ef57ab4"
-    },
-    {
-      "kind": "response",
-      "start": 38.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "78bcfa8b49"
-    },
-    {
-      "kind": "response",
-      "start": 40.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "f0e56ae9d2"
-    },
-    {
-      "kind": "response",
-      "start": 42.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "e9c0ef3914"
-    },
-    {
-      "kind": "response",
-      "start": 44.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "e03bc09b1c"
-    },
-    {
-      "kind": "response",
-      "start": 46.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "9b948c0d36"
+      "id": "0f760a4896"
     },
     {
       "kind": "fixation",
@@ -195,7 +64,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "67c2654890"
+      "id": "387c30783f"
     },
     {
       "kind": "text",
@@ -209,137 +78,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "f5aa40a0e6"
-    },
-    {
-      "kind": "response",
-      "start": 68.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "b62a537d25"
-    },
-    {
-      "kind": "response",
-      "start": 70.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "33d328c7d3"
-    },
-    {
-      "kind": "response",
-      "start": 72.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "360d35c91a"
-    },
-    {
-      "kind": "response",
-      "start": 74.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "700652ee96"
-    },
-    {
-      "kind": "response",
-      "start": 76.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "8ea98d6a57"
-    },
-    {
-      "kind": "response",
-      "start": 78.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "94fb692ee6"
-    },
-    {
-      "kind": "response",
-      "start": 80.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "8977052f31"
-    },
-    {
-      "kind": "response",
-      "start": 82.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "389adee76b"
-    },
-    {
-      "kind": "response",
-      "start": 84.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "0f421b3f33"
-    },
-    {
-      "kind": "response",
-      "start": 86.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "e034539eb9"
+      "id": "bf37d1a133"
     },
     {
       "kind": "fixation",
@@ -353,7 +92,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "401a1541f5"
+      "id": "8a600b6202"
     },
     {
       "kind": "text",
@@ -367,137 +106,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "c2e59edce1"
-    },
-    {
-      "kind": "response",
-      "start": 108.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "d1bdc68d03"
-    },
-    {
-      "kind": "response",
-      "start": 110.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "e4bab8317a"
-    },
-    {
-      "kind": "response",
-      "start": 112.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "248d10c401"
-    },
-    {
-      "kind": "response",
-      "start": 114.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "1bf4dd771c"
-    },
-    {
-      "kind": "response",
-      "start": 116.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "8b2ff518da"
-    },
-    {
-      "kind": "response",
-      "start": 118.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "6c492b153f"
-    },
-    {
-      "kind": "response",
-      "start": 120.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "3b7a4ff4f6"
-    },
-    {
-      "kind": "response",
-      "start": 122.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "7964079498"
-    },
-    {
-      "kind": "response",
-      "start": 124.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "bd84a1d6bd"
-    },
-    {
-      "kind": "response",
-      "start": 126.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "174adac5de"
+      "id": "c00acc7dae"
     },
     {
       "kind": "fixation",
@@ -511,7 +120,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "d4dfdd56b1"
+      "id": "152a3ab9d7"
     },
     {
       "kind": "text",
@@ -525,137 +134,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "9ec1c51505"
-    },
-    {
-      "kind": "response",
-      "start": 148.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "47e3c18e08"
-    },
-    {
-      "kind": "response",
-      "start": 150.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "0457f46561"
-    },
-    {
-      "kind": "response",
-      "start": 152.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "42355b28df"
-    },
-    {
-      "kind": "response",
-      "start": 154.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "a16bb07880"
-    },
-    {
-      "kind": "response",
-      "start": 156.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "48fd312521"
-    },
-    {
-      "kind": "response",
-      "start": 158.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "d8297142b5"
-    },
-    {
-      "kind": "response",
-      "start": 160.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "a1aa95278a"
-    },
-    {
-      "kind": "response",
-      "start": 162.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "9093dffe03"
-    },
-    {
-      "kind": "response",
-      "start": 164.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "9d4d0e3d28"
-    },
-    {
-      "kind": "response",
-      "start": 166.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "6b3476a119"
+      "id": "cb5353e04f"
     },
     {
       "kind": "fixation",
@@ -669,7 +148,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ed7aa7b142"
+      "id": "7ce3493c58"
     },
     {
       "kind": "text",
@@ -683,137 +162,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "cb519b81a5"
-    },
-    {
-      "kind": "response",
-      "start": 188.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "d9ac596126"
-    },
-    {
-      "kind": "response",
-      "start": 190.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "3038ea5842"
-    },
-    {
-      "kind": "response",
-      "start": 192.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "c1fdfa67a3"
-    },
-    {
-      "kind": "response",
-      "start": 194.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "fb43f200d0"
-    },
-    {
-      "kind": "response",
-      "start": 196.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "6dc7c52bea"
-    },
-    {
-      "kind": "response",
-      "start": 198.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "e67531d790"
-    },
-    {
-      "kind": "response",
-      "start": 200.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "401ad62648"
-    },
-    {
-      "kind": "response",
-      "start": 202.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "435307ed1c"
-    },
-    {
-      "kind": "response",
-      "start": 204.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "6411c2a05a"
-    },
-    {
-      "kind": "response",
-      "start": 206.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "c2b44447a7"
+      "id": "239c76a31c"
     },
     {
       "kind": "fixation",
@@ -827,7 +176,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "039bb48d4b"
+      "id": "1712c066ff"
     },
     {
       "kind": "text",
@@ -841,137 +190,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "dcba58447c"
-    },
-    {
-      "kind": "response",
-      "start": 228.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "241a21a070"
-    },
-    {
-      "kind": "response",
-      "start": 230.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "4633008ff9"
-    },
-    {
-      "kind": "response",
-      "start": 232.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "757b3fe7a9"
-    },
-    {
-      "kind": "response",
-      "start": 234.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "91ca8de2f5"
-    },
-    {
-      "kind": "response",
-      "start": 236.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "4561f2a729"
-    },
-    {
-      "kind": "response",
-      "start": 238.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "a97c2ba40f"
-    },
-    {
-      "kind": "response",
-      "start": 240.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "62f4bbc031"
-    },
-    {
-      "kind": "response",
-      "start": 242.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "671efb73cd"
-    },
-    {
-      "kind": "response",
-      "start": 244.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "e65ecba7ba"
-    },
-    {
-      "kind": "response",
-      "start": 246.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "001e353b52"
+      "id": "c4c7f0bdb8"
     },
     {
       "kind": "fixation",
@@ -985,7 +204,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3338e1070d"
+      "id": "fdc67ee711"
     },
     {
       "kind": "text",
@@ -999,137 +218,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "48ca8ddc47"
-    },
-    {
-      "kind": "response",
-      "start": 268.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "3529f75af0"
-    },
-    {
-      "kind": "response",
-      "start": 270.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "7313877a1c"
-    },
-    {
-      "kind": "response",
-      "start": 272.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "8bc3b7eaf6"
-    },
-    {
-      "kind": "response",
-      "start": 274.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "497c833f0c"
-    },
-    {
-      "kind": "response",
-      "start": 276.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "48bb89d04f"
-    },
-    {
-      "kind": "response",
-      "start": 278.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "c9a3cea19c"
-    },
-    {
-      "kind": "response",
-      "start": 280.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "675c6c43fb"
-    },
-    {
-      "kind": "response",
-      "start": 282.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "8f58892af5"
-    },
-    {
-      "kind": "response",
-      "start": 284.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "2efe9a6191"
-    },
-    {
-      "kind": "response",
-      "start": 286.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "03e7012e65"
+      "id": "4628bd410f"
     },
     {
       "kind": "fixation",
@@ -1143,7 +232,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "29477ba6d0"
+      "id": "cb3356ab55"
     },
     {
       "kind": "text",
@@ -1157,137 +246,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "4a7979b2b1"
-    },
-    {
-      "kind": "response",
-      "start": 308.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "bd6240c751"
-    },
-    {
-      "kind": "response",
-      "start": 310.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "db53ea392d"
-    },
-    {
-      "kind": "response",
-      "start": 312.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "fc32903f1e"
-    },
-    {
-      "kind": "response",
-      "start": 314.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "3a3f12b444"
-    },
-    {
-      "kind": "response",
-      "start": 316.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "7aa596f525"
-    },
-    {
-      "kind": "response",
-      "start": 318.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "1779ae0a83"
-    },
-    {
-      "kind": "response",
-      "start": 320.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "69d7ca4d65"
-    },
-    {
-      "kind": "response",
-      "start": 322.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "886bd43b2a"
-    },
-    {
-      "kind": "response",
-      "start": 324.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "c88f379991"
-    },
-    {
-      "kind": "response",
-      "start": 326.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "695539ae55"
+      "id": "e9618334a7"
     },
     {
       "kind": "fixation",
@@ -1301,7 +260,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0acfc3b070"
+      "id": "984d0f25fc"
     },
     {
       "kind": "text",
@@ -1315,137 +274,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "67e85aa372"
-    },
-    {
-      "kind": "response",
-      "start": 348.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "a4a45cb415"
-    },
-    {
-      "kind": "response",
-      "start": 350.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "368352f1d3"
-    },
-    {
-      "kind": "response",
-      "start": 352.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "8f4add1702"
-    },
-    {
-      "kind": "response",
-      "start": 354.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "9d37a0dc43"
-    },
-    {
-      "kind": "response",
-      "start": 356.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "1a551fb400"
-    },
-    {
-      "kind": "response",
-      "start": 358.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "98a0d4642b"
-    },
-    {
-      "kind": "response",
-      "start": 360.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "0a9eb021ec"
-    },
-    {
-      "kind": "response",
-      "start": 362.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "00d9e324e4"
-    },
-    {
-      "kind": "response",
-      "start": 364.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "30be5d3df6"
-    },
-    {
-      "kind": "response",
-      "start": 366.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_left",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "384f0bdeed"
+      "id": "2aa9cb1296"
     },
     {
       "kind": "fixation",
@@ -1459,7 +288,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7a54027728"
+      "id": "49c99b737a"
     },
     {
       "kind": "text",
@@ -1473,137 +302,7 @@
         "size": 72,
         "color": "#FFFFFF"
       },
-      "id": "0dd14b3f99"
-    },
-    {
-      "kind": "response",
-      "start": 388.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "f328d97fd1"
-    },
-    {
-      "kind": "response",
-      "start": 390.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "68a7217b0a"
-    },
-    {
-      "kind": "response",
-      "start": 392.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "1539a1e300"
-    },
-    {
-      "kind": "response",
-      "start": 394.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "6a97806ac9"
-    },
-    {
-      "kind": "response",
-      "start": 396.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "e72337aa8d"
-    },
-    {
-      "kind": "response",
-      "start": 398.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "d1d9bd503b"
-    },
-    {
-      "kind": "response",
-      "start": 400.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "a7c4800ae6"
-    },
-    {
-      "kind": "response",
-      "start": 402.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "f2b7a6b64d"
-    },
-    {
-      "kind": "response",
-      "start": 404.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "efbcb2f3df"
-    },
-    {
-      "kind": "response",
-      "start": 406.0,
-      "duration": 2.0,
-      "track": 1,
-      "label": "",
-      "condition": "tap_right",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "7fa3b5e0a9"
+      "id": "b3e801ecc6"
     },
     {
       "kind": "fixation",
@@ -1617,7 +316,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "73126e6cc6"
+      "id": "ea0aa975e2"
     }
   ],
   "hardware": {

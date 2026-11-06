@@ -7,8 +7,7 @@
   "waiting_text": "The measurement will start in a moment.",
   "end_text": "Thank you!",
   "tracks": [
-    "Stimuli",
-    "Responses"
+    "Stimuli"
   ],
   "blocks": [
     {
@@ -23,7 +22,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "0f0bfa3abe"
+      "id": "a660ae891a"
     },
     {
       "kind": "image",
@@ -38,7 +37,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "6809dc63d1"
+      "id": "f1703384f2"
     },
     {
       "kind": "fixation",
@@ -52,7 +51,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "1abf325bd3"
+      "id": "236c2326a2"
     },
     {
       "kind": "image",
@@ -67,7 +66,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "81346c3b43"
+      "id": "49e0004494"
     },
     {
       "kind": "fixation",
@@ -81,7 +80,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "8ce2f7bba0"
+      "id": "15a1651287"
     },
     {
       "kind": "image",
@@ -96,7 +95,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "0652e37d78"
+      "id": "18a4577ab1"
     },
     {
       "kind": "fixation",
@@ -110,7 +109,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "b66d9b61cf"
+      "id": "fccb49adff"
     },
     {
       "kind": "image",
@@ -125,7 +124,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "e9aa50b658"
+      "id": "615a8ad20a"
     },
     {
       "kind": "fixation",
@@ -139,7 +138,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "6af0bd6fb6"
+      "id": "30de9b1282"
     },
     {
       "kind": "image",
@@ -154,7 +153,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "e948b16861"
+      "id": "9dcf00a499"
     },
     {
       "kind": "fixation",
@@ -168,7 +167,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "ee22383025"
+      "id": "0b3ae4a888"
     },
     {
       "kind": "image",
@@ -183,7 +182,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "9a7a925e6c"
+      "id": "8ed82e8141"
     },
     {
       "kind": "fixation",
@@ -197,7 +196,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "8d04f8a26d"
+      "id": "1ac0f738f8"
     }
   ],
   "hardware": {

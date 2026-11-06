@@ -37,7 +37,7 @@ Ten modules, grouped by research area:
 | **Working memory** | | |
 | N-back | blocks of 0-back and 2-back (any levels, e.g. "0, 1, 2"), 15 letters, 33 % targets, cue + rest | hit, miss, false alarm, correct rejection |
 | **Localizers & rest** | | |
-| Motor localizer | finger tapping LEFT / RIGHT (opt. BOTH) 20 s vs. rest 20 s, 5 cycles | taps per 2-s window (compliance) |
+| Motor localizer | finger tapping LEFT / RIGHT (opt. BOTH) 20 s vs. rest 20 s, 5 cycles | grip presses (all logged, counted live) |
 | Visual checkerboard | 8 Hz flickering radial checkerboard 20 s vs. grey 20 s, red fixation dot | – |
 | Resting state | instruction, then 8 min fixation (eyes open) or empty screen | – |
 
@@ -65,11 +65,11 @@ The defaults follow the published protocols, but check them against the protocol
 
 | Area | What you do there |
 |---|---|
-| **Blocks** (left) | Drag *Fixation, Image, Rating, Instruction, Pause, Response window* onto the timeline – or double-click to append. |
+| **Blocks** (left) | Drag *Fixation, Image, Rating, Instruction, Pause, …* onto the timeline – or double-click to append. |
 | **Pictures** (left) | Import pictures or drop folders; drag one or many onto the timeline (each becomes an image block). |
 | **Participant view** (centre) | Shows the screen at the playhead. ▶ / Space plays a preview of the run. |
 | **Inspector** (right) | Edit the selected block. With nothing selected: TR, dummy scans, background, run summary. |
-| **Timeline** (bottom) | Ruler in time *and* volumes. Drag to move, drag edges to trim, everything snaps to the TR grid and to block edges (hold **Alt** to place freely). Track **V1** is what's on screen, **R2** records grip presses. |
+| **Timeline** (bottom) | Ruler in time *and* volumes. Drag to move, drag edges to trim, everything snaps to the TR grid and to block edges (hold **Alt** to place freely). Grip presses don't need a block: every press of the whole run is logged anyway. |
 | **▦ Templates** | Hariri, Go/No-Go, emotion regulation – see *Paradigm modules* above. |
 | **✦ Quick design** | Builds a whole block design (ON/OFF, alternating or randomised) or an event-related design with jittered ITIs and optional ratings. |
 | **Hardware** | Configure and *live-test* the SyncBox and grips (lamps light up, measured TR is shown, built-in scanner simulator). |
@@ -126,7 +126,7 @@ timeline or double-click them. If a block has variants, a small menu asks which 
   * *Emotion-regulation trial* (LOOK / DECREASE / INCREASE);
   * *N-back block* (0-, 1-, 2- or 3-back);
   * *Hariri block* (faces / shapes);
-  * *Tapping block* (left / right / both, with response windows);
+  * *Tapping block* (left / right / both; taps are counted as grip presses);
   * *Checkerboard*;
   * *Resting state*.
 
@@ -189,6 +189,13 @@ For each run (in the chosen folder):
 * `sub-01_task-<name>_run-01_events.tsv` – BIDS-style: `onset`, `duration`, `trial_type` (= condition),
   `stim_file`, `response`, `response_time`, `rating`, `correct`, `outcome` (Go/No-Go: hit, miss, false_alarm,
   correct_rejection) and `planned_onset` for timing checks.
+* `sub-01_task-<name>_run-01_buttons.tsv` – **every** grip/key press of the whole run, as a separate backup.
+  Each row is written and saved to disk the moment the button is pressed, so it survives a crash or an abort.
+  Columns:
+  * `time`: seconds from the paradigm start, `n/a` before it;
+  * `time_since_open`: seconds since the run window opened;
+  * `volume`, `wall_clock`, `key`, `button`;
+  * the `block` on screen and its `block_kind` and `condition`.
 * `sub-01_task-<name>_run-01_log.tsv` – every trigger and button press with its time.
 
 Onsets are relative to the first trigger after the dummy scans. **Export onsets** writes the planned design as
@@ -203,7 +210,7 @@ Paradigms are saved as `*.paradigm.json` (picture paths stored relative to the f
 
 | | |
 |---|---|
-| ![](docs/screenshots/01_empty_start.png) First launch – the empty timeline tells you what to do | ![](docs/screenshots/03_editor_image_zoomed.png) Zoomed in: picture thumbnails, conditions, response windows |
+| ![](docs/screenshots/01_empty_start.png) First launch – the empty timeline tells you what to do | ![](docs/screenshots/03_editor_image_zoomed.png) Zoomed in: picture thumbnails and conditions |
 | ![](docs/screenshots/04_editor_paradigm_settings.png) Nothing selected → paradigm settings & summary | ![](docs/screenshots/07_quick_design.png) Quick design wizard |
 | ![](docs/screenshots/05_hardware_syncbox.png) SyncBox setup with live trigger monitor | ![](docs/screenshots/06_hardware_grips.png) ResponseGrips with live button lamps |
 | ![](docs/screenshots/08_run_dialog.png) Run setup | ![](docs/screenshots/10_participant_rating.png) Participant screen: rating trial |

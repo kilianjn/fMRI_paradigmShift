@@ -248,14 +248,17 @@ def test_full_run_with_syncbox_simulation(app, tmp_path):
     par.hardware.sync_mode, par.hardware.serial_port = "serial", box.device
     for i, b in enumerate(par.hardware.buttons):
         b.key = "abcd"[i]
-    par.blocks += [Block.create("fixation", 0, 0.5), Block.create("response", 0, 1.0)]
+    par.blocks += [Block.create("fixation", 0, 1.0)]
     c, pw, cr = open_run(par, {"sub": "x", "run": 1, "out_dir": str(tmp_path), "simulate": True,
                                "fullscreen": False, "screen": 0, "save_paradigm_with_data": False})
     assert wait_until(app, lambda: c.phase == "running", 8)
     box.press("b")
+    # the backup log is written the moment the press happens – before the run is over
+    assert wait_until(app, lambda: "Left index" in open(c.press_path).read(), 3) and c.phase == "running"
     assert wait_until(app, lambda: c.phase == "done", 8)
-    rows = list(csv.DictReader(open(c.files[0]), delimiter="\t"))
-    assert [r["response"] for r in rows if r["block"] == "response"] == ["Left index"]
+    rows = list(csv.DictReader(open(c.press_path), delimiter="\t"))
+    assert [(r["key"], r["button"], r["block"]) for r in rows] == [("b", "Left index", "Fixation")]
+    assert c.press_path in c.files
     assert box.config[1] == par.volumes + 1 + 20 and box.received[-2:] == ["A", "D"]
     assert "computer mode" in c.hw_status
     cr.close()

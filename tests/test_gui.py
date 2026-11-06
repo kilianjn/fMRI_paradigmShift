@@ -129,8 +129,7 @@ def test_full_run_with_simulated_scanner(app, tmp_path):
     from paradigmshift.model import Block, Paradigm
 
     par = Paradigm(name="quick", tr=0.25, dummy_scans=2, waiting_screen="text", waiting_text="Gleich geht's los")
-    par.blocks += [Block.create("fixation", 0, 0.5), Block.create("text", 0.5, 0.5),
-                   Block.create("response", 0, 1.0)]
+    par.blocks += [Block.create("fixation", 0, 0.5), Block.create("text", 0.5, 0.5)]
     settings = {"sub": "x", "run": 1, "out_dir": str(tmp_path), "simulate": True, "fullscreen": False, "screen": 0}
     c, pw, cr = open_run(par, settings)
     seen = {}
@@ -151,7 +150,7 @@ def test_full_run_with_simulated_scanner(app, tmp_path):
     got = []
     c.finished.connect(lambda files: (got.extend(files), loop.quit()))
     QTimer.singleShot(10000, loop.quit)
-    QTimer.singleShot(2400, lambda: c.router.feed("b"))   # a grip press during the response window
+    QTimer.singleShot(2400, lambda: c.router.feed("b"))   # a grip press during the fixation
     loop.exec()
     poll.stop()
     app.processEvents()
@@ -160,10 +159,12 @@ def test_full_run_with_simulated_scanner(app, tmp_path):
     assert c.state.dummies_seen == 2 and c.state.log[0]["info"] == "dummy"
     assert got and all(os.path.exists(f) for f in got)
     rows = open(got[0]).read().splitlines()
-    assert len(rows) == 4            # header + 3 blocks
-    assert "Left index" in open(got[0]).read()
+    assert len(rows) == 3            # header + 2 blocks
+    import csv
+    presses = list(csv.DictReader(open([f for f in got if f.endswith("_buttons.tsv")][0]), delimiter="\t"))
+    assert [(r["button"], r["block"]) for r in presses] == [("Left index", "Fixation")]
     assert cr.pill.text() == "✓ FINISHED" and cr.close_btn.isVisible()
-    assert cr.table.rowCount() == 1 and cr.table.item(0, 3).text() == "Left index"
+    assert "Grip presses" in " ".join(lb.text() for lb in cr.findChildren(type(cr.pill)))
     cr.close()
     assert not pw.isVisible()
 

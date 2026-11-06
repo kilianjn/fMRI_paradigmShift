@@ -924,7 +924,7 @@ _OPT_LABELS = {
     "minutes": ("Length", " min"), "fixation": ("Fixation cross (eyes open)", ""), "instruction": ("Instruction", ""),
     "include_both": ("Add “both hands” blocks", ""), "block_dur": ("Block length", " s"),
     "cycles": ("Cycles", ""), "random_order": ("Random order per cycle", ""),
-    "record_taps": ("Record taps (control room)", ""), "on_dur": ("Checkerboard ON", " s"),
+"on_dur": ("Checkerboard ON", " s"),
     "off_dur": ("Grey OFF", " s"), "flicker_hz": ("Flicker", " Hz"),
     # n-back
     "levels": ("N-back levels", ""), "blocks_per_level": ("Blocks per level", ""),

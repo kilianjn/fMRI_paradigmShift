@@ -7,8 +7,7 @@
   "waiting_text": "The measurement will start in a moment.",
   "end_text": "Thank you!",
   "tracks": [
-    "Stimuli",
-    "Responses"
+    "Stimuli"
   ],
   "blocks": [
     {
@@ -23,7 +22,7 @@
         "size": 36,
         "color": "#FFFFFF"
       },
-      "id": "bb3f28581d"
+      "id": "ed98535b68"
     },
     {
       "kind": "fixation",
@@ -37,7 +36,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "4652f58924"
+      "id": "4d6ba278c3"
     }
   ],
   "hardware": {

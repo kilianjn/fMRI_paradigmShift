@@ -30,7 +30,7 @@ def bids_label(text: str) -> str:
 
 
 def output_stem(paradigm: Paradigm, s: dict) -> str:
-    parts = [f"sub-{bids_label(s['sub'])}"]
+    parts = [f"sub-{bids_label(s.get('sub', '01'))}"]
     if s.get("ses"):
         parts.append(f"ses-{bids_label(s['ses'])}")
     parts.append(f"task-{bids_label(paradigm.name)}")
@@ -48,8 +48,6 @@ def trial_success(b: Block, ev: dict) -> bool:
         return (not answered) if corr == "" else (answered and ev["correct"] == 1)
     if b.kind == "match":
         return ev["correct"] == 1
-    if b.kind == "response":
-        return answered and (not b.params.get("correct") or ev["correct"] == 1)
     return False
 
 
@@ -64,6 +62,7 @@ class RunState:
         self.events: dict[str, dict] = {}  # block id -> event row
         self.ratings: dict[str, dict] = {}  # block id -> {"value", "confirmed", "rt"}
         self.feedback: dict[str, bool] = {}  # feedback block id -> success of the trial it reports
+        self.presses: list[dict] = []       # every grip/key press of the whole run (also written live to a file)
         self.version = 0                   # bumped on every change, lets views refresh cheaply
 
     def on_trigger(self, t: float) -> bool:
@@ -78,6 +77,22 @@ class RunState:
                          or (n <= self.p.dummy_scans) else f"volume {n - self.p.dummy_scans}"})
         self.version += 1
         return started
+
+    def record_press(self, key: str, name: str, t: float, t_open: float) -> dict:
+        """One row of the button-press backup log."""
+        tt = t - self.t0 if self.t0 is not None else None
+        blk = self.p.stimulus_at(tt) if tt is not None else None
+        row = {
+            "time": round(tt, 4) if tt is not None else "n/a",
+            "time_since_open": round(t - t_open, 4),
+            "volume": self.volumes_seen(),
+            "wall_clock": datetime.now().isoformat(timespec="milliseconds"),
+            "key": key, "button": name or "unassigned",
+            "block": blk.display_label if blk else ("before start" if tt is None else "–"),
+            "block_kind": blk.kind if blk else "", "condition": blk.condition if blk else "",
+        }
+        self.presses.append(dict(row, button=name))
+        return row
 
     def force_start(self, t: float) -> None:
         """Start without waiting for the scanner (operator override, logged as such)."""
@@ -154,16 +169,7 @@ class RunState:
             ev = self.events.get(b.id)
             if ev is None:
                 continue
-            if b.kind == "response":
-                want = b.params.get("buttons", "any")
-                if want not in ("any", name) or ev["response"] != "n/a":
-                    continue
-                ev["response"] = name
-                ev["response_time"] = round(tt - ev["onset"], 4)
-                if b.params.get("correct"):
-                    ev["correct"] = int(name == b.params["correct"])
-                changed.append(b.id)
-            elif b.kind == "match":
+            if b.kind == "match":
                 if ev["response"] != "n/a":
                     continue
                 side = {b.params.get("left_button", "Left index"): "left",
@@ -263,7 +269,7 @@ class RunState:
 # =============================================================================
 # Live evaluation – used by the control room and the end-of-run summary
 # =============================================================================
-SCORED_KINDS = ("match", "gonogo", "choice", "rating", "response")
+SCORED_KINDS = ("match", "gonogo", "choice", "rating")
 
 
 def live_result(b: Block, ev: dict, t: float | None) -> tuple[str, str]:
@@ -297,11 +303,7 @@ def live_result(b: Block, ev: dict, t: float | None) -> tuple[str, str]:
         if ev["rating"] != "n/a":
             return f"rated {ev['rating']}", "info"
         return ("…", "pending") if not over else ("no rating", "warn")
-    if answered:
-        if b.params.get("correct"):
-            return ("correct", "ok") if ev["correct"] == 1 else ("wrong", "bad")
-        return ev["response"], "info"
-    return ("…", "pending") if not over else ("no response", "warn")
+    return (ev["response"], "info") if answered else ("…", "pending")
 
 
 def _mean(xs):
@@ -381,12 +383,12 @@ def live_stats(state: RunState, t: float | None = None, watchdog: int = 5) -> li
         if groups:
             text += "\n" + "  ·  ".join(f"{k} ⌀ {sum(v) / len(v):.1f}" for k, v in groups.items())
         out.append(("Ratings", text, "ok" if len(given) == len(rat) else "warn"))
-    resp = [(b, ev) for b, ev in rows if b.kind == "response" and done(b)]
-    if resp:
-        got = [ev for _, ev in resp if ev["response"] != "n/a"]
-        rt = _mean(ev["response_time"] for ev in got)
-        out.append(("Response windows", f"{len(got)}/{len(resp)} with a response"
-                    + (f"  ·  RT {rt:.2f}s" if rt else ""), "ok" if len(got) == len(resp) else "warn"))
+    if state.presses:
+        per = {}
+        for pr in state.presses:
+            per[pr["button"] or f"key {pr['key']}"] = per.get(pr["button"] or f"key {pr['key']}", 0) + 1
+        out.append(("Grip presses", f"{len(state.presses)} in total  ·  " +
+                    "  ·  ".join(f"{k} {v}" for k, v in per.items()), "info"))
     # watchdog: participant stopped answering?
     if t is not None and watchdog > 0:
         recent = sorted(((b, ev) for b, ev in rows if b.kind in SCORED_KINDS and t >= b.end
@@ -437,13 +439,60 @@ class RunController(QObject):
         self.router.status.connect(self._on_hw_status)
         self.router.trigger.connect(self._on_trigger)
         self.router.button.connect(self._on_button)
+        self.router.pressed.connect(self._on_press)
         self.router.error.connect(self._on_error)
         self.timer = QTimer(self)
         self.timer.setTimerType(Qt.PreciseTimer)
         self.timer.timeout.connect(self._tick)
 
     # -- lifecycle ---------------------------------------------------------------
+    PRESS_COLUMNS = ["time", "time_since_open", "volume", "wall_clock", "key", "button", "block", "block_kind",
+                     "condition"]
+
+    def _open_press_log(self):
+        """Every press is appended – and flushed – the moment it happens (crash-safe backup)."""
+        self._t_open = now()
+        self._press_file = None
+        out = self.settings.get("out_dir")
+        if not out:
+            return
+        try:
+            os.makedirs(out, exist_ok=True)
+            self.press_path = os.path.join(out, output_stem(self.p, self.settings) + "_buttons.tsv")
+            self._press_file = open(self.press_path, "w", newline="", encoding="utf-8")
+            self._press_writer = csv.DictWriter(self._press_file, self.PRESS_COLUMNS, delimiter="\t")
+            self._press_writer.writeheader()
+            self._press_file.flush()
+        except OSError as exc:
+            self.error = f"Could not create the button-press log: {exc}"
+            self._press_file = None
+
+    def _on_press(self, key, name, t):
+        row = self.state.record_press(key, name, t, getattr(self, "_t_open", t))
+        if getattr(self, "_press_file", None) is not None:
+            try:
+                self._press_writer.writerow(row)
+                self._press_file.flush()
+            except OSError as exc:
+                self.error = f"Button-press log: {exc}"
+        self.changed.emit()
+
+    def _close_press_log(self):
+        f = getattr(self, "_press_file", None)
+        if f is None:
+            return
+        f.close()
+        self._press_file = None
+        if self.state.presses or self.state.t0 is not None:
+            self.files.append(self.press_path)
+        else:                            # never started, nothing pressed: no empty file left behind
+            try:
+                os.remove(self.press_path)
+            except OSError:
+                pass
+
     def start(self):
+        self._open_press_log()
         app = QApplication.instance()
         if app is not None:
             app.installEventFilter(self)   # SyncBox/grip keys reach the run whichever app window has focus
@@ -514,6 +563,7 @@ class RunController(QObject):
                     self.files.append(path)
             except OSError as exc:
                 self.error = f"Could not save the logs: {exc}"
+        self._close_press_log()
         self.stimulusChanged.emit()
         self.changed.emit()
         self.finished.emit(self.files)

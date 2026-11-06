@@ -296,7 +296,6 @@ class MotorOptions:
     rest_dur: float = 20.0
     cycles: int = 5
     random_order: bool = False
-    record_taps: bool = True         # response windows check that the participant is tapping
     seed: int = 1
 
 
@@ -317,13 +316,7 @@ def build_motor(o: MotorOptions) -> Paradigm:
         if o.random_order:
             rng.shuffle(order)
         for cond, text in order:
-            b = seq.add("text", o.block_dur, cond, text.replace("\n", " "), text=text, size=72)
-            if o.record_taps:   # 2-s windows: shows in the control room whether taps keep coming
-                t, step = b.start, 2.0
-                while t < b.end - 1e-6:
-                    w = Block.create("response", t, min(step, b.end - t), track=1, condition=cond)
-                    par.blocks.append(w)
-                    t = round(t + step, 4)
+            seq.add("text", o.block_dur, cond, text.replace("\n", " "), text=text, size=72)
             seq.add("fixation", o.rest_dur, label="Rest")
     return par
 
@@ -648,8 +641,7 @@ TEMPLATES = [
              NBackOptions, build_nback, False, "#3BA7E5", ["choice"], "Working memory"),
     Template("motor", "Motor localizer", "finger tapping · blocked",
              "Blocks of finger tapping with the left or right hand (optionally both) alternate with rest. "
-             "2-s response windows record whether the participant keeps tapping, visible live in the control "
-             "room.",
+             "Taps arrive as grip presses: they are logged and counted live in the control room.",
              "e.g. Rao SM et al. (1993) Neurology 43:2311",
              MotorOptions, build_motor, False, "#2FB37A", ["response"], "Localizers & rest"),
     Template("checkerboard", "Visual checkerboard", "visual cortex localizer · blocked",

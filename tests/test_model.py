@@ -49,11 +49,18 @@ def test_ripple_delete_closes_gap():
     assert [(b.kind, b.start) for b in p.blocks_on(0)] == [("fixation", 0), ("rest", 10)]
 
 
-def test_stimulus_at_prefers_stimulus_track():
+def test_stimulus_at():
     p = make(("image", 0, 4))
-    p.blocks.append(Block.create("response", 0, 4, track=1))
     assert p.stimulus_at(1).kind == "image"
     assert p.stimulus_at(5) is None
+
+
+def test_old_files_with_response_windows_still_load():
+    d = make(("image", 0, 4)).to_dict()
+    d["tracks"] = ["Stimuli", "Responses"]
+    d["blocks"].append({"kind": "response", "start": 0, "duration": 4, "track": 1, "params": {"buttons": "any"}})
+    p = Paradigm.from_dict(d)
+    assert [b.kind for b in p.blocks] == ["image"] and p.tracks == ["Stimuli"]
 
 
 def test_save_load_roundtrip_relative_paths(tmp_path):
@@ -106,5 +113,4 @@ def test_event_design_jitter_on_quarter_tr():
     for b in itis:
         assert 0.5 <= b.duration <= 6.0
         assert abs(b.duration / 0.5 - round(b.duration / 0.5)) < 1e-6
-    resp = [b for b in blocks if b.kind == "response"]
-    assert len(resp) == 10 and all(r.track == 1 for r in resp)
+    assert len([b for b in blocks if b.kind == "image"]) == 10 and all(b.track == 0 for b in blocks)

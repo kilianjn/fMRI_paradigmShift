@@ -285,7 +285,6 @@ class MonitorView(QWidget):
         p.drawRect(r)
         # overlay: what is happening right now
         p.setFont(theme.ui_font(8, True))
-        resp = [x for x in par.active_blocks(self.t) if x.kind == "response"]
         tags = []
         if b is not None:
             from .presets import TRIAL_TITLES
@@ -293,8 +292,6 @@ class MonitorView(QWidget):
             tags.append((title + (f" · {b.condition}" if b.condition else ""), b.color))
         else:
             tags.append(("background", "#5B6577"))
-        if resp:
-            tags.append(("● recording grips", theme.OK))
         x = r.left() + 8
         for text, col in tags:
             w = p.fontMetrics().horizontalAdvance(text) + 14
@@ -918,13 +915,6 @@ class InspectorPanel(QFrame):
                 info.setObjectName("Hint")
                 info.setWordWrap(True)
                 form.addRow("", info)
-        if b.kind == "response":
-            self._section(form, "RESPONSE")
-            names = [(n, n) for n in self.doc.paradigm.hardware.button_names()]
-            form.addRow(L("Accept", "buttons"),
-                        self._combo(blocks, "buttons", [("Any grip button", "any")] + names, "any"))
-            form.addRow(L("Correct", "correct"),
-                        self._combo(blocks, "correct", [("– (no correct answer)", "")] + names, ""))
 
 
     def _round_tr(self, bid):

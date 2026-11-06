@@ -7,8 +7,7 @@
   "waiting_text": "The measurement will start in a moment.",
   "end_text": "Thank you!",
   "tracks": [
-    "Stimuli",
-    "Responses"
+    "Stimuli"
   ],
   "blocks": [
     {
@@ -23,7 +22,7 @@
         "size": 32,
         "color": "#FFFFFF"
       },
-      "id": "b980c1ba51"
+      "id": "e532e2fb84"
     },
     {
       "kind": "fixation",
@@ -37,7 +36,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "939fa00684"
+      "id": "658b2035cb"
     },
     {
       "kind": "text",
@@ -51,7 +50,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "65740e024a"
+      "id": "41d0041310"
     },
     {
       "kind": "choice",
@@ -75,7 +74,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "6c91c57300"
+      "id": "fe40e9d577"
     },
     {
       "kind": "choice",
@@ -99,7 +98,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "815f6cd3c1"
+      "id": "815f14e645"
     },
     {
       "kind": "choice",
@@ -123,7 +122,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "7669caaba7"
+      "id": "3240867c74"
     },
     {
       "kind": "choice",
@@ -147,7 +146,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "a2011bc5ef"
+      "id": "12396c2247"
     },
     {
       "kind": "choice",
@@ -171,7 +170,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "ebc46994e6"
+      "id": "1629c8cce9"
     },
     {
       "kind": "choice",
@@ -195,7 +194,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "ec04f37042"
+      "id": "2ac84c2659"
     },
     {
       "kind": "choice",
@@ -219,7 +218,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "0790bd9bcc"
+      "id": "3d2827feb9"
     },
     {
       "kind": "choice",
@@ -243,7 +242,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "b13e44e7c9"
+      "id": "e8ca5af131"
     },
     {
       "kind": "choice",
@@ -267,7 +266,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "60c9c17033"
+      "id": "ed2ba7f564"
     },
     {
       "kind": "choice",
@@ -291,7 +290,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "f9e16797a0"
+      "id": "08e9ce79c6"
     },
     {
       "kind": "choice",
@@ -315,7 +314,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "6aa1d95302"
+      "id": "9c98830207"
     },
     {
       "kind": "choice",
@@ -339,7 +338,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "565608ef26"
+      "id": "0b7e5c0c4e"
     },
     {
       "kind": "choice",
@@ -363,7 +362,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "4df45a00b7"
+      "id": "2e196d82d6"
     },
     {
       "kind": "choice",
@@ -387,7 +386,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "dfa98a4aaa"
+      "id": "40c92dc466"
     },
     {
       "kind": "choice",
@@ -411,7 +410,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "b8f6f7c28b"
+      "id": "e3bf6dcd8c"
     },
     {
       "kind": "fixation",
@@ -425,7 +424,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "6bea987303"
+      "id": "5614e9d13f"
     },
     {
       "kind": "text",
@@ -439,7 +438,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "6332b485e1"
+      "id": "2e5eff7a98"
     },
     {
       "kind": "choice",
@@ -463,7 +462,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "8c2f088c68"
+      "id": "7deda57f40"
     },
     {
       "kind": "choice",
@@ -487,7 +486,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "7d5d28990b"
+      "id": "0763d592c5"
     },
     {
       "kind": "choice",
@@ -511,7 +510,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "99b42c68b2"
+      "id": "8c6f71edeb"
     },
     {
       "kind": "choice",
@@ -535,7 +534,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "f9d784d888"
+      "id": "31e42cc31a"
     },
     {
       "kind": "choice",
@@ -559,7 +558,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "7247e44532"
+      "id": "0b9ecb3d61"
     },
     {
       "kind": "choice",
@@ -583,7 +582,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "feefe1f77c"
+      "id": "2bd342892f"
     },
     {
       "kind": "choice",
@@ -607,7 +606,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "d6ec256785"
+      "id": "d0a298a745"
     },
     {
       "kind": "choice",
@@ -631,7 +630,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "9ffc96b77f"
+      "id": "27293536b8"
     },
     {
       "kind": "choice",
@@ -655,7 +654,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "ec34553c52"
+      "id": "cbb8ee50fe"
     },
     {
       "kind": "choice",
@@ -679,7 +678,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "483ace68ad"
+      "id": "ef78f9ee3f"
     },
     {
       "kind": "choice",
@@ -703,7 +702,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "5788952cdd"
+      "id": "baba2986f8"
     },
     {
       "kind": "choice",
@@ -727,7 +726,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "c7dbe0916c"
+      "id": "a9d3331a6a"
     },
     {
       "kind": "choice",
@@ -751,7 +750,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "a74ae2b783"
+      "id": "ddbfb5a293"
     },
     {
       "kind": "choice",
@@ -775,7 +774,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "d610b641e7"
+      "id": "8ce4acbc13"
     },
     {
       "kind": "choice",
@@ -799,7 +798,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "545df42a68"
+      "id": "8a628931a1"
     },
     {
       "kind": "fixation",
@@ -813,7 +812,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "13b0d79982"
+      "id": "d2a0bfc145"
     },
     {
       "kind": "text",
@@ -827,7 +826,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "cd934799e4"
+      "id": "29d54b85a1"
     },
     {
       "kind": "choice",
@@ -851,7 +850,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "276aac9fda"
+      "id": "4c5be5a3ff"
     },
     {
       "kind": "choice",
@@ -875,7 +874,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "ea9a880303"
+      "id": "a5e7b0bbea"
     },
     {
       "kind": "choice",
@@ -899,7 +898,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "967127d859"
+      "id": "562e3a234f"
     },
     {
       "kind": "choice",
@@ -923,7 +922,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "55f7cf57ed"
+      "id": "0d2aa54c7c"
     },
     {
       "kind": "choice",
@@ -947,7 +946,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "6c1272729d"
+      "id": "760a7707b9"
     },
     {
       "kind": "choice",
@@ -971,7 +970,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "0a6e49d9c6"
+      "id": "32eaf3d4c8"
     },
     {
       "kind": "choice",
@@ -995,7 +994,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "bf0cc3bc1c"
+      "id": "ed954c7d95"
     },
     {
       "kind": "choice",
@@ -1019,7 +1018,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "0c86b6178c"
+      "id": "cb42858fb2"
     },
     {
       "kind": "choice",
@@ -1043,7 +1042,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "146f89861e"
+      "id": "2d6c248690"
     },
     {
       "kind": "choice",
@@ -1067,7 +1066,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "e6bea57dd2"
+      "id": "930d0d6344"
     },
     {
       "kind": "choice",
@@ -1091,7 +1090,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "e5830a53cf"
+      "id": "6b6c443f8b"
     },
     {
       "kind": "choice",
@@ -1115,7 +1114,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "93b614f446"
+      "id": "6b27372f65"
     },
     {
       "kind": "choice",
@@ -1139,7 +1138,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "0b76c40dc3"
+      "id": "6c3932ce9b"
     },
     {
       "kind": "choice",
@@ -1163,7 +1162,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "284c568e3b"
+      "id": "e0bb6489c4"
     },
     {
       "kind": "choice",
@@ -1187,7 +1186,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "e04d88f411"
+      "id": "a83cedb50b"
     },
     {
       "kind": "fixation",
@@ -1201,7 +1200,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "756f789aa8"
+      "id": "e48f066f7e"
     },
     {
       "kind": "text",
@@ -1215,7 +1214,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "0adcb00c1c"
+      "id": "24a3892ec9"
     },
     {
       "kind": "choice",
@@ -1239,7 +1238,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "a3d7977934"
+      "id": "e48fe5bae0"
     },
     {
       "kind": "choice",
@@ -1263,7 +1262,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "6031baeef8"
+      "id": "59500b5ec3"
     },
     {
       "kind": "choice",
@@ -1287,7 +1286,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "507e3d63ab"
+      "id": "cfe5fa96cc"
     },
     {
       "kind": "choice",
@@ -1311,7 +1310,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "854e49a069"
+      "id": "0cf6082528"
     },
     {
       "kind": "choice",
@@ -1335,7 +1334,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "618ecc117a"
+      "id": "7799f4f89c"
     },
     {
       "kind": "choice",
@@ -1359,7 +1358,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "23391814f6"
+      "id": "42e38e9686"
     },
     {
       "kind": "choice",
@@ -1383,7 +1382,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "5c7eccb9ed"
+      "id": "88bb504c1c"
     },
     {
       "kind": "choice",
@@ -1407,7 +1406,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "0698ed8bae"
+      "id": "e7f8eddd15"
     },
     {
       "kind": "choice",
@@ -1431,7 +1430,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "015eb1dc39"
+      "id": "1530c74cff"
     },
     {
       "kind": "choice",
@@ -1455,7 +1454,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "3a7d52f2ee"
+      "id": "f0513e396f"
     },
     {
       "kind": "choice",
@@ -1479,7 +1478,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "f2140880e0"
+      "id": "ad11e3acdf"
     },
     {
       "kind": "choice",
@@ -1503,7 +1502,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "e205348870"
+      "id": "b61ece05c0"
     },
     {
       "kind": "choice",
@@ -1527,7 +1526,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "a282148745"
+      "id": "df0329ed97"
     },
     {
       "kind": "choice",
@@ -1551,7 +1550,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "536d768288"
+      "id": "637a2f4fff"
     },
     {
       "kind": "choice",
@@ -1575,7 +1574,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "d568d17941"
+      "id": "924faa08bb"
     },
     {
       "kind": "fixation",
@@ -1589,7 +1588,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "122aeff0af"
+      "id": "4bc9ce0ca9"
     },
     {
       "kind": "text",
@@ -1603,7 +1602,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "dd6aac7590"
+      "id": "30a80958da"
     },
     {
       "kind": "choice",
@@ -1627,7 +1626,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "0cb45c1b47"
+      "id": "a58bdf40ee"
     },
     {
       "kind": "choice",
@@ -1651,7 +1650,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "69f7893e85"
+      "id": "01eaa63ee9"
     },
     {
       "kind": "choice",
@@ -1675,7 +1674,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "fd399a7e60"
+      "id": "5a3062a04a"
     },
     {
       "kind": "choice",
@@ -1699,7 +1698,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "ebd77b0534"
+      "id": "9154a014cf"
     },
     {
       "kind": "choice",
@@ -1723,7 +1722,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "d7b52c6165"
+      "id": "3f837b36be"
     },
     {
       "kind": "choice",
@@ -1747,7 +1746,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "fb0a4ef1af"
+      "id": "b160849e91"
     },
     {
       "kind": "choice",
@@ -1771,7 +1770,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "bdc0cda9aa"
+      "id": "cc9663466b"
     },
     {
       "kind": "choice",
@@ -1795,7 +1794,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "4da853e10a"
+      "id": "9657ecd548"
     },
     {
       "kind": "choice",
@@ -1819,7 +1818,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "65c8be37a5"
+      "id": "4821febca9"
     },
     {
       "kind": "choice",
@@ -1843,7 +1842,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "73db245399"
+      "id": "019d8319ff"
     },
     {
       "kind": "choice",
@@ -1867,7 +1866,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "3a277c95bc"
+      "id": "d1682abc7f"
     },
     {
       "kind": "choice",
@@ -1891,7 +1890,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "8b994698e9"
+      "id": "342e406824"
     },
     {
       "kind": "choice",
@@ -1915,7 +1914,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "00c1f1861d"
+      "id": "018329317c"
     },
     {
       "kind": "choice",
@@ -1939,7 +1938,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "7806fae585"
+      "id": "27b088c817"
     },
     {
       "kind": "choice",
@@ -1963,7 +1962,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "0b1562a131"
+      "id": "2186c3d83a"
     },
     {
       "kind": "fixation",
@@ -1977,7 +1976,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c55d7361c0"
+      "id": "beae045722"
     },
     {
       "kind": "text",
@@ -1991,7 +1990,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "baf8f391b3"
+      "id": "8a765e328c"
     },
     {
       "kind": "choice",
@@ -2015,7 +2014,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "c9347c1181"
+      "id": "3bbd3e9b1b"
     },
     {
       "kind": "choice",
@@ -2039,7 +2038,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "718c2a2486"
+      "id": "d79cd97362"
     },
     {
       "kind": "choice",
@@ -2063,7 +2062,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "1a772ca726"
+      "id": "574afbea36"
     },
     {
       "kind": "choice",
@@ -2087,7 +2086,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "5559844dda"
+      "id": "4d9073c0b2"
     },
     {
       "kind": "choice",
@@ -2111,7 +2110,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "fe96aa43af"
+      "id": "4083280532"
     },
     {
       "kind": "choice",
@@ -2135,7 +2134,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "5928e3a6be"
+      "id": "7bf5fc3644"
     },
     {
       "kind": "choice",
@@ -2159,7 +2158,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "828052afd8"
+      "id": "f1f4f9cd22"
     },
     {
       "kind": "choice",
@@ -2183,7 +2182,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "040a546266"
+      "id": "25ca8bc9b0"
     },
     {
       "kind": "choice",
@@ -2207,7 +2206,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "2655a7d0d5"
+      "id": "30d55d3e23"
     },
     {
       "kind": "choice",
@@ -2231,7 +2230,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "ab9c636212"
+      "id": "f1b1eb650d"
     },
     {
       "kind": "choice",
@@ -2255,7 +2254,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "7d89384d77"
+      "id": "c8ab190427"
     },
     {
       "kind": "choice",
@@ -2279,7 +2278,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "26b09b89ef"
+      "id": "b48f907557"
     },
     {
       "kind": "choice",
@@ -2303,7 +2302,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "3bd5c08284"
+      "id": "ddffd3cd75"
     },
     {
       "kind": "choice",
@@ -2327,7 +2326,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "e089c43eea"
+      "id": "51c25c59fa"
     },
     {
       "kind": "choice",
@@ -2351,7 +2350,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "aa86da850a"
+      "id": "254ed8eacb"
     },
     {
       "kind": "fixation",
@@ -2365,7 +2364,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0ee2cbb101"
+      "id": "f8743b5bb6"
     },
     {
       "kind": "text",
@@ -2379,7 +2378,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "280cab505f"
+      "id": "219e72c074"
     },
     {
       "kind": "choice",
@@ -2403,7 +2402,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "8ec37acf3b"
+      "id": "a41c0373dc"
     },
     {
       "kind": "choice",
@@ -2427,7 +2426,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "3d52cf87f5"
+      "id": "5454c24532"
     },
     {
       "kind": "choice",
@@ -2451,7 +2450,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "d06e8f1258"
+      "id": "6afb351685"
     },
     {
       "kind": "choice",
@@ -2475,7 +2474,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "aeace47f1a"
+      "id": "d7e48efa9b"
     },
     {
       "kind": "choice",
@@ -2499,7 +2498,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "1109f54145"
+      "id": "f43a988663"
     },
     {
       "kind": "choice",
@@ -2523,7 +2522,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "d816b5baa5"
+      "id": "8af4873496"
     },
     {
       "kind": "choice",
@@ -2547,7 +2546,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "4cf947b990"
+      "id": "a603ad6e3d"
     },
     {
       "kind": "choice",
@@ -2571,7 +2570,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "8783144441"
+      "id": "5defbdd3de"
     },
     {
       "kind": "choice",
@@ -2595,7 +2594,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "c257112a53"
+      "id": "3178adc9fd"
     },
     {
       "kind": "choice",
@@ -2619,7 +2618,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "8b53484f1d"
+      "id": "dfe01623ce"
     },
     {
       "kind": "choice",
@@ -2643,7 +2642,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "4bc8a17dde"
+      "id": "5ea489a4aa"
     },
     {
       "kind": "choice",
@@ -2667,7 +2666,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "15e0373514"
+      "id": "2529d3b0d2"
     },
     {
       "kind": "choice",
@@ -2691,7 +2690,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "f51ef77d78"
+      "id": "f502a52b5e"
     },
     {
       "kind": "choice",
@@ -2715,7 +2714,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "8e809f4e2c"
+      "id": "c6e235bce2"
     },
     {
       "kind": "choice",
@@ -2739,7 +2738,7 @@
         "level": 2,
         "target_button": "Right index"
       },
-      "id": "984029760a"
+      "id": "104b145edb"
     },
     {
       "kind": "fixation",
@@ -2753,7 +2752,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "967ef3e87d"
+      "id": "3f980b8080"
     },
     {
       "kind": "text",
@@ -2767,7 +2766,7 @@
         "size": 56,
         "color": "#FFFFFF"
       },
-      "id": "0d841dcd8f"
+      "id": "860421d0b3"
     },
     {
       "kind": "choice",
@@ -2791,7 +2790,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "95053b504d"
+      "id": "74860afc0c"
     },
     {
       "kind": "choice",
@@ -2815,7 +2814,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "cc0e873511"
+      "id": "11180cff89"
     },
     {
       "kind": "choice",
@@ -2839,7 +2838,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "14669fdbb6"
+      "id": "346751fcb8"
     },
     {
       "kind": "choice",
@@ -2863,7 +2862,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "0c07bd9b2a"
+      "id": "7fe507ac01"
     },
     {
       "kind": "choice",
@@ -2887,7 +2886,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "8a25055884"
+      "id": "7fca539a56"
     },
     {
       "kind": "choice",
@@ -2911,7 +2910,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "6387240208"
+      "id": "a32ae4c6d6"
     },
     {
       "kind": "choice",
@@ -2935,7 +2934,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "54c29c7f22"
+      "id": "b2e8cb7e52"
     },
     {
       "kind": "choice",
@@ -2959,7 +2958,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "3993909a3c"
+      "id": "46e6387b70"
     },
     {
       "kind": "choice",
@@ -2983,7 +2982,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "70d334ac13"
+      "id": "54b4eb55d2"
     },
     {
       "kind": "choice",
@@ -3007,7 +3006,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "024f6b284c"
+      "id": "ad31c196da"
     },
     {
       "kind": "choice",
@@ -3031,7 +3030,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "24145ff5ea"
+      "id": "ce10d2c825"
     },
     {
       "kind": "choice",
@@ -3055,7 +3054,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "6691f5df87"
+      "id": "9f078e7988"
     },
     {
       "kind": "choice",
@@ -3079,7 +3078,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "1c2bc05f95"
+      "id": "d3aaa716e7"
     },
     {
       "kind": "choice",
@@ -3103,7 +3102,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "80b368f415"
+      "id": "66e9f6f727"
     },
     {
       "kind": "choice",
@@ -3127,7 +3126,7 @@
         "level": 0,
         "target_button": "Right index"
       },
-      "id": "0cd4fa5d99"
+      "id": "a34a7e8f9d"
     },
     {
       "kind": "fixation",
@@ -3141,7 +3140,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "cfa80da2f8"
+      "id": "4f097dd1f0"
     }
   ],
   "hardware": {

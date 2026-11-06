@@ -312,6 +312,7 @@ class SerialReader(QThread):
 class InputRouter(QObject):
     trigger = Signal(float)          # timestamp (perf_counter)
     button = Signal(str, float)      # button name, timestamp
+    pressed = Signal(str, str, float)  # every non-trigger key/character: key, button name ("" = unassigned), time
     other = Signal(str, float)       # unmapped key
     error = Signal(str)
 
@@ -366,6 +367,7 @@ class InputRouter(QObject):
                 self.trigger.emit(t)
             return
         name = self.hw.button_for_key(text)
+        self.pressed.emit(text, name or "", t)
         if name:
             self.button.emit(name, t)
         else:

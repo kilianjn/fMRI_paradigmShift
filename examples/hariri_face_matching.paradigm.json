@@ -7,8 +7,7 @@
   "waiting_text": "The measurement will start in a moment.",
   "end_text": "Thank you!",
   "tracks": [
-    "Stimuli",
-    "Responses"
+    "Stimuli"
   ],
   "blocks": [
     {
@@ -23,7 +22,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "535e257bb4"
+      "id": "d56b76653d"
     },
     {
       "kind": "match",
@@ -43,7 +42,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "98ce7aed56"
+      "id": "a023cb5ccd"
     },
     {
       "kind": "match",
@@ -63,7 +62,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "4449481694"
+      "id": "c2eb6b011a"
     },
     {
       "kind": "match",
@@ -83,7 +82,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "99c903dc22"
+      "id": "aa59eac4bc"
     },
     {
       "kind": "match",
@@ -103,7 +102,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "eac2deaa8f"
+      "id": "bd9438dbef"
     },
     {
       "kind": "match",
@@ -123,7 +122,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "2be1afb20a"
+      "id": "3b32df8d55"
     },
     {
       "kind": "match",
@@ -143,7 +142,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "2c23284b90"
+      "id": "67064821ce"
     },
     {
       "kind": "text",
@@ -157,7 +156,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "8ed71b26dd"
+      "id": "6b01cf162c"
     },
     {
       "kind": "match",
@@ -177,7 +176,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "dd978298a8"
+      "id": "4c7e05e9cd"
     },
     {
       "kind": "match",
@@ -197,7 +196,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "b2f1f253af"
+      "id": "c657f093fd"
     },
     {
       "kind": "match",
@@ -217,7 +216,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "837112c496"
+      "id": "ca3ed38fa1"
     },
     {
       "kind": "match",
@@ -237,7 +236,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "b2352e4865"
+      "id": "2d8ebae9be"
     },
     {
       "kind": "match",
@@ -257,7 +256,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "9fa5ea18b1"
+      "id": "dc978dba21"
     },
     {
       "kind": "match",
@@ -277,7 +276,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "3a26d1c30f"
+      "id": "94a5f6a3e3"
     },
     {
       "kind": "text",
@@ -291,7 +290,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "4271bd62ba"
+      "id": "927489e607"
     },
     {
       "kind": "match",
@@ -311,7 +310,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "5879b3f19a"
+      "id": "a7db0a8051"
     },
     {
       "kind": "match",
@@ -331,7 +330,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "9ff26c9594"
+      "id": "fd8eba4b4d"
     },
     {
       "kind": "match",
@@ -351,7 +350,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "a314e13a5a"
+      "id": "7151ef16de"
     },
     {
       "kind": "match",
@@ -371,7 +370,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "e1e1c8169e"
+      "id": "3c05ecd61e"
     },
     {
       "kind": "match",
@@ -391,7 +390,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "7ca3aeae8e"
+      "id": "8b6a862b2b"
     },
     {
       "kind": "match",
@@ -411,7 +410,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "8cfc3af4ea"
+      "id": "e1b483456f"
     },
     {
       "kind": "text",
@@ -425,7 +424,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "0b68f28b8d"
+      "id": "39e518acf1"
     },
     {
       "kind": "match",
@@ -445,7 +444,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "8a6ddb30b8"
+      "id": "85191b10be"
     },
     {
       "kind": "match",
@@ -465,7 +464,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "f31adaa887"
+      "id": "f51ce6073a"
     },
     {
       "kind": "match",
@@ -485,7 +484,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "ef7e6aabc7"
+      "id": "36438583f3"
     },
     {
       "kind": "match",
@@ -505,7 +504,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "354af6ac50"
+      "id": "245f008970"
     },
     {
       "kind": "match",
@@ -525,7 +524,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "124c2074bf"
+      "id": "1f9899daa3"
     },
     {
       "kind": "match",
@@ -545,7 +544,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "c95671f412"
+      "id": "bd115f25bd"
     },
     {
       "kind": "text",
@@ -559,7 +558,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "9b8fd7bc8a"
+      "id": "c502c51cc4"
     },
     {
       "kind": "match",
@@ -579,7 +578,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "73b6d0b55c"
+      "id": "cf6a79df0a"
     },
     {
       "kind": "match",
@@ -599,7 +598,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "06c42ebc24"
+      "id": "80106c33f1"
     },
     {
       "kind": "match",
@@ -619,7 +618,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "d008bf1a69"
+      "id": "663c88e124"
     },
     {
       "kind": "match",
@@ -639,7 +638,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "5b9e7ca59c"
+      "id": "ed4dd984ba"
     },
     {
       "kind": "match",
@@ -659,7 +658,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "18b91fb118"
+      "id": "4f11e96f3e"
     },
     {
       "kind": "match",
@@ -679,7 +678,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "6aca6b1a4c"
+      "id": "9cb15675f3"
     },
     {
       "kind": "text",
@@ -693,7 +692,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "8367209f12"
+      "id": "ab82300ea9"
     },
     {
       "kind": "match",
@@ -713,7 +712,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "8cc5da33f0"
+      "id": "50572e969a"
     },
     {
       "kind": "match",
@@ -733,7 +732,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "9dd7220d4e"
+      "id": "4e89501424"
     },
     {
       "kind": "match",
@@ -753,7 +752,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "c5121377f2"
+      "id": "a4ed8edcbc"
     },
     {
       "kind": "match",
@@ -773,7 +772,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "9e997635e4"
+      "id": "a30d8b20a2"
     },
     {
       "kind": "match",
@@ -793,7 +792,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "cef4af2528"
+      "id": "7099b497ee"
     },
     {
       "kind": "match",
@@ -813,7 +812,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "543f8c6ee8"
+      "id": "412954d566"
     },
     {
       "kind": "text",
@@ -827,7 +826,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "93955f2fbc"
+      "id": "e4a024df09"
     },
     {
       "kind": "match",
@@ -847,7 +846,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "f0637dee50"
+      "id": "9575cb3cfa"
     },
     {
       "kind": "match",
@@ -867,7 +866,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "5be13a3197"
+      "id": "f37537ddf9"
     },
     {
       "kind": "match",
@@ -887,7 +886,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "e127c0ce6e"
+      "id": "85e94d9092"
     },
     {
       "kind": "match",
@@ -907,7 +906,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "4188cc8a93"
+      "id": "0d1966f532"
     },
     {
       "kind": "match",
@@ -927,7 +926,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "9135b0cc08"
+      "id": "df1fac3f53"
     },
     {
       "kind": "match",
@@ -947,7 +946,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "8e6529efdc"
+      "id": "abdb503d45"
     },
     {
       "kind": "text",
@@ -961,7 +960,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "fa5e9d38e3"
+      "id": "24685386d6"
     },
     {
       "kind": "match",
@@ -981,7 +980,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "9b8516acba"
+      "id": "b87045c887"
     },
     {
       "kind": "match",
@@ -1001,7 +1000,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "f2ea79e3e9"
+      "id": "df98c8f9c0"
     },
     {
       "kind": "match",
@@ -1021,7 +1020,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "7b879231fb"
+      "id": "3224e29337"
     },
     {
       "kind": "match",
@@ -1041,7 +1040,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "394896b496"
+      "id": "956660a203"
     },
     {
       "kind": "match",
@@ -1061,7 +1060,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "2c95496405"
+      "id": "e2a33eb9d8"
     },
     {
       "kind": "match",
@@ -1081,7 +1080,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "822af71a60"
+      "id": "aa7da46304"
     },
     {
       "kind": "text",
@@ -1095,7 +1094,7 @@
         "size": 64,
         "color": "#FFFFFF"
       },
-      "id": "1b5470982f"
+      "id": "401fce659b"
     },
     {
       "kind": "match",
@@ -1115,7 +1114,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "aa9e40f3cd"
+      "id": "ef8543cbd4"
     },
     {
       "kind": "match",
@@ -1135,7 +1134,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "81c87fa53d"
+      "id": "32434ef5b9"
     },
     {
       "kind": "match",
@@ -1155,7 +1154,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "46764d5c3a"
+      "id": "a1ce738a39"
     },
     {
       "kind": "match",
@@ -1175,7 +1174,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "5d85f7db35"
+      "id": "257100c7ac"
     },
     {
       "kind": "match",
@@ -1195,7 +1194,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "befc1cb3d8"
+      "id": "65869b3500"
     },
     {
       "kind": "match",
@@ -1215,7 +1214,7 @@
         "show_choice": true,
         "choice_color": "#FFD23F"
       },
-      "id": "bf84b94d8f"
+      "id": "a3b478a3a3"
     }
   ],
   "hardware": {

@@ -7,8 +7,7 @@
   "waiting_text": "The measurement will start in a moment.",
   "end_text": "Thank you!",
   "tracks": [
-    "Stimuli",
-    "Responses"
+    "Stimuli"
   ],
   "blocks": [
     {
@@ -23,7 +22,7 @@
         "size": 40,
         "color": "#FFFFFF"
       },
-      "id": "53fea58f53"
+      "id": "d23e7af870"
     },
     {
       "kind": "fixation",
@@ -37,7 +36,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "37b23c5251"
+      "id": "84787319bc"
     },
     {
       "kind": "image",
@@ -52,20 +51,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "229b0d3d00"
-    },
-    {
-      "kind": "response",
-      "start": 16.0,
-      "duration": 4.0,
-      "track": 1,
-      "label": "",
-      "condition": "positive",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "baaacb1c35"
+      "id": "829cdc9776"
     },
     {
       "kind": "rating",
@@ -84,7 +70,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "6f0b042309"
+      "id": "56c2b5bc0b"
     },
     {
       "kind": "fixation",
@@ -98,7 +84,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "d72e1f3e60"
+      "id": "3bcc957be5"
     },
     {
       "kind": "image",
@@ -113,20 +99,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "b915ef706a"
-    },
-    {
-      "kind": "response",
-      "start": 28.0,
-      "duration": 4.0,
-      "track": 1,
-      "label": "",
-      "condition": "negative",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "818466158f"
+      "id": "cfb64ef746"
     },
     {
       "kind": "rating",
@@ -145,7 +118,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "528512d867"
+      "id": "7fef67061a"
     },
     {
       "kind": "fixation",
@@ -159,7 +132,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7dc7269f28"
+      "id": "22eb40f90d"
     },
     {
       "kind": "image",
@@ -174,20 +147,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "751a7f5417"
-    },
-    {
-      "kind": "response",
-      "start": 42.0,
-      "duration": 4.0,
-      "track": 1,
-      "label": "",
-      "condition": "positive",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "3941900c1a"
+      "id": "5fe93b7e75"
     },
     {
       "kind": "rating",
@@ -206,7 +166,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "8dbb6134d7"
+      "id": "d7ba30bcc7"
     },
     {
       "kind": "fixation",
@@ -220,7 +180,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "a1fa36cc71"
+      "id": "244ecdc19c"
     },
     {
       "kind": "image",
@@ -235,20 +195,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "636d90fb5b"
-    },
-    {
-      "kind": "response",
-      "start": 54.0,
-      "duration": 4.0,
-      "track": 1,
-      "label": "",
-      "condition": "negative",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "b287c5e619"
+      "id": "d501a32dcf"
     },
     {
       "kind": "rating",
@@ -267,7 +214,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "be6aa67c40"
+      "id": "e8e899002f"
     },
     {
       "kind": "fixation",
@@ -281,7 +228,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0490b6a95d"
+      "id": "35ebca2596"
     },
     {
       "kind": "image",
@@ -296,20 +243,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "c28c88f56a"
-    },
-    {
-      "kind": "response",
-      "start": 70.0,
-      "duration": 4.0,
-      "track": 1,
-      "label": "",
-      "condition": "negative",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "ad42ec31f1"
+      "id": "8fec6e2008"
     },
     {
       "kind": "rating",
@@ -328,7 +262,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "e3edee44e2"
+      "id": "2cf7f0e3e1"
     },
     {
       "kind": "fixation",
@@ -342,7 +276,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "5783de8cbc"
+      "id": "9b57c57213"
     },
     {
       "kind": "image",
@@ -357,20 +291,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "49f933ad50"
-    },
-    {
-      "kind": "response",
-      "start": 84.0,
-      "duration": 4.0,
-      "track": 1,
-      "label": "",
-      "condition": "positive",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "086462be6a"
+      "id": "b2472b6f88"
     },
     {
       "kind": "rating",
@@ -389,7 +310,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "92e097cba6"
+      "id": "6a4408bb9a"
     },
     {
       "kind": "fixation",
@@ -403,7 +324,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "e9c4475727"
+      "id": "bb8f2d3c43"
     },
     {
       "kind": "image",
@@ -418,20 +339,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "cf2580b6a7"
-    },
-    {
-      "kind": "response",
-      "start": 96.0,
-      "duration": 4.0,
-      "track": 1,
-      "label": "",
-      "condition": "negative",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "53bccf6488"
+      "id": "8935590d85"
     },
     {
       "kind": "rating",
@@ -450,7 +358,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "8d5cdae3d7"
+      "id": "07412be464"
     },
     {
       "kind": "fixation",
@@ -464,7 +372,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "e1e394b6af"
+      "id": "693cd602d4"
     },
     {
       "kind": "image",
@@ -479,20 +387,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "a866ffec70"
-    },
-    {
-      "kind": "response",
-      "start": 110.0,
-      "duration": 4.0,
-      "track": 1,
-      "label": "",
-      "condition": "positive",
-      "params": {
-        "buttons": "any",
-        "correct": ""
-      },
-      "id": "09c648351c"
+      "id": "d422869b01"
     },
     {
       "kind": "rating",
@@ -511,7 +406,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "429ae54d9e"
+      "id": "be95bba621"
     },
     {
       "kind": "fixation",
@@ -525,7 +420,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "326885c135"
+      "id": "d64325867a"
     },
     {
       "kind": "rest",
@@ -535,7 +430,7 @@
       "label": "End baseline",
       "condition": "",
       "params": {},
-      "id": "2b549947c7"
+      "id": "41aa1a50a5"
     }
   ],
   "hardware": {
