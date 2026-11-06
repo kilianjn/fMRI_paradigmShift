@@ -324,9 +324,12 @@ class MainWindow(QMainWindow):
         tlay.addLayout(bar)
         tlay.addWidget(self.timeline, 1)
         vsplit.addWidget(tl)
-        vsplit.setStretchFactor(0, 3)
-        vsplit.setStretchFactor(1, 2)
-        vsplit.setSizes([520, 330])
+        # The timeline has a single track that scales with the panel. By default it sits at its smallest
+        # height (top edge as low as possible); window resizing gives the extra room to the panels above.
+        vsplit.setChildrenCollapsible(False)
+        vsplit.setStretchFactor(0, 1)
+        vsplit.setStretchFactor(1, 0)
+        vsplit.setSizes([10000, 1])
         root.addWidget(vsplit)
         self.setCentralWidget(central)
         self.status = QLabel()

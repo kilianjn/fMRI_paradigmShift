@@ -136,6 +136,9 @@ def test_full_run_with_simulated_scanner(app, tmp_path):
 
     def probe():
         seen.setdefault(c.phase, (len(c.state.triggers), cr.pill.text()))
+        if c.phase == "running" and "pressed" not in seen:   # a grip press 0.2 s into the fixation
+            seen["pressed"] = True
+            QTimer.singleShot(200, lambda: c.router.feed("b"))
         if c.phase == "dummy":   # participant screen shows only the waiting text, no trigger counts
             img = QImage(400, 225, QImage.Format_RGB32)
             p = QPainter(img)
@@ -150,7 +153,6 @@ def test_full_run_with_simulated_scanner(app, tmp_path):
     got = []
     c.finished.connect(lambda files: (got.extend(files), loop.quit()))
     QTimer.singleShot(10000, loop.quit)
-    QTimer.singleShot(2400, lambda: c.router.feed("b"))   # a grip press during the fixation
     loop.exec()
     poll.stop()
     app.processEvents()

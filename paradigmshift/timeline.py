@@ -19,7 +19,7 @@ IMAGE_EXT = (".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tif", ".tiff", ".webp")
 
 RULER_H = 52
 HEADER_W = 156
-TRACK_H = 76
+TRACK_H = 76          # minimum track height – tracks grow to fill the panel
 TRACK_PAD = 8
 EDGE = 7            # px grab zone for resizing
 SNAP_PX = 10        # magnetic snapping distance
@@ -52,7 +52,7 @@ class TimelineView(QAbstractScrollArea):
         self.viewport().setAcceptDrops(True)
         self.viewport().setMouseTracking(True)
         self.setFocusPolicy(Qt.StrongFocus)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)   # tracks scale to the panel – nothing to scroll
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.horizontalScrollBar().valueChanged.connect(self.viewport().update)
         self.verticalScrollBar().valueChanged.connect(self.viewport().update)
@@ -75,7 +75,13 @@ class TimelineView(QAbstractScrollArea):
         return self.horizontalScrollBar().value()
 
     def _scroll_y(self) -> int:
-        return self.verticalScrollBar().value()
+        return 0
+
+    @property
+    def track_h(self) -> float:
+        """Tracks share the panel's height (never smaller than TRACK_H)."""
+        n = max(1, len(self.p.tracks))
+        return max(TRACK_H, (self.viewport().height() - RULER_H) / n)
 
     def x_of(self, t: float) -> float:
         return HEADER_W + t * self.pps - self._scroll_x()
@@ -84,17 +90,17 @@ class TimelineView(QAbstractScrollArea):
         return (x - HEADER_W + self._scroll_x()) / self.pps
 
     def track_top(self, i: int) -> float:
-        return RULER_H + i * TRACK_H - self._scroll_y()
+        return RULER_H + i * self.track_h - self._scroll_y()
 
     def track_at(self, y: float) -> int | None:
         if y < RULER_H:
             return None
-        i = int((y - RULER_H + self._scroll_y()) // TRACK_H)
+        i = int((y - RULER_H + self._scroll_y()) // self.track_h)
         return i if 0 <= i < len(self.p.tracks) else None
 
     def block_rect(self, b: Block) -> QRectF:
         top = self.track_top(b.track) + TRACK_PAD / 2
-        return QRectF(self.x_of(b.start), top, max(2.0, b.duration * self.pps), TRACK_H - TRACK_PAD)
+        return QRectF(self.x_of(b.start), top, max(2.0, b.duration * self.pps), self.track_h - TRACK_PAD)
 
     def block_at(self, pos: QPointF) -> tuple[Block | None, str]:
         for b in sorted(self.p.blocks, key=lambda b: -b.start):
@@ -119,7 +125,7 @@ class TimelineView(QAbstractScrollArea):
         sb.setRange(0, max(0, int(content - self.viewport().width())))
         sb.setPageStep(self.viewport().width())
         sb.setSingleStep(20)
-        h = RULER_H + len(self.p.tracks) * TRACK_H
+        h = RULER_H + len(self.p.tracks) * self.track_h
         vb = self.verticalScrollBar()
         vb.setRange(0, max(0, h - self.viewport().height()))
         vb.setPageStep(self.viewport().height())
@@ -221,20 +227,22 @@ class TimelineView(QAbstractScrollArea):
     def _paint_tracks(self, p, w, h):
         for i, _name in enumerate(self.p.tracks):
             top = self.track_top(i)
-            p.fillRect(QRectF(HEADER_W, top, w - HEADER_W, TRACK_H), QColor("#1B1E24" if i % 2 == 0 else "#191B21"))
+            th = self.track_h
+            p.fillRect(QRectF(HEADER_W, top, w - HEADER_W, th), QColor("#1B1E24" if i % 2 == 0 else "#191B21"))
             p.setPen(QColor(theme.BORDER))
-            p.drawLine(QPointF(HEADER_W, top + TRACK_H - .5), QPointF(w, top + TRACK_H - .5))
+            p.drawLine(QPointF(HEADER_W, top + th - .5), QPointF(w, top + th - .5))
 
     def _paint_headers(self, p, h):
         p.fillRect(QRectF(0, RULER_H, HEADER_W, h - RULER_H), QColor(theme.PANEL))
         for i, name in enumerate(self.p.tracks):
             top = self.track_top(i)
-            if top + TRACK_H < RULER_H:
+            th = self.track_h
+            if top + th < RULER_H:
                 continue
-            r = QRectF(0, top, HEADER_W, TRACK_H)
+            r = QRectF(0, top, HEADER_W, th)
             p.setPen(QColor(theme.BORDER))
             p.drawLine(r.bottomLeft() + QPointF(0, -.5), r.bottomRight() + QPointF(0, -.5))
-            badge = QRectF(12, top + TRACK_H / 2 - 13, 26, 26)
+            badge = QRectF(12, top + th / 2 - 13, 26, 26)
             p.setBrush(QColor(theme.PANEL_2))
             p.setPen(QPen(QColor(theme.BORDER)))
             p.drawRoundedRect(badge, 6, 6)
@@ -243,11 +251,11 @@ class TimelineView(QAbstractScrollArea):
             p.drawText(badge, Qt.AlignCenter, ("V" if i == 0 else "R") + str(i + 1))
             p.setPen(QColor(theme.TEXT))
             p.setFont(theme.ui_font(10, True))
-            p.drawText(QRectF(46, top + 14, HEADER_W - 50, 22), Qt.AlignLeft | Qt.AlignVCenter, name)
+            p.drawText(QRectF(46, top + th / 2 - 22, HEADER_W - 50, 22), Qt.AlignLeft | Qt.AlignVCenter, name)
             p.setPen(QColor(theme.TEXT_DIM))
             p.setFont(theme.ui_font(8))
             sub = "on screen" if i == 0 else "grip presses" if i == 1 else "extra"
-            p.drawText(QRectF(46, top + 36, HEADER_W - 50, 18), Qt.AlignLeft | Qt.AlignVCenter, sub)
+            p.drawText(QRectF(46, top + th / 2, HEADER_W - 50, 18), Qt.AlignLeft | Qt.AlignVCenter, sub)
         p.setPen(QColor(theme.BORDER))
         p.drawLine(QPointF(HEADER_W - .5, RULER_H), QPointF(HEADER_W - .5, h))
 
@@ -356,7 +364,7 @@ class TimelineView(QAbstractScrollArea):
         # image thumbnails
         img = b.thumbnail_path
         if img and r.width() > 40:
-            th = thumbnail(img, int(r.height() - 22))
+            th = thumbnail(img, max(16, int(r.height() - 22) // 8 * 8))   # 8-px steps keep the cache small
             if th is not None:
                 x = r.left() + 6
                 while x < r.right() - 4:
@@ -418,7 +426,7 @@ class TimelineView(QAbstractScrollArea):
             self._paint_block(p, b, ghost=True)
 
     def _paint_empty_hint(self, p, w):
-        r = QRectF(HEADER_W + 30, self.track_top(0) + 8, max(300, w - HEADER_W - 60), TRACK_H - 16)
+        r = QRectF(HEADER_W + 30, self.track_top(0) + 8, max(300, w - HEADER_W - 60), self.track_h - 16)
         p.setPen(QPen(QColor("#3A404D"), 1.5, Qt.DashLine))
         p.setBrush(Qt.NoBrush)
         p.drawRoundedRect(r, 8, 8)
