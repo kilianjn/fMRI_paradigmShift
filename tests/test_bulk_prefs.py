@@ -46,16 +46,16 @@ def _combo_for(inspector, label_text):
 def test_change_rating_mode_of_all_ratings_at_once(win, app):
     par = win.doc.paradigm
     ratings = [b.id for b in par.blocks if b.kind == "rating"]
-    par.block(ratings[0]).params["mode"] = "cursor"           # make them differ
+    par.block(ratings[0]).params["mode"] = "direct"           # make them differ (default is cursor)
     win.doc.select(ratings)
     app.processEvents()
     lab, combo = _combo_for(win.inspector, "Answer with")
     assert isinstance(combo, QComboBox) and lab.text().endswith("≠") and combo.currentIndex() == -1
-    combo.activated.emit(combo.findData("cursor"))
+    combo.activated.emit(combo.findData("direct"))
     app.processEvents()
-    assert all(win.doc.paradigm.block(i).params["mode"] == "cursor" for i in ratings)
+    assert all(win.doc.paradigm.block(i).params["mode"] == "direct" for i in ratings)
     win.doc.undo()                                            # one undo step reverts all
-    assert sum(win.doc.paradigm.block(i).params["mode"] == "cursor" for i in ratings) == 1
+    assert sum(win.doc.paradigm.block(i).params["mode"] == "direct" for i in ratings) == 1
 
 
 def test_untouched_mixed_text_is_not_overwritten(win, app):
@@ -93,10 +93,11 @@ def test_find_and_replace_text():
 
 
 def test_preferences_drive_new_blocks_and_paradigms(win, app):
-    win._set_pref("rating_mode", "cursor")
+    assert win.timeline.add_block("rating").params["mode"] == "cursor"   # the default
+    win._set_pref("rating_mode", "direct")
     win._set_pref("new_tr", 1.5)
     b = win.timeline.add_block("rating")
-    assert b.params["mode"] == "cursor"
+    assert b.params["mode"] == "direct"
     win.doc.dirty = False
     win.new_file()
     assert win.doc.paradigm.tr == 1.5
@@ -110,9 +111,9 @@ def test_preferences_dialog_roundtrip(win, app):
     from paradigmshift.dialogs import PreferencesDialog
     dlg = PreferencesDialog(win.prefs, win)
     dlg.w["watchdog_trials"].setValue(8)
-    dlg.w["rating_mode"].setCurrentIndex(dlg.w["rating_mode"].findData("cursor"))
+    dlg.w["rating_mode"].setCurrentIndex(dlg.w["rating_mode"].findData("direct"))
     dlg.accept()
-    assert win.prefs.get("watchdog_trials") == 8 and win.prefs.get("rating_mode") == "cursor"
+    assert win.prefs.get("watchdog_trials") == 8 and win.prefs.get("rating_mode") == "direct"
 
 
 def test_abort_without_confirmation_and_paradigm_copy(app, tmp_path):

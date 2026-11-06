@@ -50,7 +50,7 @@ BLOCK_TYPES: dict[str, BlockType] = {
             {
                 "path": "", "question": "How pleasant is this image?",
                 "min": 1, "max": 4, "left_label": "not at all", "right_label": "very",
-                "mode": "direct",  # direct: one button per value | cursor: move + confirm
+                "mode": "cursor",  # cursor: move ◀ ▶ + confirm (default) | direct: one button per value
                 "scale": 0.9,
             },
         ),

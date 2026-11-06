@@ -7,7 +7,7 @@ from paradigmshift.runner import RunState, output_stem
 def paradigm():
     p = Paradigm(name="Emo rating!", tr=2.0, dummy_scans=2)
     p.blocks.append(Block.create("image", 0, 4, path="x.png", label="picture"))
-    rating = Block.create("rating", 4, 4, path="x.png")
+    rating = Block.create("rating", 4, 4, path="x.png", mode="direct")
     rating.condition = "pos"
     p.blocks.append(rating)
     cur = Block.create("rating", 8, 4, mode="cursor")

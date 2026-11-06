@@ -808,8 +808,8 @@ class InspectorPanel(QFrame):
             form.addRow(L("Values", "min", "max"), rw2)
             form.addRow(L("Left label", "left_label"), self._line(blocks, "left_label"))
             form.addRow(L("Right label", "right_label"), self._line(blocks, "right_label"))
-            mode = self._combo(blocks, "mode", [("One grip button per value", "direct"),
-                                                ("Move cursor ◀ ▶ and confirm", "cursor")], "direct")
+            mode = self._combo(blocks, "mode", [("Move cursor ◀ ▶ and confirm", "cursor"),
+                                                ("One grip button per value", "direct")], "direct")
             mode.activated.connect(lambda _i: QTimer.singleShot(0, self.rebuild))
             form.addRow(L("Answer with", "mode"), mode)
             hw_ = self.doc.paradigm.hardware

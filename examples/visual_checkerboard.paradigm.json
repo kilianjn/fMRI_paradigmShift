@@ -22,7 +22,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "a660ae891a"
+      "id": "810fd030ec"
     },
     {
       "kind": "image",
@@ -37,7 +37,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "f1703384f2"
+      "id": "27a4a6bab3"
     },
     {
       "kind": "fixation",
@@ -51,7 +51,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "236c2326a2"
+      "id": "8d7ff626f0"
     },
     {
       "kind": "image",
@@ -66,7 +66,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "49e0004494"
+      "id": "6f76f4ba71"
     },
     {
       "kind": "fixation",
@@ -80,7 +80,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "15a1651287"
+      "id": "fc52fdf87b"
     },
     {
       "kind": "image",
@@ -95,7 +95,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "18a4577ab1"
+      "id": "09afceb634"
     },
     {
       "kind": "fixation",
@@ -109,7 +109,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "fccb49adff"
+      "id": "70cdda9c37"
     },
     {
       "kind": "image",
@@ -124,7 +124,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "615a8ad20a"
+      "id": "e769f40d58"
     },
     {
       "kind": "fixation",
@@ -138,7 +138,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "30de9b1282"
+      "id": "855d47baa0"
     },
     {
       "kind": "image",
@@ -153,7 +153,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "9dcf00a499"
+      "id": "4cb50b9436"
     },
     {
       "kind": "fixation",
@@ -167,7 +167,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "0b3ae4a888"
+      "id": "af2885b6cf"
     },
     {
       "kind": "image",
@@ -182,7 +182,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "8ed82e8141"
+      "id": "cf04bfaa39"
     },
     {
       "kind": "fixation",
@@ -196,7 +196,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "1ac0f738f8"
+      "id": "d35829acbe"
     }
   ],
   "hardware": {

@@ -90,7 +90,7 @@ def main():
         t += dur
         return b
 
-    add("text", 6.0, text="Rate how each picture makes you feel.\n\nUse the grip buttons 1 – 4.")
+    add("text", 6.0, text="Rate how each picture makes you feel.\n\nMove with your index fingers, confirm with your right thumb.")
     add("fixation", 10.0, label="Baseline")
     order = [("positive", 0), ("negative", 0), ("positive", 1), ("negative", 1),
              ("negative", 2), ("positive", 2), ("negative", 3), ("positive", 3)]

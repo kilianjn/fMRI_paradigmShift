@@ -18,11 +18,11 @@
       "label": "",
       "condition": "",
       "params": {
-        "text": "Rate how each picture makes you feel.\n\nUse the grip buttons 1 \u2013 4.",
+        "text": "Rate how each picture makes you feel.\n\nMove with your index fingers, confirm with your right thumb.",
         "size": 40,
         "color": "#FFFFFF"
       },
-      "id": "d23e7af870"
+      "id": "e478ef1bc2"
     },
     {
       "kind": "fixation",
@@ -36,7 +36,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "84787319bc"
+      "id": "0c2950cd7a"
     },
     {
       "kind": "image",
@@ -51,7 +51,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "829cdc9776"
+      "id": "77075d13f7"
     },
     {
       "kind": "rating",
@@ -67,10 +67,10 @@
         "max": 4,
         "left_label": "very bad",
         "right_label": "very good",
-        "mode": "direct",
+        "mode": "cursor",
         "scale": 0.9
       },
-      "id": "56c2b5bc0b"
+      "id": "8e091b2005"
     },
     {
       "kind": "fixation",
@@ -84,7 +84,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3bcc957be5"
+      "id": "88f87fd44c"
     },
     {
       "kind": "image",
@@ -99,7 +99,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "cfb64ef746"
+      "id": "92bb22b8b8"
     },
     {
       "kind": "rating",
@@ -115,10 +115,10 @@
         "max": 4,
         "left_label": "very bad",
         "right_label": "very good",
-        "mode": "direct",
+        "mode": "cursor",
         "scale": 0.9
       },
-      "id": "7fef67061a"
+      "id": "0ff5993abc"
     },
     {
       "kind": "fixation",
@@ -132,7 +132,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "22eb40f90d"
+      "id": "dd4a67a7ff"
     },
     {
       "kind": "image",
@@ -147,7 +147,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "5fe93b7e75"
+      "id": "a89f5e0921"
     },
     {
       "kind": "rating",
@@ -163,10 +163,10 @@
         "max": 4,
         "left_label": "very bad",
         "right_label": "very good",
-        "mode": "direct",
+        "mode": "cursor",
         "scale": 0.9
       },
-      "id": "d7ba30bcc7"
+      "id": "a2486d715e"
     },
     {
       "kind": "fixation",
@@ -180,7 +180,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "244ecdc19c"
+      "id": "9ed006e775"
     },
     {
       "kind": "image",
@@ -195,7 +195,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "d501a32dcf"
+      "id": "fc289dd2b6"
     },
     {
       "kind": "rating",
@@ -211,10 +211,10 @@
         "max": 4,
         "left_label": "very bad",
         "right_label": "very good",
-        "mode": "direct",
+        "mode": "cursor",
         "scale": 0.9
       },
-      "id": "e8e899002f"
+      "id": "9d8a6f19e4"
     },
     {
       "kind": "fixation",
@@ -228,7 +228,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "35ebca2596"
+      "id": "4b0967e21d"
     },
     {
       "kind": "image",
@@ -243,7 +243,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "8fec6e2008"
+      "id": "2b9e2cd378"
     },
     {
       "kind": "rating",
@@ -259,10 +259,10 @@
         "max": 4,
         "left_label": "very bad",
         "right_label": "very good",
-        "mode": "direct",
+        "mode": "cursor",
         "scale": 0.9
       },
-      "id": "2cf7f0e3e1"
+      "id": "60f36354b2"
     },
     {
       "kind": "fixation",
@@ -276,7 +276,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "9b57c57213"
+      "id": "252513019a"
     },
     {
       "kind": "image",
@@ -291,7 +291,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "b2472b6f88"
+      "id": "55939505f3"
     },
     {
       "kind": "rating",
@@ -307,10 +307,10 @@
         "max": 4,
         "left_label": "very bad",
         "right_label": "very good",
-        "mode": "direct",
+        "mode": "cursor",
         "scale": 0.9
       },
-      "id": "6a4408bb9a"
+      "id": "48c3b74a1e"
     },
     {
       "kind": "fixation",
@@ -324,7 +324,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "bb8f2d3c43"
+      "id": "db00f7b9d1"
     },
     {
       "kind": "image",
@@ -339,7 +339,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "8935590d85"
+      "id": "8b20c0f469"
     },
     {
       "kind": "rating",
@@ -355,10 +355,10 @@
         "max": 4,
         "left_label": "very bad",
         "right_label": "very good",
-        "mode": "direct",
+        "mode": "cursor",
         "scale": 0.9
       },
-      "id": "07412be464"
+      "id": "befc316737"
     },
     {
       "kind": "fixation",
@@ -372,7 +372,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "693cd602d4"
+      "id": "c49cbb821e"
     },
     {
       "kind": "image",
@@ -387,7 +387,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "d422869b01"
+      "id": "19fc28a97f"
     },
     {
       "kind": "rating",
@@ -403,10 +403,10 @@
         "max": 4,
         "left_label": "very bad",
         "right_label": "very good",
-        "mode": "direct",
+        "mode": "cursor",
         "scale": 0.9
       },
-      "id": "be95bba621"
+      "id": "a1e904d505"
     },
     {
       "kind": "fixation",
@@ -420,7 +420,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "d64325867a"
+      "id": "b8b832098c"
     },
     {
       "kind": "rest",
@@ -430,7 +430,7 @@
       "label": "End baseline",
       "condition": "",
       "params": {},
-      "id": "41aa1a50a5"
+      "id": "16d54ea230"
     }
   ],
   "hardware": {

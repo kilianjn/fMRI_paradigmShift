@@ -19,7 +19,7 @@ DEFAULTS: dict = {
     "new_background": "#000000",
     "new_waiting_screen": "fixation",
     "new_end_text": "Thank you!",
-    "rating_mode": "direct",         # how new rating blocks are answered: direct | cursor
+    "rating_mode": "cursor",         # how new rating blocks are answered: cursor (◀ ▶ + confirm) | direct
     "match_frame": True,             # frame the chosen picture in new matching trials
     # timeline
     "snap": True,

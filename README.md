@@ -153,10 +153,11 @@ blurs the control-room mirror. The participant's screen always shows the real pi
 
 ## Options & preferences
 
-The **Options** menu holds quick switches (snapping, hints, how new ratings are answered, two-step abort, saving
+The **Options** menu holds quick switches (snapping, hints, blurred previews, two-step abort, saving
 the paradigm with each run). **Options → Preferences…** (Ctrl+,) has the rest:
 * text size, opening the last file on start, autosave;
-* defaults for new paradigms (TR, dummy scans, background, waiting and end screen) and new blocks;
+* defaults for new paradigms (TR, dummy scans, background, waiting and end screen) and new blocks, e.g.
+  how new rating blocks are answered (default: cursor ◀ ▶ + confirm);
 * snap distance;
 * default data folder;
 * control room warnings (after how many trials without an answer, after how many TRs without a trigger) and
@@ -179,7 +180,7 @@ the paradigm with each run). **Options → Preferences…** (Ctrl+,) has the res
     and "the SyncBox did not confirm …".
 * **ResponseGrips** – four named buttons with NNL's keys `a` (left thumb), `b` (left index), `c` (right index),
   `d` (right thumb). Rename, add, or re-learn keys in the Hardware dialog.
-* **Rating scales** – *direct* (each grip button = one value) or *cursor* (move ◀ ▶, confirm ✓).
+* **Rating scales** – *cursor* (move ◀ ▶, confirm ✓; the default) or *direct* (each grip button = one value).
 * **Simulate scanner** – test any paradigm on a laptop; triggers are generated at the TR.
 
 ## Output

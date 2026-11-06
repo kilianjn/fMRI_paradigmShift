@@ -73,8 +73,6 @@ class MainWindow(QMainWindow):
         self.a_hints.setChecked(p.get("show_hints"))
         self.a_confirm_abort.setChecked(p.get("confirm_abort"))
         self.a_save_copy.setChecked(p.get("save_paradigm_with_data"))
-        for mode, a in self.a_rating_mode.items():
-            a.setChecked(p.get("rating_mode") == mode)
         apply_block_defaults(p)
         if stimulus_mod.EDITOR_BLUR != p.get("blur_previews"):
             stimulus_mod.EDITOR_BLUR = p.get("blur_previews")
@@ -219,12 +217,6 @@ class MainWindow(QMainWindow):
         self.a_blur = m.addAction("Blur picture previews (unpleasant images)",
                                   lambda: self._set_pref("blur_previews", self.a_blur.isChecked()), "Ctrl+Shift+B")
         self.a_blur.setCheckable(True)
-        rm = m.addMenu("New rating blocks are answered with")
-        self.a_rating_mode = {}
-        for mode, text in (("direct", "One grip button per value"), ("cursor", "Cursor ◀ ▶ and confirm")):
-            a = rm.addAction(text, lambda md=mode: self._set_pref("rating_mode", md))
-            a.setCheckable(True)
-            self.a_rating_mode[mode] = a
         m.addSeparator()
         self.a_confirm_abort = m.addAction("Abort a run only after confirming",
                                            lambda: self._set_pref("confirm_abort", self.a_confirm_abort.isChecked()))

@@ -1380,8 +1380,8 @@ class PreferencesDialog(QDialog):
                 ("Fixation cross", "fixation"), ("Empty screen", "blank"), ("Text", "text")])),
             ("After the run", "new_end_text", QLineEdit(v["new_end_text"])),
             "New blocks",
-            ("Ratings answered with", "rating_mode", combo("rating_mode", [
-                ("One grip button per value", "direct"), ("Move cursor ◀ ▶ and confirm", "cursor")])),
+            ("New ratings answered with", "rating_mode", combo("rating_mode", [
+                ("Move cursor ◀ ▶ and confirm", "cursor"), ("One grip button per value", "direct")])),
             ("Matching trials", "match_frame", check("match_frame", "Frame the picture the participant chose")),
             "Timeline",
             ("", "snap", check("snap", "Snap to the TR grid and block edges")),
