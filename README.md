@@ -124,6 +124,8 @@ separate preference blurs the control-room mirror. The participant's screen alwa
 * **ResponseGrips** – four named buttons with NNL's keys `a` (left thumb), `b` (left index), `c` (right index),
   `d` (right thumb). Rename, add, or re-learn keys in the Hardware dialog.
 * **Rating scales** – *cursor* (move ◀ ▶, confirm ✓; the default) or *direct* (each grip button = one value).
+  The buttons can be chosen freely for each rating block in the inspector (*Buttons*: ◀ / ▶ / ✓, or one button
+  per value) – also for many selected ratings at once. The Hardware dialog only sets the defaults.
 * **Simulate scanner** – test any paradigm on a laptop; triggers are generated at the TR.
 
 ## Output
@@ -142,10 +144,11 @@ For each run (in the chosen folder):
 Aborted runs get `_ABORTED` in the file names. Onsets are relative to the first trigger after the dummy scans.
 **Export onsets** writes the planned design as `events.tsv` plus FSL 3-column files per condition.
 
-> **Timing note:** stimuli switch on display frames (vsync) and onsets are logged at the frame that first shows
-> them. In serial mode, triggers and grip presses are time-stamped by a dedicated thread the moment they arrive;
-> in USB-keyboard mode they are time-stamped when the window receives the key (within about one frame). For
-> publication-grade timing, verify with a photodiode.
+> **Timing note:** the run clock runs on its own thread with 1 ms resolution – independently of which window has
+> the focus or is being redrawn. Onsets are logged when a stimulus becomes due; the participant screen shows it at
+> its next display frame. In serial mode, triggers and grip presses are time-stamped by a dedicated thread the
+> moment they arrive; in USB-keyboard mode they are time-stamped when the window receives the key (within about one
+> frame). For publication-grade timing, verify with a photodiode.
 
 Paradigms are saved as `*.paradigm.json` (picture paths stored relative to the file).
 

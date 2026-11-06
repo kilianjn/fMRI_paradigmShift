@@ -1,8 +1,8 @@
 //! Presents a paradigm in the scanner and logs triggers, events and grip responses.
 //!
 //! Timing: the paradigm clock starts at the first SyncBox trigger after the dummy scans (t = 0).
-//! Planned onsets are relative to that trigger; actual onsets are measured when the stimulus is
-//! switched (at the display frame that first shows it). All triggers are logged too, so the timing
+//! Planned onsets are relative to that trigger; actual onsets are measured when the run clock
+//! (a 1 ms thread, see `controlroom.rs`) switches the stimulus. All triggers are logged too, so the timing
 //! can be verified volume by volume afterwards.
 //!
 //! A run has one [`RunController`] (clock, hardware input, logging); the participant screen and
@@ -481,19 +481,22 @@ impl RunState {
                     }
                     let (lo, hi) = (b.params.i("min", 1), b.params.i("max", 4));
                     if b.params.s("mode", "direct") == "direct" {
-                        let names = hw.button_names();
-                        if let Some(pos) = names.iter().position(|n| n == name) {
-                            if lo + pos as i64 <= hi {
-                                st = RatingState { value: Some(lo + pos as i64), confirmed: true, rt: Some(tt - onset) };
-                            }
+                        match b.rating_value_for(&hw, name) {
+                            Some(v) => st = RatingState { value: Some(v), confirmed: true, rt: Some(tt - onset) },
+                            None => continue,
                         }
-                    } else if name == hw.move_left {
-                        st.value = Some((st.value.unwrap_or(lo) - 1).max(lo));
-                    } else if name == hw.move_right {
-                        st.value = Some((st.value.unwrap_or(lo) + 1).min(hi));
-                    } else if name == hw.confirm {
-                        st.confirmed = true;
-                        st.rt = Some(tt - onset);
+                    } else {
+                        let [left, right, confirm] = b.rating_cursor_buttons(&hw);
+                        if name == left {
+                            st.value = Some((st.value.unwrap_or(lo) - 1).max(lo));
+                        } else if name == right {
+                            st.value = Some((st.value.unwrap_or(lo) + 1).min(hi));
+                        } else if name == confirm {
+                            st.confirmed = true;
+                            st.rt = Some(tt - onset);
+                        } else {
+                            continue;
+                        }
                     }
                     if st.confirmed {
                         let ev = self.event_mut(&b.id).unwrap();
@@ -1225,6 +1228,30 @@ mod tests {
         let log = std::fs::read_to_string(&files[1]).unwrap();
         assert_eq!(log.lines().filter(|l| l.split('\t').nth(1) == Some("trigger")).count(), 3);
         std::fs::remove_dir_all(dir).ok();
+    }
+
+    #[test]
+    fn rating_buttons_can_be_chosen_per_block() {
+        let mut p = Paradigm { dummy_scans: 0, ..Default::default() };
+        // direct: value 1 = Right thumb, value 2 = Left thumb (value 3, 4 keep the hardware order)
+        p.blocks.push(Block::create("rating", 0.0, Some(4.0)).with(json!({
+            "mode": "direct", "value_buttons": ["Right thumb", "Left thumb"]})));
+        // cursor: thumbs move, right index confirms
+        p.blocks.push(Block::create("rating", 4.0, Some(4.0)).with(json!({
+            "mode": "cursor", "cursor_left": "Left thumb", "cursor_right": "Right thumb", "cursor_confirm": "Right index"})));
+        let b = p.blocks.clone();
+        assert_eq!(b[0].rating_value_buttons(&p.hardware), vec!["Right thumb", "Left thumb", "Right index", "Right thumb"]);
+        let mut s = RunState::new(p);
+        s.on_trigger(0.0);
+        s.onset(&b[0], 0.0);
+        s.on_button("Left thumb", 1.0);
+        assert_eq!(s.event(&b[0].id).unwrap().rating, Rating::Value(2));
+        s.onset(&b[1], 4.0);
+        s.on_button("Left index", 4.2); // the hardware default for "left" – not used by this block
+        assert_eq!(s.ratings[&b[1].id].value, Some(3));
+        s.on_button("Right thumb", 4.5);
+        s.on_button("Right index", 5.0);
+        assert_eq!(s.event(&b[1].id).unwrap().rating, Rating::Value(4));
     }
 
     #[test]

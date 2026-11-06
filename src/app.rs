@@ -460,7 +460,7 @@ impl App {
         let c = ctx.clone();
         let mut ctl = RunController::new(par, s, Arc::new(move || c.request_repaint()));
         ctl.start();
-        self.run = Some(RunSession::new(ctl, self.settings.controlroom_folded.clone()));
+        self.run = Some(RunSession::new(ctx, ctl, self.settings.controlroom_folded.clone()));
         ctx.send_viewport_cmd(egui::ViewportCommand::Focus);
     }
 
@@ -1184,7 +1184,7 @@ impl App {
         let run_scene = scene.starts_with("control") || scene.starts_with("participant");
         if frame == 2 {
             match scene.as_str() {
-                "editor" | "bulk" | "find" | "blur" => {
+                "editor" | "bulk" | "find" | "blur" | "rating_direct" => {
                     self.open_example("emotional_rating");
                     let ratings: Vec<String> = self.doc.paradigm.blocks.iter().filter(|b| b.kind == "rating").map(|b| b.id.clone()).collect();
                     if scene == "bulk" {
@@ -1193,6 +1193,18 @@ impl App {
                         let t = self.doc.paradigm.block(id).map(|b| b.start + 1.3).unwrap_or(0.0);
                         self.doc.select(vec![id.clone()]);
                         self.tl.set_playhead(t, false);
+                    }
+                    if scene == "rating_direct" {
+                        let sel = self.doc.selection.clone();
+                        self.doc.edit(|p| {
+                            for id in &sel {
+                                if let Some(b) = p.block_mut(id) {
+                                    b.params.insert("mode".into(), serde_json::json!("direct"));
+                                    b.params.insert("value_buttons".into(), serde_json::json!(["Left thumb", "Left index", "Right index", "Right thumb"]));
+                                    b.params.insert("max".into(), serde_json::json!(5));
+                                }
+                            }
+                        });
                     }
                     if scene == "find" {
                         self.modal = Some(Modal::Find(Box::new(FindReplace::new())));

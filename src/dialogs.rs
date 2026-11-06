@@ -726,7 +726,7 @@ impl HardwareDialog {
             self.restart_router(false);
         }
         ui.add_space(6.0);
-        let fold = if self.cursor_fold { "▾  Rating scales answered with a cursor" } else { "▸  Rating scales answered with a cursor" };
+        let fold = if self.cursor_fold { "▾  Default buttons for rating scales (cursor ◀ ▶ ✓)" } else { "▸  Default buttons for rating scales (cursor ◀ ▶ ✓)" };
         if ui.add(egui::Button::new(RichText::new(fold).color(TEXT_DIM)).frame(false)).clicked() {
             self.cursor_fold = !self.cursor_fold;
         }

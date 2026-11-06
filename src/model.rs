@@ -402,6 +402,37 @@ impl Block {
     pub fn is_scored_trial(&self) -> bool {
         SCORED_TRIAL_KINDS.contains(&self.kind.as_str())
     }
+
+    /// Rating scale, cursor mode: the buttons that move left / right and confirm. Each can be set per
+    /// block (`cursor_left`, `cursor_right`, `cursor_confirm`); empty = the hardware setup's default.
+    pub fn rating_cursor_buttons(&self, hw: &Hardware) -> [String; 3] {
+        let pick = |key: &str, d: &str| self.params.nonempty(key).unwrap_or_else(|| d.to_string());
+        [pick("cursor_left", &hw.move_left), pick("cursor_right", &hw.move_right), pick("cursor_confirm", &hw.confirm)]
+    }
+
+    /// Rating scale, direct mode: the button for each value `min..=max` (`value_buttons`, one entry per
+    /// value; a missing or empty entry = the hardware button in that position).
+    pub fn rating_value_buttons(&self, hw: &Hardware) -> Vec<String> {
+        let (lo, hi) = (self.params.i("min", 1), self.params.i("max", 4));
+        let n = (hi - lo + 1).max(0) as usize;
+        let custom: Vec<String> = match self.params.get("value_buttons") {
+            Some(Value::Array(a)) => a.iter().map(|v| v.as_str().unwrap_or("").to_string()).collect(),
+            _ => vec![],
+        };
+        let names = hw.button_names();
+        (0..n)
+            .map(|i| match custom.get(i) {
+                Some(c) if !c.is_empty() => c.clone(),
+                _ => names.get(i).cloned().unwrap_or_default(),
+            })
+            .collect()
+    }
+
+    /// The rating value a button press selects in direct mode.
+    pub fn rating_value_for(&self, hw: &Hardware, button: &str) -> Option<i64> {
+        let lo = self.params.i("min", 1);
+        self.rating_value_buttons(hw).iter().position(|b| !b.is_empty() && b == button).map(|i| lo + i as i64)
+    }
 }
 
 pub fn default_tracks() -> Vec<String> {

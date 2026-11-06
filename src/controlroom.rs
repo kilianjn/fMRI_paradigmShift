@@ -67,11 +67,61 @@ pub struct RunSession {
     pub cr: ControlRoom,
     builder: ViewportBuilder,
     participant_closed: Arc<AtomicBool>,
-    pub closed: bool,
+    clock_stop: Arc<AtomicBool>,
+    clock: Option<std::thread::JoinHandle<()>>,
+}
+
+/// The run clock: ticks the run every millisecond on its own thread – independent of which window
+/// has the focus or is being repainted – and wakes the windows whenever they have to show something
+/// new (participant screen: on every stimulus change; control room: at its refresh rate).
+fn clock_thread(ctx: Context, ctl: SharedRun, stop: Arc<AtomicBool>) -> Option<std::thread::JoinHandle<()>> {
+    std::thread::Builder::new()
+        .name("run-clock".into())
+        .spawn(move || {
+            let pid = ViewportId::from_hash_of(PARTICIPANT_ID);
+            let mut last_stim = u64::MAX;
+            let mut last_version = u64::MAX;
+            let (mut last_cr, mut last_part) = (0.0, 0.0);
+            while !stop.load(Ordering::Relaxed) {
+                let (done, stim, version, refresh) = {
+                    let Ok(mut c) = ctl.lock() else { return };
+                    c.tick();
+                    (c.phase() == Phase::Done, c.stimulus_version, c.state.version, c.settings.control_refresh_ms)
+                };
+                let t = now();
+                if stim != last_stim {
+                    last_stim = stim;
+                    last_part = t;
+                    ctx.request_repaint_of(pid);
+                    ctx.request_repaint_of(ViewportId::ROOT); // the live mirror
+                    last_cr = t;
+                }
+                if version != last_version && t - last_cr >= 0.03 {
+                    last_version = version;
+                    last_cr = t;
+                    ctx.request_repaint_of(ViewportId::ROOT);
+                }
+                if t - last_cr >= refresh.max(30) as f64 / 1000.0 {
+                    last_cr = t;
+                    ctx.request_repaint_of(ViewportId::ROOT);
+                }
+                if t - last_part >= 0.25 {
+                    last_part = t;
+                    ctx.request_repaint_of(pid);
+                }
+                if done {
+                    ctx.request_repaint_of(pid);
+                    ctx.request_repaint_of(ViewportId::ROOT);
+                    return;
+                }
+                std::thread::sleep(std::time::Duration::from_millis(1));
+            }
+        })
+        .ok()
 }
 
 impl RunSession {
-    pub fn new(ctl: RunController, folded: Vec<String>) -> Self {
+    pub fn new(ctx: &Context, ctl: RunController, folded: Vec<String>) -> Self {
         let s = ctl.settings.clone();
         let title = format!("{} – participant screen", ctl.p().name);
         let mut builder = ViewportBuilder::default().with_title(title).with_icon(Arc::new(theme::app_icon()));
@@ -80,12 +130,16 @@ impl RunSession {
         } else {
             builder = builder.with_inner_size([1280.0, 720.0]);
         }
+        let ctl = Arc::new(Mutex::new(ctl));
+        let clock_stop = Arc::new(AtomicBool::new(false));
+        let clock = clock_thread(ctx.clone(), ctl.clone(), clock_stop.clone());
         RunSession {
-            ctl: Arc::new(Mutex::new(ctl)),
+            ctl,
             cr: ControlRoom::new(folded),
             builder,
             participant_closed: Arc::new(AtomicBool::new(false)),
-            closed: false,
+            clock_stop,
+            clock,
         }
     }
 
@@ -111,12 +165,18 @@ impl RunSession {
             let r = ui.max_rect();
             paint_participant(ui.painter(), r, &c, false);
             ctx.set_cursor_icon(egui::CursorIcon::None);
-            if c.phase() != Phase::Done {
-                ctx.request_repaint(); // every display frame while the run is going
-            } else {
-                ctx.request_repaint_after(std::time::Duration::from_millis(200));
-            }
+            // the run clock wakes this window on every stimulus change; this is only a safety net
+            ctx.request_repaint_after(std::time::Duration::from_millis(250));
         });
+    }
+}
+
+impl Drop for RunSession {
+    fn drop(&mut self) {
+        self.clock_stop.store(true, Ordering::Relaxed);
+        if let Some(h) = self.clock.take() {
+            let _ = h.join();
+        }
     }
 }
 
@@ -743,4 +803,51 @@ fn answers_table(ui: &mut Ui, rows: &[[String; 6]], tones: &[Tone]) {
             }
         });
     });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::model::{Block, Paradigm};
+    use crate::runner::RunSettings;
+    use serde_json::json;
+
+    /// The run must advance, score and save its data even when no window is ever repainted
+    /// (e.g. an unfocused or covered window).
+    #[test]
+    fn clock_runs_the_paradigm_without_any_repaint() {
+        let mut p = Paradigm { name: "clock".into(), tr: 0.1, dummy_scans: 1, ..Default::default() };
+        p.blocks.push(Block::create("fixation", 0.0, Some(0.2)));
+        p.blocks.push(Block::create("choice", 0.2, Some(0.3)).with(json!({"text": "X", "correct": "any"})));
+        let dir = std::env::temp_dir().join(format!("ps_clock_{}", crate::model::new_id()));
+        let settings = RunSettings { out_dir: dir.to_string_lossy().to_string(), simulate: true, ..Default::default() };
+        let ctx = Context::default();
+        let mut ctl = RunController::new(p, settings, crate::hardware::no_waker());
+        ctl.start();
+        let session = RunSession::new(&ctx, ctl, vec![]);
+        let end = now() + 6.0;
+        let mut pressed = false;
+        loop {
+            let (phase, t) = {
+                let c = session.ctl.lock().unwrap();
+                (c.phase(), c.elapsed())
+            };
+            if phase == Phase::Done || now() > end {
+                break;
+            }
+            if phase == Phase::Running && t > 0.3 && !pressed {
+                session.ctl.lock().unwrap().key("c", now());
+                pressed = true;
+            }
+            std::thread::sleep(std::time::Duration::from_millis(5));
+        }
+        let c = session.ctl.lock().unwrap();
+        assert_eq!(c.phase(), Phase::Done);
+        assert!(!c.aborted);
+        let ev = std::fs::read_to_string(&c.files[0]).unwrap();
+        assert!(ev.contains("\thit\t"), "{ev}");
+        drop(c);
+        drop(session);
+        std::fs::remove_dir_all(dir).ok();
+    }
 }

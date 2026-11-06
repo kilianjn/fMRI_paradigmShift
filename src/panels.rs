@@ -948,23 +948,7 @@ fn params_ui(ui: &mut Ui, doc: &mut Document, blocks: &[Block], blur: bool) {
                 &[("Move cursor ◀ ▶ and confirm".into(), json!("cursor")), ("One grip button per value".into(), json!("direct"))],
                 json!("direct"),
             );
-            let hw = doc.paradigm.hardware.clone();
-            let expl = if blocks.len() > 1 && mixed(blocks, "mode") {
-                "Some selected ratings use buttons, some the cursor.".to_string()
-            } else if b.params.s("mode", "direct") == "direct" {
-                let names = hw.button_names();
-                let lines: Vec<String> = (lo..=hi).zip(names.iter()).map(|(v, n)| format!("{v} = {n}")).collect();
-                let mut e = format!("Grips:  {}", lines.join("  ·  "));
-                if (hi - lo + 1) as usize > hw.buttons.len() {
-                    e.push_str("\n⚠ more values than grip buttons – use cursor mode");
-                }
-                e
-            } else {
-                format!("◀ {}   ▶ {}   ✓ {}", hw.move_left, hw.move_right, hw.confirm)
-            };
-            row(ui, RichText::new(""), |ui| {
-                theme::hint(ui, expl);
-            });
+            rating_buttons_ui(ui, doc, blocks);
         }
         "match" => {
             section(ui, if single { "PICTURES  –  TOP IS THE TARGET" } else { "MATCHING TRIALS" });
@@ -1063,5 +1047,132 @@ fn params_ui(ui: &mut Ui, doc: &mut Document, blocks: &[Block], blur: bool) {
             }
         }
         _ => {}
+    }
+}
+
+/// A combo box for choosing a grip button; `""` stands for the hardware setup's default.
+fn button_choice(ui: &mut Ui, salt: &str, current: &str, default_name: &str, mixed: bool, names: &[String]) -> Option<String> {
+    let text = if mixed {
+        "different – choose to set all".to_string()
+    } else if current.is_empty() {
+        format!("{default_name}  (default)")
+    } else {
+        current.to_string()
+    };
+    let mut out = None;
+    egui::ComboBox::from_id_salt(salt).width(ui.available_width() - 4.0).selected_text(text).show_ui(ui, |ui| {
+        if ui.selectable_label(!mixed && current.is_empty(), format!("Default from Hardware  ({default_name})")).clicked() {
+            out = Some(String::new());
+        }
+        ui.separator();
+        for n in names {
+            if ui.selectable_label(!mixed && current == n, n.as_str()).clicked() {
+                out = Some(n.clone());
+            }
+        }
+    });
+    out
+}
+
+/// Which grip buttons answer a rating scale – chosen freely per block (or for all selected blocks).
+fn rating_buttons_ui(ui: &mut Ui, doc: &mut Document, blocks: &[Block]) {
+    let b = &blocks[0];
+    let hw = doc.paradigm.hardware.clone();
+    let names = hw.button_names();
+    let id_list = ids(blocks);
+    if blocks.len() > 1 && mixed(blocks, "mode") {
+        row(ui, RichText::new(""), |ui| {
+            theme::hint(ui, "Some selected ratings use buttons, some the cursor – choose one way to set the buttons.");
+        });
+        return;
+    }
+    section(ui, "BUTTONS");
+    if b.params.s("mode", "direct") == "cursor" {
+        let defaults = [hw.move_left.clone(), hw.move_right.clone(), hw.confirm.clone()];
+        for (i, (key, title)) in [("cursor_left", "Move left ◀"), ("cursor_right", "Move right ▶"), ("cursor_confirm", "Confirm ✓")]
+            .iter()
+            .enumerate()
+        {
+            let cur = b.params.s(key, "");
+            let mx = blocks.len() > 1 && blocks.iter().any(|o| o.params.s(key, "") != cur);
+            let mut chosen = None;
+            row(ui, lab(title, blocks, &[key]), |ui| {
+                chosen = button_choice(ui, &format!("rb_{key}"), &cur, &defaults[i], mx, &names);
+            });
+            if let Some(v) = chosen {
+                set_params(doc, &id_list, key, json!(v));
+            }
+        }
+        let eff = b.rating_cursor_buttons(&hw);
+        if eff[0] == eff[1] || eff[0] == eff[2] || eff[1] == eff[2] {
+            row(ui, RichText::new(""), |ui| {
+                ui.add(egui::Label::new(RichText::new("⚠ the same button is used twice").color(DANGER).size(12.0)).wrap());
+            });
+        }
+        row(ui, RichText::new(""), |ui| {
+            theme::hint(ui, "The cursor starts in the middle; the participant moves it and confirms. Defaults: Hardware → ResponseGrips.");
+        });
+        return;
+    }
+    // direct: one button per value
+    let (lo, hi) = (b.params.i("min", 1), b.params.i("max", 4));
+    if blocks.iter().any(|o| o.params.i("min", 1) != lo || o.params.i("max", 4) != hi) {
+        row(ui, RichText::new(""), |ui| {
+            theme::hint(ui, "The selected ratings have different scales – select ratings with the same values to set the button for each value.");
+        });
+        return;
+    }
+    let n = (hi - lo + 1).max(0) as usize;
+    let custom = |o: &Block, i: usize| -> String {
+        match o.params.get("value_buttons") {
+            Some(serde_json::Value::Array(a)) => a.get(i).and_then(|v| v.as_str()).unwrap_or("").to_string(),
+            _ => String::new(),
+        }
+    };
+    for i in 0..n {
+        let cur = custom(b, i);
+        let mx = blocks.len() > 1 && blocks.iter().any(|o| custom(o, i) != cur);
+        let default_name = names.get(i).cloned().unwrap_or_else(|| "none".into());
+        let mut chosen = None;
+        let title = format!("Value {}", lo + i as i64);
+        let label = if mx { RichText::new(format!("{title} ≠")).color(ACCENT) } else { RichText::new(title) };
+        row(ui, label, |ui| {
+            chosen = button_choice(ui, &format!("rb_val_{i}"), &cur, &default_name, mx, &names);
+        });
+        if let Some(v) = chosen {
+            let mk = format!("value_buttons@{}", id_list.join(","));
+            doc.edit_merge(Some(&mk), |par| {
+                for id in &id_list {
+                    if let Some(x) = par.block_mut(id) {
+                        let mut arr: Vec<serde_json::Value> = match x.params.get("value_buttons") {
+                            Some(serde_json::Value::Array(a)) => a.clone(),
+                            _ => vec![],
+                        };
+                        if arr.len() < n {
+                            arr.resize(n, json!(""));
+                        }
+                        arr[i] = json!(v.clone());
+                        x.params.insert("value_buttons".into(), serde_json::Value::Array(arr));
+                    }
+                }
+            });
+        }
+    }
+    let eff = b.rating_value_buttons(&hw);
+    let mut seen: Vec<&String> = vec![];
+    let dup = eff.iter().filter(|x| !x.is_empty()).any(|x| {
+        let d = seen.contains(&x);
+        seen.push(x);
+        d
+    });
+    if dup {
+        row(ui, RichText::new(""), |ui| {
+            ui.add(egui::Label::new(RichText::new("⚠ one button is used for several values – only the first one counts").color(DANGER).size(12.0)).wrap());
+        });
+    }
+    if eff.iter().any(|x| x.is_empty()) {
+        row(ui, RichText::new(""), |ui| {
+            ui.add(egui::Label::new(RichText::new("⚠ more values than grip buttons – choose a button for each value or use cursor mode").color(DANGER).size(12.0)).wrap());
+        });
     }
 }
