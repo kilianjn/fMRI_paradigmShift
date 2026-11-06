@@ -1,28 +1,35 @@
 # ParadigmShift
 
-A clean, film-editor style app for designing and running **fMRI paradigms** — written in Python with Qt (PySide6).
+A clean, film-editor style app for designing and running **fMRI paradigms** — written in **Rust**
+(egui), shipped as a **single standalone executable** for Windows, macOS and Linux.
 
 Build your run like a video edit: drag blocks onto a timeline, trim them to whole TRs, drop in pictures, preview
 exactly what the participant will see, then press **Run in scanner**. The app waits for the
 **NordicNeuroLab SyncBox** trigger and records **NNL ResponseGrip** presses and picture ratings into BIDS-style
 `events.tsv` files.
 
-![Editor](docs/screenshots/02_editor_rating_selected.png)
+![Editor](docs/screenshots/01_editor.png)
 
-## Start
+## Download
 
-```bash
-pip install -r requirements.txt
-python -m paradigmshift                                         # empty project
-python -m paradigmshift examples/emotional_rating.paradigm.json # example
-```
+Get the file for your computer from the **[latest release](../../releases/latest)** – nothing to install, no Python:
+
+| Computer | File | How to start |
+|---|---|---|
+| Windows 10/11 (64-bit) | `ParadigmShift-windows-x64.exe` | Double-click. SmartScreen may warn about an unknown publisher: *More info → Run anyway*. |
+| macOS 11+ (Apple Silicon and Intel) | `ParadigmShift-macos-universal.zip` | Unzip and move *ParadigmShift.app* to *Applications*. The app is not notarised: the first time, right-click → *Open*. |
+| Linux x86-64 | `ParadigmShift-linux-x86_64.tar.gz` | `tar xzf ParadigmShift-linux-x86_64.tar.gz && ./ParadigmShift-linux-x86_64/paradigmshift` |
+
+The example paradigms (with their pictures) are built into the executable: **File → Open example**.
+You can also pass a file on the command line: `paradigmshift my_task.paradigm.json`.
+
+> The original Python/Qt version of ParadigmShift lives on the branch `claude/fmri-paradigm-designer-ia52kl`.
+> Both versions read and write the same `*.paradigm.json` files and the same log formats.
 
 ## Paradigm modules
 
 Start from a classic task with **▦ Templates** (Ctrl+T), set the numbers, and get a complete, editable
-timeline. Ready-made projects are in `examples/` (File → Open example).
-
-Ten modules, grouped by research area:
+timeline.
 
 | Module | Default design | What is logged |
 |---|---|---|
@@ -41,10 +48,10 @@ Ten modules, grouped by research area:
 | Visual checkerboard | 8 Hz flickering radial checkerboard 20 s vs. grey 20 s, red fixation dot | – |
 | Resting state | instruction, then 8 min fixation (eyes open) or empty screen | – |
 
-These rely on several block types that you can also use on their own in any paradigm:
+These rely on block types that you can also use on their own in any paradigm:
 
-* **Matching trial** – three pictures (target on top, two choices below). You set the correct side and which
-  grip buttons mean left and right.
+* **Matching trial** – three pictures (target on top, two choices below), the correct side and which grip
+  buttons mean left and right. A frame marks the picture the participant chose (colour adjustable).
 * **Go / No-Go trial** – a letter or picture that is visible for a set time, followed by a fixation symbol. No-Go
   trials are shown in red on the timeline.
 * **Choice trial** – a word, symbol or picture in any colour, plus the correct button, *any* button (hit) or
@@ -53,129 +60,65 @@ These rely on several block types that you can also use on their own in any para
 * **Flickering image** – any image block can alternate with a second picture at a set rate (checkerboard).
 
 **Stimuli:** licensed sets such as NimStim, KDEF, IAPS or OASIS can't be redistributed, so the templates
-generate *placeholder* stimuli: schematic angry/fearful faces, geometric shapes, and abstract neutral/negative
-scenes. For real studies, point the template at your own folders:
-* the Hariri face folder is sorted into angry and fearful faces by file name (`angry`/`fear`, NimStim
-  `_AN_`/`_FE_`, KDEF `AN`/`AF`);
-* the emotion-regulation template takes one folder of neutral and one of negative pictures.
-
-The defaults follow the published protocols, but check them against the protocol you are replicating.
+generate *placeholder* stimuli: schematic angry/fearful faces, geometric shapes, abstract neutral/negative
+scenes, MID cues and checkerboards. For real studies, point the template at your own folders: the Hariri face
+folder is sorted into angry and fearful faces by file name (`angry`/`fear`, NimStim `_AN_`/`_FE_`, KDEF
+`AN`/`AF`); the emotion-regulation template takes one folder of neutral and one of negative pictures. The
+defaults follow the published protocols, but check them against the protocol you are replicating.
 
 ## How it works – at a glance
 
 | Area | What you do there |
 |---|---|
-| **Blocks** (left) | Drag *Fixation, Image, Rating, Instruction, Pause, …* onto the timeline – or double-click to append. |
-| **Pictures** (left) | Import pictures or drop folders; drag one or many onto the timeline (each becomes an image block). |
+| **Blocks** (left) | Drag *Fixation, Image, Rating, Instruction, Pause, …* onto the timeline – or double-click to append. The *Task blocks* tab has Stroop/flanker/N-back trials and whole MID, emotion-regulation, N-back, Hariri, tapping, checkerboard and resting-state sequences. |
+| **Pictures** (left) | Import pictures or drop files/folders on the window; drag one or many onto the timeline (each becomes an image block). |
 | **Participant view** (centre) | Shows the screen at the playhead. ▶ / Space plays a preview of the run. |
-| **Inspector** (right) | Edit the selected block. With nothing selected: TR, dummy scans, background, run summary. |
-| **Timeline** (bottom) | Ruler in time *and* volumes. Drag to move, drag edges to trim, everything snaps to the TR grid and to block edges (hold **Alt** to place freely). Grip presses don't need a block: every press of the whole run is logged anyway. |
-| **▦ Templates** | Hariri, Go/No-Go, emotion regulation – see *Paradigm modules* above. |
+| **Inspector** (right) | Edit the selected block(s). With nothing selected: TR, dummy scans, background, run summary. |
+| **Timeline** (bottom) | Ruler in time *and* volumes. Drag to move, drag edges to trim, everything snaps to the TR grid and to block edges (hold **Alt** to place freely). Right-click for more (duplicate, repeat ×N, split at playhead, close gaps…). |
 | **✦ Quick design** | Builds a whole block design (ON/OFF, alternating or randomised) or an event-related design with jittered ITIs and optional ratings. |
-| **Hardware** | Configure and *live-test* the SyncBox and grips (lamps light up, measured TR is shown, built-in scanner simulator). |
-| **Run in scanner** | Participant ID, run, screen → full-screen presentation that waits for the trigger. |
+| **⚙ Hardware** | Configure and *live-test* the SyncBox and grips (lamps light up, measured TR is shown, built-in scanner simulator). |
+| **Run in scanner** | Participant ID, session, run, screen → full-screen presentation that waits for the trigger. |
 
-Right-click anything on the timeline for more (duplicate, repeat ×N, split at playhead, close gaps…).
-F1 lists the keyboard shortcuts.
+**Editing many blocks at once:** select several blocks of the same type (right-click → *Select all … blocks*,
+**Edit → Select…**, or *Edit all … blocks together* in the inspector). Every setting then applies to all of them;
+settings where they differ are marked **≠**. **Edit → Find and replace** (Ctrl+H) changes words in all texts at once.
+One Ctrl+Z undoes each change. F1 lists the keyboard shortcuts.
+
+**Unpleasant pictures:** *Options → Blur picture previews* (Ctrl+Shift+B) blurs every picture in the editor; a
+separate preference blurs the control-room mirror. The participant's screen always shows the real pictures.
 
 ## During a run: control room & participant screen
 
-**Run in scanner** opens two windows:
+**Run in scanner** turns the main window into the **control room** and opens the **participant screen**
+(full screen on the chosen monitor, usually the projector):
 
-* **Participant screen** (projector): shows only the paradigm. Before the start – including the
-  **dummy scans** – the participant sees a fixation cross, an empty screen or a text of your choice. After the
-  run they see an end text. Trigger counts and other technical information never appear here.
-* **Control room** (operator monitor):
-  * a live mirror of the participant screen;
-  * status: waiting → dummy scans *n / N* → running → finished;
-  * elapsed and remaining time, volume and trigger counts, and the measured TR;
-  * a progress strip of the whole run, with the current and next block;
-  * a live list of answers (RT, correct/incorrect, hit/miss/false alarm, ratings);
-  * a running performance summary, e.g. accuracy per condition, hit/false-alarm rate, mean rating per
-    condition;
-  * warnings when the participant stops answering, when no trigger arrives, or when another app has the
-    keyboard focus (SyncBox keys would be lost).
+* The participant only ever sees the paradigm. Before the start – including the **dummy scans** – they see a
+  fixation cross, an empty screen or a text of your choice; after the run an end text.
+* The control room shows a live mirror of the participant screen; the status (waiting → dummy scans *n / N* →
+  running → finished); elapsed/remaining time, volume and trigger counts and the measured TR; a progress strip of
+  the whole run; the current and next block; a live list of answers (RT, correct/incorrect, hit/miss/false alarm,
+  ratings) and a running performance summary per condition; and warnings when the participant stops answering,
+  when no trigger arrives, or when another app has the keyboard focus (SyncBox keys would be lost).
+* Every section can be **folded** (click its title or use **☰ Sections**); the folding is remembered.
+* Aborting takes two clicks or two presses of Esc (configurable). After an abort the clock stops, the part of the
+  run that never happened is hatched, and the participant sees an empty screen.
 
-  Every section can be **folded** by clicking its title or via **☰ Sections**: status, run progress,
-  participant mirror, now & next, performance and answers. A folded section keeps a one-line summary in
-  its title bar, and the folding is remembered for the next run.
-
-  Aborting takes two clicks or two presses of Esc (configurable). After an abort, the clock stops, the
-  control room clearly shows *ABORTED at mm:ss*, the part of the run that never happened is hatched, and the
-  participant sees an empty screen.
-
-You set the number of dummy scans in the run dialog or in the inspector (nothing selected). The paradigm clock
-starts with trigger *N + 1*. In the **Matching trial** a frame marks the picture the participant chose (colour
-adjustable, can be switched off).
-
-## Task blocks (library tab “Task blocks”)
-
-Next to the basic blocks, the library has ready-made blocks for the standard paradigms. Drag them onto the
-timeline or double-click them. If a block has variants, a small menu asks which one you want.
-
-* **Task trials:**
-  * *Stroop trial*: choose the word and ink colour.
-  * *Flanker trial*: choose the arrow direction and the flankers.
-  * *N-back letter*: choose the letter, whether it is a target, and the level.
-
-  The inspector shows these task settings. Changing them updates the text, colour, correct button and
-  condition automatically, also for many selected trials at once. Trials generated by the templates are
-  task trials too.
-* **Task sequences** insert several blocks at once (as one undo step), moving later blocks on all tracks:
-  * *MID trial* (win / avoid losing / nothing);
-  * *Emotion-regulation trial* (LOOK / DECREASE / INCREASE);
-  * *N-back block* (0-, 1-, 2- or 3-back);
-  * *Hariri block* (faces / shapes);
-  * *Tapping block* (left / right / both; taps are counted as grip presses);
-  * *Checkerboard*;
-  * *Resting state*.
-
-  Right-click on the timeline → *Add block here → Task blocks* works too.
-
-## Editing many blocks at once
-
-* **Select several blocks of the same type**, e.g. all ratings. You can do this in three ways:
-  * right-click a block → *Select all Rating blocks*;
-  * **Edit → Select…** (by type or condition);
-  * in the inspector, *Edit all … blocks together*.
-
-  Every setting in the inspector then applies to all selected blocks, for example *Answer with: one grip
-  button per value / cursor ◀ ▶*. Settings where the blocks differ are marked **≠**. Fields you don't touch
-  stay as they are. One Ctrl+Z undoes the whole change.
-* **Edit → Find and replace text** (Ctrl+H) changes words or sentences in all instructions, rating questions,
-  rating labels and block labels at once.
-
-## Unpleasant pictures
-
-**Options → Blur picture previews** (Ctrl+Shift+B, also in Preferences) blurs every picture preview in the
-editor: timeline thumbnails, picture bin, inspector and participant-view preview. A separate preference
-blurs the control-room mirror. The participant's screen always shows the real pictures.
-
-## Options & preferences
-
-The **Options** menu holds quick switches (snapping, hints, blurred previews, two-step abort, saving
-the paradigm with each run). **Options → Preferences…** (Ctrl+,) has the rest:
-* text size, opening the last file on start, autosave;
-* defaults for new paradigms (TR, dummy scans, background, waiting and end screen) and new blocks, e.g.
-  how new rating blocks are answered (default: cursor ◀ ▶ + confirm);
-* snap distance;
-* default data folder;
-* control room warnings (after how many trials without an answer, after how many TRs without a trigger) and
-  its refresh rate.
+| | |
+|---|---|
+| ![](docs/screenshots/08_control_room.png) Control room during a (simulated) Hariri run | ![](docs/screenshots/09_participant_screen.png) …and what the participant sees: the chosen face is framed |
 
 ## Scanner hardware (NNL)
 
 * **SyncBox** – *USB keyboard mode* (default): the trigger arrives as a key, default `s`.
   *Serial mode* follows **NordicNeuroLab's own serial protocol** (from NNL's
   [py_syncbox](https://github.com/nordicneurolab/py_syncbox)): 57600 baud, trigger `s`, grips `a`–`d`.
-  * **🔍 Auto-detect SyncBox** sends NNL's computer-mode command to every serial port. The SyncBox answers it,
-    so it is found without the scanner running. Port, baud rate, trigger `s` and grip keys `a`–`d` are set.
-    If no box answers, the app falls back to listening for a device that sends on its own.
-  * With **Control the SyncBox from ParadigmShift** (on by default), each run switches the SyncBox to computer
-    mode and configures it with the paradigm's TR and number of volumes (+ dummy scans + margin). Then it
-    starts in synchronisation mode. After the run the box is stopped and returned to manual mode.
-  * **Simulate scanner** then uses the SyncBox's own simulation, which tests the real cable path. The same
-    happens in the run dialog's *Simulate scanner*.
+  * **Auto-detect** sends NNL's computer-mode command to every serial port. The SyncBox answers it, so it is
+    found without the scanner running; port, baud rate, trigger `s` and grip keys `a`–`d` are set. If no box
+    answers, the app listens for a device that sends on its own.
+  * With **Control the SyncBox** (on by default), each run switches the SyncBox to computer mode and configures it
+    with the paradigm's TR and number of volumes (+ dummy scans + margin), then starts it in synchronisation mode.
+    After the run the box is stopped and returned to manual mode. *Simulate scanner* then uses the SyncBox's own
+    simulation, which tests the real cable path.
   * Errors say what to do: port not found, port in use (e.g. by NNL software), Linux `dialout` permission,
     and "the SyncBox did not confirm …".
 * **ResponseGrips** – four named buttons with NNL's keys `a` (left thumb), `b` (left index), `c` (right index),
@@ -188,22 +131,21 @@ the paradigm with each run). **Options → Preferences…** (Ctrl+,) has the res
 For each run (in the chosen folder):
 
 * `sub-01_task-<name>_run-01_events.tsv` – BIDS-style: `onset`, `duration`, `trial_type` (= condition),
-  `stim_file`, `response`, `response_time`, `rating`, `correct`, `outcome` (Go/No-Go: hit, miss, false_alarm,
-  correct_rejection) and `planned_onset` for timing checks.
-* `sub-01_task-<name>_run-01_buttons.tsv` – **every** grip/key press of the whole run, as a separate backup.
-  Each row is written and saved to disk the moment the button is pressed, so it survives a crash or an abort.
-  Columns:
-  * `time`: seconds from the paradigm start, `n/a` before it;
-  * `time_since_open`: seconds since the run window opened;
-  * `volume`, `wall_clock`, `key`, `button`;
-  * the `block` on screen and its `block_kind` and `condition`.
-* `sub-01_task-<name>_run-01_log.tsv` – every trigger and button press with its time.
+  `stim_file`, `response`, `response_time`, `rating`, `correct`, `outcome` (hit, miss, false_alarm,
+  correct_rejection, correct, incorrect) and `planned_onset` for timing checks.
+* `sub-01_task-<name>_run-01_buttons.tsv` – **every** grip/key press of the whole run as a separate backup, written
+  and flushed to disk the moment the button is pressed (survives a crash or an abort): `time`, `time_since_open`,
+  `volume`, `wall_clock`, `key`, `button`, and the `block` on screen with its `block_kind` and `condition`.
+* `sub-01_task-<name>_run-01_log.tsv` – every trigger, button press and stimulus onset with its time.
+* `sub-01_task-<name>_run-01_paradigm.json` – a copy of the paradigm that was run (can be switched off).
 
-Onsets are relative to the first trigger after the dummy scans. **Export onsets** writes the planned design as
-`events.tsv` plus FSL 3-column files per condition.
+Aborted runs get `_ABORTED` in the file names. Onsets are relative to the first trigger after the dummy scans.
+**Export onsets** writes the planned design as `events.tsv` plus FSL 3-column files per condition.
 
-> Timing note: stimuli are switched by a 1 ms precision timer and onsets are logged when the switch happens;
-> drawing is not locked to the display refresh. For publication-grade timing, verify with a photodiode.
+> **Timing note:** stimuli switch on display frames (vsync) and onsets are logged at the frame that first shows
+> them. In serial mode, triggers and grip presses are time-stamped by a dedicated thread the moment they arrive;
+> in USB-keyboard mode they are time-stamped when the window receives the key (within about one frame). For
+> publication-grade timing, verify with a photodiode.
 
 Paradigms are saved as `*.paradigm.json` (picture paths stored relative to the file).
 
@@ -211,34 +153,37 @@ Paradigms are saved as `*.paradigm.json` (picture paths stored relative to the f
 
 | | |
 |---|---|
-| ![](docs/screenshots/01_empty_start.png) First launch – the empty timeline tells you what to do | ![](docs/screenshots/03_editor_image_zoomed.png) Zoomed in: picture thumbnails and conditions |
-| ![](docs/screenshots/04_editor_paradigm_settings.png) Nothing selected → paradigm settings & summary | ![](docs/screenshots/07_quick_design.png) Quick design wizard |
-| ![](docs/screenshots/05_hardware_syncbox.png) SyncBox setup with live trigger monitor | ![](docs/screenshots/06_hardware_grips.png) ResponseGrips with live button lamps |
-| ![](docs/screenshots/08_run_dialog.png) Run setup | ![](docs/screenshots/10_participant_rating.png) Participant screen: rating trial |
-| ![](docs/screenshots/11_templates_hariri.png) Templates: Hariri | ![](docs/screenshots/12_templates_emoreg.png) Templates: emotion regulation |
-| ![](docs/screenshots/13_hariri_editor.png) Hariri in the editor | ![](docs/screenshots/14_gonogo_editor.png) Go/No-Go – No-Go trials in red |
-| ![](docs/screenshots/15_emoreg_editor.png) Emotion regulation: cue → picture → rating → relax | ![](docs/screenshots/16_participant_hariri.png) Participant screen: Hariri trial, chosen face framed |
-| ![](docs/screenshots/18_control_room_hariri.png) Control room during a Hariri run | ![](docs/screenshots/19_control_room_gonogo.png) Control room during Go/No-Go |
-| ![](docs/screenshots/17_control_room_dummy_scans.png) Control room during dummy scans | ![](docs/screenshots/09_participant_waiting.png) …while the participant only sees the fixation cross |
-| ![](docs/screenshots/23_control_room_aborted.png) Aborted run: clock stopped, rest hatched | ![](docs/screenshots/20_bulk_edit_ratings.png) All 8 rating blocks edited together (≠ = different values) |
-| ![](docs/screenshots/21_find_replace.png) Find and replace in all texts | ![](docs/screenshots/22_preferences.png) Preferences |
-| ![](docs/screenshots/24_templates_stroop.png) Template list by category: Stroop | ![](docs/screenshots/25_templates_mid.png) Monetary incentive delay template |
-| ![](docs/screenshots/26_mid_editor.png) MID in the editor: cue → anticipation → target → feedback | ![](docs/screenshots/27_nback_editor.png) N-back in the editor |
-| ![](docs/screenshots/28_participant_stroop.png) Stroop trial | ![](docs/screenshots/29_participant_flanker.png) Flanker trial (incongruent) |
-| ![](docs/screenshots/30_participant_mid_feedback.png) MID feedback after a hit | ![](docs/screenshots/31_participant_checkerboard.png) Visual checkerboard |
-| ![](docs/screenshots/34_blurred_previews.png) Blurred previews (emotion regulation) | ![](docs/screenshots/36_control_room_folded.png) Control room with folded sections |
-| ![](docs/screenshots/32_task_blocks_stroop.png) Task blocks tab; a Stroop trial with its task settings | ![](docs/screenshots/33_task_blocks_sequences.png) Resting + 3 MID trials + tapping block, inserted from the library |
+| ![](docs/screenshots/02_templates.png) Templates: Hariri | ![](docs/screenshots/03_templates_stroop.png) Templates: Stroop |
+| ![](docs/screenshots/04_bulk_edit.png) All 8 rating blocks edited together (≠ = different values) | ![](docs/screenshots/05_quick_design.png) Quick design wizard |
+| ![](docs/screenshots/06_hardware.png) SyncBox setup with live trigger monitor | ![](docs/screenshots/07_run_dialog.png) Run setup |
+| ![](docs/screenshots/12_hariri_editor.png) Hariri in the editor | ![](docs/screenshots/13_mid_editor.png) MID in the editor |
+| ![](docs/screenshots/10_find_replace.png) Find and replace in all texts | ![](docs/screenshots/11_preferences.png) Preferences |
+| ![](docs/screenshots/14_blurred_previews.png) Blurred previews | |
 
-Screenshots are generated with `QT_QPA_PLATFORM=offscreen python tools/screenshots.py`.
+The screenshots are generated by the app itself, e.g.
+`paradigmshift --screenshot out.png --scene editor` (scenes: `editor`, `templates`, `bulk`, `quick`,
+`hardware`, `run_dialog`, `control`, `participant`, `find`, `prefs`, `hariri`, `mid`, `blur`).
 
-## Development
+## Building from source
+
+Install Rust (<https://rustup.rs>), then:
 
 ```bash
-pip install -e ".[test,serial]"
-QT_QPA_PLATFORM=offscreen pytest
-python tools/make_example.py     # regenerates examples/
+cargo run --release                     # start the editor
+cargo run --release -- examples/emotional_rating.paradigm.json
+cargo test                              # unit tests (model, templates, runner, SyncBox protocol)
 ```
 
-Code layout: `model.py` (paradigm, blocks, generators – no Qt), `templates.py` (Hariri, Go/No-Go, emotion
-regulation), `placeholders.py` (generated stimuli), `timeline.py`, `panels.py`, `dialogs.py`,
-`runner.py` (run clock, logging, participant screen), `controlroom.py` (operator window), `prefs.py` (preferences), `presets.py` (task blocks), `hardware.py` (SyncBox/grips input), `stimulus.py` (shared renderer).
+On Linux the build needs no extra libraries; at runtime the usual desktop libraries (X11 or Wayland, OpenGL,
+`libxkbcommon`) are loaded.
+
+The release workflow (`.github/workflows/release.yml`) builds the Windows `.exe`, a universal macOS `.app` and the
+Linux binary on every push to the main/development branch or a `v*` tag, and publishes them as a GitHub Release.
+
+Code layout (`src/`): `model.rs` (paradigm, blocks, generators – no GUI), `templates.rs` (the ten paradigm
+modules), `presets.rs` (task blocks), `placeholders.rs` (generated stimuli), `hardware.rs` (SyncBox/grips input,
+NNL serial protocol, auto-detect), `runner.rs` (run clock, scoring, logging), `stimulus.rs` (shared renderer),
+`timeline.rs`, `panels.rs` (library, picture bin, inspector), `dialogs.rs`, `controlroom.rs`, `app.rs` (main window),
+`prefs.rs`, `document.rs` (undo/redo).
+
+Bundled fonts: Inter (SIL Open Font License) and DejaVu Sans (Bitstream Vera license), see `assets/fonts/`.

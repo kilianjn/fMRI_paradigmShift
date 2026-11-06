@@ -1,0 +1,176 @@
+name: Build & release
+
+# Builds standalone executables for Windows, macOS and Linux and publishes them as a GitHub Release.
+#  * push of a tag "v*"             → release for that tag
+#  * push to main / the dev branch  → (re)publishes the release "v<version from Cargo.toml>"
+#  * pull requests                  → test + build only
+on:
+  push:
+    branches: [main, master, "claude/rust-rewrite-executable-bxs37m"]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Unit tests
+        run: cargo test --locked
+
+  build:
+    name: build (${{ matrix.name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows
+            os: windows-latest
+          - name: macos
+            os: macos-14
+          - name: linux
+            os: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.name == 'macos' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.name }}
+
+      - name: Build (Windows)
+        if: matrix.name == 'windows'
+        shell: bash
+        run: |
+          cargo build --release --locked
+          mkdir -p dist
+          cp target/release/paradigmshift.exe dist/ParadigmShift-windows-x64.exe
+
+      - name: Build (Linux)
+        if: matrix.name == 'linux'
+        run: |
+          cargo build --release --locked
+          mkdir -p dist/ParadigmShift-linux-x86_64
+          cp target/release/paradigmshift dist/ParadigmShift-linux-x86_64/paradigmshift
+          cp assets/icon/icon_256.png dist/ParadigmShift-linux-x86_64/paradigmshift.png
+          cat > dist/ParadigmShift-linux-x86_64/paradigmshift.desktop <<'EOF'
+          [Desktop Entry]
+          Type=Application
+          Name=ParadigmShift
+          Comment=Timeline editor and presenter for fMRI paradigms
+          Exec=paradigmshift %f
+          Icon=paradigmshift
+          Categories=Science;Education;
+          EOF
+          tar -C dist -czf dist/ParadigmShift-linux-x86_64.tar.gz ParadigmShift-linux-x86_64
+          rm -rf dist/ParadigmShift-linux-x86_64
+
+      - name: Build (macOS universal .app)
+        if: matrix.name == 'macos'
+        env:
+          MACOSX_DEPLOYMENT_TARGET: "11.0"
+        run: |
+          cargo build --release --locked --target aarch64-apple-darwin
+          cargo build --release --locked --target x86_64-apple-darwin
+          APP=dist/ParadigmShift.app
+          mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+          lipo -create -output "$APP/Contents/MacOS/ParadigmShift" \
+            target/aarch64-apple-darwin/release/paradigmshift target/x86_64-apple-darwin/release/paradigmshift
+          ICONSET=dist/AppIcon.iconset
+          mkdir -p $ICONSET
+          for s in 16 32 128 256 512; do
+            cp assets/icon/icon_$s.png $ICONSET/icon_${s}x${s}.png
+            cp assets/icon/icon_$((s*2)).png $ICONSET/icon_${s}x${s}@2x.png
+          done
+          iconutil -c icns $ICONSET -o "$APP/Contents/Resources/AppIcon.icns"
+          VERSION=$(grep -m1 '^version' Cargo.toml | cut -d'"' -f2)
+          cat > "$APP/Contents/Info.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleName</key><string>ParadigmShift</string>
+            <key>CFBundleDisplayName</key><string>ParadigmShift</string>
+            <key>CFBundleIdentifier</key><string>org.paradigmshift.app</string>
+            <key>CFBundleExecutable</key><string>ParadigmShift</string>
+            <key>CFBundleIconFile</key><string>AppIcon</string>
+            <key>CFBundlePackageType</key><string>APPL</string>
+            <key>CFBundleShortVersionString</key><string>$VERSION</string>
+            <key>CFBundleVersion</key><string>$VERSION</string>
+            <key>LSMinimumSystemVersion</key><string>11.0</string>
+            <key>NSHighResolutionCapable</key><true/>
+          </dict>
+          </plist>
+          EOF
+          # ad-hoc signature so Apple Silicon Macs accept the universal binary
+          codesign --force --deep --sign - "$APP"
+          (cd dist && ditto -c -k --keepParent ParadigmShift.app ParadigmShift-macos-universal.zip)
+          rm -rf "$APP" $ICONSET
+
+      - name: Smoke test
+        if: matrix.name != 'macos'
+        shell: bash
+        run: |
+          if [ "${{ matrix.name }}" = "windows" ]; then target/release/paradigmshift.exe --version; else target/release/paradigmshift --version; fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: paradigmshift-${{ matrix.name }}
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    needs: [test, build]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          ls -la dist
+          VERSION=$(grep -m1 '^version' Cargo.toml | cut -d'"' -f2)
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then TAG="${GITHUB_REF#refs/tags/}"; else TAG="v$VERSION"; fi
+          cat > notes.md <<EOF
+          ## ParadigmShift $VERSION – standalone downloads
+
+          No installation, no Python: download the file for your computer and start it.
+
+          | Computer | File | How to start |
+          |---|---|---|
+          | Windows 10/11 (64-bit) | **ParadigmShift-windows-x64.exe** | Double-click. If SmartScreen warns about an unknown app: *More info → Run anyway*. |
+          | macOS 11+ (Apple Silicon & Intel) | **ParadigmShift-macos-universal.zip** | Unzip, move *ParadigmShift.app* to Applications. First start: right-click → *Open* (the app is not notarised). |
+          | Linux x86-64 | **ParadigmShift-linux-x86_64.tar.gz** | \`tar xzf ParadigmShift-linux-x86_64.tar.gz && ./ParadigmShift-linux-x86_64/paradigmshift\` |
+
+          The example paradigms are built in: *File → Open example*.
+
+          Built from commit $GITHUB_SHA.
+          EOF
+          if [[ "$GITHUB_REF" != refs/tags/* ]]; then
+            # branch build: replace the release (and move its tag) to this commit
+            gh release delete "$TAG" --yes --cleanup-tag || true
+            git push --delete origin "$TAG" 2>/dev/null || true
+          fi
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/* --clobber
+            gh release edit "$TAG" --notes-file notes.md
+          else
+            gh release create "$TAG" dist/* --target "$GITHUB_SHA" --title "ParadigmShift $VERSION" --notes-file notes.md --latest
+          fi

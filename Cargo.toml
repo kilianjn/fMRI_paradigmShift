@@ -1,0 +1,31 @@
+[package]
+name = "paradigmshift"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.95"
+description = "Timeline editor and presenter for fMRI paradigms (NNL SyncBox & ResponseGrips)"
+license = "MIT"
+build = "build.rs"
+
+[dependencies]
+eframe = { version = "0.37", default-features = false, features = ["default_fonts", "glow", "wayland", "x11", "persistence"] }
+egui = { version = "0.37", default-features = false }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "bmp", "gif", "tiff", "webp"] }
+tiny-skia = { version = "0.12", default-features = false, features = ["std", "simd", "png-format"] }
+serialport = { version = "4.10", default-features = false }
+rfd = { version = "0.17", default-features = false, features = ["xdg-portal", "pollster", "wayland"] }
+regex = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+directories = "6"
+open = "5"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 4
+strip = true
+
+[target.'cfg(windows)'.build-dependencies]
+winresource = "0.1"
