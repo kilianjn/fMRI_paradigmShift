@@ -438,15 +438,7 @@ class HardwareDialog(QDialog):
             self._add_row(b)
         add = QPushButton("＋ Add button")
         add.clicked.connect(lambda: self._add_row(GripButton(f"Button {len(self._rows) + 1}", ""), new=True))
-        nnl = QPushButton("Use NNL serial keys (a – d)")
-        nnl.setToolTip("In serial mode the SyncBox sends a = left thumb, b = left index, c = right index, "
-                       "d = right thumb.")
-        nnl.clicked.connect(self._apply_nnl_keys)
-        row_ = QHBoxLayout()
-        row_.addWidget(add)
-        row_.addWidget(nnl)
-        row_.addStretch()
-        lay.addLayout(row_)
+        lay.addWidget(add, 0, Qt.AlignLeft)
 
         box = QFrame()
         box.setObjectName("Panel")

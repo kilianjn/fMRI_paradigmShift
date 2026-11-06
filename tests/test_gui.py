@@ -151,7 +151,7 @@ def test_full_run_with_simulated_scanner(app, tmp_path):
     got = []
     c.finished.connect(lambda files: (got.extend(files), loop.quit()))
     QTimer.singleShot(10000, loop.quit)
-    QTimer.singleShot(2400, lambda: c.router.feed("2"))   # a grip press during the response window
+    QTimer.singleShot(2400, lambda: c.router.feed("b"))   # a grip press during the response window
     loop.exec()
     poll.stop()
     app.processEvents()
@@ -291,7 +291,7 @@ def test_mid_like_run_end_to_end(app, tmp_path):
     c.finished.connect(lambda f: (got.extend(f), loop.quit()))
     QTimer.singleShot(10000, loop.quit)
     # simulated scanner starts after 1.5 s; press during the first target only
-    QTimer.singleShot(1500 + 900, lambda: c.router.feed("3"))
+    QTimer.singleShot(1500 + 900, lambda: c.router.feed("c"))
     loop.exec()
     rows = list(csv.DictReader(open(got[0]), delimiter="\t"))
     fb = [r for r in rows if r["block"] == "feedback"]

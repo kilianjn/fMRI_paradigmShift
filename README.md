@@ -177,9 +177,8 @@ the paradigm with each run). **Options → Preferences…** (Ctrl+,) has the res
     happens in the run dialog's *Simulate scanner*.
   * Errors say what to do: port not found, port in use (e.g. by NNL software), Linux `dialout` permission,
     and "the SyncBox did not confirm …".
-* **ResponseGrips** – four named buttons. Default keys are `1`–`4` (keyboard mode). For serial mode,
-  *Use NNL serial keys (a – d)* sets them, which auto-detect also does. Rename, add, or re-learn keys in the
-  Hardware dialog.
+* **ResponseGrips** – four named buttons with NNL's keys `a` (left thumb), `b` (left index), `c` (right index),
+  `d` (right thumb). Rename, add, or re-learn keys in the Hardware dialog.
 * **Rating scales** – *direct* (each grip button = one value) or *cursor* (move ◀ ▶, confirm ✓).
 * **Simulate scanner** – test any paradigm on a laptop; triggers are generated at the TR.
 

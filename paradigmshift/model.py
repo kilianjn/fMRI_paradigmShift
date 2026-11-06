@@ -225,10 +225,11 @@ class Hardware:
     syncbox_pulse_ms: int = 100      # pulse length (used by the SyncBox's own simulation)
     # NNL ResponseGrips – their buttons reach the PC through the SyncBox the same way.
     buttons: list = field(default_factory=lambda: [
-        GripButton("Left thumb", "1"),
-        GripButton("Left index", "2"),
-        GripButton("Right index", "3"),
-        GripButton("Right thumb", "4"),
+        # NNL's keys: the SyncBox sends a / b / c / d for these buttons
+        GripButton("Left thumb", "a"),
+        GripButton("Left index", "b"),
+        GripButton("Right index", "c"),
+        GripButton("Right thumb", "d"),
     ])
     # Rating scales in "cursor" mode
     move_left: str = "Left index"

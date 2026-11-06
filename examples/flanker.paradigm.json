@@ -23,7 +23,7 @@
         "size": 32,
         "color": "#FFFFFF"
       },
-      "id": "dae7b9413e"
+      "id": "caa154d25b"
     },
     {
       "kind": "fixation",
@@ -37,7 +37,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ef86912ab3"
+      "id": "7480d3d29b"
     },
     {
       "kind": "choice",
@@ -61,7 +61,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "a101bbaae3"
+      "id": "351a9c7b80"
     },
     {
       "kind": "fixation",
@@ -75,7 +75,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "253150c976"
+      "id": "d7a9b77cde"
     },
     {
       "kind": "choice",
@@ -99,7 +99,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "30ba4d221d"
+      "id": "d2edfd496b"
     },
     {
       "kind": "fixation",
@@ -113,7 +113,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "e6cc5611ee"
+      "id": "42ec925ecd"
     },
     {
       "kind": "choice",
@@ -137,7 +137,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "ea54f68ba6"
+      "id": "d807a94d22"
     },
     {
       "kind": "fixation",
@@ -151,7 +151,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "22658a1614"
+      "id": "20746f946a"
     },
     {
       "kind": "choice",
@@ -175,7 +175,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "60516c9630"
+      "id": "ede89ebfa2"
     },
     {
       "kind": "fixation",
@@ -189,7 +189,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "358898c476"
+      "id": "7746eb4dbb"
     },
     {
       "kind": "choice",
@@ -213,7 +213,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "c0a79981f0"
+      "id": "f6ff8eaad7"
     },
     {
       "kind": "fixation",
@@ -227,7 +227,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "712b171f14"
+      "id": "cf2d720c15"
     },
     {
       "kind": "choice",
@@ -251,7 +251,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "5ff9f4ddc6"
+      "id": "7ec2d28520"
     },
     {
       "kind": "fixation",
@@ -265,7 +265,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "141c616c9e"
+      "id": "a6a480b3f4"
     },
     {
       "kind": "choice",
@@ -289,7 +289,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "af3ee911cd"
+      "id": "949e58b362"
     },
     {
       "kind": "fixation",
@@ -303,7 +303,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c7213b53e4"
+      "id": "903cd13ea8"
     },
     {
       "kind": "choice",
@@ -327,7 +327,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "493b7614b3"
+      "id": "8260eeef27"
     },
     {
       "kind": "fixation",
@@ -341,7 +341,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "f61e4d2dd7"
+      "id": "c92870ca59"
     },
     {
       "kind": "choice",
@@ -365,7 +365,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "486350046e"
+      "id": "7647e38a3e"
     },
     {
       "kind": "fixation",
@@ -379,7 +379,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "6699cfabc2"
+      "id": "b4d66961bd"
     },
     {
       "kind": "choice",
@@ -403,7 +403,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "15b7278bf7"
+      "id": "51c4445479"
     },
     {
       "kind": "fixation",
@@ -417,7 +417,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "66426bf41c"
+      "id": "41bedf92b3"
     },
     {
       "kind": "choice",
@@ -441,7 +441,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "b778dad63d"
+      "id": "870176efbf"
     },
     {
       "kind": "fixation",
@@ -455,7 +455,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "1b505472b2"
+      "id": "c3a9d0bb54"
     },
     {
       "kind": "choice",
@@ -479,7 +479,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "c39979a5c3"
+      "id": "bccf4811d6"
     },
     {
       "kind": "fixation",
@@ -493,7 +493,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "36a1d6511f"
+      "id": "50f214a9d3"
     },
     {
       "kind": "choice",
@@ -517,7 +517,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "76a050516f"
+      "id": "2f5c4af2df"
     },
     {
       "kind": "fixation",
@@ -531,7 +531,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "039c527060"
+      "id": "17d682e594"
     },
     {
       "kind": "choice",
@@ -555,7 +555,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "21e70456b1"
+      "id": "16ee4a7ede"
     },
     {
       "kind": "fixation",
@@ -569,7 +569,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "d727637f0d"
+      "id": "2349a5d743"
     },
     {
       "kind": "choice",
@@ -593,7 +593,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "3c4a37ea2f"
+      "id": "caf5634513"
     },
     {
       "kind": "fixation",
@@ -607,7 +607,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "f366fbb828"
+      "id": "6a4979ae2e"
     },
     {
       "kind": "choice",
@@ -631,7 +631,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "2b6690c0fe"
+      "id": "9b423f0309"
     },
     {
       "kind": "fixation",
@@ -645,7 +645,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0c74f71e58"
+      "id": "293924b2cc"
     },
     {
       "kind": "choice",
@@ -669,7 +669,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "9a39e0c5cd"
+      "id": "d5c3e3ac0f"
     },
     {
       "kind": "fixation",
@@ -683,7 +683,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "cd561f38b7"
+      "id": "166552fea3"
     },
     {
       "kind": "choice",
@@ -707,7 +707,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "18eb0dc5e2"
+      "id": "649e3446d5"
     },
     {
       "kind": "fixation",
@@ -721,7 +721,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "a33111798f"
+      "id": "c6322a2f4c"
     },
     {
       "kind": "choice",
@@ -745,7 +745,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "b8ed808eae"
+      "id": "02ef1324bb"
     },
     {
       "kind": "fixation",
@@ -759,7 +759,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "6faa2c5c6b"
+      "id": "bca60db356"
     },
     {
       "kind": "choice",
@@ -783,7 +783,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "e63ebf2dd9"
+      "id": "f471931396"
     },
     {
       "kind": "fixation",
@@ -797,7 +797,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "6643415e97"
+      "id": "7b2834dbeb"
     },
     {
       "kind": "choice",
@@ -821,7 +821,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "2ee838be24"
+      "id": "10078c4e55"
     },
     {
       "kind": "fixation",
@@ -835,7 +835,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "de694ff43f"
+      "id": "b97ed8d468"
     },
     {
       "kind": "choice",
@@ -859,7 +859,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "032089df7d"
+      "id": "3d692c2efd"
     },
     {
       "kind": "fixation",
@@ -873,7 +873,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "6a895f68b8"
+      "id": "a161f8703f"
     },
     {
       "kind": "choice",
@@ -897,7 +897,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "83a5a3f06f"
+      "id": "ce13a344e2"
     },
     {
       "kind": "fixation",
@@ -911,7 +911,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "07e0d98b99"
+      "id": "69abba4281"
     },
     {
       "kind": "choice",
@@ -935,7 +935,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "e4a23571ac"
+      "id": "892233319b"
     },
     {
       "kind": "fixation",
@@ -949,7 +949,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0d3e48c72e"
+      "id": "ccf3e88455"
     },
     {
       "kind": "choice",
@@ -973,7 +973,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "ca8655e72c"
+      "id": "b52923c45a"
     },
     {
       "kind": "fixation",
@@ -987,7 +987,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "da6f6ad11a"
+      "id": "0c6736fbd8"
     },
     {
       "kind": "choice",
@@ -1011,7 +1011,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "0824c02500"
+      "id": "4bcae05d04"
     },
     {
       "kind": "fixation",
@@ -1025,7 +1025,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "563f564a69"
+      "id": "8869000e37"
     },
     {
       "kind": "choice",
@@ -1049,7 +1049,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "dc40b6e057"
+      "id": "86ff35895c"
     },
     {
       "kind": "fixation",
@@ -1063,7 +1063,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3a145925f4"
+      "id": "5e712deae3"
     },
     {
       "kind": "choice",
@@ -1087,7 +1087,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "eeb279a770"
+      "id": "07820be83d"
     },
     {
       "kind": "fixation",
@@ -1101,7 +1101,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "251e38fc87"
+      "id": "e6943afa68"
     },
     {
       "kind": "choice",
@@ -1125,7 +1125,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "48051ca138"
+      "id": "212cb565cb"
     },
     {
       "kind": "fixation",
@@ -1139,7 +1139,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "58d027c4d9"
+      "id": "b8f3531e8e"
     },
     {
       "kind": "choice",
@@ -1163,7 +1163,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "743120cffd"
+      "id": "56836c9c28"
     },
     {
       "kind": "fixation",
@@ -1177,7 +1177,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "77da488f3a"
+      "id": "89828750a5"
     },
     {
       "kind": "choice",
@@ -1201,7 +1201,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "86a27073b0"
+      "id": "2d0a2ad148"
     },
     {
       "kind": "fixation",
@@ -1215,7 +1215,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7ea7b0f342"
+      "id": "99b1182c69"
     },
     {
       "kind": "choice",
@@ -1239,7 +1239,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "9060d3164e"
+      "id": "1672895abc"
     },
     {
       "kind": "fixation",
@@ -1253,7 +1253,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "644330e09b"
+      "id": "f6b65ca472"
     },
     {
       "kind": "choice",
@@ -1277,7 +1277,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "e9f4dab8ef"
+      "id": "5c3b62b048"
     },
     {
       "kind": "fixation",
@@ -1291,7 +1291,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "d9d1be27d2"
+      "id": "b5db67d653"
     },
     {
       "kind": "choice",
@@ -1315,7 +1315,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "f2d9509a60"
+      "id": "aca0027241"
     },
     {
       "kind": "fixation",
@@ -1329,7 +1329,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "a8a9c94337"
+      "id": "c8a5125b4e"
     },
     {
       "kind": "choice",
@@ -1353,7 +1353,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "296bc53c7b"
+      "id": "bf9fc434a7"
     },
     {
       "kind": "fixation",
@@ -1367,7 +1367,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "145b410e97"
+      "id": "294e4928b8"
     },
     {
       "kind": "choice",
@@ -1391,7 +1391,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "3e5d242724"
+      "id": "1779bb7e1f"
     },
     {
       "kind": "fixation",
@@ -1405,7 +1405,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "2128db6481"
+      "id": "4addea2223"
     },
     {
       "kind": "choice",
@@ -1429,7 +1429,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "13ef26ef85"
+      "id": "de1b8e6c18"
     },
     {
       "kind": "fixation",
@@ -1443,7 +1443,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "f5a775493e"
+      "id": "0cdaeb2a5b"
     },
     {
       "kind": "choice",
@@ -1467,7 +1467,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "910ec07e83"
+      "id": "90c350b365"
     },
     {
       "kind": "fixation",
@@ -1481,7 +1481,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3cc0c21071"
+      "id": "c74fa516eb"
     },
     {
       "kind": "choice",
@@ -1505,7 +1505,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "081ae2289f"
+      "id": "44bcfbabb8"
     },
     {
       "kind": "fixation",
@@ -1519,7 +1519,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "777d81d162"
+      "id": "69471a3646"
     },
     {
       "kind": "choice",
@@ -1543,7 +1543,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "613fedd816"
+      "id": "b93f2da8ab"
     },
     {
       "kind": "fixation",
@@ -1557,7 +1557,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "2b04c3257a"
+      "id": "58c760021a"
     },
     {
       "kind": "choice",
@@ -1581,7 +1581,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "74c48a6724"
+      "id": "52d421a8d7"
     },
     {
       "kind": "fixation",
@@ -1595,7 +1595,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "48a38579a5"
+      "id": "8d3be89fc2"
     },
     {
       "kind": "choice",
@@ -1619,7 +1619,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "049b11056a"
+      "id": "cf95c30a59"
     },
     {
       "kind": "fixation",
@@ -1633,7 +1633,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ae86e40e95"
+      "id": "e1df00cee5"
     },
     {
       "kind": "choice",
@@ -1657,7 +1657,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "2fede8550d"
+      "id": "f443b1132c"
     },
     {
       "kind": "fixation",
@@ -1671,7 +1671,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "fcdb6ab748"
+      "id": "9125e95a05"
     },
     {
       "kind": "choice",
@@ -1695,7 +1695,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "da22b34342"
+      "id": "8a1aefc71b"
     },
     {
       "kind": "fixation",
@@ -1709,7 +1709,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "dabd26467b"
+      "id": "6e3ccff83d"
     },
     {
       "kind": "choice",
@@ -1733,7 +1733,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "2bc872b28e"
+      "id": "d8cf2d747c"
     },
     {
       "kind": "fixation",
@@ -1747,7 +1747,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "4c2e9296c7"
+      "id": "b0033c8398"
     },
     {
       "kind": "choice",
@@ -1771,7 +1771,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "0de85b59ee"
+      "id": "2d0b7fe42b"
     },
     {
       "kind": "fixation",
@@ -1785,7 +1785,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "4f438fae0a"
+      "id": "beb4ec5327"
     },
     {
       "kind": "choice",
@@ -1809,7 +1809,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "196167c5d2"
+      "id": "ddbd9fe313"
     },
     {
       "kind": "fixation",
@@ -1823,7 +1823,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c03a4b8f1c"
+      "id": "b7f6eb1dce"
     },
     {
       "kind": "choice",
@@ -1847,7 +1847,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "984a590255"
+      "id": "88d6bc9a52"
     },
     {
       "kind": "fixation",
@@ -1861,7 +1861,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "b4dcb31b20"
+      "id": "9fe77a75cf"
     },
     {
       "kind": "choice",
@@ -1885,7 +1885,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "801d1fefc6"
+      "id": "99bdb0233b"
     },
     {
       "kind": "fixation",
@@ -1899,7 +1899,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c715667ff7"
+      "id": "7638e6b1be"
     },
     {
       "kind": "choice",
@@ -1923,7 +1923,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "8d54bc4f05"
+      "id": "5c6edd6990"
     },
     {
       "kind": "fixation",
@@ -1937,7 +1937,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "5d28615998"
+      "id": "fe010384d0"
     },
     {
       "kind": "choice",
@@ -1961,7 +1961,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "d75c81c94e"
+      "id": "847322bd53"
     },
     {
       "kind": "fixation",
@@ -1975,7 +1975,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "5d93d958ce"
+      "id": "8ee466a020"
     },
     {
       "kind": "choice",
@@ -1999,7 +1999,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "d19bba921a"
+      "id": "758c05bb11"
     },
     {
       "kind": "fixation",
@@ -2013,7 +2013,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0f687a2140"
+      "id": "77e2e89f6a"
     },
     {
       "kind": "choice",
@@ -2037,7 +2037,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "3312f900f8"
+      "id": "b5e8ccaa6b"
     },
     {
       "kind": "fixation",
@@ -2051,7 +2051,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3e887f47c3"
+      "id": "2435b70b89"
     },
     {
       "kind": "choice",
@@ -2075,7 +2075,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "40d539306a"
+      "id": "ba12e052b4"
     },
     {
       "kind": "fixation",
@@ -2089,7 +2089,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "1f2b28bfad"
+      "id": "f0873cb6a1"
     },
     {
       "kind": "choice",
@@ -2113,7 +2113,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "cfe24412e5"
+      "id": "8fe97a99ea"
     },
     {
       "kind": "fixation",
@@ -2127,7 +2127,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "1be4d6973c"
+      "id": "7d9282d33f"
     },
     {
       "kind": "choice",
@@ -2151,7 +2151,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "db7a137bc0"
+      "id": "c3b6ad9c9c"
     },
     {
       "kind": "fixation",
@@ -2165,7 +2165,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "fe62b4a771"
+      "id": "bb2dea2e90"
     },
     {
       "kind": "choice",
@@ -2189,7 +2189,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "43ac580996"
+      "id": "2cec609310"
     },
     {
       "kind": "fixation",
@@ -2203,7 +2203,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "aa6fe26339"
+      "id": "233b04a79d"
     },
     {
       "kind": "choice",
@@ -2227,7 +2227,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "a091d5c537"
+      "id": "405e6ddb73"
     },
     {
       "kind": "fixation",
@@ -2241,7 +2241,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "6db698a00d"
+      "id": "9dbcf439ef"
     },
     {
       "kind": "choice",
@@ -2265,7 +2265,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "709bddc9f1"
+      "id": "335ef833a7"
     },
     {
       "kind": "fixation",
@@ -2279,7 +2279,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "dcc7daa079"
+      "id": "b3c2cf7881"
     },
     {
       "kind": "choice",
@@ -2303,7 +2303,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "06575631e7"
+      "id": "dd8cc62ffb"
     },
     {
       "kind": "fixation",
@@ -2317,7 +2317,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "5145cb42ef"
+      "id": "2304894fc4"
     },
     {
       "kind": "choice",
@@ -2341,7 +2341,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "841aaf8337"
+      "id": "a4d7e9d0f8"
     },
     {
       "kind": "fixation",
@@ -2355,7 +2355,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "dbb5e4c783"
+      "id": "fed724ab19"
     },
     {
       "kind": "choice",
@@ -2379,7 +2379,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "804bdb4392"
+      "id": "71e8933c71"
     },
     {
       "kind": "fixation",
@@ -2393,7 +2393,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "2f0e80207a"
+      "id": "687e7e4c12"
     },
     {
       "kind": "choice",
@@ -2417,7 +2417,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "316bd0131c"
+      "id": "6680be798d"
     },
     {
       "kind": "fixation",
@@ -2431,7 +2431,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "21adcd1f57"
+      "id": "dfda910505"
     },
     {
       "kind": "choice",
@@ -2455,7 +2455,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "5e08616ff0"
+      "id": "b6e4aaebb3"
     },
     {
       "kind": "fixation",
@@ -2469,7 +2469,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "4b599a210d"
+      "id": "554ec671af"
     },
     {
       "kind": "choice",
@@ -2493,7 +2493,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "51a879a3e0"
+      "id": "3188ec7d15"
     },
     {
       "kind": "fixation",
@@ -2507,7 +2507,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "e8537aaba5"
+      "id": "63c48293b0"
     },
     {
       "kind": "choice",
@@ -2531,7 +2531,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "c66feca63e"
+      "id": "72347994fb"
     },
     {
       "kind": "fixation",
@@ -2545,7 +2545,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "9c3428dbe2"
+      "id": "f5c4726c0c"
     },
     {
       "kind": "choice",
@@ -2569,7 +2569,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "e6c6bf8f2b"
+      "id": "d0e21b0d0f"
     },
     {
       "kind": "fixation",
@@ -2583,7 +2583,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "94b729612d"
+      "id": "ac2b7c0157"
     },
     {
       "kind": "choice",
@@ -2607,7 +2607,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "59491edfbe"
+      "id": "3cef54ed72"
     },
     {
       "kind": "fixation",
@@ -2621,7 +2621,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "813c2bb569"
+      "id": "ed802168bb"
     },
     {
       "kind": "choice",
@@ -2645,7 +2645,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "68d38b8081"
+      "id": "2aefdfa69c"
     },
     {
       "kind": "fixation",
@@ -2659,7 +2659,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7527b42148"
+      "id": "214c24cfbc"
     },
     {
       "kind": "choice",
@@ -2683,7 +2683,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "ee30be3629"
+      "id": "78e0a80a7d"
     },
     {
       "kind": "fixation",
@@ -2697,7 +2697,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "6d304e9306"
+      "id": "53013f60ca"
     },
     {
       "kind": "choice",
@@ -2721,7 +2721,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "0e1049e5db"
+      "id": "bec3397839"
     },
     {
       "kind": "fixation",
@@ -2735,7 +2735,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "24731aa241"
+      "id": "7ca1b55915"
     },
     {
       "kind": "choice",
@@ -2759,7 +2759,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "dfb167957c"
+      "id": "5fd43b62d1"
     },
     {
       "kind": "fixation",
@@ -2773,7 +2773,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "a66aa4746b"
+      "id": "fc7a80c061"
     },
     {
       "kind": "choice",
@@ -2797,7 +2797,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "0b4ab8cd1d"
+      "id": "b14c3ff768"
     },
     {
       "kind": "fixation",
@@ -2811,7 +2811,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "10524ba99c"
+      "id": "70e4868925"
     },
     {
       "kind": "choice",
@@ -2835,7 +2835,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "9e4bb33bc4"
+      "id": "9b234f9225"
     },
     {
       "kind": "fixation",
@@ -2849,7 +2849,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "be651776b5"
+      "id": "848b5558e4"
     },
     {
       "kind": "choice",
@@ -2873,7 +2873,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "17d34d820a"
+      "id": "6e68de8d18"
     },
     {
       "kind": "fixation",
@@ -2887,7 +2887,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3da591a6f5"
+      "id": "2466cc1429"
     },
     {
       "kind": "choice",
@@ -2911,7 +2911,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "00a719a85d"
+      "id": "548795d106"
     },
     {
       "kind": "fixation",
@@ -2925,7 +2925,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "643c060d89"
+      "id": "8fb5e13425"
     },
     {
       "kind": "choice",
@@ -2949,7 +2949,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "8f2e8d19fa"
+      "id": "b7f26ada83"
     },
     {
       "kind": "fixation",
@@ -2963,7 +2963,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c6bf1021f7"
+      "id": "ee2bef2f74"
     },
     {
       "kind": "choice",
@@ -2987,7 +2987,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "e0d315d5c0"
+      "id": "97e70ec892"
     },
     {
       "kind": "fixation",
@@ -3001,7 +3001,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "415afa6e3d"
+      "id": "1083c6f33e"
     },
     {
       "kind": "choice",
@@ -3025,7 +3025,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "e703abe281"
+      "id": "1cd60f8964"
     },
     {
       "kind": "fixation",
@@ -3039,7 +3039,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "4070cb7189"
+      "id": "85f1116315"
     },
     {
       "kind": "choice",
@@ -3063,7 +3063,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "cf3b423b54"
+      "id": "967bf646dc"
     },
     {
       "kind": "fixation",
@@ -3077,7 +3077,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "20cc25046c"
+      "id": "634fba7a93"
     },
     {
       "kind": "choice",
@@ -3101,7 +3101,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "aa15a0aef3"
+      "id": "a1176df84d"
     },
     {
       "kind": "fixation",
@@ -3115,7 +3115,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "f8db109b5c"
+      "id": "0074f3df12"
     },
     {
       "kind": "choice",
@@ -3139,7 +3139,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "5be6a6e4a1"
+      "id": "5fae2f3025"
     },
     {
       "kind": "fixation",
@@ -3153,7 +3153,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "e8f562712c"
+      "id": "26cec6d5b4"
     },
     {
       "kind": "choice",
@@ -3177,7 +3177,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "910bd5cdda"
+      "id": "525a9b90c6"
     },
     {
       "kind": "fixation",
@@ -3191,7 +3191,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "e99f29b5d8"
+      "id": "4d9e60c275"
     },
     {
       "kind": "choice",
@@ -3215,7 +3215,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "4819cfc750"
+      "id": "152a024828"
     },
     {
       "kind": "fixation",
@@ -3229,7 +3229,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "fce092ab2e"
+      "id": "b53c2f0e17"
     },
     {
       "kind": "choice",
@@ -3253,7 +3253,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "167b57a4e4"
+      "id": "b2a75765ab"
     },
     {
       "kind": "fixation",
@@ -3267,7 +3267,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "6d3b9f8ab4"
+      "id": "411d3472a7"
     },
     {
       "kind": "choice",
@@ -3291,7 +3291,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "f86b2c6c05"
+      "id": "035be19af8"
     },
     {
       "kind": "fixation",
@@ -3305,7 +3305,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "65e39f5022"
+      "id": "08135e9d19"
     },
     {
       "kind": "choice",
@@ -3329,7 +3329,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "0f4158c581"
+      "id": "dacf6bef51"
     },
     {
       "kind": "fixation",
@@ -3343,7 +3343,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "96c19be31f"
+      "id": "1d239528e2"
     },
     {
       "kind": "choice",
@@ -3367,7 +3367,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "6a6a073cd9"
+      "id": "255523dfd9"
     },
     {
       "kind": "fixation",
@@ -3381,7 +3381,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "43d6c2e9f7"
+      "id": "993abb21eb"
     },
     {
       "kind": "choice",
@@ -3405,7 +3405,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "3ab260a6f4"
+      "id": "cbfa2c4497"
     },
     {
       "kind": "fixation",
@@ -3419,7 +3419,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "269800c05f"
+      "id": "76d8dcddc5"
     },
     {
       "kind": "choice",
@@ -3443,7 +3443,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "4d031b8e8f"
+      "id": "b68974a748"
     },
     {
       "kind": "fixation",
@@ -3457,7 +3457,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "9c2cfb5572"
+      "id": "8ddc26837f"
     },
     {
       "kind": "choice",
@@ -3481,7 +3481,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "e531c39ba0"
+      "id": "05754f83d4"
     },
     {
       "kind": "fixation",
@@ -3495,7 +3495,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "fb8d153285"
+      "id": "b260c14560"
     },
     {
       "kind": "choice",
@@ -3519,7 +3519,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "93c65fd5f4"
+      "id": "5d97c0b6f9"
     },
     {
       "kind": "fixation",
@@ -3533,7 +3533,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "f687cb3c21"
+      "id": "d755f3f321"
     },
     {
       "kind": "choice",
@@ -3557,7 +3557,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "87d1606f06"
+      "id": "950053368c"
     },
     {
       "kind": "fixation",
@@ -3571,7 +3571,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "692f47911d"
+      "id": "b0a7e053c4"
     },
     {
       "kind": "choice",
@@ -3595,7 +3595,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "6e07bc915c"
+      "id": "4f0ad402ca"
     },
     {
       "kind": "fixation",
@@ -3609,7 +3609,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c333d390d6"
+      "id": "022f5c534e"
     },
     {
       "kind": "choice",
@@ -3633,7 +3633,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "3b0869ca26"
+      "id": "fa52184ff6"
     },
     {
       "kind": "fixation",
@@ -3647,7 +3647,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "d15496f3c4"
+      "id": "74e4b40529"
     },
     {
       "kind": "choice",
@@ -3671,7 +3671,7 @@
         "left_button": "Left index",
         "right_button": "Right index"
       },
-      "id": "bc6660749b"
+      "id": "b079549077"
     },
     {
       "kind": "fixation",
@@ -3685,7 +3685,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "33396d21fc"
+      "id": "40a9d341ce"
     },
     {
       "kind": "fixation",
@@ -3699,7 +3699,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "b56837fd56"
+      "id": "2342cb2c67"
     }
   ],
   "hardware": {
@@ -3707,22 +3707,25 @@
     "trigger_key": "s",
     "serial_port": "",
     "baud_rate": 57600,
+    "syncbox_control": true,
+    "syncbox_slices": 1,
+    "syncbox_pulse_ms": 100,
     "buttons": [
       {
         "name": "Left thumb",
-        "key": "1"
+        "key": "a"
       },
       {
         "name": "Left index",
-        "key": "2"
+        "key": "b"
       },
       {
         "name": "Right index",
-        "key": "3"
+        "key": "c"
       },
       {
         "name": "Right thumb",
-        "key": "4"
+        "key": "d"
       }
     ],
     "move_left": "Left index",

@@ -23,7 +23,7 @@
         "size": 30,
         "color": "#FFFFFF"
       },
-      "id": "fccd194d16"
+      "id": "67b54d6e21"
     },
     {
       "kind": "fixation",
@@ -37,7 +37,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "35a2240521"
+      "id": "f5e3e3eee6"
     },
     {
       "kind": "image",
@@ -52,7 +52,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "7072017551"
+      "id": "2b05dcc511"
     },
     {
       "kind": "fixation",
@@ -66,7 +66,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "81cdc21674"
+      "id": "e46adec444"
     },
     {
       "kind": "choice",
@@ -85,7 +85,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "be75f82dbc"
+      "id": "07137f2d28"
     },
     {
       "kind": "feedback",
@@ -101,7 +101,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "502cba7299"
+      "id": "9305220b6e"
     },
     {
       "kind": "fixation",
@@ -115,7 +115,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "8b48b401ed"
+      "id": "9daf08b4c4"
     },
     {
       "kind": "image",
@@ -130,7 +130,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "e3419460cf"
+      "id": "599fb335ce"
     },
     {
       "kind": "fixation",
@@ -144,7 +144,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "77b64b7a70"
+      "id": "255386c3d1"
     },
     {
       "kind": "choice",
@@ -163,7 +163,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "b2396dc6e8"
+      "id": "f168239b25"
     },
     {
       "kind": "feedback",
@@ -179,7 +179,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "0c326d3922"
+      "id": "40ef7c0cdf"
     },
     {
       "kind": "fixation",
@@ -193,7 +193,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "04c5b8a9a1"
+      "id": "82ac9e0bc4"
     },
     {
       "kind": "image",
@@ -208,7 +208,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "28bd2d2e15"
+      "id": "112d756626"
     },
     {
       "kind": "fixation",
@@ -222,7 +222,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "d92fefa88b"
+      "id": "140805b619"
     },
     {
       "kind": "choice",
@@ -241,7 +241,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "c046e8852e"
+      "id": "b25d44d395"
     },
     {
       "kind": "feedback",
@@ -257,7 +257,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "2d1606590f"
+      "id": "eca0d94deb"
     },
     {
       "kind": "fixation",
@@ -271,7 +271,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "07136fc8d0"
+      "id": "3cd25ec352"
     },
     {
       "kind": "image",
@@ -286,7 +286,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "031be798cd"
+      "id": "47eba3ee8e"
     },
     {
       "kind": "fixation",
@@ -300,7 +300,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "f135755118"
+      "id": "744af6b84c"
     },
     {
       "kind": "choice",
@@ -319,7 +319,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "3caf948ce7"
+      "id": "70394e7e55"
     },
     {
       "kind": "feedback",
@@ -335,7 +335,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "1cee41c5b9"
+      "id": "f243eb43da"
     },
     {
       "kind": "fixation",
@@ -349,7 +349,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "8035ef276d"
+      "id": "b3c0e02332"
     },
     {
       "kind": "image",
@@ -364,7 +364,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "bae5d19642"
+      "id": "b4f2c11b45"
     },
     {
       "kind": "fixation",
@@ -378,7 +378,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "108cc4dc7f"
+      "id": "1e77ae17be"
     },
     {
       "kind": "choice",
@@ -397,7 +397,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "0b44cb2571"
+      "id": "eceaffacd4"
     },
     {
       "kind": "feedback",
@@ -413,7 +413,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "bb157fe49e"
+      "id": "81ac7e9af7"
     },
     {
       "kind": "fixation",
@@ -427,7 +427,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "06559751c9"
+      "id": "8c81ffd278"
     },
     {
       "kind": "image",
@@ -442,7 +442,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "19ad3c3d5d"
+      "id": "c702bc61bd"
     },
     {
       "kind": "fixation",
@@ -456,7 +456,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3c5d1f145b"
+      "id": "82adcfb72e"
     },
     {
       "kind": "choice",
@@ -475,7 +475,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "16c943e8d7"
+      "id": "b9a68a7c38"
     },
     {
       "kind": "feedback",
@@ -491,7 +491,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "ac74e41fb0"
+      "id": "3aefdb8da5"
     },
     {
       "kind": "fixation",
@@ -505,7 +505,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ed55568c09"
+      "id": "7c2c36eeb6"
     },
     {
       "kind": "image",
@@ -520,7 +520,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "703cfd3d49"
+      "id": "26499e3420"
     },
     {
       "kind": "fixation",
@@ -534,7 +534,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "42278d5362"
+      "id": "ac5e2983b4"
     },
     {
       "kind": "choice",
@@ -553,7 +553,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "fb2ab23aab"
+      "id": "7b5e7b7621"
     },
     {
       "kind": "feedback",
@@ -569,7 +569,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "d1f8aebcc5"
+      "id": "7e0ea88f1e"
     },
     {
       "kind": "fixation",
@@ -583,7 +583,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c89900f3d7"
+      "id": "cc9ff64b57"
     },
     {
       "kind": "image",
@@ -598,7 +598,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "59d7fbe293"
+      "id": "34c58130ca"
     },
     {
       "kind": "fixation",
@@ -612,7 +612,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3f02427dce"
+      "id": "fb09f349f2"
     },
     {
       "kind": "choice",
@@ -631,7 +631,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "cadf02f7b4"
+      "id": "8b1e014177"
     },
     {
       "kind": "feedback",
@@ -647,7 +647,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "557494cade"
+      "id": "2f895310bc"
     },
     {
       "kind": "fixation",
@@ -661,7 +661,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "dda05d8081"
+      "id": "388cbffb5c"
     },
     {
       "kind": "image",
@@ -676,7 +676,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "d7d6422d6e"
+      "id": "857d206b10"
     },
     {
       "kind": "fixation",
@@ -690,7 +690,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "20629c4471"
+      "id": "16194955be"
     },
     {
       "kind": "choice",
@@ -709,7 +709,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "628085c4a0"
+      "id": "1bcda895bc"
     },
     {
       "kind": "feedback",
@@ -725,7 +725,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "36ff8a2d56"
+      "id": "2132e431e9"
     },
     {
       "kind": "fixation",
@@ -739,7 +739,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "63dc936cff"
+      "id": "16121c987c"
     },
     {
       "kind": "image",
@@ -754,7 +754,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "53c6a4b17a"
+      "id": "beee03ecaa"
     },
     {
       "kind": "fixation",
@@ -768,7 +768,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0e1f6d26d7"
+      "id": "0a17e6eed2"
     },
     {
       "kind": "choice",
@@ -787,7 +787,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "922c1eb0d1"
+      "id": "66257466a7"
     },
     {
       "kind": "feedback",
@@ -803,7 +803,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "768fbf572b"
+      "id": "716cc1d780"
     },
     {
       "kind": "fixation",
@@ -817,7 +817,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "8bbdf0421c"
+      "id": "91a6e3c08c"
     },
     {
       "kind": "image",
@@ -832,7 +832,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "c2e2ccbe1e"
+      "id": "21660e691d"
     },
     {
       "kind": "fixation",
@@ -846,7 +846,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "42fec34866"
+      "id": "b4ffaf9d85"
     },
     {
       "kind": "choice",
@@ -865,7 +865,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "42808985ee"
+      "id": "5db1191cd2"
     },
     {
       "kind": "feedback",
@@ -881,7 +881,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "48d62fc21a"
+      "id": "828892efc0"
     },
     {
       "kind": "fixation",
@@ -895,7 +895,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "260f25163e"
+      "id": "5584d5798a"
     },
     {
       "kind": "image",
@@ -910,7 +910,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "5c0233b2a2"
+      "id": "43f8cd01c3"
     },
     {
       "kind": "fixation",
@@ -924,7 +924,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "9038b415ab"
+      "id": "d245d88d11"
     },
     {
       "kind": "choice",
@@ -943,7 +943,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "7d6b1eaefb"
+      "id": "36dfa4292f"
     },
     {
       "kind": "feedback",
@@ -959,7 +959,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "8a6daa4d9c"
+      "id": "127cf568a0"
     },
     {
       "kind": "fixation",
@@ -973,7 +973,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "22217e2d34"
+      "id": "7442fc295d"
     },
     {
       "kind": "image",
@@ -988,7 +988,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "b3d2e46598"
+      "id": "409ada04e4"
     },
     {
       "kind": "fixation",
@@ -1002,7 +1002,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7e5280390f"
+      "id": "34bbc4cbc7"
     },
     {
       "kind": "choice",
@@ -1021,7 +1021,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "d5e7beaf92"
+      "id": "959c2dd8da"
     },
     {
       "kind": "feedback",
@@ -1037,7 +1037,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "6a94c67676"
+      "id": "4fb928b5fe"
     },
     {
       "kind": "fixation",
@@ -1051,7 +1051,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "54dbfbcf76"
+      "id": "d940bbe7df"
     },
     {
       "kind": "image",
@@ -1066,7 +1066,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "a26a77ff50"
+      "id": "c735bf4ef0"
     },
     {
       "kind": "fixation",
@@ -1080,7 +1080,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "eada18eb1c"
+      "id": "7427739716"
     },
     {
       "kind": "choice",
@@ -1099,7 +1099,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "1a950b741a"
+      "id": "e91ddc4b3d"
     },
     {
       "kind": "feedback",
@@ -1115,7 +1115,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "b2a5c330d2"
+      "id": "a743360f43"
     },
     {
       "kind": "fixation",
@@ -1129,7 +1129,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "86b553d021"
+      "id": "1175550a51"
     },
     {
       "kind": "image",
@@ -1144,7 +1144,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "8c2ff1ed34"
+      "id": "b2377a95fe"
     },
     {
       "kind": "fixation",
@@ -1158,7 +1158,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7c0955d10c"
+      "id": "deb9a18724"
     },
     {
       "kind": "choice",
@@ -1177,7 +1177,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "7f618f3f6f"
+      "id": "89e7931df4"
     },
     {
       "kind": "feedback",
@@ -1193,7 +1193,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "9099e0b236"
+      "id": "aa557a8054"
     },
     {
       "kind": "fixation",
@@ -1207,7 +1207,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "b413447255"
+      "id": "c5a217a9b3"
     },
     {
       "kind": "image",
@@ -1222,7 +1222,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "25fb1d840c"
+      "id": "ee15c2cebf"
     },
     {
       "kind": "fixation",
@@ -1236,7 +1236,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "a325cf0d29"
+      "id": "29abab2b98"
     },
     {
       "kind": "choice",
@@ -1255,7 +1255,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "851fa52791"
+      "id": "9da9e56b0e"
     },
     {
       "kind": "feedback",
@@ -1271,7 +1271,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "cafca26f58"
+      "id": "d79fbf6973"
     },
     {
       "kind": "fixation",
@@ -1285,7 +1285,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "7c9cff0fdc"
+      "id": "865f74238b"
     },
     {
       "kind": "image",
@@ -1300,7 +1300,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "42f08b8612"
+      "id": "91a9a58d28"
     },
     {
       "kind": "fixation",
@@ -1314,7 +1314,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "87a26eb2e0"
+      "id": "1c5704833c"
     },
     {
       "kind": "choice",
@@ -1333,7 +1333,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "adbeba4314"
+      "id": "0e49352611"
     },
     {
       "kind": "feedback",
@@ -1349,7 +1349,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "e371cd3cbc"
+      "id": "0d05f1fb39"
     },
     {
       "kind": "fixation",
@@ -1363,7 +1363,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "e1bafbe4a8"
+      "id": "58873e382c"
     },
     {
       "kind": "image",
@@ -1378,7 +1378,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "5b2054d39f"
+      "id": "574c79f565"
     },
     {
       "kind": "fixation",
@@ -1392,7 +1392,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "22947e8b59"
+      "id": "ca09a07d4d"
     },
     {
       "kind": "choice",
@@ -1411,7 +1411,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "6cf5207a7b"
+      "id": "75bb836dc4"
     },
     {
       "kind": "feedback",
@@ -1427,7 +1427,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "01c054b2bc"
+      "id": "4afc4b8b07"
     },
     {
       "kind": "fixation",
@@ -1441,7 +1441,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "43045004dc"
+      "id": "565ca08f25"
     },
     {
       "kind": "image",
@@ -1456,7 +1456,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "926f7931d1"
+      "id": "58f306ba77"
     },
     {
       "kind": "fixation",
@@ -1470,7 +1470,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0f4108dde6"
+      "id": "01127f52fe"
     },
     {
       "kind": "choice",
@@ -1489,7 +1489,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "d00e16966c"
+      "id": "76179ba9a2"
     },
     {
       "kind": "feedback",
@@ -1505,7 +1505,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "0f897396c8"
+      "id": "c98af727a3"
     },
     {
       "kind": "fixation",
@@ -1519,7 +1519,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "77a16e8891"
+      "id": "c7b44f6ef9"
     },
     {
       "kind": "image",
@@ -1534,7 +1534,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "f339c4ec49"
+      "id": "7959edd93e"
     },
     {
       "kind": "fixation",
@@ -1548,7 +1548,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "2ea9bd493d"
+      "id": "63479467d9"
     },
     {
       "kind": "choice",
@@ -1567,7 +1567,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "18af438dd0"
+      "id": "70ddbc43a4"
     },
     {
       "kind": "feedback",
@@ -1583,7 +1583,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "893be38b0f"
+      "id": "be487da086"
     },
     {
       "kind": "fixation",
@@ -1597,7 +1597,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "bbef62d9b9"
+      "id": "c78584d6f3"
     },
     {
       "kind": "image",
@@ -1612,7 +1612,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "9b16300273"
+      "id": "11524cd8da"
     },
     {
       "kind": "fixation",
@@ -1626,7 +1626,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ff568771b4"
+      "id": "da6caf2efe"
     },
     {
       "kind": "choice",
@@ -1645,7 +1645,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "df2587cb86"
+      "id": "91cba75ec7"
     },
     {
       "kind": "feedback",
@@ -1661,7 +1661,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "b406cdbade"
+      "id": "934fbc8673"
     },
     {
       "kind": "fixation",
@@ -1675,7 +1675,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ba40adbb94"
+      "id": "fd165ad858"
     },
     {
       "kind": "image",
@@ -1690,7 +1690,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "2b4133b3d1"
+      "id": "06ba91d338"
     },
     {
       "kind": "fixation",
@@ -1704,7 +1704,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c556c9d777"
+      "id": "927b86148f"
     },
     {
       "kind": "choice",
@@ -1723,7 +1723,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "a97786c32c"
+      "id": "6784584af0"
     },
     {
       "kind": "feedback",
@@ -1739,7 +1739,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "097eea34e4"
+      "id": "8726dd184b"
     },
     {
       "kind": "fixation",
@@ -1753,7 +1753,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "267d6b4fe2"
+      "id": "736c75070c"
     },
     {
       "kind": "image",
@@ -1768,7 +1768,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "3528b4fbb9"
+      "id": "46e3f82eda"
     },
     {
       "kind": "fixation",
@@ -1782,7 +1782,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "80faed7729"
+      "id": "26de937cf8"
     },
     {
       "kind": "choice",
@@ -1801,7 +1801,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "56b81aeae9"
+      "id": "1b1e6806d9"
     },
     {
       "kind": "feedback",
@@ -1817,7 +1817,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "d6bba1c8ed"
+      "id": "42df03fb86"
     },
     {
       "kind": "fixation",
@@ -1831,7 +1831,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ebb7bc43f0"
+      "id": "f485218f18"
     },
     {
       "kind": "image",
@@ -1846,7 +1846,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "b8efafd91d"
+      "id": "7d4fb9bf7a"
     },
     {
       "kind": "fixation",
@@ -1860,7 +1860,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "64c98cd1f4"
+      "id": "a33b689126"
     },
     {
       "kind": "choice",
@@ -1879,7 +1879,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "a64db6813f"
+      "id": "cfd44039b7"
     },
     {
       "kind": "feedback",
@@ -1895,7 +1895,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "f799122001"
+      "id": "2c13909b89"
     },
     {
       "kind": "fixation",
@@ -1909,7 +1909,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "9d4b251a91"
+      "id": "7be4c4e870"
     },
     {
       "kind": "image",
@@ -1924,7 +1924,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "42a1099496"
+      "id": "f19c0ef050"
     },
     {
       "kind": "fixation",
@@ -1938,7 +1938,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "b180edcf93"
+      "id": "0e64262051"
     },
     {
       "kind": "choice",
@@ -1957,7 +1957,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "0500c7ff99"
+      "id": "01072892df"
     },
     {
       "kind": "feedback",
@@ -1973,7 +1973,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "cec6cc9ccf"
+      "id": "bd57bc4351"
     },
     {
       "kind": "fixation",
@@ -1987,7 +1987,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "2a3bd88691"
+      "id": "6fcc05123a"
     },
     {
       "kind": "image",
@@ -2002,7 +2002,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "9cb0a7ea10"
+      "id": "69e36bbb91"
     },
     {
       "kind": "fixation",
@@ -2016,7 +2016,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3ab7eb7f31"
+      "id": "14264cb34d"
     },
     {
       "kind": "choice",
@@ -2035,7 +2035,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "c52bc6d4b0"
+      "id": "8af52ddca3"
     },
     {
       "kind": "feedback",
@@ -2051,7 +2051,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "b096efe8bf"
+      "id": "9ca58852f8"
     },
     {
       "kind": "fixation",
@@ -2065,7 +2065,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "b2ea2acc57"
+      "id": "8533f5afa8"
     },
     {
       "kind": "image",
@@ -2080,7 +2080,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "7e4067ab3a"
+      "id": "970a7cd005"
     },
     {
       "kind": "fixation",
@@ -2094,7 +2094,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "2b1c9b17e3"
+      "id": "c86a4be77d"
     },
     {
       "kind": "choice",
@@ -2113,7 +2113,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "d8681b35d7"
+      "id": "ac691c764d"
     },
     {
       "kind": "feedback",
@@ -2129,7 +2129,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "c6c15a59c7"
+      "id": "6cb7435d49"
     },
     {
       "kind": "fixation",
@@ -2143,7 +2143,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "26f9dc10d8"
+      "id": "e7b1db67b9"
     },
     {
       "kind": "image",
@@ -2158,7 +2158,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "d2855c7de6"
+      "id": "aad2974a3a"
     },
     {
       "kind": "fixation",
@@ -2172,7 +2172,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "b03ce26413"
+      "id": "553876abca"
     },
     {
       "kind": "choice",
@@ -2191,7 +2191,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "203684e8fc"
+      "id": "7b7e202dc9"
     },
     {
       "kind": "feedback",
@@ -2207,7 +2207,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "a7774e226c"
+      "id": "94265d8a7b"
     },
     {
       "kind": "fixation",
@@ -2221,7 +2221,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "9447f809d2"
+      "id": "acb635d8ec"
     },
     {
       "kind": "image",
@@ -2236,7 +2236,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "ce6a67f375"
+      "id": "9db01cb283"
     },
     {
       "kind": "fixation",
@@ -2250,7 +2250,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "001642df15"
+      "id": "649bc1ba97"
     },
     {
       "kind": "choice",
@@ -2269,7 +2269,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "9294fe763d"
+      "id": "0f8a99a7d4"
     },
     {
       "kind": "feedback",
@@ -2285,7 +2285,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "79d6d6cc29"
+      "id": "569b949279"
     },
     {
       "kind": "fixation",
@@ -2299,7 +2299,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c81d292410"
+      "id": "b275b0d4e7"
     },
     {
       "kind": "image",
@@ -2314,7 +2314,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "d5b32ed34b"
+      "id": "4ff36281ec"
     },
     {
       "kind": "fixation",
@@ -2328,7 +2328,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "4064e6c2db"
+      "id": "556d1c2fdb"
     },
     {
       "kind": "choice",
@@ -2347,7 +2347,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "502ce8aff0"
+      "id": "d16203e138"
     },
     {
       "kind": "feedback",
@@ -2363,7 +2363,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "ba9a097367"
+      "id": "13a6776601"
     },
     {
       "kind": "fixation",
@@ -2377,7 +2377,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "e6a21697a5"
+      "id": "ae1d040421"
     },
     {
       "kind": "image",
@@ -2392,7 +2392,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "1bc603e38f"
+      "id": "9d98392e97"
     },
     {
       "kind": "fixation",
@@ -2406,7 +2406,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "48cbf4913d"
+      "id": "9682bbde00"
     },
     {
       "kind": "choice",
@@ -2425,7 +2425,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "1fc175f015"
+      "id": "0bfbe03050"
     },
     {
       "kind": "feedback",
@@ -2441,7 +2441,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "b069262f38"
+      "id": "9589b3db38"
     },
     {
       "kind": "fixation",
@@ -2455,7 +2455,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "10e037e27d"
+      "id": "0b757e16ce"
     },
     {
       "kind": "image",
@@ -2470,7 +2470,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "53d21f2156"
+      "id": "813abb0d66"
     },
     {
       "kind": "fixation",
@@ -2484,7 +2484,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "445519bc76"
+      "id": "5d22a5a150"
     },
     {
       "kind": "choice",
@@ -2503,7 +2503,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "91c9862207"
+      "id": "40195a47a8"
     },
     {
       "kind": "feedback",
@@ -2519,7 +2519,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "ad17f6f72f"
+      "id": "9d9509cdd2"
     },
     {
       "kind": "fixation",
@@ -2533,7 +2533,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "40a248e1dc"
+      "id": "d444c02762"
     },
     {
       "kind": "image",
@@ -2548,7 +2548,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "eb8a98a3c2"
+      "id": "96489422b6"
     },
     {
       "kind": "fixation",
@@ -2562,7 +2562,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "adffbce1da"
+      "id": "e05e79e887"
     },
     {
       "kind": "choice",
@@ -2581,7 +2581,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "3677635f47"
+      "id": "4b108e97f2"
     },
     {
       "kind": "feedback",
@@ -2597,7 +2597,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "bbe6312a06"
+      "id": "9bd6322c15"
     },
     {
       "kind": "fixation",
@@ -2611,7 +2611,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "b6bce53cf7"
+      "id": "671cd86650"
     },
     {
       "kind": "image",
@@ -2626,7 +2626,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "4cc1beb9da"
+      "id": "4707276d42"
     },
     {
       "kind": "fixation",
@@ -2640,7 +2640,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "068d0e8c35"
+      "id": "382cf1d1e3"
     },
     {
       "kind": "choice",
@@ -2659,7 +2659,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "21a7ed7cdf"
+      "id": "35fb60b97f"
     },
     {
       "kind": "feedback",
@@ -2675,7 +2675,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "6f3fbf1beb"
+      "id": "21e73d463c"
     },
     {
       "kind": "fixation",
@@ -2689,7 +2689,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "97faa3534f"
+      "id": "430612431a"
     },
     {
       "kind": "image",
@@ -2704,7 +2704,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "9b7f429222"
+      "id": "7a0c982c79"
     },
     {
       "kind": "fixation",
@@ -2718,7 +2718,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "51673d4972"
+      "id": "ea576df9e1"
     },
     {
       "kind": "choice",
@@ -2737,7 +2737,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "ab58935756"
+      "id": "d11a46c6cf"
     },
     {
       "kind": "feedback",
@@ -2753,7 +2753,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "65abd63b69"
+      "id": "ec94ddfb89"
     },
     {
       "kind": "fixation",
@@ -2767,7 +2767,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0f963b1f43"
+      "id": "b6e8bdcba1"
     },
     {
       "kind": "image",
@@ -2782,7 +2782,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "b1c4583316"
+      "id": "90b21f73e6"
     },
     {
       "kind": "fixation",
@@ -2796,7 +2796,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "662734561b"
+      "id": "5606ec463a"
     },
     {
       "kind": "choice",
@@ -2815,7 +2815,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "35de106364"
+      "id": "10fbe58634"
     },
     {
       "kind": "feedback",
@@ -2831,7 +2831,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "b8dddc3bf8"
+      "id": "dfaae8f56f"
     },
     {
       "kind": "fixation",
@@ -2845,7 +2845,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "a93eb28a6b"
+      "id": "b0cba7fa15"
     },
     {
       "kind": "image",
@@ -2860,7 +2860,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "d602f88dee"
+      "id": "15fdf247ec"
     },
     {
       "kind": "fixation",
@@ -2874,7 +2874,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "409588cb5c"
+      "id": "4a7e1f99ad"
     },
     {
       "kind": "choice",
@@ -2893,7 +2893,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "3f54d1cc0c"
+      "id": "f8c5ddc404"
     },
     {
       "kind": "feedback",
@@ -2909,7 +2909,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "d37b4c5113"
+      "id": "cdb34020bd"
     },
     {
       "kind": "fixation",
@@ -2923,7 +2923,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ea27e1d902"
+      "id": "023d03c513"
     },
     {
       "kind": "image",
@@ -2938,7 +2938,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "5fc1b9e81d"
+      "id": "e7dcd298aa"
     },
     {
       "kind": "fixation",
@@ -2952,7 +2952,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "f942e6fecd"
+      "id": "342febeb11"
     },
     {
       "kind": "choice",
@@ -2971,7 +2971,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "0752332bee"
+      "id": "34f44a18bb"
     },
     {
       "kind": "feedback",
@@ -2987,7 +2987,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "e7c837ecfe"
+      "id": "d712839994"
     },
     {
       "kind": "fixation",
@@ -3001,7 +3001,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "97a0403f75"
+      "id": "c09caab16e"
     },
     {
       "kind": "image",
@@ -3016,7 +3016,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "5d3d085462"
+      "id": "07b8466a0e"
     },
     {
       "kind": "fixation",
@@ -3030,7 +3030,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "b8125ac972"
+      "id": "f80c2cdbcc"
     },
     {
       "kind": "choice",
@@ -3049,7 +3049,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "c5d49b7077"
+      "id": "1bd291bdbe"
     },
     {
       "kind": "feedback",
@@ -3065,7 +3065,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "efbbeb6d11"
+      "id": "f28382053e"
     },
     {
       "kind": "fixation",
@@ -3079,7 +3079,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "eb666cde15"
+      "id": "83888e7ad9"
     },
     {
       "kind": "image",
@@ -3094,7 +3094,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "a33766512e"
+      "id": "bc2fb81e2d"
     },
     {
       "kind": "fixation",
@@ -3108,7 +3108,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "42dc4f19c2"
+      "id": "2f253a21a0"
     },
     {
       "kind": "choice",
@@ -3127,7 +3127,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "50ec1a7c73"
+      "id": "b47a9e66da"
     },
     {
       "kind": "feedback",
@@ -3143,7 +3143,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "802faab029"
+      "id": "f09daa4731"
     },
     {
       "kind": "fixation",
@@ -3157,7 +3157,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "ad53395dac"
+      "id": "92be5ac821"
     },
     {
       "kind": "image",
@@ -3172,7 +3172,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "7813a36df3"
+      "id": "165f77247a"
     },
     {
       "kind": "fixation",
@@ -3186,7 +3186,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "03d2d5adf2"
+      "id": "5189d685fe"
     },
     {
       "kind": "choice",
@@ -3205,7 +3205,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "0d6124261c"
+      "id": "fda81617b4"
     },
     {
       "kind": "feedback",
@@ -3221,7 +3221,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "4df96b120a"
+      "id": "f8852e52dd"
     },
     {
       "kind": "fixation",
@@ -3235,7 +3235,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "b3c4360174"
+      "id": "787c9158ab"
     },
     {
       "kind": "image",
@@ -3250,7 +3250,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "59127a9ff2"
+      "id": "e3bf5d8622"
     },
     {
       "kind": "fixation",
@@ -3264,7 +3264,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "c70ab2a945"
+      "id": "e12faf809a"
     },
     {
       "kind": "choice",
@@ -3283,7 +3283,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "610f6bb4d9"
+      "id": "24a1b478ff"
     },
     {
       "kind": "feedback",
@@ -3299,7 +3299,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "4e1e05c1de"
+      "id": "89ca2148ba"
     },
     {
       "kind": "fixation",
@@ -3313,7 +3313,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "5cec58ae29"
+      "id": "53ac6f5673"
     },
     {
       "kind": "image",
@@ -3328,7 +3328,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "9902bf8c7b"
+      "id": "cb9a04fd9e"
     },
     {
       "kind": "fixation",
@@ -3342,7 +3342,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "0c2fba79ee"
+      "id": "e9f0ab02ce"
     },
     {
       "kind": "choice",
@@ -3361,7 +3361,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "0dd145b514"
+      "id": "e06ccee518"
     },
     {
       "kind": "feedback",
@@ -3377,7 +3377,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "878ddbce92"
+      "id": "15e54c57ff"
     },
     {
       "kind": "fixation",
@@ -3391,7 +3391,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "47c7111f04"
+      "id": "87828ad36e"
     },
     {
       "kind": "image",
@@ -3406,7 +3406,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "40e1ac21a3"
+      "id": "7b8f983be4"
     },
     {
       "kind": "fixation",
@@ -3420,7 +3420,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "1ed3bb86bb"
+      "id": "10bed26b7f"
     },
     {
       "kind": "choice",
@@ -3439,7 +3439,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "42517e60f8"
+      "id": "392210bcdd"
     },
     {
       "kind": "feedback",
@@ -3455,7 +3455,7 @@
         "miss_color": "#CCCCCC",
         "size": 96
       },
-      "id": "7c9c5fee92"
+      "id": "bf9fda7135"
     },
     {
       "kind": "fixation",
@@ -3469,7 +3469,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "510c639b26"
+      "id": "1efdd7778c"
     },
     {
       "kind": "image",
@@ -3484,7 +3484,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "6a4b843756"
+      "id": "a86a6e3323"
     },
     {
       "kind": "fixation",
@@ -3498,7 +3498,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "b3a320250e"
+      "id": "4fd1b65476"
     },
     {
       "kind": "choice",
@@ -3517,7 +3517,7 @@
         "buttons": "any",
         "isi_symbol": ""
       },
-      "id": "3dd1da09a0"
+      "id": "298b0141e4"
     },
     {
       "kind": "feedback",
@@ -3533,7 +3533,7 @@
         "miss_color": "#F0506E",
         "size": 96
       },
-      "id": "a2c378b580"
+      "id": "3884b5bd20"
     },
     {
       "kind": "fixation",
@@ -3547,7 +3547,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "2931b29884"
+      "id": "ac3664bd03"
     }
   ],
   "hardware": {
@@ -3555,22 +3555,25 @@
     "trigger_key": "s",
     "serial_port": "",
     "baud_rate": 57600,
+    "syncbox_control": true,
+    "syncbox_slices": 1,
+    "syncbox_pulse_ms": 100,
     "buttons": [
       {
         "name": "Left thumb",
-        "key": "1"
+        "key": "a"
       },
       {
         "name": "Left index",
-        "key": "2"
+        "key": "b"
       },
       {
         "name": "Right index",
-        "key": "3"
+        "key": "c"
       },
       {
         "name": "Right thumb",
-        "key": "4"
+        "key": "d"
       }
     ],
     "move_left": "Left index",

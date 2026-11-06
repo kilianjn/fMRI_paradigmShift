@@ -23,7 +23,7 @@
         "size": 40,
         "color": "#FFFFFF"
       },
-      "id": "5524d1cd39"
+      "id": "53fea58f53"
     },
     {
       "kind": "fixation",
@@ -37,7 +37,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "4695819a1d"
+      "id": "37b23c5251"
     },
     {
       "kind": "image",
@@ -52,7 +52,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "5a9c169865"
+      "id": "229b0d3d00"
     },
     {
       "kind": "response",
@@ -65,7 +65,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "8a08002883"
+      "id": "baaacb1c35"
     },
     {
       "kind": "rating",
@@ -84,7 +84,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "425db88c3e"
+      "id": "6f0b042309"
     },
     {
       "kind": "fixation",
@@ -98,7 +98,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "1d2e8a8d05"
+      "id": "d72e1f3e60"
     },
     {
       "kind": "image",
@@ -113,7 +113,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "46d62c3b15"
+      "id": "b915ef706a"
     },
     {
       "kind": "response",
@@ -126,7 +126,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "c000a07983"
+      "id": "818466158f"
     },
     {
       "kind": "rating",
@@ -145,7 +145,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "1c5df11551"
+      "id": "528512d867"
     },
     {
       "kind": "fixation",
@@ -159,7 +159,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "206410dcd7"
+      "id": "7dc7269f28"
     },
     {
       "kind": "image",
@@ -174,7 +174,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "70e74c9926"
+      "id": "751a7f5417"
     },
     {
       "kind": "response",
@@ -187,7 +187,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "d417a0a1f5"
+      "id": "3941900c1a"
     },
     {
       "kind": "rating",
@@ -206,7 +206,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "43c45c07db"
+      "id": "8dbb6134d7"
     },
     {
       "kind": "fixation",
@@ -220,7 +220,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "2ac2a9a574"
+      "id": "a1fa36cc71"
     },
     {
       "kind": "image",
@@ -235,7 +235,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "279dfefac1"
+      "id": "636d90fb5b"
     },
     {
       "kind": "response",
@@ -248,7 +248,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "af7c07eacf"
+      "id": "b287c5e619"
     },
     {
       "kind": "rating",
@@ -267,7 +267,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "9ac56cabd0"
+      "id": "be6aa67c40"
     },
     {
       "kind": "fixation",
@@ -281,7 +281,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "1427104731"
+      "id": "0490b6a95d"
     },
     {
       "kind": "image",
@@ -296,7 +296,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "d3fe9d41f9"
+      "id": "c28c88f56a"
     },
     {
       "kind": "response",
@@ -309,7 +309,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "5bf88a312f"
+      "id": "ad42ec31f1"
     },
     {
       "kind": "rating",
@@ -328,7 +328,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "3191eac8c9"
+      "id": "e3edee44e2"
     },
     {
       "kind": "fixation",
@@ -342,7 +342,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "9f975a9422"
+      "id": "5783de8cbc"
     },
     {
       "kind": "image",
@@ -357,7 +357,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "23f7048255"
+      "id": "49f933ad50"
     },
     {
       "kind": "response",
@@ -370,7 +370,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "9bb16eb137"
+      "id": "086462be6a"
     },
     {
       "kind": "rating",
@@ -389,7 +389,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "e3dc3c5e82"
+      "id": "92e097cba6"
     },
     {
       "kind": "fixation",
@@ -403,7 +403,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "b2a564f946"
+      "id": "e9c4475727"
     },
     {
       "kind": "image",
@@ -418,7 +418,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "a53d4ebbfd"
+      "id": "cf2580b6a7"
     },
     {
       "kind": "response",
@@ -431,7 +431,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "2a14b45ba5"
+      "id": "53bccf6488"
     },
     {
       "kind": "rating",
@@ -450,7 +450,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "dfa45eab4d"
+      "id": "8d5cdae3d7"
     },
     {
       "kind": "fixation",
@@ -464,7 +464,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "3823e839c0"
+      "id": "e1e394b6af"
     },
     {
       "kind": "image",
@@ -479,7 +479,7 @@
         "flicker_path": "",
         "flicker_hz": 0.0
       },
-      "id": "b12e093417"
+      "id": "a866ffec70"
     },
     {
       "kind": "response",
@@ -492,7 +492,7 @@
         "buttons": "any",
         "correct": ""
       },
-      "id": "da1c286f33"
+      "id": "09c648351c"
     },
     {
       "kind": "rating",
@@ -511,7 +511,7 @@
         "mode": "direct",
         "scale": 0.9
       },
-      "id": "3c0d491392"
+      "id": "429ae54d9e"
     },
     {
       "kind": "fixation",
@@ -525,7 +525,7 @@
         "color": "#FFFFFF",
         "size": 72
       },
-      "id": "748b5f8634"
+      "id": "326885c135"
     },
     {
       "kind": "rest",
@@ -535,7 +535,7 @@
       "label": "End baseline",
       "condition": "",
       "params": {},
-      "id": "29cfee4e5a"
+      "id": "2b549947c7"
     }
   ],
   "hardware": {
@@ -543,22 +543,25 @@
     "trigger_key": "s",
     "serial_port": "",
     "baud_rate": 57600,
+    "syncbox_control": true,
+    "syncbox_slices": 1,
+    "syncbox_pulse_ms": 100,
     "buttons": [
       {
         "name": "Left thumb",
-        "key": "1"
+        "key": "a"
       },
       {
         "name": "Left index",
-        "key": "2"
+        "key": "b"
       },
       {
         "name": "Right index",
-        "key": "3"
+        "key": "c"
       },
       {
         "name": "Right thumb",
-        "key": "4"
+        "key": "d"
       }
     ],
     "move_left": "Left index",

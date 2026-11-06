@@ -23,7 +23,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "181b41d4eb"
+      "id": "0f0bfa3abe"
     },
     {
       "kind": "image",
@@ -38,7 +38,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "947d33717d"
+      "id": "6809dc63d1"
     },
     {
       "kind": "fixation",
@@ -52,7 +52,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "5eb2fbcf14"
+      "id": "1abf325bd3"
     },
     {
       "kind": "image",
@@ -67,7 +67,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "4328b025ac"
+      "id": "81346c3b43"
     },
     {
       "kind": "fixation",
@@ -81,7 +81,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "9265ae00d3"
+      "id": "8ce2f7bba0"
     },
     {
       "kind": "image",
@@ -96,7 +96,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "ba10989d1c"
+      "id": "0652e37d78"
     },
     {
       "kind": "fixation",
@@ -110,7 +110,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "bff1ed6d3e"
+      "id": "b66d9b61cf"
     },
     {
       "kind": "image",
@@ -125,7 +125,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "bb981304cf"
+      "id": "e9aa50b658"
     },
     {
       "kind": "fixation",
@@ -139,7 +139,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "174f57a131"
+      "id": "6af0bd6fb6"
     },
     {
       "kind": "image",
@@ -154,7 +154,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "087179d9ca"
+      "id": "e948b16861"
     },
     {
       "kind": "fixation",
@@ -168,7 +168,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "e3b812defa"
+      "id": "ee22383025"
     },
     {
       "kind": "image",
@@ -183,7 +183,7 @@
         "flicker_path": "stimuli/checkerboard/checkerboard_1.png",
         "flicker_hz": 8.0
       },
-      "id": "b82c1fb583"
+      "id": "9a7a925e6c"
     },
     {
       "kind": "fixation",
@@ -197,7 +197,7 @@
         "color": "#E53935",
         "size": 40
       },
-      "id": "6313e551e7"
+      "id": "8d04f8a26d"
     }
   ],
   "hardware": {
@@ -205,22 +205,25 @@
     "trigger_key": "s",
     "serial_port": "",
     "baud_rate": 57600,
+    "syncbox_control": true,
+    "syncbox_slices": 1,
+    "syncbox_pulse_ms": 100,
     "buttons": [
       {
         "name": "Left thumb",
-        "key": "1"
+        "key": "a"
       },
       {
         "name": "Left index",
-        "key": "2"
+        "key": "b"
       },
       {
         "name": "Right index",
-        "key": "3"
+        "key": "c"
       },
       {
         "name": "Right thumb",
-        "key": "4"
+        "key": "d"
       }
     ],
     "move_left": "Left index",
