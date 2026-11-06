@@ -94,6 +94,34 @@ class KeyCaptureButton(QPushButton):
         return True
 
 
+class Fold(QWidget):
+    """A folded-by-default group: a ▸ title that reveals its content when clicked."""
+
+    def __init__(self, title: str, content: QWidget, folded: bool = True):
+        super().__init__()
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.setSpacing(6)
+        self.title = title
+        self.btn = QPushButton()
+        self.btn.setFlat(True)
+        self.btn.setCursor(Qt.PointingHandCursor)
+        self.btn.setStyleSheet(f"QPushButton {{ border: none; background: transparent; text-align: left; "
+                               f"padding: 2px 0; color: {theme.TEXT_DIM}; font-weight: 600; }}"
+                               f"QPushButton:hover {{ color: {theme.TEXT}; }}")
+        self.btn.clicked.connect(lambda: self.set_folded(not self.folded))
+        lay.addWidget(self.btn)
+        self.content = content
+        lay.addWidget(content)
+        self.folded = None
+        self.set_folded(folded)
+
+    def set_folded(self, folded: bool):
+        self.folded = folded
+        self.content.setVisible(not folded)
+        self.btn.setText(("▸  " if folded else "▾  ") + self.title)
+
+
 class HardwareDialog(QDialog):
     """Set up and live-test the NNL SyncBox and ResponseGrips."""
 
@@ -102,17 +130,12 @@ class HardwareDialog(QDialog):
         self.setWindowTitle("Scanner hardware – NNL SyncBox & ResponseGrips")
         self.hw = copy.deepcopy(hw)
         self.tr = tr
-        self.resize(780, 740)
+        self.resize(680, 480)
         lay = QVBoxLayout(self)
-        lay.setSpacing(12)
-        head = QLabel("Scanner hardware")
-        head.setObjectName("Big")
-        lay.addWidget(head)
-        lay.addWidget(_hint("Everything here can be tested live: press keys or grip buttons and watch the lamps. "
-                            "Click a key field, then press the button you want to assign."))
+        lay.setSpacing(10)
         tabs = QTabWidget()
-        tabs.addTab(self._sync_tab(), "SyncBox  (scanner trigger)")
-        tabs.addTab(self._grips_tab(), "ResponseGrips  (buttons)")
+        tabs.addTab(self._sync_tab(), "SyncBox")
+        tabs.addTab(self._grips_tab(), "ResponseGrips")
         lay.addWidget(tabs, 1)
         bb = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         bb.button(QDialogButtonBox.Ok).setObjectName("Primary")
@@ -129,14 +152,15 @@ class HardwareDialog(QDialog):
     def _sync_tab(self):
         w = QWidget()
         lay = QVBoxLayout(w)
-        lay.setContentsMargins(16, 16, 16, 16)
+        lay.setContentsMargins(16, 14, 16, 14)
         lay.setSpacing(12)
-        lay.addWidget(_hint("The NNL SyncBox converts the scanner's optical/TTL pulse into a key press (USB) "
-                            "or a character on a serial port. Check the SyncBox's own menu for which "
-                            "trigger character it sends."))
+
+        form = QFormLayout()
+        form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
         modes = QHBoxLayout()
-        self.rb_kb = QRadioButton("USB keyboard mode  (recommended)")
-        self.rb_ser = QRadioButton("Serial / COM port")
+        modes.setContentsMargins(0, 0, 0, 0)
+        self.rb_kb = QRadioButton("USB keyboard (HID)")
+        self.rb_ser = QRadioButton("Serial (COM port)")
         grp = QButtonGroup(w)
         grp.addButton(self.rb_kb)
         grp.addButton(self.rb_ser)
@@ -144,72 +168,74 @@ class HardwareDialog(QDialog):
         modes.addWidget(self.rb_kb)
         modes.addWidget(self.rb_ser)
         modes.addStretch()
-        lay.addLayout(modes)
-
-        form = QFormLayout()
-        form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        mw = QWidget()
+        mw.setLayout(modes)
+        form.addRow("Connection", mw)
         self.trig_btn = KeyCaptureButton(self.hw.trigger_key)
+        self.trig_btn.setToolTip("Click, then send one trigger (or press the key) to assign it.")
         self.trig_btn.captured.connect(lambda k: setattr(self.hw, "trigger_key", k))
-        form.addRow("Trigger key / character", self.trig_btn)
+        form.addRow("Trigger", self.trig_btn)
+        lay.addLayout(form)
+
+        # serial-only part ---------------------------------------------------------------
+        self.serial_box = QWidget()
+        sl = QVBoxLayout(self.serial_box)
+        sl.setContentsMargins(0, 0, 0, 0)
+        sl.setSpacing(6)
+        prow = QHBoxLayout()
+        prow.setContentsMargins(0, 0, 0, 0)
         self.port = QComboBox()
         self.port.setEditable(True)
         self.port.lineEdit().setPlaceholderText("e.g. COM3 or /dev/ttyUSB0")
-        refresh = QPushButton("↻ Refresh ports")
-        refresh.setToolTip("Look again for connected serial devices")
+        refresh = QPushButton("Refresh")
+        refresh.setToolTip("Refresh the list of serial ports")
         refresh.clicked.connect(self._refresh_ports)
-        prow = QHBoxLayout()
-        prow.setContentsMargins(0, 0, 0, 0)
+        self.detect_btn = QPushButton("🔍 Auto-detect")
+        self.detect_btn.setObjectName("Primary")
+        self.detect_btn.setToolTip("Finds the SyncBox by NNL's handshake (no scanner needed). If no box answers, it "
+                                   "listens for a device that sends on its own – then run the scanner / SyncBox "
+                                   "simulation or press grip buttons during the scan.")
+        self.detect_btn.clicked.connect(self._auto_detect)
+        self.detect_cancel = QPushButton("Cancel")
+        self.detect_cancel.clicked.connect(self._cancel_detect)
+        self.detect_cancel.hide()
+        prow.addWidget(QLabel("Port"))
         prow.addWidget(self.port, 1)
         prow.addWidget(refresh)
-        pw_ = QWidget()
-        pw_.setLayout(prow)
-        form.addRow("Serial port", pw_)
+        prow.addWidget(self.detect_btn)
+        prow.addWidget(self.detect_cancel)
+        sl.addLayout(prow)
+        self.ser_note = _hint("" if serial_available() else "⚠ " + MISSING_SERIAL)
+        sl.addWidget(self.ser_note)
+        self.detect_info = _hint("")
+        sl.addWidget(self.detect_info)
+
+        adv = QWidget()
+        al = QFormLayout(adv)
+        al.setContentsMargins(16, 0, 0, 0)
+        al.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.baud = QComboBox()
         for b in (9600, 19200, 38400, 57600, 115200):
             self.baud.addItem(str(b), b)
         self.baud.setCurrentText(str(self.hw.baud_rate))
-        form.addRow("Baud rate", self.baud)
-        self.ctrl = QCheckBox("Control the SyncBox from ParadigmShift  (NNL computer mode – recommended)")
+        al.addRow("Baud rate", self.baud)
+        self.ctrl = QCheckBox("Control the SyncBox (NNL computer mode)")
         self.ctrl.setChecked(self.hw.syncbox_control)
         self.ctrl.setToolTip("Before each run the SyncBox is switched to computer mode, configured with the TR and the "
                              "number of volumes, and started; afterwards it is stopped and returned to manual mode. "
                              "Untick if the SyncBox should keep its own settings and ParadigmShift only listens.")
         self.ctrl.toggled.connect(self._ctrl_toggled)
-        form.addRow("", self.ctrl)
-        self.ser_note = _hint("" if serial_available() else "⚠ " + MISSING_SERIAL)
-        form.addRow("", self.ser_note)
-        lay.addLayout(form)
-
-        detect = QFrame()
-        detect.setObjectName("Panel")
-        dl = QGridLayout(detect)
-        dl.setContentsMargins(14, 10, 14, 10)
-        dt = QLabel("AUTO-DETECT")
-        dt.setObjectName("PanelTitle")
-        dl.addWidget(dt, 0, 0, 1, 3)
-        self.detect_btn = QPushButton("🔍  Auto-detect SyncBox")
-        self.detect_btn.setObjectName("Primary")
-        self.detect_btn.clicked.connect(self._auto_detect)
-        dl.addWidget(self.detect_btn, 1, 0)
-        self.detect_cancel = QPushButton("Cancel")
-        self.detect_cancel.clicked.connect(self._cancel_detect)
-        self.detect_cancel.hide()
-        dl.addWidget(self.detect_cancel, 1, 1)
-        self.detect_info = _hint("Listens on every serial port while the scanner runs (or the SyncBox simulates "
-                                 "triggers) – or simply press a few grip buttons during the scan. Finds the port, "
-                                 "the baud rate, the trigger character and the TR.")
-        dl.addWidget(self.detect_info, 2, 0, 1, 3)
-        dl.setColumnStretch(2, 1)
-        lay.addWidget(detect)
+        al.addRow("", self.ctrl)
+        self.advanced = Fold("Advanced", adv, folded=True)
+        sl.addWidget(self.advanced)
+        lay.addWidget(self.serial_box)
         self._scanner = None
         self._scan_keys: list[str] = []
         self._refresh_ports(select=self.hw.serial_port)
 
         def mode_changed():
             ser = self.rb_ser.isChecked()
-            self.port.setEnabled(ser)
-            self.baud.setEnabled(ser)
-            self.ctrl.setEnabled(ser)
+            self.serial_box.setVisible(ser)
             self.hw.sync_mode = "serial" if ser else "keyboard"
             self._restart_router()
         self.rb_kb.toggled.connect(mode_changed)
@@ -217,34 +243,31 @@ class HardwareDialog(QDialog):
         self.port.activated.connect(lambda _i: self._port_changed())
         self.port.lineEdit().editingFinished.connect(self._port_changed)
         self.baud.currentIndexChanged.connect(lambda _i: self._port_changed())
-        self.port.setEnabled(self.rb_ser.isChecked())
-        self.baud.setEnabled(self.rb_ser.isChecked())
-        self.ctrl.setEnabled(self.rb_ser.isChecked())
+        self.serial_box.setVisible(self.rb_ser.isChecked())
 
+        # live test: one compact row --------------------------------------------------------
         test = QFrame()
         test.setObjectName("Panel")
-        tl = QGridLayout(test)
-        tl.setContentsMargins(14, 12, 14, 12)
-        title = QLabel("LIVE TRIGGER MONITOR")
-        title.setObjectName("PanelTitle")
-        tl.addWidget(title, 0, 0, 1, 3)
-        self.trig_lamp = Lamp(theme.ACCENT, 34)
-        tl.addWidget(self.trig_lamp, 1, 0, 2, 1)
+        tl = QHBoxLayout(test)
+        tl.setContentsMargins(12, 8, 12, 8)
+        tl.setSpacing(10)
+        self.trig_lamp = Lamp(theme.ACCENT, 24)
+        tl.addWidget(self.trig_lamp)
         self.trig_count = QLabel("0 pulses")
-        self.trig_count.setObjectName("Big")
-        tl.addWidget(self.trig_count, 1, 1)
-        self.trig_tr = QLabel(f"measured TR: –   (paradigm TR {self.tr:g}s)")
+        self.trig_count.setStyleSheet("font-size: 16px; font-weight: 600;")
+        tl.addWidget(self.trig_count)
+        self.trig_tr = QLabel(f"measured TR –  (paradigm {self.tr:g} s)")
         self.trig_tr.setObjectName("Hint")
-        tl.addWidget(self.trig_tr, 2, 1)
+        tl.addWidget(self.trig_tr, 1)
         self.sim_btn = QPushButton("Simulate scanner")
         self.sim_btn.setCheckable(True)
-        self.sim_btn.setToolTip("Generate trigger pulses at the paradigm TR – handy without a scanner.")
+        self.sim_btn.setToolTip("Send test triggers at the paradigm TR (by the SyncBox itself when it is controlled "
+                                "over serial).")
         self.sim_btn.toggled.connect(self._toggle_sim)
-        tl.addWidget(self.sim_btn, 1, 2)
+        tl.addWidget(self.sim_btn)
         reset = QPushButton("Reset")
         reset.clicked.connect(self._reset_count)
-        tl.addWidget(reset, 2, 2)
-        tl.setColumnStretch(1, 1)
+        tl.addWidget(reset)
         lay.addWidget(test)
         lay.addStretch()
         return w
@@ -329,8 +352,7 @@ class HardwareDialog(QDialog):
             self.rb_ser.setChecked(True)
             for w_ in (self.rb_ser, self.rb_kb):
                 w_.blockSignals(False)
-            for w_ in (self.port, self.baud, self.ctrl):
-                w_.setEnabled(True)
+            self.serial_box.setVisible(True)
             self.hw.sync_mode = "serial"
             self._refresh_ports(select=r["port"])
             self.baud.blockSignals(True)
@@ -346,9 +368,7 @@ class HardwareDialog(QDialog):
                 f" at {r['baud']} baud."
             if nnl:
                 self._apply_nnl_keys()
-                msg += ("\nIt answered NNL's computer-mode handshake: ParadigmShift will configure and start it for "
-                        "each run. Trigger “s”; grip buttons set to a – d.\nClick “Simulate scanner” to let the "
-                        "SyncBox send test triggers at the paradigm TR.")
+                msg += "\nIt will be configured and started for each run. Trigger “s”, grips a – d."
             if r["trigger"] and not nnl:
                 self.hw.trigger_key = r["trigger"]
                 self.trig_btn.key = r["trigger"]
@@ -409,7 +429,7 @@ class HardwareDialog(QDialog):
     def _reset_count(self):
         self._triggers.clear()
         self.trig_count.setText("0 pulses")
-        self.trig_tr.setText(f"measured TR: –   (paradigm TR {self.tr:g}s)")
+        self.trig_tr.setText(f"measured TR –  (paradigm {self.tr:g} s)")
 
     def _on_trigger(self, t):
         self._triggers.append(t)
@@ -420,16 +440,15 @@ class HardwareDialog(QDialog):
             d = [b - a for a, b in zip(self._triggers[-6:], self._triggers[-5:])]
             m = sum(d) / len(d)
             ok = abs(m - self.tr) < 0.05
-            self.trig_tr.setText(f"measured TR: {m:.3f}s   (paradigm TR {self.tr:g}s)  " + ("✓" if ok else "⚠ differs"))
+            self.trig_tr.setText(f"measured TR {m:.3f} s  (paradigm {self.tr:g} s)  " + ("✓" if ok else "⚠ differs"))
 
     # -- grips -----------------------------------------------------------------
     def _grips_tab(self):
         w = QWidget()
         lay = QVBoxLayout(w)
-        lay.setContentsMargins(16, 16, 16, 16)
+        lay.setContentsMargins(16, 14, 16, 14)
         lay.setSpacing(10)
-        lay.addWidget(_hint("Each grip button arrives as a key (USB mode) or character (serial mode). "
-                            "Name the buttons the way you instruct your participants."))
+        lay.addWidget(_hint("Press a grip button – its lamp lights up. To change a key, click it and press the button."))
         self.grid = QGridLayout()
         self.grid.setHorizontalSpacing(10)
         lay.addLayout(self.grid)
@@ -440,13 +459,10 @@ class HardwareDialog(QDialog):
         add.clicked.connect(lambda: self._add_row(GripButton(f"Button {len(self._rows) + 1}", ""), new=True))
         lay.addWidget(add, 0, Qt.AlignLeft)
 
-        box = QFrame()
-        box.setObjectName("Panel")
+        box = QWidget()
         bl = QFormLayout(box)
-        bl.setContentsMargins(14, 12, 14, 12)
-        t = QLabel("RATING SCALES IN CURSOR MODE")
-        t.setObjectName("PanelTitle")
-        bl.addRow(t)
+        bl.setContentsMargins(16, 0, 0, 0)
+        bl.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.cmb = {}
         for attr, label in (("move_left", "Move left ◀"), ("move_right", "Move right ▶"), ("confirm", "Confirm ✓")):
             c = QComboBox()
@@ -454,7 +470,7 @@ class HardwareDialog(QDialog):
             self.cmb[attr] = c
             bl.addRow(label, c)
         self._refresh_combos()
-        lay.addWidget(box)
+        lay.addWidget(Fold("Rating scales answered with a cursor", box, folded=True))
         self.last = _hint("Press a grip button…")
         lay.addWidget(self.last)
         lay.addStretch()
