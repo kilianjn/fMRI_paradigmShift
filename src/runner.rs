@@ -40,6 +40,8 @@ pub struct RunSettings {
     pub trigger_warning_trs: f64,
     pub control_refresh_ms: u32,
     pub blur_control_mirror: bool,
+    /// size of the participant window when not full screen (default 1280 × 720)
+    pub window_size: Option<(f32, f32)>,
 }
 
 impl Default for RunSettings {
@@ -62,6 +64,7 @@ impl Default for RunSettings {
             trigger_warning_trs: 2.5,
             control_refresh_ms: 100,
             blur_control_mirror: false,
+            window_size: None,
         }
     }
 }
@@ -884,6 +887,8 @@ pub struct RunController {
     visual_key: Option<(String, bool, i64)>,
     /// bumped whenever the participant screen must be repainted
     pub stimulus_version: u64,
+    /// size of the participant screen (set by its window) – the control-room mirror uses its shape
+    pub screen_size: Option<(f32, f32)>,
 }
 
 impl RunController {
@@ -909,6 +914,7 @@ impl RunController {
             sim_start_at: None,
             visual_key: None,
             stimulus_version: 0,
+            screen_size: None,
         }
     }
 

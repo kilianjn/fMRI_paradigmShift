@@ -195,22 +195,52 @@ fn qsize(px: f32) -> f32 {
     if px < 24.0 { px.round() } else if px < 80.0 { (px / 2.0).round() * 2.0 } else { (px / 6.0).round() * 6.0 }
 }
 
-/// Text centred in `rect`, optionally word-wrapped to its width.
+/// The screen height (in pixels) that the font sizes of the blocks refer to. Every view – the
+/// participant screen, the control-room mirror and the editor preview – scales the text by
+/// `its height / REF_HEIGHT`, so all of them show the same picture at different sizes.
+pub const REF_HEIGHT: f32 = 1080.0;
+
+/// Lay out `text` so that it fits into `max` (word-wrapped to its width if `wrap`): the font is made
+/// smaller when the text would not fit – long words, many lines or a small window never overflow.
+fn fitted(p: &Painter, text: &str, font: FontId, color: Color32, max: Vec2, wrap: bool) -> std::sync::Arc<egui::Galley> {
+    let layout = |size: f32| {
+        let f = FontId::new(size, font.family.clone());
+        let mut job = LayoutJob::simple(text.to_string(), f, color, if wrap { max.x.max(10.0) } else { f32::INFINITY });
+        job.halign = Align::Center;
+        p.layout_job(job)
+    };
+    let mut size = font.size;
+    let mut g = layout(size);
+    for _ in 0..8 {
+        let sz = g.size();
+        let over = (sz.x / max.x.max(1.0)).max(sz.y / max.y.max(1.0));
+        if over <= 1.0 || size <= 4.0 {
+            break;
+        }
+        size = (size / over * 0.98).floor().max(4.0);
+        g = layout(size);
+    }
+    g
+}
+
+/// Text centred in `rect`, optionally word-wrapped to its width; shrunk if it would not fit.
 pub fn draw_text(p: &Painter, rect: Rect, text: &str, font: FontId, color: Color32, wrap: bool) {
     if text.is_empty() {
         return;
     }
-    let mut job = LayoutJob::simple(text.to_string(), font, color, if wrap { rect.width().max(10.0) } else { f32::INFINITY });
-    job.halign = Align::Center;
-    let galley = p.layout_job(job);
+    let galley = fitted(p, text, font, color, rect.size() * 0.98, wrap);
     let pos = rect.center() - galley.rect.center().to_vec2();
     p.galley(pos, galley, color);
 }
 
-fn text_at(p: &Painter, pos: Pos2, anchor: Align2, text: &str, font: FontId, color: Color32) {
-    if !text.is_empty() {
-        p.text(pos, anchor, text, font, color);
+/// One line of text anchored at `pos`, shrunk to fit into `max`.
+fn text_in(p: &Painter, pos: Pos2, anchor: Align2, text: &str, font: FontId, color: Color32, max: Vec2) {
+    if text.is_empty() {
+        return;
     }
+    let g = fitted(p, text, font, color, max, false);
+    let r = anchor.anchor_size(pos, g.size());
+    p.galley(r.center() - g.rect.center().to_vec2(), g, color);
 }
 
 fn dashed_rect(p: &Painter, r: Rect, color: Color32, width: f32) {
@@ -287,7 +317,7 @@ pub fn paint_stimulus(
                 let text = prm.s("text", "");
                 let size = prm.f("size", if is_go { 140.0 } else { 120.0 }) as f32 * k;
                 let f = if is_go { theme::bold(qsize(size)) } else { theme::sym(qsize(size), true) };
-                draw_text(&p, rect, &text, f, hex(&prm.s("color", "#FFFFFF")), false);
+                draw_text(&p, rect.shrink2(Vec2::new(rect.width() * 0.04, 0.0)), &text, f, hex(&prm.s("color", "#FFFFFF")), false);
             } else if let Some(sym) = prm.nonempty("isi_symbol") {
                 draw_text(&p, rect, &sym, theme::sym(qsize(72.0 * k), false), Color32::WHITE, false);
             }
@@ -307,9 +337,10 @@ pub fn paint_stimulus(
 fn paint_match(p: &Painter, rect: Rect, b: &Block, chosen: Option<&str>, blur: bool) {
     let prm = &b.params;
     let sc = prm.f("scale", 0.9) as f32;
-    let h = rect.height() * 0.44;
-    let w = h * 0.8;
+    // three portrait slots; on narrow screens the two lower ones limit the size
     let gap = rect.width() * 0.05;
+    let w = (rect.height() * 0.44 * 0.8).min((rect.width() * 0.94 - 2.0 * gap) / 2.0);
+    let h = w / 0.8;
     let cx = rect.center().x;
     let top = Rect::from_center_size(Pos2::new(cx, rect.top() + rect.height() * 0.27), Vec2::new(w, h));
     let left = Rect::from_center_size(Pos2::new(cx - w / 2.0 - gap, rect.top() + rect.height() * 0.74), Vec2::new(w, h));
@@ -342,7 +373,8 @@ fn paint_rating(p: &Painter, rect: Rect, b: &Block, st: &PaintState, blur: bool)
     let (x0, x1) = (rect.left() + w * 0.22, rect.right() - w * 0.22);
     let lw = (h * 0.004).max(1.0);
     p.line_segment([Pos2::new(x0, y), Pos2::new(x1, y)], Stroke::new(lw, Color32::from_gray(0xBB)));
-    let r = h * 0.022;
+    // circles shrink when many scale points share a narrow screen
+    let r = (h * 0.022).min((x1 - x0) / (n.max(2) - 1) as f32 * 0.3);
     for i in 0..n {
         let v = lo + i;
         let x = x0 + (x1 - x0) * if n > 1 { i as f32 / (n - 1) as f32 } else { 0.5 };
@@ -354,12 +386,27 @@ fn paint_rating(p: &Painter, rect: Rect, b: &Block, st: &PaintState, blur: bool)
         let rad = r * if sel { 1.35 } else { 1.0 };
         p.circle(Pos2::new(x, y), rad, if sel { col } else { Color32::BLACK }, Stroke::new(lw, col));
         let f = if sel { theme::bold(qsize(h * 0.03)) } else { theme::font(qsize(h * 0.03)) };
-        text_at(p, Pos2::new(x, y + r * 1.6), Align2::CENTER_TOP, &v.to_string(), f, Color32::WHITE);
+        let slot = Vec2::new(((x1 - x0) / (n.max(2) - 1) as f32).max(r * 2.0), h * 0.05);
+        text_in(p, Pos2::new(x, y + r * 1.6), Align2::CENTER_TOP, &v.to_string(), f, Color32::WHITE, slot);
     }
     let lf = theme::font(qsize(h * 0.026));
     let grey = Color32::from_gray(0xAA);
-    text_at(p, Pos2::new(x0 - w * 0.02, y), Align2::RIGHT_CENTER, &prm.s("left_label", ""), lf.clone(), grey);
-    text_at(p, Pos2::new(x1 + w * 0.02, y), Align2::LEFT_CENTER, &prm.s("right_label", ""), lf, grey);
+    let (ll, rl) = (prm.s("left_label", ""), prm.s("right_label", ""));
+    // the labels go beside the scale, clear of the (enlarged) end circles …
+    let gap = r * 1.35 + w * 0.015;
+    let side = Vec2::new((x0 - gap - rect.left() - w * 0.02).max(1.0), h * 0.05);
+    let natural = |t: &str| if t.is_empty() { 0.0 } else { p.layout_no_wrap(t.to_string(), lf.clone(), grey).size().x };
+    let need = natural(&ll).max(natural(&rl));
+    if need <= side.x / 0.7 {
+        text_in(p, Pos2::new(x0 - gap, y), Align2::RIGHT_CENTER, &ll, lf.clone(), grey, side);
+        text_in(p, Pos2::new(x1 + gap, y), Align2::LEFT_CENTER, &rl, lf, grey, side);
+    } else {
+        // … or, on narrow (portrait) screens where they would have to shrink a lot, under its ends
+        let yl = y + r * 1.6 + h * 0.055;
+        let below = Vec2::new(((x1 - x0) / 2.0 + r - w * 0.02).max(1.0), h * 0.045);
+        text_in(p, Pos2::new(x0 - r, yl), Align2::LEFT_TOP, &ll, lf.clone(), grey, below);
+        text_in(p, Pos2::new(x1 + r, yl), Align2::RIGHT_TOP, &rl, lf, grey, below);
+    }
 }
 
 /// The neutral screen the participant sees before the run starts (and `text` after it ends).

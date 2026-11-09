@@ -195,7 +195,7 @@ pub fn shortcuts_text() -> &'static str {
      Ctrl+Z / Ctrl+Shift+Z\tundo / redo\n\
      Ctrl+T\ttemplates\n\
      Ctrl+H\tfind and replace\n\
-     Ctrl+L\thide / show the library panel\n\
+     Ctrl+1 / 2 / 3\tshow / minimise the Blocks / Task blocks / Pictures panel\n\
      F5\trun"
 }
 

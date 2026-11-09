@@ -48,6 +48,7 @@ pub struct ScreenshotPlan {
     pub scene: String,
     pub frame: u32,
     pub done: Arc<std::sync::atomic::AtomicBool>,
+    pub requested: bool,
 }
 
 pub struct App {
@@ -68,6 +69,7 @@ pub struct App {
     quit: bool,
     pub shot: Option<ScreenshotPlan>,
     monitors: Vec<String>,
+    layout_dirty: bool,
 }
 
 fn path_str(p: &Path) -> String {
@@ -100,10 +102,11 @@ impl App {
             quit: false,
             shot,
             monitors: vec![],
+            layout_dirty: false,
         };
         app.tl.stim_dir = Some(presets::default_stim_dir());
-        app.lib.blocks_folded = app.settings.library_blocks_folded;
-        app.lib.pictures_folded = app.settings.library_pictures_folded;
+        app.lib.closed = app.settings.library_closed.clone();
+        app.lib.weights = app.settings.library_weights.clone();
         app.apply_prefs(ctx);
         app.new_paradigm();
         if let Some(hw) = app.settings.hardware.clone() {
@@ -371,19 +374,9 @@ impl App {
                 self.apply_prefs(ctx);
                 self.save_settings();
             }
-            Action::ToggleLibrary => {
-                self.settings.library_hidden = !self.settings.library_hidden;
-                self.save_settings();
-            }
-            Action::ShowLibrarySection(which) => {
-                self.settings.library_hidden = false;
-                if which == "pictures" {
-                    self.lib.pictures_folded = false;
-                } else {
-                    self.lib.blocks_folded = false;
-                }
-                self.settings.library_blocks_folded = self.lib.blocks_folded;
-                self.settings.library_pictures_folded = self.lib.pictures_folded;
+            Action::TogglePanel(key) => {
+                self.lib.toggle(&key);
+                self.settings.library_closed = self.lib.closed.clone();
                 self.save_settings();
             }
             Action::SetShowHints(v) => {
@@ -489,7 +482,7 @@ impl App {
         }
         let cmd = Modifiers::COMMAND;
         let cs = Modifiers::COMMAND | Modifiers::SHIFT;
-        let list: [(Modifiers, Key, Action); 24] = [
+        let list: [(Modifiers, Key, Action); 26] = [
             (cs, Key::S, Action::SaveAs),
             (cs, Key::Z, Action::Redo),
             (cs, Key::N, Action::QuickDesign),
@@ -513,7 +506,9 @@ impl App {
             (cmd, Key::Comma, Action::Preferences),
             (cmd, Key::Q, Action::Quit),
             (cmd, Key::A, Action::SelectAll),
-            (cmd, Key::L, Action::ToggleLibrary),
+            (cmd, Key::Num1, Action::TogglePanel("blocks".into())),
+            (cmd, Key::Num2, Action::TogglePanel("tasks".into())),
+            (cmd, Key::Num3, Action::TogglePanel("pictures".into())),
         ];
         let typing = ctx.text_edit_focused();
         for (m, k, a) in list {
@@ -626,8 +621,10 @@ impl App {
                 item!(ui, "Zoom out", "Ctrl+-", Action::ZoomOut, true);
                 item!(ui, "Fit whole run", "Ctrl+0", Action::ZoomFit, true);
                 ui.separator();
-                let lib = if self.settings.library_hidden { "☐  Library panel (blocks & pictures)" } else { "☑  Library panel (blocks & pictures)" };
-                item!(ui, lib, "Ctrl+L", Action::ToggleLibrary, true);
+                for (n, (key, title, _)) in panels::PANELS.iter().enumerate() {
+                    let mark = if self.lib.is_open(key) { "☑" } else { "☐" };
+                    item!(ui, &format!("{mark}  {title} panel"), &format!("Ctrl+{}", n + 1), Action::TogglePanel(key.to_string()), true);
+                }
             });
             ui.menu_button("Options", |ui| {
                 let check = |ui: &mut Ui, on: bool, text: &str, sc: &str| -> bool {
@@ -745,7 +742,7 @@ impl App {
     fn monitor_panel(&mut self, ui: &mut Ui) {
         theme::panel_frame().show(ui, |ui| {
             ui.set_width(ui.available_width());
-            ui.set_height((ui.available_height() - 22.0).max(0.0));
+            ui.set_height(ui.available_height().max(0.0));
             panels::panel_header(ui, "Participant view", "what the participant sees at the playhead");
             let h = ui.available_height() - 40.0;
             ui.allocate_ui(Vec2::new(ui.available_width(), h.max(100.0)), |ui| {
@@ -777,41 +774,46 @@ impl App {
         });
     }
 
-    /// The hidden library: a narrow strip with one button per section, like the tool strips of an
-    /// image or video editor.
-    fn library_strip(&mut self, ui: &mut Ui) {
+    /// The tool strip on the left: always visible, one button per library panel. Minimised panels
+    /// live here; a click brings them back (or minimises an open one), like in an image or video editor.
+    fn tool_strip(&mut self, ui: &mut Ui) {
         theme::panel_frame().inner_margin(egui::Margin::symmetric(4, 8)).show(ui, |ui| {
             ui.set_width(ui.available_width());
-            ui.set_height((ui.available_height() - 22.0).max(0.0));
+            ui.set_height(ui.available_height().max(0.0));
             ui.vertical_centered(|ui| {
-                if ui
-                    .add(egui::Button::new(RichText::new("»").font(theme::bold(16.0)).color(TEXT_DIM)).frame(false))
-                    .on_hover_text("Show the library (Ctrl+L)")
-                    .clicked()
-                {
-                    self.actions.push(Action::ToggleLibrary);
-                }
-                ui.add_space(6.0);
                 let n = self.lib.media.len();
-                for (key, label, tip) in [
-                    ("blocks", "BLOCKS", "Blocks – drag them onto the timeline".to_string()),
-                    ("pictures", "PICTURES", format!("Pictures ({n} imported)")),
-                ] {
-                    let g = ui.painter().layout_no_wrap(label.to_string(), theme::bold(11.0), TEXT_DIM);
-                    let h = 30.0 + g.size().x + 14.0;
+                for (i, (key, title, _)) in panels::PANELS.iter().enumerate() {
+                    let open = self.lib.is_open(key);
+                    let label = title.to_uppercase();
+                    let g = ui.painter().layout_no_wrap(label, theme::bold(11.0), TEXT_DIM);
+                    let h = 32.0 + g.size().x + 12.0;
                     let (r, resp) = ui.allocate_exact_size(Vec2::new(40.0, h), egui::Sense::click());
                     let hovered = resp.hovered();
-                    if hovered {
-                        ui.painter().rect_filled(r, egui::CornerRadius::same(6), theme::PANEL_2);
+                    if open || hovered {
+                        ui.painter().rect_filled(r, egui::CornerRadius::same(6), if hovered { theme::PANEL_2 } else { theme::BG });
                     }
-                    let icon = egui::Rect::from_center_size(Pos2::new(r.center().x, r.top() + 16.0), Vec2::splat(22.0));
-                    panels::paint_strip_icon(ui.painter(), key, icon, hovered);
+                    if open {
+                        // accent bar: this panel is shown
+                        ui.painter().rect_filled(
+                            egui::Rect::from_min_size(r.left_top() + Vec2::new(0.0, 4.0), Vec2::new(3.0, r.height() - 8.0)),
+                            egui::CornerRadius::same(1),
+                            ACCENT,
+                        );
+                    }
+                    let icon = egui::Rect::from_center_size(Pos2::new(r.center().x + 1.0, r.top() + 16.0), Vec2::splat(22.0));
+                    panels::paint_strip_icon(ui.painter(), key, icon, open || hovered);
                     // vertical caption, read bottom-to-top like in video editors
-                    let pos = Pos2::new(r.center().x - g.size().y / 2.0, r.bottom() - 6.0);
-                    let color = if hovered { theme::TEXT } else { TEXT_DIM };
+                    let pos = Pos2::new(r.center().x + 1.0 - g.size().y / 2.0, r.bottom() - 6.0);
+                    let color = if open || hovered { theme::TEXT } else { TEXT_DIM };
                     ui.painter().add(egui::epaint::TextShape::new(pos, g, color).with_angle(-std::f32::consts::FRAC_PI_2));
+                    let extra = if *key == "pictures" { format!(" ({n} imported)") } else { String::new() };
+                    let tip = if open {
+                        format!("{title}{extra} – click to minimise (Ctrl+{})", i + 1)
+                    } else {
+                        format!("{title}{extra} – click to show (Ctrl+{})", i + 1)
+                    };
                     if resp.on_hover_text(tip).on_hover_cursor(egui::CursorIcon::PointingHand).clicked() {
-                        self.actions.push(Action::ShowLibrarySection(key.to_string()));
+                        self.actions.push(Action::TogglePanel(key.to_string()));
                     }
                     ui.add_space(8.0);
                 }
@@ -1094,28 +1096,31 @@ impl App {
             .size_range(200.0..=600.0)
             .show_separator_line(false)
             .show(ui, |ui| self.timeline_panel(ui));
-        if self.settings.library_hidden {
-            egui::Panel::left("library_strip")
-                .frame(frame)
-                .resizable(false)
-                .exact_size(52.0)
-                .show_separator_line(false)
-                .show(ui, |ui| self.library_strip(ui));
-        } else {
+        egui::Panel::left("tool_strip")
+            .frame(frame)
+            .resizable(false)
+            .exact_size(52.0)
+            .show_separator_line(false)
+            .show(ui, |ui| self.tool_strip(ui));
+        if self.lib.any_open() {
             egui::Panel::left("library")
                 .frame(frame)
                 .resizable(true)
                 .default_size(268.0)
-                .size_range(240.0..=320.0)
+                .size_range(240.0..=340.0)
                 .show_separator_line(false)
                 .show(ui, |ui| {
                     let blur = self.settings.prefs.blur_previews;
                     if self.lib.ui(ui, blur, &mut self.actions) {
-                        self.settings.library_blocks_folded = self.lib.blocks_folded;
-                        self.settings.library_pictures_folded = self.lib.pictures_folded;
-                        self.save_settings();
+                        self.settings.library_weights = self.lib.weights.clone();
+                        self.layout_dirty = true;
                     }
                 });
+        }
+        // remember a dragged panel layout once the mouse is released (not on every frame of the drag)
+        if self.layout_dirty && !ctx.input(|i| i.pointer.any_down()) {
+            self.layout_dirty = false;
+            self.save_settings();
         }
         egui::Panel::right("inspector")
             .frame(frame)
@@ -1299,9 +1304,9 @@ impl App {
                     self.actions.push(Action::QuickDesign);
                 }
                 "prefs" => self.actions.push(Action::Preferences),
-                "library_hidden" => {
+                "panels" => {
                     self.open_example("hariri_face_matching");
-                    self.settings.library_hidden = true;
+                    self.lib.closed = vec!["tasks".into()];
                     let pick = self.doc.paradigm.blocks.iter().find(|b| b.kind == "match").map(|b| (b.id.clone(), b.start + 0.1));
                     if let Some((id, t)) = pick {
                         self.doc.select(vec![id]);
@@ -1332,8 +1337,16 @@ impl App {
                 _ => {}
             }
             if run_scene {
-                self.open_example("hariri_face_matching");
+                let small = scene.ends_with("_small");
+                // test hooks for odd participant windows: PARADIGMSHIFT_DEMO_SIZE=WxH, PARADIGMSHIFT_DEMO_EXAMPLE=name
+                let env_size = std::env::var("PARADIGMSHIFT_DEMO_SIZE").ok().and_then(|v| {
+                    let p: Vec<f32> = v.split('x').filter_map(|x| x.parse().ok()).collect();
+                    (p.len() == 2).then(|| (p[0], p[1]))
+                });
+                let example = std::env::var("PARADIGMSHIFT_DEMO_EXAMPLE").unwrap_or_else(|_| if small { "stroop".into() } else { "hariri_face_matching".into() });
+                self.open_example(&example);
                 let s = RunSettings {
+                    window_size: env_size.or(small.then_some((480.0, 360.0))),
                     out_dir: std::env::temp_dir().join("paradigmshift-demo").to_string_lossy().to_string(),
                     fullscreen: false,
                     simulate: true,
@@ -1354,8 +1367,19 @@ impl App {
                 }
             }
         }
-        let wait_frames = if run_scene { 900 } else { 40 };
-        if frame == wait_frames {
+        let ready = if run_scene {
+            // wait until the run has reached a given point (an instruction / a matching trial)
+            let target = std::env::var("PARADIGMSHIFT_DEMO_TIME").ok().and_then(|v| v.parse().ok()).unwrap_or(if scene.ends_with("_small") { 2.5 } else { 12.0 });
+            frame > 6000
+                || self.run.as_ref().and_then(|s| s.ctl.lock().ok().map(|c| c.phase() == crate::runner::Phase::Running && c.elapsed() >= target)).unwrap_or(false)
+        } else {
+            frame >= 40
+        };
+        let already = self.shot.as_ref().map(|p| p.requested).unwrap_or(true);
+        if ready && !already {
+            if let Some(p) = self.shot.as_mut() {
+                p.requested = true;
+            }
             let out = out_path.clone();
             let done = done_flag.clone();
             let cb = move |img: Arc<egui::ColorImage>| {

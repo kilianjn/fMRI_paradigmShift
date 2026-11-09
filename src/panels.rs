@@ -60,57 +60,50 @@ pub fn panel_header(ui: &mut Ui, title: &str, hint: &str) {
 // =============================================================================
 // Library
 // =============================================================================
+/// The three library panels: (key, title, hint).
+pub const PANELS: [(&str, &str, &str); 3] = [
+    ("blocks", "Blocks", "drag → timeline"),
+    ("tasks", "Task blocks", "drag → timeline"),
+    ("pictures", "Pictures", ""),
+];
+const DEFAULT_WEIGHTS: [f32; 3] = [1.0, 1.05, 0.95];
+const MIN_PANEL_H: f32 = 96.0;
+
 #[derive(Default)]
 pub struct Library {
-    pub tab: usize,
     pub media: Vec<String>,
     pub media_sel: Vec<usize>,
     anchor: Option<usize>,
-    pub blocks_folded: bool,
-    pub pictures_folded: bool,
+    /// panels minimised into the tool strip
+    pub closed: Vec<String>,
+    /// relative heights of the panels (blocks, task blocks, pictures)
+    pub weights: Vec<f32>,
 }
 
-/// Title row of a foldable library section: ▾/▸ TITLE, a hint, and (optionally) the « hide button.
-fn fold_header(ui: &mut Ui, title: &str, hint: &str, folded: &mut bool, hide: bool, actions: &mut Vec<Action>) -> bool {
-    let mut changed = false;
-    ui.horizontal(|ui| {
-        let arrow = if *folded { "▸  " } else { "▾  " };
-        let r = ui
-            .add(egui::Button::new(RichText::new(format!("{arrow}{}", title.to_uppercase())).font(theme::bold(11.0)).color(TEXT_DIM)).frame(false))
-            .on_hover_text(if *folded { "Click to unfold" } else { "Click to fold" });
-        if r.clicked() {
-            *folded = !*folded;
-            changed = true;
-        }
-        ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
-            if hide
-                && ui
-                    .add(egui::Button::new(RichText::new("«").font(theme::bold(14.0)).color(TEXT_DIM)).frame(false))
-                    .on_hover_text("Hide the library – it shrinks to a narrow strip (Ctrl+L)")
-                    .clicked()
-            {
-                actions.push(Action::ToggleLibrary);
-            }
-            if !hint.is_empty() && !*folded {
-                ui.label(RichText::new(hint).color(TEXT_DIM).size(12.0));
-            }
-        });
-    });
-    changed
-}
-
-/// Small icons for the collapsed library strip.
+/// Icons of the tool strip.
 pub fn paint_strip_icon(p: &egui::Painter, which: &str, r: Rect, active: bool) {
     let col = if active { TEXT } else { TEXT_DIM };
-    if which == "blocks" {
-        let cols = [hex("#4C8DF6"), hex("#E0913A"), hex("#D45C9E")];
-        for (i, c) in cols.iter().enumerate() {
-            let y = r.top() + 5.0 + i as f32 * 7.0;
-            let x0 = r.left() + 4.0 + (i % 2) as f32 * 5.0;
-            p.rect_filled(Rect::from_min_size(Pos2::new(x0, y), Vec2::new(r.width() - 13.0, 5.0)), CornerRadius::same(2), *c);
+    match which {
+        "blocks" => {
+            let cols = [hex("#4C8DF6"), hex("#E0913A"), hex("#D45C9E")];
+            for (i, c) in cols.iter().enumerate() {
+                let y = r.top() + 5.0 + i as f32 * 7.0;
+                let x0 = r.left() + 4.0 + (i % 2) as f32 * 5.0;
+                p.rect_filled(Rect::from_min_size(Pos2::new(x0, y), Vec2::new(r.width() - 13.0, 5.0)), CornerRadius::same(2), *c);
+            }
         }
-    } else {
-        theme::draw_kind_glyph(p, "image", r, col);
+        "tasks" => {
+            // a short sequence: three trials connected in time
+            let cols = [hex("#E5B53B"), hex("#B565D8"), hex("#3BA7E5")];
+            let y = r.center().y;
+            p.line_segment([Pos2::new(r.left() + 3.0, y), Pos2::new(r.right() - 3.0, y)], Stroke::new(1.5, col));
+            for (i, c) in cols.iter().enumerate() {
+                let x = r.left() + 3.0 + i as f32 * (r.width() - 6.0) / 3.0;
+                let h = 8.0 + (i % 2) as f32 * 6.0;
+                p.rect_filled(Rect::from_min_size(Pos2::new(x, y - h / 2.0), Vec2::new((r.width() - 6.0) / 3.0 - 1.5, h)), CornerRadius::same(2), *c);
+            }
+        }
+        _ => theme::draw_kind_glyph(p, "image", r, col),
     }
 }
 
@@ -129,94 +122,147 @@ impl Library {
         self.anchor = None;
     }
 
-    /// Returns true when a section was folded or unfolded (so the app can remember it).
+    pub fn is_open(&self, key: &str) -> bool {
+        !self.closed.iter().any(|k| k == key)
+    }
+
+    pub fn any_open(&self) -> bool {
+        PANELS.iter().any(|p| self.is_open(p.0))
+    }
+
+    /// Minimise a panel into the tool strip, or bring it back.
+    pub fn toggle(&mut self, key: &str) {
+        if self.is_open(key) {
+            self.closed.push(key.to_string());
+        } else {
+            self.closed.retain(|k| k != key);
+        }
+    }
+
+    fn weights(&self) -> [f32; 3] {
+        if self.weights.len() == 3 && self.weights.iter().all(|w| *w > 0.0) {
+            [self.weights[0], self.weights[1], self.weights[2]]
+        } else {
+            DEFAULT_WEIGHTS
+        }
+    }
+
+    /// The open panels, stacked; the dividers between them can be dragged. Returns true when the
+    /// layout changed (so the app can remember it).
     pub fn ui(&mut self, ui: &mut Ui, blur: bool, actions: &mut Vec<Action>) -> bool {
-        let total_h = ui.available_height();
+        let open: Vec<usize> = (0..3).filter(|i| self.is_open(PANELS[*i].0)).collect();
+        if open.is_empty() {
+            return false;
+        }
+        let gap = 8.0;
+        let total = (ui.available_height() - gap * (open.len() - 1) as f32).max(MIN_PANEL_H);
+        let mut w = self.weights();
+        let sum: f32 = open.iter().map(|i| w[*i]).sum();
         let mut changed = false;
-        let blocks_h = if self.pictures_folded { total_h - 64.0 } else { (total_h * 0.68).max(200.0) };
-        let (mut bf, mut pf) = (self.blocks_folded, self.pictures_folded);
-        theme::panel_frame().show(ui, |ui| {
-            ui.set_width(ui.available_width());
-            if !bf {
-                ui.set_height((blocks_h - 24.0).max(0.0));
-            }
-            changed |= fold_header(ui, "Blocks", "drag → timeline", &mut bf, true, actions);
-            if bf {
-                return;
-            }
-            ui.horizontal(|ui| {
-                for (i, t) in ["Basic", "Task blocks"].iter().enumerate() {
-                    let sel = self.tab == i;
-                    let r = ui.add(egui::Button::new(RichText::new(*t).color(if sel { TEXT } else { TEXT_DIM })).frame(false));
-                    if sel {
-                        ui.painter().hline(r.rect.x_range(), r.rect.bottom() + 1.0, Stroke::new(2.0, ACCENT));
-                    }
-                    if r.clicked() {
-                        self.tab = i;
-                    }
-                }
-            });
-            ui.add_space(4.0);
-            egui::ScrollArea::vertical().id_salt("lib_scroll").auto_shrink([false, false]).show(ui, |ui| {
-                if self.tab == 0 {
-                    for bt in BLOCK_TYPES {
-                        let sub = format!("{}s · stimulus", fmt_g(bt.default_duration));
-                        let tip = format!("{}\n{}\n\nDrag onto the timeline · double-click to add at the end", bt.title, bt.description);
-                        card(ui, bt.kind, bt.kind, hex(bt.color), bt.title, &sub, &tip, actions);
-                    }
-                } else {
-                    let mut cat = "";
-                    for pr in presets::PRESETS {
-                        if pr.category != cat {
-                            cat = pr.category;
-                            ui.add_space(4.0);
-                            theme::panel_title(ui, cat);
-                        }
-                        let mut tip = format!("{}\n{}", pr.title, pr.description);
-                        let vars = (pr.variants)();
-                        if !vars.is_empty() {
-                            tip.push_str(&format!(
-                                "\nVariants: {} (chosen when you drop it)",
-                                vars.iter().map(|v| v.0).collect::<Vec<_>>().join(", ")
-                            ));
-                        }
-                        tip.push_str("\n\nDrag onto the timeline · double-click to add at the end");
-                        card(ui, &format!("preset:{}", pr.key), pr.icon_kind, hex(pr.color), pr.title, pr.subtitle, &tip, actions);
-                    }
-                }
-            });
-        });
-        ui.add_space(8.0);
-        theme::panel_frame().show(ui, |ui| {
-            ui.set_width(ui.available_width());
-            if !pf {
-                ui.set_height((ui.available_height() - 22.0).max(0.0));
-            }
-            let hint = if self.media.is_empty() { String::new() } else { format!("{}", self.media.len()) };
-            changed |= fold_header(ui, "Pictures", &hint, &mut pf, false, actions);
-            if pf {
-                return;
-            }
-            let bin_h = (ui.available_height() - 34.0).max(60.0);
-            egui::Frame::new().fill(BG).stroke(Stroke::new(1.0, BORDER)).corner_radius(CornerRadius::same(6)).inner_margin(4).show(ui, |ui| {
-                ui.set_height(bin_h);
+        ui.spacing_mut().item_spacing.y = 0.0;
+        for (j, &i) in open.iter().enumerate() {
+            let h = (total * w[i] / sum).max(MIN_PANEL_H);
+            let (key, title, hint) = PANELS[i];
+            theme::panel_frame().show(ui, |ui| {
                 ui.set_width(ui.available_width());
-                if self.media.is_empty() {
-                    ui.centered_and_justified(|ui| {
-                        ui.label(RichText::new("Drop pictures or folders here").color(TEXT_DIM));
+                // the frame adds 2 × (10 margin + 1 stroke)
+                ui.set_height((h - 22.0).max(40.0));
+                ui.spacing_mut().item_spacing.y = 6.0;
+                let hint = if key == "pictures" && !self.media.is_empty() { format!("{}", self.media.len()) } else { hint.to_string() };
+                ui.horizontal(|ui| {
+                    theme::panel_title(ui, title);
+                    ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                        if ui
+                            .add(egui::Button::new(RichText::new("×").font(theme::bold(15.0)).color(TEXT_DIM)).frame(false))
+                            .on_hover_text("Minimise – the panel goes into the strip on the left, click it there to bring it back")
+                            .clicked()
+                        {
+                            actions.push(Action::TogglePanel(key.to_string()));
+                        }
+                        if !hint.is_empty() {
+                            ui.label(RichText::new(hint).color(TEXT_DIM).size(12.0));
+                        }
                     });
-                } else {
-                    egui::ScrollArea::vertical().id_salt("media_scroll").auto_shrink([false, false]).show(ui, |ui| {
-                        self.media_grid(ui, blur);
-                    });
+                });
+                match key {
+                    "blocks" => {
+                        egui::ScrollArea::vertical().id_salt("lib_blocks").auto_shrink([false, false]).show(ui, |ui| {
+                            for bt in BLOCK_TYPES {
+                                let sub = format!("{}s · stimulus", fmt_g(bt.default_duration));
+                                let tip = format!("{}\n{}\n\nDrag onto the timeline · double-click to add at the end", bt.title, bt.description);
+                                card(ui, bt.kind, bt.kind, hex(bt.color), bt.title, &sub, &tip, actions);
+                            }
+                        });
+                    }
+                    "tasks" => {
+                        egui::ScrollArea::vertical().id_salt("lib_tasks").auto_shrink([false, false]).show(ui, |ui| {
+                            let mut cat = "";
+                            for pr in presets::PRESETS {
+                                if pr.category != cat {
+                                    cat = pr.category;
+                                    ui.add_space(2.0);
+                                    theme::panel_title(ui, cat);
+                                }
+                                let mut tip = format!("{}\n{}", pr.title, pr.description);
+                                let vars = (pr.variants)();
+                                if !vars.is_empty() {
+                                    tip.push_str(&format!(
+                                        "\nVariants: {} (chosen when you drop it)",
+                                        vars.iter().map(|v| v.0).collect::<Vec<_>>().join(", ")
+                                    ));
+                                }
+                                tip.push_str("\n\nDrag onto the timeline · double-click to add at the end");
+                                card(ui, &format!("preset:{}", pr.key), pr.icon_kind, hex(pr.color), pr.title, pr.subtitle, &tip, actions);
+                            }
+                        });
+                    }
+                    _ => {
+                        // button at the bottom, the picture bin takes the rest
+                        ui.with_layout(Layout::bottom_up(Align::Min), |ui| {
+                            if ui.add_sized([ui.available_width(), 28.0], egui::Button::new("+  Import pictures…")).clicked() {
+                                actions.push(Action::ImportPictures);
+                            }
+                            // the bin frame adds 2 × (4 margin + 1 stroke)
+                            let bin_h = (ui.available_height() - 10.0).max(20.0);
+                            ui.with_layout(Layout::top_down(Align::Min), |ui| {
+                                egui::Frame::new().fill(BG).stroke(Stroke::new(1.0, BORDER)).corner_radius(CornerRadius::same(6)).inner_margin(4).show(ui, |ui| {
+                                    ui.set_height(bin_h);
+                                    ui.set_width(ui.available_width());
+                                    if self.media.is_empty() {
+                                        ui.centered_and_justified(|ui| {
+                                            ui.label(RichText::new("Drop pictures or folders here").color(TEXT_DIM));
+                                        });
+                                    } else {
+                                        egui::ScrollArea::vertical().id_salt("media_scroll").auto_shrink([false, false]).show(ui, |ui| {
+                                            self.media_grid(ui, blur);
+                                        });
+                                    }
+                                });
+                            });
+                        });
+                    }
                 }
             });
-            if ui.add_sized([ui.available_width(), 28.0], egui::Button::new("+  Import pictures…")).clicked() {
-                actions.push(Action::ImportPictures);
+            if j + 1 < open.len() {
+                // divider: drag it to give one panel more room than the other
+                let (r, resp) = ui.allocate_exact_size(Vec2::new(ui.available_width(), gap), Sense::drag());
+                let resp = resp.on_hover_cursor(egui::CursorIcon::ResizeVertical);
+                if resp.hovered() || resp.dragged() {
+                    ui.painter().hline(r.x_range().shrink(30.0), r.center().y, Stroke::new(2.0, theme::alpha(ACCENT, 160)));
+                }
+                if resp.dragged() {
+                    let k = open[j + 1];
+                    let per_px = sum / total;
+                    let d = resp.drag_delta().y * per_px;
+                    let min_w = MIN_PANEL_H * per_px;
+                    let d = d.clamp(min_w - w[i], w[k] - min_w);
+                    w[i] += d;
+                    w[k] -= d;
+                    self.weights = w.to_vec();
+                    changed = true;
+                }
             }
-        });
-        self.blocks_folded = bf;
-        self.pictures_folded = pf;
+        }
         changed
     }
 
@@ -338,7 +384,7 @@ pub fn monitor_ui(ui: &mut Ui, doc: &Document, t: f64, blur: bool) {
     let par = &doc.paradigm;
     let b = par.stimulus_at(t);
     let st = stimulus::preview_state(b, t);
-    stimulus::paint_stimulus(ui.painter(), screen, par, b, &st, 1080.0, blur);
+    stimulus::paint_stimulus(ui.painter(), screen, par, b, &st, stimulus::REF_HEIGHT, blur);
     ui.painter().rect_stroke(screen, CornerRadius::ZERO, Stroke::new(1.0, BORDER), StrokeKind::Outside);
     let (text, col) = match b {
         Some(b) => {
@@ -577,7 +623,7 @@ impl Inspector {
     pub fn ui(&mut self, ui: &mut Ui, doc: &mut Document, blur: bool, actions: &mut Vec<Action>) {
         theme::panel_frame().show(ui, |ui| {
             ui.set_width(ui.available_width());
-            ui.set_height((ui.available_height() - 22.0).max(0.0));
+            ui.set_height(ui.available_height().max(0.0));
             panel_header(ui, "Inspector", "");
             egui::ScrollArea::vertical().id_salt("inspector_scroll").auto_shrink([false, false]).show(ui, |ui| {
                 ui.set_width(ui.available_width() - 8.0);

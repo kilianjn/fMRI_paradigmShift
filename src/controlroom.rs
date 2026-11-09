@@ -31,7 +31,8 @@ fn tone(t: Tone) -> Color32 {
 
 /// Exactly what the participant sees – used by their screen and the control-room mirror.
 pub fn paint_participant(p: &egui::Painter, r: Rect, c: &RunController, blur: bool) {
-    let ref_h = r.height();
+    // the same reference height everywhere: the mirror is an exact, scaled-down copy
+    let ref_h = stimulus::REF_HEIGHT;
     match c.phase() {
         Phase::Running => {
             let t = c.elapsed();
@@ -128,7 +129,8 @@ impl RunSession {
         if s.fullscreen {
             builder = builder.with_monitor(s.screen).with_fullscreen(true).with_decorations(false);
         } else {
-            builder = builder.with_inner_size([1280.0, 720.0]);
+            let (w, h) = s.window_size.unwrap_or((1280.0, 720.0));
+            builder = builder.with_inner_size([w, h]);
         }
         let ctl = Arc::new(Mutex::new(ctl));
         let clock_stop = Arc::new(AtomicBool::new(false));
@@ -163,6 +165,7 @@ impl RunSession {
                 closed.store(true, Ordering::Relaxed);
             }
             let r = ui.max_rect();
+            c.screen_size = Some((r.width(), r.height()));
             paint_participant(ui.painter(), r, &c, false);
             ctx.set_cursor_icon(egui::CursorIcon::None);
             // the run clock wakes this window on every stimulus change; this is only a safety net
@@ -475,8 +478,10 @@ impl ControlRoom {
                         let r = ui.available_rect_before_wrap();
                         ui.allocate_rect(r, Sense::hover());
                         ui.painter().rect_filled(r, CornerRadius::ZERO, PANEL);
-                        let w = r.width().min(r.height() * 16.0 / 9.0);
-                        let bx = Rect::from_center_size(r.center(), Vec2::new(w, w * 9.0 / 16.0));
+                        // same shape as the participant screen (16:9 until its window has opened)
+                        let aspect = c.screen_size.map(|(sw, sh)| sw / sh.max(1.0)).unwrap_or(16.0 / 9.0);
+                        let w = r.width().min(r.height() * aspect);
+                        let bx = Rect::from_center_size(r.center(), Vec2::new(w, w / aspect));
                         paint_participant(ui.painter(), bx, &c, blur);
                         ui.painter().rect_stroke(bx, CornerRadius::ZERO, Stroke::new(1.0, BORDER), StrokeKind::Outside);
                     });

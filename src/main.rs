@@ -32,7 +32,7 @@ fn main() -> eframe::Result {
         match a.as_str() {
             "--screenshot" => {
                 let out = PathBuf::from(args.next().unwrap_or_else(|| "screenshot.png".into()));
-                shot = Some(app::ScreenshotPlan { out, scene: "editor".into(), frame: 0, done: Arc::new(AtomicBool::new(false)) });
+                shot = Some(app::ScreenshotPlan { out, scene: "editor".into(), frame: 0, done: Arc::new(AtomicBool::new(false)), requested: false });
             }
             "--scene" => {
                 if let (Some(s), Some(name)) = (shot.as_mut(), args.next()) {
