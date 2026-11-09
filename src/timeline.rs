@@ -39,6 +39,8 @@ struct Drag {
     orig: Vec<(String, f64, f64, usize)>,
     base_sel: Vec<String>,
     scroll0: f64,
+    /// scrubbing by the playhead's head: pointer x minus playhead x when it was grabbed
+    grab_dx: f32,
 }
 
 pub struct Timeline {
@@ -57,6 +59,8 @@ pub struct Timeline {
     pending_fit: bool,
     ctx_target: Option<(Option<String>, f64, usize)>,
     pub stim_dir: Option<std::path::PathBuf>,
+    /// the pointer is over the playhead's head (or is dragging it)
+    head_hot: bool,
 }
 
 impl Default for Timeline {
@@ -77,6 +81,7 @@ impl Default for Timeline {
             pending_fit: false,
             ctx_target: None,
             stim_dir: None,
+            head_hot: false,
         }
     }
 }
@@ -263,6 +268,43 @@ impl Timeline {
         (t / g).round() * g
     }
 
+    /// Playhead time for pointer x while scrubbing. It follows the mouse smoothly and only snaps
+    /// to block edges (not to the TR grid or to its own position); Alt = no snapping at all.
+    fn scrub_time(&mut self, p: &Paradigm, x: f32, free: bool) -> f64 {
+        self.snap_line = None;
+        let t = self.t_of(x.max(self.view.left() + HEADER_W)).max(0.0);
+        if self.snap && !free {
+            let best = p.blocks.iter().flat_map(|b| [b.start, b.end()]).chain([0.0]).min_by(|a, b| (a - t).abs().total_cmp(&(b - t).abs()));
+            if let Some(best) = best {
+                if (best - t).abs() * self.pps <= 6.0 {
+                    return best;
+                }
+            }
+        }
+        (t / 0.01).round() * 0.01
+    }
+
+    /// Grab zone of the playhead's head (the whole ruler height around it), if it is in view.
+    fn head_rect(&self) -> Option<Rect> {
+        let x = self.x_of(self.playhead);
+        let v = self.view;
+        if x < v.left() + HEADER_W - 1.0 || x > v.right() {
+            return None;
+        }
+        Some(Rect::from_min_max(Pos2::new(x - 11.0, v.top()), Pos2::new(x + 11.0, v.top() + RULER_H)))
+    }
+
+    fn scrub_tip(&self, ctx: &egui::Context, p: &Paradigm, pos: Pos2) {
+        let mut txt = fmt_time(self.playhead, 2);
+        if p.tr > 0.0 {
+            txt.push_str(&format!("  ·  volume {}", (self.playhead / p.tr + 1e-9).floor() as i64 + 1));
+        }
+        if let Some(b) = p.stimulus_at(self.playhead) {
+            txt.push_str(&format!("\n{}", b.display_label()));
+        }
+        paint_tip(ctx, pos, &txt);
+    }
+
     // ------------------------------------------------------------------ ui
     pub fn ui(&mut self, ui: &mut Ui, doc: &mut Document, actions: &mut Vec<Action>) {
         let rect = ui.available_rect_before_wrap();
@@ -307,13 +349,7 @@ impl Timeline {
         // press
         if pressed && resp.hovered() {
             if let Some(pos) = hover {
-                self.on_press(pos, mods, doc);
-                if self.drag.as_ref().map(|d| d.mode == Mode::Scrub).unwrap_or(false) {
-                    let t = self.t_of(pos.x).max(0.0);
-                    let t = if self.snap { self.snap_time(&doc.paradigm, t, &HashSet::new(), mods.alt) } else { t };
-                    self.set_playhead(t, false);
-                    actions.push(Action::Seek(self.playhead));
-                }
+                self.on_press(pos, mods, doc, actions);
             }
         }
         // drag
@@ -346,9 +382,18 @@ impl Timeline {
         }
 
         // hover feedback
-        if self.drag.is_none() {
+        let scrubbing = self.drag.as_ref().map(|d| d.mode == Mode::Scrub).unwrap_or(false);
+        self.head_hot = scrubbing || (self.drag.is_none() && hover.zip(self.head_rect()).map(|(p, r)| r.contains(p)).unwrap_or(false));
+        if scrubbing {
+            ctx.set_cursor_icon(CursorIcon::Grabbing);
+        } else if self.drag.is_none() {
             if let Some(pos) = hover {
-                if pos.y < self.view.top() + RULER_H && pos.x > self.view.left() + HEADER_W {
+                if self.head_hot {
+                    ctx.set_cursor_icon(CursorIcon::Grab);
+                    if ui.input(|i| i.pointer.time_since_last_movement() > 0.5) {
+                        paint_tip(&ctx, pos, "Drag the playhead to scrub through the run");
+                    }
+                } else if pos.y < self.view.top() + RULER_H && pos.x > self.view.left() + HEADER_W {
                     ctx.set_cursor_icon(CursorIcon::PointingHand);
                 } else if let Some((id, mode)) = self.block_at(&doc.paradigm, pos) {
                     ctx.set_cursor_icon(if mode == Mode::Move { CursorIcon::Grab } else { CursorIcon::ResizeHorizontal });
@@ -358,7 +403,7 @@ impl Timeline {
                             if !b.condition.is_empty() {
                                 tip.push_str(&format!("\ncondition: {}", b.condition));
                             }
-                            tip.push_str("\ndrag to move · drag edges to trim · double-click to edit");
+                            tip.push_str("\nclick to show it · drag to move · drag edges to trim · double-click to edit");
                             paint_tip(&ctx, pos, &tip);
                         }
                     }
@@ -373,7 +418,7 @@ impl Timeline {
         }
     }
 
-    fn on_press(&mut self, pos: Pos2, mods: egui::Modifiers, doc: &mut Document) {
+    fn on_press(&mut self, pos: Pos2, mods: egui::Modifiers, doc: &mut Document, actions: &mut Vec<Action>) {
         let v = self.view;
         let mk = |mode: Mode| Drag {
             mode,
@@ -383,7 +428,15 @@ impl Timeline {
             orig: vec![],
             base_sel: vec![],
             scroll0: 0.0,
+            grab_dx: 0.0,
         };
+        // the playhead's head: grab it where it is (no jump) and scrub
+        if self.head_rect().map(|r| r.contains(pos)).unwrap_or(false) {
+            let mut d = mk(Mode::Scrub);
+            d.grab_dx = pos.x - self.x_of(self.playhead);
+            self.drag = Some(d);
+            return;
+        }
         if pos.y > v.bottom() - SCROLL_H && pos.x > v.left() + HEADER_W {
             // scrollbar: jump the thumb under the pointer, then drag
             let mut d = mk(Mode::Scroll);
@@ -400,7 +453,11 @@ impl Timeline {
             return;
         }
         if pos.y < v.top() + RULER_H && pos.x > v.left() + HEADER_W {
+            // click in the ruler: the playhead jumps there, then follows the mouse
             self.drag = Some(mk(Mode::Scrub));
+            let t = self.scrub_time(&doc.paradigm, pos.x, mods.alt);
+            self.set_playhead(t, false);
+            actions.push(Action::Seek(self.playhead));
             return;
         }
         if pos.x < v.left() + HEADER_W {
@@ -434,6 +491,14 @@ impl Timeline {
                 if mode != Mode::Move {
                     doc.select(vec![id.clone()]);
                 }
+                // show the clicked block in the participant view: the playhead jumps to its start
+                // (unless it already stands inside the block)
+                if let Some(b) = doc.paradigm.block(&id) {
+                    if !(b.start <= self.playhead && self.playhead < b.end()) {
+                        self.set_playhead(b.start, false);
+                        actions.push(Action::Seek(self.playhead));
+                    }
+                }
                 let orig = doc
                     .selection
                     .iter()
@@ -458,10 +523,21 @@ impl Timeline {
                 self.scroll = d.scroll0 + (pos.x - d.origin.x) as f64 * total / visible;
             }
             Mode::Scrub => {
-                let t = self.t_of(pos.x.max(self.view.left() + HEADER_W)).max(0.0);
-                let t = self.snap_time(&doc.paradigm, t, &HashSet::new(), mods.alt);
-                self.set_playhead(t, false);
-                actions.push(Action::Seek(self.playhead));
+                // auto-scroll when the pointer reaches the edges of the timeline
+                if pos.x > self.view.right() - 20.0 && self.t_of(self.view.right()) < doc.paradigm.duration() + 10.0 {
+                    self.scroll += 8.0;
+                    ctx.request_repaint();
+                } else if pos.x < self.view.left() + HEADER_W + 10.0 && self.scroll > 0.0 {
+                    self.scroll = (self.scroll - 8.0).max(0.0);
+                    ctx.request_repaint();
+                }
+                let dx = self.drag.as_ref().map(|d| d.grab_dx).unwrap_or(0.0);
+                let t = self.scrub_time(&doc.paradigm, pos.x - dx, mods.alt);
+                if (t - self.playhead).abs() > 1e-9 {
+                    self.set_playhead(t, false);
+                    actions.push(Action::Seek(self.playhead));
+                }
+                self.scrub_tip(ctx, &doc.paradigm, pos);
             }
             Mode::Band => {
                 let d = self.drag.as_ref().unwrap();
@@ -1022,19 +1098,25 @@ impl Timeline {
         if x < v.left() + HEADER_W - 1.0 || x > v.right() {
             return;
         }
-        p.line_segment([Pos2::new(x, v.top() + 18.0), Pos2::new(x, v.bottom() - SCROLL_H)], Stroke::new(1.5, ACCENT));
+        let col = if self.head_hot { hex("#FFC65C") } else { ACCENT };
+        p.line_segment([Pos2::new(x, v.top() + 18.0), Pos2::new(x, v.bottom() - SCROLL_H)], Stroke::new(if self.head_hot { 2.0 } else { 1.5 }, col));
         let y = v.top();
+        let hw = if self.head_hot { 9.0 } else { 8.0 };
         p.add(PathShape::convex_polygon(
             vec![
-                Pos2::new(x - 7.0, y + 2.0),
-                Pos2::new(x + 7.0, y + 2.0),
-                Pos2::new(x + 7.0, y + 12.0),
-                Pos2::new(x, y + 19.0),
-                Pos2::new(x - 7.0, y + 12.0),
+                Pos2::new(x - hw, y + 1.0),
+                Pos2::new(x + hw, y + 1.0),
+                Pos2::new(x + hw, y + 13.0),
+                Pos2::new(x, y + 21.0),
+                Pos2::new(x - hw, y + 13.0),
             ],
-            ACCENT,
+            col,
             Stroke::NONE,
         ));
+        // grip lines: it can be grabbed
+        for dx in [-3.0, 0.0, 3.0] {
+            p.vline(x + dx, (y + 4.0)..=(y + 11.0), Stroke::new(1.0, theme::alpha(BG, 150)));
+        }
     }
 
     fn paint_scrollbar(&self, p: &Painter, par: &Paradigm) {
