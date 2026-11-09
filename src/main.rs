@@ -14,6 +14,7 @@ mod prefs;
 mod presets;
 mod rng;
 mod runner;
+mod selftest;
 mod stimulus;
 mod templates;
 mod theme;
@@ -28,6 +29,7 @@ fn main() -> eframe::Result {
     let mut file: Option<PathBuf> = None;
     let mut shot: Option<app::ScreenshotPlan> = None;
     let mut size = [1560.0f32, 940.0];
+    let mut present = false;
     while let Some(a) = args.next() {
         match a.as_str() {
             "--screenshot" => {
@@ -39,6 +41,8 @@ fn main() -> eframe::Result {
                     s.scene = name;
                 }
             }
+            // open the file read-only, straight to the run dialog (e.g. for a desktop shortcut)
+            "--present" => present = true,
             "--size" => {
                 if let Some(v) = args.next() {
                     let p: Vec<f32> = v.split('x').filter_map(|x| x.parse().ok()).collect();
@@ -62,7 +66,7 @@ fn main() -> eframe::Result {
                 return Ok(());
             }
             "--help" | "-h" => {
-                println!("ParadigmShift {} – timeline editor and presenter for fMRI paradigms\n\nUsage: paradigmshift [file.paradigm.json]", env!("CARGO_PKG_VERSION"));
+                println!("ParadigmShift {} – timeline editor and presenter for fMRI paradigms\n\nUsage: paradigmshift [file.paradigm.json]\n       paradigmshift --present file.paradigm.json   (open read-only, straight to the run)", env!("CARGO_PKG_VERSION"));
                 return Ok(());
             }
             other => file = Some(PathBuf::from(other)),
@@ -79,5 +83,5 @@ fn main() -> eframe::Result {
         persist_window: shot.is_none(),
         ..Default::default()
     };
-    eframe::run_native("ParadigmShift", options, Box::new(move |cc| Ok(Box::new(app::App::new(cc, file, shot)))))
+    eframe::run_native("ParadigmShift", options, Box::new(move |cc| Ok(Box::new(app::App::new(cc, file, shot, present)))))
 }

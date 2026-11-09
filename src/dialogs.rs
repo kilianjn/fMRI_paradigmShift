@@ -198,7 +198,9 @@ pub fn shortcuts_text() -> &'static str {
      Ctrl+T\ttemplates\n\
      Ctrl+H\tfind and replace\n\
      Ctrl+1 / 2 / 3\tshow / minimise the Blocks / Task blocks / Pictures panel\n\
-     F5\trun"
+     F5\trun\n\
+     Ctrl+Shift+O\topen a paradigm for presenting (read-only, straight to the run)\n\
+     Ctrl+Shift+F\tfunction test (buttons, scanner pulses, display)"
 }
 
 // =============================================================================
@@ -989,6 +991,78 @@ impl QuickDesign {
 // =============================================================================
 // Run setup
 // =============================================================================
+/// Settings for the function test (which screen, simulated pulses).
+pub struct TestDialog {
+    pub s: crate::selftest::TestSettings,
+    monitors: Vec<String>,
+    sync: String,
+}
+
+impl TestDialog {
+    pub fn new(hw: &Hardware, tr: f64, background: &str, monitors: Vec<String>) -> Self {
+        let sync = if hw.sync_mode == "keyboard" {
+            format!("SyncBox via USB keyboard, trigger key “{}”", hw.trigger_key)
+        } else {
+            format!("SyncBox via serial port {}", if hw.serial_port.is_empty() { "(not set!)" } else { &hw.serial_port })
+        };
+        let s = crate::selftest::TestSettings {
+            screen: if monitors.len() > 1 { 1 } else { 0 },
+            fullscreen: monitors.len() > 1,
+            simulate: false,
+            tr: if tr > 0.0 { tr } else { 2.0 },
+            background: background.to_string(),
+            window_size: None,
+        };
+        TestDialog { s, monitors, sync }
+    }
+
+    pub fn ui(&mut self, ctx: &Context) -> Outcome {
+        modal(ctx, "function_test", 540.0, |ui| {
+            title(ui, "✓  Function test");
+            theme::hint(
+                ui,
+                "Opens a test screen for the participant, mirrored here: every grip button lights up when it is pressed, a \
+                 lamp flashes with every scanner pulse (with the measured TR), corner marks show whether the whole screen is \
+                 visible, and a drifting logo shows that the display runs smoothly. Nothing is saved.",
+            );
+            ui.add_space(6.0);
+            theme::hint(ui, self.sync.clone());
+            ui.add_space(4.0);
+            let s = &mut self.s;
+            row(ui, "Show on screen", |ui| {
+                let cur = self.monitors.get(s.screen).cloned().unwrap_or_else(|| "1: main screen".into());
+                egui::ComboBox::from_id_salt("test_screen").width(260.0).selected_text(cur).show_ui(ui, |ui| {
+                    for (i, m) in self.monitors.iter().enumerate() {
+                        ui.selectable_value(&mut s.screen, i, m);
+                    }
+                });
+            });
+            row(ui, "", |ui| {
+                ui.checkbox(&mut s.fullscreen, "Full screen");
+            });
+            if self.monitors.len() < 2 {
+                row(ui, "", |ui| {
+                    theme::hint(ui, "Only one screen found: leave “Full screen” off to see the mirror next to the test screen.");
+                });
+            }
+            row(ui, "", |ui| {
+                ui.checkbox(&mut s.simulate, format!("Simulate scanner pulses every {} s (no scanner running)", fmt_g(s.tr)));
+            });
+            let mut out = Outcome::Open;
+            ui.add_space(8.0);
+            ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                if theme::colored_button(ui, "Start test", OK).clicked() {
+                    out = Outcome::Accept;
+                }
+                if ui.button("Cancel").clicked() {
+                    out = Outcome::Cancel;
+                }
+            });
+            out
+        })
+    }
+}
+
 pub struct RunDialog {
     pub s: RunSettings,
     monitors: Vec<String>,

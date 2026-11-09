@@ -34,6 +34,12 @@ pub enum Action {
     ToggleSnap,
     Validate,
     Run,
+    /// open a paradigm read-only and go straight to the run – no editor (None = ask for the file)
+    OpenForPresenting(Option<PathBuf>),
+    /// back from presentation mode to the editor
+    LeavePresentation,
+    /// the test screen for buttons, scanner pulses and display
+    FunctionTest,
     Duplicate,
     RepeatAsk,
     Repeat(u32),

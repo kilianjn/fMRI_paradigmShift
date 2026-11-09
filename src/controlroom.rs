@@ -63,6 +63,17 @@ pub fn route_keys(ctx: &Context, c: &mut RunController) {
 
 pub const PARTICIPANT_ID: &str = "participant_screen";
 
+/// The participant's window: full screen on the chosen monitor, or a normal window (for tests).
+pub fn screen_builder(title: String, fullscreen: bool, screen: usize, window_size: Option<(f32, f32)>) -> ViewportBuilder {
+    let builder = ViewportBuilder::default().with_title(title).with_icon(Arc::new(theme::app_icon()));
+    if fullscreen {
+        builder.with_monitor(screen).with_fullscreen(true).with_decorations(false)
+    } else {
+        let (w, h) = window_size.unwrap_or((1280.0, 720.0));
+        builder.with_inner_size([w, h])
+    }
+}
+
 pub struct RunSession {
     pub ctl: SharedRun,
     pub cr: ControlRoom,
@@ -124,14 +135,7 @@ fn clock_thread(ctx: Context, ctl: SharedRun, stop: Arc<AtomicBool>) -> Option<s
 impl RunSession {
     pub fn new(ctx: &Context, ctl: RunController, folded: Vec<String>) -> Self {
         let s = ctl.settings.clone();
-        let title = format!("{} – participant screen", ctl.p().name);
-        let mut builder = ViewportBuilder::default().with_title(title).with_icon(Arc::new(theme::app_icon()));
-        if s.fullscreen {
-            builder = builder.with_monitor(s.screen).with_fullscreen(true).with_decorations(false);
-        } else {
-            let (w, h) = s.window_size.unwrap_or((1280.0, 720.0));
-            builder = builder.with_inner_size([w, h]);
-        }
+        let builder = screen_builder(format!("{} – participant screen", ctl.p().name), s.fullscreen, s.screen, s.window_size);
         let ctl = Arc::new(Mutex::new(ctl));
         let clock_stop = Arc::new(AtomicBool::new(false));
         let clock = clock_thread(ctx.clone(), ctl.clone(), clock_stop.clone());

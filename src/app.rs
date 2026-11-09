@@ -8,7 +8,8 @@ use egui::{Align, Context, Key, KeyboardShortcut, Layout, Modifiers, Pos2, RichT
 
 use crate::actions::Action;
 use crate::controlroom::{CrAction, RunSession};
-use crate::dialogs::{self, Confirm, FindReplace, HardwareDialog, Message, Outcome, PrefsDialog, QuickDesign, RepeatAsk, RunDialog, SaveChoice, TemplateDialog};
+use crate::dialogs::{self, Confirm, FindReplace, HardwareDialog, Message, Outcome, PrefsDialog, QuickDesign, RepeatAsk, RunDialog, SaveChoice, TemplateDialog, TestDialog};
+use crate::selftest::TestSession;
 use crate::document::Document;
 use crate::hardware::now;
 use crate::model::{self, fmt_g, fmt_time, Paradigm, FILE_SUFFIX};
@@ -32,6 +33,7 @@ enum Modal {
     Hardware(Box<HardwareDialog>),
     Quick(Box<QuickDesign>),
     Run(Box<RunDialog>),
+    Test(Box<TestDialog>),
     Templates(Box<TemplateDialog>),
     Find(Box<FindReplace>),
     Prefs(Box<PrefsDialog>),
@@ -47,6 +49,19 @@ enum Popup {
 /// Width of the buttons in the tool strip and the padding around them.
 const STRIP_BUTTON_W: f32 = 36.0;
 const STRIP_PAD: f32 = 3.0;
+
+/// "Open for presenting": a paradigm loaded read-only that goes straight to the run dialog. The
+/// editor stays closed, so nothing can be changed by accident; scanner-start settings chosen in
+/// the run dialog apply to the run only and are never written back to the file.
+pub struct Presenter {
+    pub par: crate::model::Paradigm,
+    pub path: PathBuf,
+    pub problems: Vec<String>,
+    /// runs finished in this presentation session
+    pub runs: u32,
+    /// the settings of the last run – the next run continues from them (same participant, run + 1)
+    pub last: Option<RunSettings>,
+}
 
 pub struct ScreenshotPlan {
     pub out: PathBuf,
@@ -68,6 +83,8 @@ pub struct App {
     popup: Option<Popup>,
     status: Option<(String, f64)>,
     pub run: Option<RunSession>,
+    pub test: Option<TestSession>,
+    pub present: Option<Presenter>,
     last_autosave: f64,
     problems: (u64, Vec<String>),
     title: String,
@@ -82,7 +99,7 @@ fn path_str(p: &Path) -> String {
 }
 
 impl App {
-    pub fn new(cc: &eframe::CreationContext<'_>, file: Option<PathBuf>, shot: Option<ScreenshotPlan>) -> Self {
+    pub fn new(cc: &eframe::CreationContext<'_>, file: Option<PathBuf>, shot: Option<ScreenshotPlan>, present: bool) -> Self {
         let ctx = &cc.egui_ctx;
         theme::install_fonts(ctx);
         stimulus::init(ctx);
@@ -101,6 +118,8 @@ impl App {
             popup: None,
             status: None,
             run: None,
+            test: None,
+            present: None,
             last_autosave: now(),
             problems: (u64::MAX, vec![]),
             title: String::new(),
@@ -120,7 +139,11 @@ impl App {
         // the app always starts with an empty paradigm – unless a file was passed to it
         // (e.g. by double-clicking a .paradigm.json)
         if let Some(f) = file {
-            app.open_path(&f);
+            if present {
+                app.actions.push(Action::OpenForPresenting(Some(f)));
+            } else {
+                app.open_path(&f);
+            }
         }
         app
     }
@@ -301,7 +324,8 @@ impl App {
             }
             Action::QuickDesign => self.modal = Some(Modal::Quick(Box::new(QuickDesign::new(&self.doc.paradigm, &self.lib.media)))),
             Action::Hardware => {
-                self.modal = Some(Modal::Hardware(Box::new(HardwareDialog::new(ctx, &self.doc.paradigm.hardware, self.doc.paradigm.tr))))
+                let par = self.present.as_ref().map(|p| &p.par).unwrap_or(&self.doc.paradigm);
+                self.modal = Some(Modal::Hardware(Box::new(HardwareDialog::new(ctx, &par.hardware, par.tr))))
             }
             Action::Export => {
                 if self.doc.paradigm.blocks.is_empty() {
@@ -334,6 +358,18 @@ impl App {
             }
             Action::Validate => self.validate(),
             Action::Run => self.run_paradigm(false),
+            Action::OpenForPresenting(path) => self.open_for_presenting(path),
+            Action::LeavePresentation => {
+                self.present = None;
+                self.flash("Back in the editor.".to_string());
+            }
+            Action::FunctionTest => {
+                if self.run.is_none() && self.test.is_none() {
+                    let par = self.present.as_ref().map(|p| &p.par).unwrap_or(&self.doc.paradigm);
+                    let monitors = if self.monitors.is_empty() { vec!["1: main screen".to_string()] } else { self.monitors.clone() };
+                    self.modal = Some(Modal::Test(Box::new(TestDialog::new(&par.hardware, par.tr, &par.background, monitors))));
+                }
+            }
             Action::Duplicate => timeline::duplicate_selected(&mut self.doc),
             Action::RepeatAsk => {
                 if !self.doc.selection.is_empty() {
@@ -431,7 +467,10 @@ impl App {
     }
 
     fn run_paradigm(&mut self, checked: bool) {
-        let par = &self.doc.paradigm;
+        if self.run.is_some() || self.test.is_some() {
+            return;
+        }
+        let par = self.present.as_ref().map(|p| &p.par).unwrap_or(&self.doc.paradigm);
         if par.blocks.is_empty() {
             self.message("Nothing to run", "Add some blocks to the timeline first.");
             return;
@@ -443,7 +482,53 @@ impl App {
             return;
         }
         let monitors = if self.monitors.is_empty() { vec!["1: main screen".to_string()] } else { self.monitors.clone() };
-        self.modal = Some(Modal::Run(Box::new(RunDialog::new(par, &self.settings.prefs.data_dir, monitors))));
+        let mut d = RunDialog::new(par, &self.settings.prefs.data_dir, monitors);
+        // presentation mode: the next run continues from the last one (same participant, next run number)
+        if let Some(last) = self.present.as_ref().and_then(|p| p.last.clone()) {
+            d.s.sub = last.sub;
+            d.s.ses = last.ses;
+            d.s.run = (last.run + 1).min(99);
+            d.s.out_dir = last.out_dir;
+            d.s.screen = last.screen;
+            d.s.fullscreen = last.fullscreen;
+            // never carried over: a real scan must not run with simulated triggers by mistake
+            d.s.dummy_scans = last.dummy_scans;
+            d.s.waiting_screen = last.waiting_screen;
+            d.s.waiting_text = last.waiting_text;
+            d.s.end_text = last.end_text;
+        }
+        self.modal = Some(Modal::Run(Box::new(d)));
+    }
+
+    /// "Open for presenting": load a paradigm read-only and go straight to the run dialog.
+    fn open_for_presenting(&mut self, path: Option<PathBuf>) {
+        if self.run.is_some() || self.test.is_some() {
+            return;
+        }
+        let path = match path {
+            Some(p) => p,
+            None => {
+                let mut d = rfd::FileDialog::new().set_title("Open a paradigm for presenting (read-only)").add_filter("fMRI paradigm", &["json"]);
+                if !self.settings.dir.is_empty() {
+                    d = d.set_directory(&self.settings.dir);
+                }
+                match d.pick_file() {
+                    Some(p) => p,
+                    None => return,
+                }
+            }
+        };
+        match crate::model::Paradigm::load(&path) {
+            Ok(par) => {
+                self.settings.dir = path.parent().map(path_str).unwrap_or_default();
+                self.save_settings();
+                self.playing = None;
+                let problems = par.validate();
+                self.present = Some(Presenter { par, path, problems, runs: 0, last: None });
+                self.actions.push(Action::Run);
+            }
+            Err(e) => self.message("Could not open", e),
+        }
     }
 
     fn start_run(&mut self, ctx: &Context, mut s: RunSettings) {
@@ -459,6 +544,18 @@ impl App {
         s.control_refresh_ms = p.control_refresh_ms;
         s.blur_control_mirror = p.blur_control_mirror;
         self.save_settings();
+        if let Some(pr) = self.present.as_mut() {
+            // presentation mode: the settings apply to this run only – the file stays as it is
+            let mut par = pr.par.clone();
+            par.dummy_scans = s.dummy_scans;
+            par.waiting_screen = s.waiting_screen.clone();
+            par.waiting_text = s.waiting_text.clone();
+            par.end_text = s.end_text.clone();
+            pr.last = Some(s.clone());
+            pr.runs += 1;
+            self.launch_run(ctx, par, s);
+            return;
+        }
         // remember the scanner-start settings in the paradigm
         let par = &self.doc.paradigm;
         if par.dummy_scans != s.dummy_scans || par.waiting_screen != s.waiting_screen || par.waiting_text != s.waiting_text || par.end_text != s.end_text {
@@ -470,8 +567,12 @@ impl App {
                 p.end_text = s2.end_text.clone();
             });
         }
-        self.playing = None;
         let par = self.doc.paradigm.clone();
+        self.launch_run(ctx, par, s);
+    }
+
+    fn launch_run(&mut self, ctx: &Context, par: crate::model::Paradigm, s: RunSettings) {
+        self.playing = None;
         // preload pictures – no disk access while running
         let imgs: Vec<String> = par.blocks.iter().flat_map(|b| b.image_files()).collect();
         stimulus::preload(ctx, &imgs);
@@ -489,8 +590,10 @@ impl App {
         }
         let cmd = Modifiers::COMMAND;
         let cs = Modifiers::COMMAND | Modifiers::SHIFT;
-        let list: [(Modifiers, Key, Action); 26] = [
+        let list: [(Modifiers, Key, Action); 28] = [
             (cs, Key::S, Action::SaveAs),
+            (cs, Key::O, Action::OpenForPresenting(None)),
+            (cs, Key::F, Action::FunctionTest),
             (cs, Key::Z, Action::Redo),
             (cs, Key::N, Action::QuickDesign),
             (cs, Key::H, Action::Hardware),
@@ -586,6 +689,7 @@ impl App {
                 item!(ui, "New", "Ctrl+N", Action::New, true);
                 item!(ui, "New from template…", "Ctrl+T", Action::Templates, true);
                 item!(ui, "Open…", "Ctrl+O", Action::Open(None), true);
+                item!(ui, "Open for presenting…", "Ctrl+Shift+O", Action::OpenForPresenting(None), true);
                 item!(ui, "Save", "Ctrl+S", Action::Save, true);
                 item!(ui, "Save as…", "Ctrl+Shift+S", Action::SaveAs, true);
                 ui.menu_button("Open example", |ui| {
@@ -618,6 +722,7 @@ impl App {
                 item!(ui, "Quick design…", "Ctrl+Shift+N", Action::QuickDesign, true);
                 item!(ui, "Check paradigm", "Ctrl+K", Action::Validate, true);
                 item!(ui, "Hardware…", "Ctrl+Shift+H", Action::Hardware, true);
+                item!(ui, "Function test…", "Ctrl+Shift+F", Action::FunctionTest, true);
                 ui.separator();
                 item!(ui, "Run…", "F5", Action::Run, true);
             });
@@ -683,6 +788,13 @@ impl App {
             tb(ui, "New", "New paradigm (Ctrl+N)", Action::New, true);
             tb(ui, "Open", "Open a paradigm (Ctrl+O)", Action::Open(None), true);
             tb(ui, "Save", "Save (Ctrl+S)", Action::Save, true);
+            tb(
+                ui,
+                "▷ Present…",
+                "Open a paradigm read-only and go straight to the run – no editor, nothing can be changed by accident (Ctrl+Shift+O)",
+                Action::OpenForPresenting(None),
+                true,
+            );
             ui.separator();
             tb(ui, "↶ Undo", "Undo (Ctrl+Z)", Action::Undo, self.doc.can_undo());
             tb(ui, "↷ Redo", "Redo (Ctrl+Shift+Z)", Action::Redo, self.doc.can_redo());
@@ -690,6 +802,13 @@ impl App {
             tb(ui, "▦ Templates", "Start from a classic task: Hariri, Go/No-Go, emotion regulation … (Ctrl+T)", Action::Templates, true);
             tb(ui, "✦ Quick design", "Build a block or event-related design in a few clicks (Ctrl+Shift+N)", Action::QuickDesign, true);
             tb(ui, "⚙ Hardware", "Set up and test the NNL SyncBox and ResponseGrips (Ctrl+Shift+H)", Action::Hardware, true);
+            tb(
+                ui,
+                "✓ Function test",
+                "Test screen for the participant: grip buttons light up, scanner pulses flash, the display is checked (Ctrl+Shift+F)",
+                Action::FunctionTest,
+                true,
+            );
             tb(ui, "⇩ Export onsets", "Export planned onsets (BIDS events.tsv + FSL 3-column files) (Ctrl+E)", Action::Export, true);
             ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                 if theme::colored_button(ui, "▶  Run in scanner", OK)
@@ -946,10 +1065,15 @@ impl App {
             },
             Modal::Hardware(d) => match d.ui(ctx) {
                 Outcome::Accept => {
-                    self.doc.paradigm.hardware = d.hw.clone();
+                    if let Some(pr) = self.present.as_mut() {
+                        // presentation mode: for these runs only – the paradigm file is not changed
+                        pr.par.hardware = d.hw.clone();
+                    } else {
+                        self.doc.paradigm.hardware = d.hw.clone();
+                        self.doc.touch();
+                    }
                     self.settings.hardware = Some(d.hw.clone());
                     self.save_settings();
-                    self.doc.touch();
                     keep = false;
                 }
                 Outcome::Cancel => keep = false,
@@ -985,6 +1109,19 @@ impl App {
                     let s = d.s.clone();
                     self.modal = None;
                     self.start_run(ctx, s);
+                    return;
+                }
+                Outcome::Cancel => keep = false,
+                _ => {}
+            },
+            Modal::Test(d) => match d.ui(ctx) {
+                Outcome::Accept => {
+                    let s = d.s.clone();
+                    self.modal = None;
+                    self.playing = None;
+                    let hw = self.present.as_ref().map(|p| &p.par).unwrap_or(&self.doc.paradigm).hardware.clone();
+                    self.test = Some(TestSession::new(ctx, hw, s));
+                    ctx.send_viewport_cmd(egui::ViewportCommand::Focus);
                     return;
                 }
                 Outcome::Cancel => keep = false,
@@ -1071,12 +1208,125 @@ impl App {
                     None => "Control room".into(),
                 }
             }
-            None => format!("{} — ParadigmShift{}", self.doc.paradigm.name, if self.doc.dirty { " •" } else { "" }),
+            None if self.test.is_some() => "Function test — ParadigmShift".to_string(),
+            None => match &self.present {
+                Some(p) => format!("Presenting {} (read-only) — ParadigmShift", p.par.name),
+                None => format!("{} — ParadigmShift{}", self.doc.paradigm.name, if self.doc.dirty { " •" } else { "" }),
+            },
         };
         if t != self.title {
             ctx.send_viewport_cmd(egui::ViewportCommand::Title(t.clone()));
             self.title = t;
         }
+    }
+
+    /// Presentation mode: no editor – just the paradigm, the run button and the function test.
+    fn present_home(&mut self, ui: &mut Ui) {
+        let ctx = ui.ctx().clone();
+        if self.modal.is_none() {
+            let cs = Modifiers::COMMAND | Modifiers::SHIFT;
+            ctx.input_mut(|i| {
+                if i.consume_key(Modifiers::NONE, Key::F5) {
+                    self.actions.push(Action::Run);
+                }
+                if i.consume_shortcut(&KeyboardShortcut::new(Modifiers::COMMAND, Key::O)) || i.consume_shortcut(&KeyboardShortcut::new(cs, Key::O)) {
+                    self.actions.push(Action::OpenForPresenting(None));
+                }
+                if i.consume_shortcut(&KeyboardShortcut::new(cs, Key::F)) {
+                    self.actions.push(Action::FunctionTest);
+                }
+            });
+        }
+        let Some(pr) = self.present.as_ref() else { return };
+        let a = &mut self.actions;
+        egui::Panel::top("present_bar").frame(egui::Frame::new().fill(theme::BG).inner_margin(egui::Margin::symmetric(14, 8))).show(ui, |ui| {
+            ui.horizontal(|ui| {
+                ui.label(RichText::new("ParadigmShift").font(theme::bold(15.0)));
+                let g = ui.painter().layout_no_wrap("PRESENTATION MODE  ·  READ-ONLY".into(), theme::bold(11.0), ACCENT);
+                let (r, _) = ui.allocate_exact_size(g.size() + Vec2::new(20.0, 10.0), egui::Sense::hover());
+                ui.painter().rect_stroke(r, egui::CornerRadius::same(11), egui::Stroke::new(1.0, ACCENT), egui::StrokeKind::Inside);
+                ui.painter().galley(r.center() - g.size() / 2.0, g, ACCENT);
+                ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                    if ui.button("✎ Back to the editor").on_hover_text("Leave presentation mode. The presented file is not opened for editing.").clicked() {
+                        a.push(Action::LeavePresentation);
+                    }
+                    if ui.button("Open another…").on_hover_text("Open another paradigm for presenting (Ctrl+O)").clicked() {
+                        a.push(Action::OpenForPresenting(None));
+                    }
+                    if ui.button("✓ Function test").on_hover_text("Test screen: grip buttons, scanner pulses, display (Ctrl+Shift+F)").clicked() {
+                        a.push(Action::FunctionTest);
+                    }
+                    if ui.button("⚙ Hardware").on_hover_text("SyncBox and grips for these runs (the file is not changed)").clicked() {
+                        a.push(Action::Hardware);
+                    }
+                });
+            });
+        });
+        egui::CentralPanel::default().frame(egui::Frame::new().fill(theme::BG).inner_margin(16)).show(ui, |ui| {
+            let w = ui.available_width().min(680.0);
+            ui.vertical_centered(|ui| {
+                ui.add_space((ui.available_height() * 0.08).min(60.0));
+                ui.allocate_ui_with_layout(Vec2::new(w, ui.available_height()), Layout::top_down(Align::Min), |ui| {
+                    theme::panel_frame().inner_margin(egui::Margin::same(24)).show(ui, |ui| {
+                        ui.set_width(w - 50.0);
+                        let p = &pr.par;
+                        ui.label(RichText::new(&p.name).font(theme::bold(26.0)));
+                        ui.label(RichText::new(pr.path.display().to_string()).color(TEXT_DIM).size(12.0));
+                        ui.add_space(12.0);
+                        let hw = &p.hardware;
+                        let sync = if hw.sync_mode == "keyboard" {
+                            format!("USB keyboard, trigger key “{}”", hw.trigger_key)
+                        } else {
+                            format!("serial port {}", if hw.serial_port.is_empty() { "(not set!)" } else { &hw.serial_port })
+                        };
+                        let conds = p.conditions();
+                        let facts = [
+                            ("Duration", fmt_time(p.duration(), 1)),
+                            ("Volumes", format!("{}  at TR {} s  (+ {} dummy scans)", p.volumes(), crate::model::fmt_g(p.tr), p.dummy_scans)),
+                            ("Blocks", format!("{}  ·  conditions: {}", p.blocks.len(), if conds.is_empty() { "–".into() } else { conds.join(", ") })),
+                            ("SyncBox", sync),
+                            (
+                                "Runs",
+                                match &pr.last {
+                                    Some(l) => format!("{} in this session  ·  last: {} run {}", pr.runs, l.sub, l.run),
+                                    None => "none yet in this session".into(),
+                                },
+                            ),
+                        ];
+                        egui::Grid::new("present_facts").striped(false).num_columns(2).spacing([18.0, 6.0]).show(ui, |ui| {
+                            for (k, v) in facts {
+                                ui.label(RichText::new(k).color(TEXT_DIM));
+                                ui.add(egui::Label::new(v).wrap());
+                                ui.end_row();
+                            }
+                        });
+                        if !pr.problems.is_empty() {
+                            ui.add_space(10.0);
+                            let txt = pr.problems.iter().take(5).map(|p| format!("• {p}")).collect::<Vec<_>>().join("\n");
+                            ui.label(RichText::new("⚠ This paradigm has issues:").color(DANGER).strong());
+                            ui.add(egui::Label::new(RichText::new(txt).color(DANGER).size(12.5)).wrap());
+                        }
+                        ui.add_space(18.0);
+                        ui.vertical_centered(|ui| {
+                            let b = egui::Button::new(RichText::new("▶   Run in scanner…").font(theme::bold(17.0)).color(egui::Color32::WHITE))
+                                .fill(OK)
+                                .min_size(Vec2::new(260.0, 44.0));
+                            if ui.add(b).on_hover_text("Participant, run number and screen – then the participant screen opens and waits for the scanner (F5)").clicked() {
+                                a.push(Action::Run);
+                            }
+                        });
+                        ui.add_space(14.0);
+                        theme::hint(
+                            ui,
+                            "The file is open read-only: nothing in it can be changed here. Settings chosen for a run (screen, dummy \
+                             scans, hardware) apply to the runs only. After a run you come back to this page – the next run continues \
+                             with the same participant and the next run number.",
+                        );
+                    });
+                });
+            });
+        });
+        self.modals(&ctx);
     }
 
     fn editor(&mut self, ui: &mut Ui) {
@@ -1210,7 +1460,13 @@ impl eframe::App for App {
             }
         }
         self.update_title(&ctx);
-        if self.run.is_some() {
+        if let Some(t) = self.test.as_mut() {
+            t.show_screen(&ctx);
+            if t.ui(ui) {
+                self.test = None;
+                ctx.send_viewport_cmd(egui::ViewportCommand::Focus);
+            }
+        } else if self.run.is_some() {
             let focused = self.shot.is_some()
                 || ctx.input(|i| i.viewport().focused.unwrap_or(true))
                 || ctx.input_for(egui::ViewportId::from_hash_of(crate::controlroom::PARTICIPANT_ID), |i| i.viewport().focused.unwrap_or(false));
@@ -1223,6 +1479,13 @@ impl eframe::App for App {
                 self.run = None;
                 self.save_settings();
                 ctx.send_viewport_cmd(egui::ViewportCommand::Focus);
+            }
+        } else if self.present.is_some() {
+            self.present_home(ui);
+            // the editor's paradigm is kept while presenting – don't lose unsaved changes on quit
+            if ctx.input(|i| i.viewport().close_requested()) && !self.quit && self.doc.dirty && self.shot.is_none() {
+                ctx.send_viewport_cmd(egui::ViewportCommand::CancelClose);
+                self.modal = Some(Modal::Unsaved(Action::Quit));
             }
         } else {
             self.editor(ui);
@@ -1327,6 +1590,23 @@ impl App {
                     self.open_example("hariri_face_matching");
                     self.run_paradigm(true);
                 }
+                "present" | "present_run" => {
+                    self.open_example("hariri_face_matching");
+                    let path = self.doc.path.clone();
+                    self.open_for_presenting(path);
+                    if scene == "present" {
+                        self.actions.retain(|a| !matches!(a, Action::Run));
+                    }
+                }
+                "test" | "test_participant" => {
+                    let s = crate::selftest::TestSettings {
+                        fullscreen: false,
+                        simulate: true,
+                        window_size: Some((1280.0, 720.0)),
+                        ..Default::default()
+                    };
+                    self.test = Some(TestSession::new(ctx, self.doc.paradigm.hardware.clone(), s));
+                }
                 "hariri" | "gonogo" | "mid" | "stroop" | "emoreg" | "nback" | "checkerboard" => {
                     let name = match scene.as_str() {
                         "hariri" => "hariri_face_matching",
@@ -1369,6 +1649,16 @@ impl App {
             }
         }
         // grip presses during the simulated run
+        let test_scene = scene.starts_with("test");
+        if test_scene && frame > 2 && frame % 41 == 0 {
+            if let Some(t) = &self.test {
+                if let Ok(mut s) = t.state.lock() {
+                    // three of the four grips get pressed – the right thumb is still missing
+                    let k = ["a", "b", "c", "b"][((frame / 41) % 4) as usize];
+                    s.key(k, now());
+                }
+            }
+        }
         if run_scene && frame > 2 && frame % 37 == 0 {
             if let Some(s) = &self.run {
                 if let Ok(mut c) = s.ctl.lock() {
@@ -1377,7 +1667,10 @@ impl App {
                 }
             }
         }
-        let ready = if run_scene {
+        let ready = if test_scene {
+            frame > 3000
+                || self.test.as_ref().and_then(|t| t.state.lock().ok().map(|s| now() - s.t0 >= 6.6 && s.presses.iter().any(|p| p.0.map(|l| now() - l < 0.15).unwrap_or(false)))).unwrap_or(false)
+        } else if run_scene {
             // wait until the run has reached a given point (an instruction / a matching trial)
             let target = std::env::var("PARADIGMSHIFT_DEMO_TIME").ok().and_then(|v| v.parse().ok()).unwrap_or(if scene.ends_with("_small") { 2.5 } else { 12.0 });
             frame > 6000
@@ -1401,7 +1694,12 @@ impl App {
                 let _ = buf.save(&out);
                 done.store(true, std::sync::atomic::Ordering::Relaxed);
             };
-            if scene.starts_with("participant") {
+            if scene == "test_participant" {
+                ctx.send_viewport_cmd_to(
+                    egui::ViewportId::from_hash_of(crate::selftest::TEST_SCREEN_ID),
+                    egui::ViewportCommand::Screenshot(egui::ScreenshotCallback::new(cb)),
+                );
+            } else if scene.starts_with("participant") {
                 ctx.send_viewport_cmd_to(
                     egui::ViewportId::from_hash_of(crate::controlroom::PARTICIPANT_ID),
                     egui::ViewportCommand::Screenshot(egui::ScreenshotCallback::new(cb)),
