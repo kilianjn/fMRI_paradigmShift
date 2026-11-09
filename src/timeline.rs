@@ -44,6 +44,9 @@ struct Drag {
     /// plain click on a block of a larger selection: if it turns out to be a click (no drag),
     /// only that block stays selected
     collapse: bool,
+    /// moved blocks that don't fit where they are: insert them at this block boundary (time, track)
+    /// and make room
+    insert: Option<(f64, usize)>,
 }
 
 pub struct Timeline {
@@ -290,6 +293,47 @@ impl Timeline {
         (t / 0.01).round() * 0.01
     }
 
+    /// While blocks are moved: if they overlap other blocks where they are now, the block boundary
+    /// on their track where they would be inserted instead (the one nearest to their start).
+    /// None if they fit, or if they can't be inserted as a unit.
+    fn insert_point(p: &Paradigm, orig: &[(String, f64, f64, usize)]) -> Option<(f64, usize)> {
+        let ids: HashSet<&str> = orig.iter().map(|o| o.0.as_str()).collect();
+        let moved: Vec<&Block> = p.blocks.iter().filter(|b| ids.contains(b.id.as_str())).collect();
+        let track = moved.first()?.track;
+        if moved.iter().any(|b| b.track != track) || orig.iter().any(|o| o.3 != orig[0].3) {
+            return None;
+        }
+        if !moved.iter().any(|b| p.has_overlap(b)) {
+            return None;
+        }
+        // a unit only: no other block between the moved ones (at their original place)
+        let (g0, g1) = orig.iter().fold((f64::INFINITY, f64::NEG_INFINITY), |(a, z), o| (a.min(o.1), z.max(o.1 + o.2)));
+        if p.blocks.iter().any(|b| b.track == orig[0].3 && !ids.contains(b.id.as_str()) && b.start < g1 - 1e-6 && b.end() > g0 + 1e-6) {
+            return None;
+        }
+        let start = moved.iter().map(|b| b.start).fold(f64::INFINITY, f64::min);
+        p.blocks
+            .iter()
+            .filter(|b| b.track == track && !ids.contains(b.id.as_str()))
+            .flat_map(|b| [b.start, b.end()])
+            .min_by(|a, b| (a - start).abs().total_cmp(&(b - start).abs()))
+            .map(|t| (t, track))
+    }
+
+    /// Where an inserted unit will start and what happens to the other blocks (for tips/messages).
+    fn insert_summary(orig: &[(String, f64, f64, usize)], t: f64, track: usize) -> (f64, String) {
+        let (g0, g1) = orig.iter().fold((f64::INFINITY, f64::NEG_INFINITY), |(a, z), o| (a.min(o.1), z.max(o.1 + o.2)));
+        let len = fmt_g(round4(g1 - g0));
+        let same = orig.first().map(|o| o.3 == track).unwrap_or(false);
+        if same && t >= g1 - 1e-6 {
+            (t - (g1 - g0), format!("the blocks in between move {len}s to the left"))
+        } else if same {
+            (t, format!("the blocks in between move {len}s to the right"))
+        } else {
+            (t, format!("the following blocks move {len}s to the right"))
+        }
+    }
+
     /// Grab zone of the playhead's head (the whole ruler height around it), if it is in view.
     fn head_rect(&self) -> Option<Rect> {
         let x = self.x_of(self.playhead);
@@ -436,6 +480,7 @@ impl Timeline {
             scroll0: 0.0,
             grab_dx: 0.0,
             collapse: false,
+            insert: None,
         };
         // the playhead's head: grab it where it is (no jump) and scrub
         if self.head_rect().map(|r| r.contains(pos)).unwrap_or(false) {
@@ -647,13 +692,29 @@ impl Timeline {
                     }
                 }
                 doc.version += 1;
+                // don't fit here? then they are inserted at the nearest block boundary
+                let insert = if mode == Mode::Move { Self::insert_point(&doc.paradigm, &orig) } else { None };
+                if insert.is_some() {
+                    self.snap_line = None;
+                }
+                if let Some(d) = self.drag.as_mut() {
+                    d.insert = insert;
+                }
                 if let Some(b) = doc.paradigm.block(&prim_id) {
                     let tr = doc.paradigm.tr;
                     let mut txt = format!("{}\nstart {:.2}s · {:.2}s", b.display_label(), b.start, b.duration);
                     if tr > 0.0 {
                         txt.push_str(&format!("\nvolume {} · {:.2} TR", (b.start / tr).floor() as i64 + 1, b.duration / tr));
                     }
-                    if doc.paradigm.has_overlap(b) {
+                    if let Some((t, track)) = insert {
+                        let (at, effect) = Self::insert_summary(&orig, t, track);
+                        let n = orig.len();
+                        txt.push_str(&format!(
+                            "\n↳ release to insert {} here (from {}) –\n   {effect}",
+                            if n == 1 { "it".to_string() } else { format!("these {n} blocks") },
+                            fmt_time(at, 1),
+                        ));
+                    } else if doc.paradigm.has_overlap(b) {
                         txt.push_str("\n⚠ overlaps – will snap back");
                     }
                     paint_tip(ctx, pos, &txt);
@@ -672,16 +733,55 @@ impl Timeline {
         let d = self.drag.take().unwrap();
         self.band = None;
         self.snap_line = None;
+        // the playhead jumped to the block when it was grabbed – let it follow the block to its new place
+        let follow = |tl: &mut Self, doc: &Document, actions: &mut Vec<Action>| {
+            let o_start = d.orig.iter().find(|o| o.0 == d.block).map(|o| o.1);
+            if let (Some(o), Some(b)) = (o_start, doc.paradigm.block(&d.block)) {
+                if (tl.playhead - o).abs() < 1e-9 && (b.start - o).abs() > 1e-9 {
+                    tl.set_playhead(b.start, false);
+                    actions.push(Action::Seek(tl.playhead));
+                }
+            }
+        };
         if d.collapse && !d.moved {
             doc.select(vec![d.block.clone()]);
+        }
+        if let (Mode::Move, true, Some((t, track))) = (d.mode, d.moved, d.insert) {
+            let (at, effect) = Self::insert_summary(&d.orig, t, track);
+            match doc.paradigm.move_insert(&d.orig, t, track) {
+                Ok(len) if len > 0.0 => {
+                    doc.commit_edit();
+                    follow(self, doc, actions);
+                    let n = d.orig.len();
+                    actions.push(Action::Status(format!(
+                        "Inserted {} at {} – {} (Ctrl+Z undoes it).",
+                        if n == 1 { "1 block".to_string() } else { format!("{n} blocks") },
+                        fmt_time(at, 1),
+                        effect.replace(" move ", " moved ")
+                    )));
+                }
+                Ok(_) => doc.cancel_edit(),
+                Err(e) => {
+                    doc.cancel_edit();
+                    actions.push(Action::Status(e));
+                }
+            }
+            return;
         }
         if matches!(d.mode, Mode::Move | Mode::Left | Mode::Right) && d.moved {
             let overl = d.orig.iter().any(|(i, ..)| doc.paradigm.block(i).map(|b| doc.paradigm.has_overlap(b)).unwrap_or(false));
             if overl {
                 doc.cancel_edit();
-                actions.push(Action::Status("Blocks can't overlap on the same track – move undone.".into()));
+                actions.push(Action::Status(
+                    "Blocks can't overlap – move undone. (Blocks are inserted between others only when they are next to \
+                     each other on one track.)"
+                        .into(),
+                ));
             } else {
                 doc.commit_edit();
+                if d.mode == Mode::Move {
+                    follow(self, doc, actions);
+                }
             }
         }
     }
@@ -894,10 +994,30 @@ impl Timeline {
         let mut bl: Vec<&Block> = par.blocks.iter().collect();
         bl.sort_by_key(|b| doc.is_selected(&b.id));
         let dragging = self.drag.as_ref().map(|d| matches!(d.mode, Mode::Move | Mode::Left | Mode::Right) && d.moved).unwrap_or(false);
+        let insert = self.drag.as_ref().filter(|d| d.moved).and_then(|d| d.insert);
         for b in bl {
             let sel = doc.is_selected(&b.id);
-            let bad = dragging && sel && par.has_overlap(b);
+            let bad = dragging && sel && insert.is_none() && par.has_overlap(b);
             self.paint_block(&cp, par, b, sel, bad, false);
+        }
+        if let Some((t, track)) = insert {
+            // insertion marker: a bar at the block boundary with arrows – here it goes, the rest makes room
+            let x = self.x_of(t);
+            let top = self.track_top(track, n);
+            let th = self.track_h(n);
+            let col = hex("#7FD3FF");
+            cp.rect_filled(Rect::from_min_max(Pos2::new(x - 2.0, top + 1.0), Pos2::new(x + 2.0, top + th - 1.0)), CornerRadius::same(2), col);
+            for (y, dir) in [(top + 1.0, 1.0), (top + th - 1.0, -1.0)] {
+                cp.add(PathShape::convex_polygon(
+                    vec![Pos2::new(x - 7.0, y), Pos2::new(x + 7.0, y), Pos2::new(x, y + 8.0 * dir)],
+                    col,
+                    Stroke::NONE,
+                ));
+            }
+            let g = cp.layout_no_wrap("insert ▸".to_string(), theme::bold(10.5), Color32::from_rgb(20, 24, 30));
+            let tag = Rect::from_min_size(Pos2::new(x + 4.0, top + th / 2.0 - 9.0), Vec2::new(g.size().x + 10.0, 18.0));
+            cp.rect_filled(tag, CornerRadius::same(4), col);
+            cp.galley(tag.center() - g.size() / 2.0, g, Color32::BLACK);
         }
         for b in &self.ghost {
             self.paint_block(&cp, par, b, false, false, true);

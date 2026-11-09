@@ -696,6 +696,63 @@ impl Paradigm {
         id
     }
 
+    /// The blocks `moved` – given with their original (start, duration, track) – form one unit
+    /// that is moved so it starts at the block boundary `t` (a time in the current layout) on
+    /// `track`: the blocks from there on move right by the unit's length, and when the unit stays
+    /// on its track, the room it leaves behind is closed. Blocks after both places therefore keep
+    /// their times. Only works for a unit on one track without foreign blocks in between.
+    /// Returns the unit's length.
+    pub fn move_insert(&mut self, moved: &[(String, f64, f64, usize)], t: f64, track: usize) -> Result<f64, String> {
+        const EPS: f64 = 1e-6;
+        let Some(&(_, _, _, src)) = moved.first() else { return Ok(0.0) };
+        if moved.iter().any(|m| m.3 != src) {
+            return Err("Blocks from several tracks can't be inserted between other blocks.".into());
+        }
+        let ids: HashSet<&str> = moved.iter().map(|m| m.0.as_str()).collect();
+        let g0 = moved.iter().map(|m| m.1).fold(f64::INFINITY, f64::min);
+        let g1 = moved.iter().map(|m| m.1 + m.2).fold(f64::NEG_INFINITY, f64::max);
+        let len = g1 - g0;
+        let foreign_inside =
+            self.blocks.iter().any(|b| b.track == src && !ids.contains(b.id.as_str()) && b.start < g1 - EPS && b.end() > g0 + EPS);
+        if foreign_inside {
+            return Err("Only blocks that are next to each other can be inserted between other blocks – \
+                        select a continuous stretch with Shift+click."
+                .into());
+        }
+        let mut t = t.max(0.0);
+        if track == src {
+            if t > g0 - EPS && t < g1 + EPS {
+                // its own place: nothing changes
+                for (id, s, _, k) in moved {
+                    if let Some(b) = self.block_mut(id) {
+                        b.start = *s;
+                        b.track = *k;
+                    }
+                }
+                return Ok(0.0);
+            }
+            // close the room the unit leaves behind
+            for b in self.blocks.iter_mut().filter(|b| b.track == src && !ids.contains(b.id.as_str()) && b.start >= g1 - EPS) {
+                b.start = round4(b.start - len);
+            }
+            if t >= g1 - EPS {
+                t -= len;
+            }
+        }
+        // make room at the new place …
+        for b in self.blocks.iter_mut().filter(|b| b.track == track && !ids.contains(b.id.as_str()) && b.start >= t - EPS) {
+            b.start = round4(b.start + len);
+        }
+        // … and put the unit there, keeping its inner layout
+        for (id, s, _, _) in moved {
+            if let Some(b) = self.block_mut(id) {
+                b.start = round4(t + (s - g0));
+                b.track = track;
+            }
+        }
+        Ok(len)
+    }
+
     /// Insert a sequence of blocks as one unit. If it lands inside a stimulus block it moves behind
     /// that block; everything from the insertion point on – on all tracks – moves right.
     pub fn insert_group(&mut self, mut blocks: Vec<Block>) -> Vec<String> {
@@ -1219,6 +1276,66 @@ mod tests {
             p.blocks.push(Block::create(k, *s, Some(*d)));
         }
         p
+    }
+
+    /// eight contiguous 4-s blocks 0..8 on track 0; returns (paradigm, ids)
+    fn run8() -> (Paradigm, Vec<String>) {
+        let p = make(&[("fixation", 0.0, 4.0); 8].iter().enumerate().map(|(i, s)| (s.0, i as f64 * 4.0, s.2)).collect::<Vec<_>>());
+        let ids = p.blocks.iter().map(|b| b.id.clone()).collect();
+        (p, ids)
+    }
+
+    fn order(p: &Paradigm, ids: &[String]) -> Vec<(usize, f64)> {
+        let mut v: Vec<(usize, f64)> = p.blocks.iter().map(|b| (ids.iter().position(|i| *i == b.id).unwrap(), b.start)).collect();
+        v.sort_by(|a, b| a.1.total_cmp(&b.1));
+        v
+    }
+
+    fn unit(p: &Paradigm, ids: &[String], which: &[usize]) -> Vec<(String, f64, f64, usize)> {
+        which.iter().map(|i| p.block(&ids[*i]).map(|b| (b.id.clone(), b.start, b.duration, b.track)).unwrap()).collect()
+    }
+
+    #[test]
+    fn move_insert_reorders_and_keeps_the_rest() {
+        // block 4 (16–20 s) dropped between blocks 0 and 1 (t = 4)
+        let (mut p, ids) = run8();
+        let u = unit(&p, &ids, &[4]);
+        assert_eq!(p.move_insert(&u, 4.0, 0).unwrap(), 4.0);
+        let o = order(&p, &ids);
+        assert_eq!(o.iter().map(|x| x.0).collect::<Vec<_>>(), vec![0, 4, 1, 2, 3, 5, 6, 7]);
+        assert_eq!(o.iter().map(|x| x.1).collect::<Vec<_>>(), vec![0.0, 4.0, 8.0, 12.0, 16.0, 20.0, 24.0, 28.0]);
+        // blocks 1–2 (a Shift+click range) moved behind block 5 (boundary at 24 s)
+        let (mut p, ids) = run8();
+        let u = unit(&p, &ids, &[1, 2]);
+        assert_eq!(p.move_insert(&u, 24.0, 0).unwrap(), 8.0);
+        let o = order(&p, &ids);
+        assert_eq!(o.iter().map(|x| x.0).collect::<Vec<_>>(), vec![0, 3, 4, 5, 1, 2, 6, 7]);
+        assert_eq!(o.last().unwrap().1, 28.0); // the end of the run is unchanged
+        assert!(!p.blocks.iter().any(|b| p.has_overlap(b)));
+    }
+
+    #[test]
+    fn move_insert_special_cases() {
+        // dropped on its own place: nothing changes
+        let (mut p, ids) = run8();
+        let before = p.clone();
+        let u = unit(&p, &ids, &[3]);
+        assert_eq!(p.move_insert(&u, 16.0, 0).unwrap(), 0.0);
+        assert_eq!(p, before);
+        // blocks with another block in between can't be inserted as a unit
+        let u = unit(&p, &ids, &[2, 4]);
+        assert!(p.move_insert(&u, 0.0, 0).is_err());
+        // to another track: room is made there, the source track keeps its gap
+        let (mut p, ids) = run8();
+        p.tracks.push("Second".into());
+        let mut b = Block::create("fixation", 0.0, Some(4.0));
+        b.track = 1;
+        p.blocks.push(b);
+        let u = unit(&p, &ids, &[5]);
+        p.move_insert(&u, 0.0, 1).unwrap();
+        assert_eq!(p.block(&ids[5]).map(|b| (b.track, b.start)), Some((1, 0.0)));
+        assert_eq!(p.block(&ids[6]).unwrap().start, 24.0);
+        assert!(p.blocks.iter().any(|b| b.track == 1 && b.start == 4.0));
     }
 
     #[test]
