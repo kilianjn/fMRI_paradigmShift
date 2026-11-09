@@ -785,17 +785,7 @@ impl App {
                     a.push(act);
                 }
             };
-            tb(ui, "New", "New paradigm (Ctrl+N)", Action::New, true);
-            tb(ui, "Open", "Open a paradigm (Ctrl+O)", Action::Open(None), true);
-            tb(ui, "Save", "Save (Ctrl+S)", Action::Save, true);
-            tb(
-                ui,
-                "▷ Present…",
-                "Open a paradigm read-only and go straight to the run – no editor, nothing can be changed by accident (Ctrl+Shift+O)",
-                Action::OpenForPresenting(None),
-                true,
-            );
-            ui.separator();
+            // New, Open, Save and Open for presenting live in the File menu
             tb(ui, "↶ Undo", "Undo (Ctrl+Z)", Action::Undo, self.doc.can_undo());
             tb(ui, "↷ Redo", "Redo (Ctrl+Shift+Z)", Action::Redo, self.doc.can_redo());
             ui.separator();

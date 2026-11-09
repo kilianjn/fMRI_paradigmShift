@@ -79,7 +79,7 @@ defaults follow the published protocols, but check them against the protocol you
 | **✦ Quick design** | Builds a whole block design (ON/OFF, alternating or randomised) or an event-related design with jittered ITIs and optional ratings. |
 | **⚙ Hardware** | Configure and *live-test* the SyncBox and grips (lamps light up, measured TR is shown, built-in scanner simulator). |
 | **Run in scanner** | Participant ID, session, run, screen → full-screen presentation that waits for the trigger. |
-| **▷ Present…** | Open a paradigm read-only, straight to the run – for everyday clinical use (see below). |
+| **File → Open for presenting…** | Open a paradigm read-only, straight to the run – for everyday clinical use (see below). |
 | **✓ Function test** | Test screen for the participant: grip buttons light up, scanner pulses flash, the display is checked. |
 
 **Selecting blocks:** click a block, then **Shift+click** another one – everything in between is selected (e.g. to
@@ -96,7 +96,7 @@ separate preference blurs the control-room mirror. The participant's screen alwa
 
 ## Presentation mode (for everyday clinical use)
 
-**File → Open for presenting…** (Ctrl+Shift+O, or **▷ Present…** in the toolbar) opens a paradigm **read-only**
+**File → Open for presenting…** (Ctrl+Shift+O) opens a paradigm **read-only**
 and goes straight to the run dialog (participant, run number, screen …) – the editor never opens, so nothing can
 be changed by accident.
 
