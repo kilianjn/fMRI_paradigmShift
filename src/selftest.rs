@@ -293,6 +293,37 @@ pub struct TestSession {
     builder: ViewportBuilder,
     closed: Arc<AtomicBool>,
     logo: Option<TextureHandle>,
+    ticker_stop: Arc<AtomicBool>,
+    ticker: Option<std::thread::JoinHandle<()>>,
+}
+
+/// About 60 times a second: take in the inputs and wake *both* windows. A window's own repaint
+/// request is not enough – on some systems the window in the background is then only redrawn when
+/// it is clicked (the same reason the run has its own clock thread).
+fn ticker(ctx: Context, state: Arc<Mutex<TestState>>, stop: Arc<AtomicBool>) -> Option<std::thread::JoinHandle<()>> {
+    std::thread::Builder::new()
+        .name("function-test-ticker".into())
+        .spawn(move || {
+            let screen = ViewportId::from_hash_of(TEST_SCREEN_ID);
+            while !stop.load(Ordering::Relaxed) {
+                if let Ok(mut s) = state.lock() {
+                    s.poll();
+                }
+                ctx.request_repaint_of(screen);
+                ctx.request_repaint_of(ViewportId::ROOT);
+                std::thread::sleep(std::time::Duration::from_millis(16));
+            }
+        })
+        .ok()
+}
+
+impl Drop for TestSession {
+    fn drop(&mut self) {
+        self.ticker_stop.store(true, Ordering::Relaxed);
+        if let Some(h) = self.ticker.take() {
+            let _ = h.join();
+        }
+    }
 }
 
 /// Keys from a window: text goes to the test, Esc ends it.
@@ -311,11 +342,17 @@ impl TestSession {
     pub fn new(ctx: &Context, hw: Hardware, settings: TestSettings) -> Self {
         let builder = screen_builder("Function test – participant screen".into(), settings.fullscreen, settings.screen, settings.window_size);
         let c = ctx.clone();
-        let state = TestState::new(hw, settings, Arc::new(move || c.request_repaint()));
+        let wake = Arc::new(move || {
+            c.request_repaint_of(ViewportId::from_hash_of(TEST_SCREEN_ID));
+            c.request_repaint_of(ViewportId::ROOT);
+        });
+        let state = Arc::new(Mutex::new(TestState::new(hw, settings, wake)));
         let size = 128;
         let img = egui::ColorImage::from_rgba_unmultiplied([size, size], &crate::placeholders::app_icon_rgba(size as u32));
         let logo = Some(ctx.load_texture("function_test_logo", img, egui::TextureOptions::LINEAR));
-        TestSession { state: Arc::new(Mutex::new(state)), builder, closed: Arc::new(AtomicBool::new(false)), logo }
+        let ticker_stop = Arc::new(AtomicBool::new(false));
+        let ticker = ticker(ctx.clone(), state.clone(), ticker_stop.clone());
+        TestSession { state, builder, closed: Arc::new(AtomicBool::new(false)), logo, ticker_stop, ticker }
     }
 
     /// The participant's test screen (call every frame while the test runs).
@@ -340,7 +377,7 @@ impl TestSession {
             s.frame_drawn();
             paint_test(ui.painter(), r, &s, logo.as_ref());
             ctx.set_cursor_icon(egui::CursorIcon::None);
-            ctx.request_repaint(); // the logo moves continuously
+            // the ticker thread wakes this window ~60× a second, whether or not it has the focus
         });
     }
 
@@ -456,7 +493,6 @@ impl TestSession {
             });
         });
         drop(s);
-        ctx.request_repaint(); // the mirror moves with the participant screen
         stop
     }
 }
@@ -465,6 +501,19 @@ impl TestSession {
 mod tests {
     use super::*;
     use crate::hardware::no_waker;
+
+    #[test]
+    fn ticker_wakes_both_windows_and_takes_in_inputs() {
+        // no window ever repaints here – the ticker alone must keep both windows and the inputs going
+        let ctx = Context::default();
+        let session = TestSession::new(&ctx, Hardware::default(), TestSettings::default());
+        session.state.lock().unwrap().key("a", now());
+        std::thread::sleep(std::time::Duration::from_millis(120));
+        assert!(ctx.has_requested_repaint_for(&ViewportId::from_hash_of(TEST_SCREEN_ID)));
+        assert!(ctx.has_requested_repaint_for(&ViewportId::ROOT));
+        assert_eq!(session.state.lock().unwrap().presses[0].1, 1);
+        drop(session); // stops and joins the ticker
+    }
 
     #[test]
     fn keys_light_buttons_and_count_pulses() {
