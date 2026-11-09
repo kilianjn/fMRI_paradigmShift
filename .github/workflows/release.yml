@@ -2,11 +2,11 @@ name: Build & release
 
 # Builds standalone executables for Windows, macOS and Linux and publishes them as a GitHub Release.
 #  * push of a tag "v*"             → release for that tag
-#  * push to main / the dev branch  → (re)publishes the release "v<version from Cargo.toml>"
+#  * push to main                   → (re)publishes the release "v<version from Cargo.toml>"
 #  * pull requests                  → test + build only
 on:
   push:
-    branches: [main, master, "claude/rust-rewrite-executable-bxs37m"]
+    branches: [main]
     tags: ["v*"]
   pull_request:
   workflow_dispatch:
@@ -151,7 +151,7 @@ jobs:
           cat > notes.md <<EOF
           ## ParadigmShift $VERSION – standalone downloads
 
-          No installation, no Python: download the file for your computer and start it.
+          No installation needed: download the file for your computer and start it.
 
           | Computer | File | How to start |
           |---|---|---|

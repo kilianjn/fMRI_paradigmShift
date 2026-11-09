@@ -12,7 +12,7 @@ exactly what the participant will see, then press **Run in scanner**. The app wa
 
 ## Download
 
-Get the file for your computer from the **[latest release](../../releases/latest)** – nothing to install, no Python:
+Get the file for your computer from the **[latest release](../../releases/latest)** – nothing to install:
 
 | Computer | File | How to start |
 |---|---|---|
@@ -22,9 +22,6 @@ Get the file for your computer from the **[latest release](../../releases/latest
 
 The example paradigms (with their pictures) are built into the executable: **File → Open example**.
 You can also pass a file on the command line: `paradigmshift my_task.paradigm.json`.
-
-> The original Python/Qt version of ParadigmShift lives on the branch `claude/fmri-paradigm-designer-ia52kl`.
-> Both versions read and write the same `*.paradigm.json` files and the same log formats.
 
 ## Paradigm modules
 
@@ -181,7 +178,7 @@ On Linux the build needs no extra libraries; at runtime the usual desktop librar
 `libxkbcommon`) are loaded.
 
 The release workflow (`.github/workflows/release.yml`) builds the Windows `.exe`, a universal macOS `.app` and the
-Linux binary on every push to the main/development branch or a `v*` tag, and publishes them as a GitHub Release.
+Linux binary on every push to `main` or a `v*` tag, and publishes them as a GitHub Release.
 
 Code layout (`src/`): `model.rs` (paradigm, blocks, generators – no GUI), `templates.rs` (the ten paradigm
 modules), `presets.rs` (task blocks), `placeholders.rs` (generated stimuli), `hardware.rs` (SyncBox/grips input,
