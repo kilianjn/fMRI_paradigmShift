@@ -265,7 +265,8 @@ impl HardwareDialog {
         self.ports = describe_ports();
         if self.ports.is_empty() {
             self.ser_note = "No serial ports found. Is the SyncBox connected by USB and switched on? \
-                             (In USB keyboard mode it does not show up as a serial port.)"
+                             (In USB keyboard mode it does not show up as a serial port.) \
+                             If it never shows up: the FTDI driver is probably missing – see below."
                 .into();
         } else if !initial {
             let likely = self.ports.iter().any(|p| p.likely);
@@ -685,6 +686,22 @@ impl HardwareDialog {
         });
         if self.hw.sync_mode == "keyboard" {
             theme::hint(ui, "USB keyboard mode: keep this window in front – the trigger and grip buttons arrive as key presses.");
+        } else {
+            // the most common reason why a SyncBox cannot be found in serial mode
+            ui.add_space(6.0);
+            egui::Frame::new().fill(theme::BG).stroke(egui::Stroke::new(1.0, theme::BORDER)).corner_radius(6).inner_margin(8).show(ui, |ui| {
+                ui.set_width(ui.available_width());
+                ui.label(RichText::new("Driver for serial mode").strong());
+                ui.add(egui::Label::new(RichText::new(crate::hardware::FTDI_DRIVER_NOTE).color(TEXT_DIM)).wrap());
+                ui.horizontal_wrapped(|ui| {
+                    ui.hyperlink_to("Download FTDI VCP driver ↗", crate::hardware::FTDI_VCP_URL);
+                    ui.label(RichText::new("·").color(TEXT_DIM));
+                    if ui.button("Use USB keyboard mode instead").clicked() {
+                        self.hw.sync_mode = "keyboard".into();
+                        self.restart_router(false);
+                    }
+                });
+            });
         }
     }
 

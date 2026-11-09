@@ -76,6 +76,16 @@ pub fn describe_ports() -> Vec<PortInfo> {
 }
 
 /// Turn a serial-port error into something an operator can act on.
+/// Where FTDI's Virtual COM Port driver can be downloaded.
+pub const FTDI_VCP_URL: &str = "https://ftdichip.com/drivers/vcp-drivers/";
+
+/// The SyncBox talks USB through an FTDI chip: without FTDI's VCP driver it does not show up as a
+/// serial port at all.
+pub const FTDI_DRIVER_NOTE: &str = "The SyncBox's USB connection uses an FTDI chip. In serial mode it only appears as a \
+    serial (COM) port when FTDI's VCP driver (Virtual COM Port) is installed – NNL's own software installs it; \
+    without that software, download it from ftdichip.com → Drivers → VCP Drivers (Windows and macOS; Linux has it \
+    built in). Alternatively use USB keyboard mode, which needs no driver.";
+
 pub fn friendly_serial_error(err: &str, port: &str) -> String {
     let e = err.to_lowercase();
     let place = if port.is_empty() { "The port".to_string() } else { format!("Port {port}") };
@@ -104,7 +114,8 @@ pub fn friendly_serial_error(err: &str, port: &str) -> String {
     {
         return format!(
             "{place} was not found. Is the SyncBox connected by USB and switched on? \
-             Click “Refresh” or “Auto-detect”."
+             Click “Refresh” or “Auto-detect”. If the SyncBox never shows up as a port, FTDI's VCP driver is \
+             missing (see the note in Hardware → SyncBox) – or use USB keyboard mode."
         );
     }
     err.to_string()
@@ -613,9 +624,10 @@ impl PortScanner {
                 if ports.is_empty() {
                     send(ScanMsg::Done(
                         vec![],
-                        vec!["No serial ports found. Is the SyncBox connected by USB and switched on? If it is set to \
-                              USB keyboard mode, it does not appear as a serial port."
-                            .into()],
+                        vec![format!(
+                            "No serial ports found. Is the SyncBox connected by USB and switched on? If it is set to \
+                             USB keyboard mode, it does not appear as a serial port.\n\n{FTDI_DRIVER_NOTE}"
+                        )],
                     ));
                     return;
                 }

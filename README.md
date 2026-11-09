@@ -135,6 +135,13 @@ separate preference blurs the control-room mirror. The participant's screen alwa
   per value) – also for many selected ratings at once. The Hardware dialog only sets the defaults.
 * **Simulate scanner** – test any paradigm on a laptop; triggers are generated at the TR.
 
+> **Driver for serial mode:** the SyncBox's USB connection uses an **FTDI** chip. To use it in *serial mode* the
+> computer needs FTDI's **VCP driver** (Virtual COM Port) – otherwise the SyncBox does not show up as a serial/COM
+> port at all. NNL's own software installs this driver; on a computer without it, download it from
+> [ftdichip.com → Drivers → VCP Drivers](https://ftdichip.com/drivers/vcp-drivers/) (Windows and macOS; Linux has the
+> driver built into the kernel). **Alternatively, use USB keyboard mode**, which needs no driver at all. The
+> Hardware dialog shows the same note with a download link.
+
 ## Output
 
 For each run (in the chosen folder):
