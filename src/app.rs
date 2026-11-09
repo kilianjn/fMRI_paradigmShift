@@ -43,6 +43,11 @@ enum Popup {
 }
 
 /// Scripted states for generating documentation screenshots (`--screenshot out.png --scene name`).
+
+/// Width of the buttons in the tool strip and the padding around them.
+const STRIP_BUTTON_W: f32 = 36.0;
+const STRIP_PAD: f32 = 3.0;
+
 pub struct ScreenshotPlan {
     pub out: PathBuf,
     pub scene: String,
@@ -777,17 +782,19 @@ impl App {
     /// The tool strip on the left: always visible, one button per library panel. Minimised panels
     /// live here; a click brings them back (or minimises an open one), like in an image or video editor.
     fn tool_strip(&mut self, ui: &mut Ui) {
-        theme::panel_frame().inner_margin(egui::Margin::symmetric(4, 8)).show(ui, |ui| {
+        // the strip is a framed panel like the others: the panel's 8 px margin keeps the same gaps,
+        // and its buttons fill the frame exactly (nothing overflows and gets clipped)
+        theme::panel_frame().inner_margin(egui::Margin::symmetric(STRIP_PAD as i8, 8)).show(ui, |ui| {
             ui.set_width(ui.available_width());
             ui.set_height(ui.available_height().max(0.0));
-            ui.vertical_centered(|ui| {
+            ui.vertical(|ui| {
                 let n = self.lib.media.len();
                 for (i, (key, title, _)) in panels::PANELS.iter().enumerate() {
                     let open = self.lib.is_open(key);
                     let label = title.to_uppercase();
                     let g = ui.painter().layout_no_wrap(label, theme::bold(11.0), TEXT_DIM);
                     let h = 32.0 + g.size().x + 12.0;
-                    let (r, resp) = ui.allocate_exact_size(Vec2::new(40.0, h), egui::Sense::click());
+                    let (r, resp) = ui.allocate_exact_size(Vec2::new(STRIP_BUTTON_W, h), egui::Sense::click());
                     let hovered = resp.hovered();
                     if open || hovered {
                         ui.painter().rect_filled(r, egui::CornerRadius::same(6), if hovered { theme::PANEL_2 } else { theme::BG });
@@ -1099,7 +1106,8 @@ impl App {
         egui::Panel::left("tool_strip")
             .frame(frame)
             .resizable(false)
-            .exact_size(52.0)
+            // panel margin + frame margin + stroke on both sides around the buttons
+            .exact_size(STRIP_BUTTON_W + 2.0 * (8.0 + STRIP_PAD + 1.0))
             .show_separator_line(false)
             .show(ui, |ui| self.tool_strip(ui));
         if self.lib.any_open() {
