@@ -39,7 +39,6 @@ fn default_data_dir() -> String {
 pub struct Prefs {
     // general
     pub ui_scale: u32, // % of the normal text size
-    pub open_last_file: bool,
     pub autosave_minutes: u32, // 0 = off; writes <file>.autosave next to the paradigm
     pub show_hints: bool,
     pub blur_previews: bool,       // blur pictures in the editor
@@ -68,7 +67,6 @@ impl Default for Prefs {
     fn default() -> Self {
         Prefs {
             ui_scale: 100,
-            open_last_file: true,
             autosave_minutes: 5,
             show_hints: true,
             blur_previews: false,
@@ -104,7 +102,6 @@ impl Prefs {
 #[serde(default)]
 pub struct Settings {
     pub prefs: Prefs,
-    pub last_file: String,
     pub dir: String,
     pub controlroom_folded: Vec<String>,
     /// library panels minimised into the tool strip, and their relative heights
@@ -133,5 +130,21 @@ impl Settings {
         if let Ok(t) = serde_json::to_string_pretty(self) {
             let _ = std::fs::write(p, t);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn settings_from_older_versions_still_load() {
+        // older versions stored "open_last_file" and "last_file" – they are simply ignored now
+        let s: Settings = serde_json::from_str(
+            r#"{"prefs": {"open_last_file": true, "ui_scale": 120}, "last_file": "/x/task.paradigm.json", "dir": "/x"}"#,
+        )
+        .unwrap();
+        assert_eq!(s.prefs.ui_scale, 120);
+        assert_eq!(s.dir, "/x");
     }
 }

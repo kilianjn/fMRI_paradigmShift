@@ -1453,9 +1453,6 @@ impl PrefsDialog {
                             theme::hint(ui, "The participant's screen always shows the real pictures.");
                         });
                         section(ui, "Files");
-                        row(ui, "", |ui| {
-                            ui.checkbox(&mut p.open_last_file, "Open the last paradigm when the app starts");
-                        });
                         row(ui, "Autosave", |ui| {
                             ui.add(egui::DragValue::new(&mut p.autosave_minutes).range(0..=60).suffix(" min  (0 = off)"));
                         });

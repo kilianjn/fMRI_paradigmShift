@@ -117,11 +117,10 @@ impl App {
         if let Some(hw) = app.settings.hardware.clone() {
             app.doc.paradigm.hardware = hw; // the last hardware setup carries over to new paradigms
         }
-        let last = PathBuf::from(&app.settings.last_file);
+        // the app always starts with an empty paradigm – unless a file was passed to it
+        // (e.g. by double-clicking a .paradigm.json)
         if let Some(f) = file {
             app.open_path(&f);
-        } else if app.shot.is_none() && app.settings.prefs.open_last_file && !app.settings.last_file.is_empty() && last.exists() {
-            app.open_path(&last);
         }
         app
     }
@@ -171,7 +170,6 @@ impl App {
         match self.doc.load(path) {
             Ok(()) => {
                 self.settings.dir = path.parent().map(path_str).unwrap_or_default();
-                self.settings.last_file = path_str(path);
                 self.save_settings();
                 let imgs: Vec<String> = {
                     let mut v: Vec<String> = self.doc.paradigm.blocks.iter().flat_map(|b| b.image_files()).collect();
@@ -210,7 +208,6 @@ impl App {
         match self.doc.save(&path) {
             Ok(()) => {
                 self.settings.dir = path.parent().map(path_str).unwrap_or_default();
-                self.settings.last_file = path_str(&path);
                 self.save_settings();
                 self.flash(format!("Saved {}", path.display()));
                 true

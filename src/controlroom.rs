@@ -742,11 +742,15 @@ fn progress_strip(ui: &mut Ui, par: &Paradigm, ph: Phase, t: f64, aborted: bool)
     p.rect_filled(r, CornerRadius::ZERO, hex("#1B1E24"));
     let dur = par.duration().max(1e-6);
     let sx = r.width() as f64 / dur;
+    // block edges on whole pixels, and a 1-pt gap at the end of every block that is wide enough,
+    // so that neighbouring blocks of the same type (e.g. Hariri trials) stay distinguishable
+    let ppp = ui.ctx().pixels_per_point();
+    let snap = |x: f32| (x * ppp).round() / ppp;
     for b in par.blocks_on(0) {
-        let br = Rect::from_min_size(
-            Pos2::new(r.left() + (b.start * sx) as f32, r.top()),
-            Vec2::new(((b.duration * sx) as f32 - 0.5).max(1.0), r.height()),
-        );
+        let x0 = snap(r.left() + (b.start * sx) as f32);
+        let x1 = snap(r.left() + (b.end() * sx) as f32);
+        let gap = if x1 - x0 >= 4.0 { 1.0 } else { 0.0 };
+        let br = Rect::from_min_max(Pos2::new(x0, r.top()), Pos2::new((x1 - gap).max(x0 + 1.0 / ppp), r.bottom()));
         p.rect_filled(br, CornerRadius::ZERO, hex(b.color()));
     }
     let tt = if matches!(ph, Phase::Running | Phase::Done) { t.min(dur) } else { 0.0 };
