@@ -184,6 +184,8 @@ impl RepeatAsk {
 pub fn shortcuts_text() -> &'static str {
     "Space\tplay / pause preview\n\
      Home\tgo to start\n\
+     Shift+click\tselect all blocks from the last clicked one\n\
+     Ctrl+click\tadd / remove one block\n\
      Del\tdelete selected   (Shift+Del closes the gap)\n\
      Ctrl+D\tduplicate\n\
      Ctrl+R\trepeat ×N\n\

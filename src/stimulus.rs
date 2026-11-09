@@ -297,7 +297,14 @@ pub fn paint_stimulus(
         }
         "image" => {
             let path = if flicker_phase(b, st.t) == 1 { prm.s("flicker_path", "") } else { prm.s("path", "") };
-            draw_image(&p, rect, &path, prm.f("scale", 0.8) as f32, rect, blur);
+            let scale = prm.f("scale", 0.8) as f32;
+            let caption = prm.s("caption", "");
+            if caption.trim().is_empty() {
+                draw_image(&p, rect, &path, scale, rect, blur);
+            } else {
+                let f = theme::font(qsize(prm.f("caption_size", 40.0) as f32 * k));
+                paint_captioned(&p, rect, &path, scale, caption.trim_end(), f, hex(&prm.s("caption_color", "#FFFFFF")), blur);
+            }
         }
         "text" => {
             let f = theme::font(qsize(prm.f("size", 40.0) as f32 * k));
@@ -331,6 +338,27 @@ pub fn paint_stimulus(
         }
         _ => {}
     }
+}
+
+/// A picture with a text underneath. Picture and text are centred on the screen as a pair; the
+/// picture keeps its size (`scale` of the screen) unless the text needs the room, and the text
+/// wraps and shrinks if it is too long (it may take at most a third of the screen height).
+fn paint_captioned(p: &Painter, rect: Rect, path: &str, scale: f32, caption: &str, font: FontId, color: Color32, blur: bool) {
+    let (w, h) = (rect.width(), rect.height());
+    let gap = h * 0.03;
+    let g = fitted(p, caption, font, color, Vec2::new(w * 0.9, h * 0.33), true);
+    let cap_h = g.size().y;
+    let bx = rect.size() * scale;
+    let box_h = bx.y.min(h * 0.96 - cap_h - gap).max(h * 0.1);
+    let pic = match image(path, blur) {
+        ImgStatus::Ready(t) => t.size * (bx.x / t.size.x).min(box_h / t.size.y),
+        _ => Vec2::new(bx.x.min(box_h * 4.0 / 3.0), box_h),
+    };
+    let top = rect.center().y - (pic.y + gap + cap_h) / 2.0;
+    let pic_rect = Rect::from_center_size(Pos2::new(rect.center().x, top + pic.y / 2.0), pic);
+    let shown = draw_image(p, rect, path, 1.0, pic_rect, blur);
+    let cap_rect = Rect::from_min_size(Pos2::new(rect.left(), shown.bottom() + gap), Vec2::new(w, cap_h));
+    p.galley(cap_rect.center() - g.rect.center().to_vec2(), g, color);
 }
 
 /// Hariri layout: target on top, two choices below. A frame marks the participant's choice.

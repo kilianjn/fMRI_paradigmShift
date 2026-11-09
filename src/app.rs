@@ -234,6 +234,11 @@ impl App {
                 let _ = std::fs::write(&p, data);
             }
         }
+        // screenshot tests can show any paradigm file instead (PARADIGMSHIFT_DEMO_FILE=path)
+        if let (true, Ok(f)) = (self.shot.is_some(), std::env::var("PARADIGMSHIFT_DEMO_FILE")) {
+            self.open_path(Path::new(&f));
+            return;
+        }
         self.open_path(&dir.join(format!("{name}{FILE_SUFFIX}")));
     }
 

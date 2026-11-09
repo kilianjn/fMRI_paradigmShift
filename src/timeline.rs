@@ -41,6 +41,9 @@ struct Drag {
     scroll0: f64,
     /// scrubbing by the playhead's head: pointer x minus playhead x when it was grabbed
     grab_dx: f32,
+    /// plain click on a block of a larger selection: if it turns out to be a click (no drag),
+    /// only that block stays selected
+    collapse: bool,
 }
 
 pub struct Timeline {
@@ -61,6 +64,8 @@ pub struct Timeline {
     pub stim_dir: Option<std::path::PathBuf>,
     /// the pointer is over the playhead's head (or is dragging it)
     head_hot: bool,
+    /// the block clicked last – Shift+click selects everything from here to the clicked block
+    anchor: Option<String>,
 }
 
 impl Default for Timeline {
@@ -82,6 +87,7 @@ impl Default for Timeline {
             ctx_target: None,
             stim_dir: None,
             head_hot: false,
+            anchor: None,
         }
     }
 }
@@ -403,7 +409,7 @@ impl Timeline {
                             if !b.condition.is_empty() {
                                 tip.push_str(&format!("\ncondition: {}", b.condition));
                             }
-                            tip.push_str("\nclick to show it · drag to move · drag edges to trim · double-click to edit");
+                            tip.push_str("\nclick to show it · Shift+click: select all from the last clicked block\ndrag to move · drag edges to trim · double-click to edit");
                             paint_tip(&ctx, pos, &tip);
                         }
                     }
@@ -429,6 +435,7 @@ impl Timeline {
             base_sel: vec![],
             scroll0: 0.0,
             grab_dx: 0.0,
+            collapse: false,
         };
         // the playhead's head: grab it where it is (no jump) and scrub
         if self.head_rect().map(|r| r.contains(pos)).unwrap_or(false) {
@@ -473,8 +480,26 @@ impl Timeline {
                 d.base_sel = doc.selection.clone();
                 self.drag = Some(d);
             }
-            Some((id, mode)) => {
-                if multi {
+            Some((id, mut mode)) => {
+                let mut collapse = false;
+                let toggle = mods.command || mods.ctrl;
+                let range = mods.shift && !toggle;
+                let anchor = self.anchor.as_ref().and_then(|a| doc.paradigm.block(a)).map(|a| (a.start, a.track));
+                if let (true, Some((a_start, a_track))) = (range, anchor) {
+                    // Shift+click: everything from the anchor block to this one (on the tracks
+                    // in between, too); the anchor stays, so another Shift+click changes the range
+                    let Some(b) = doc.paradigm.block(&id) else { return };
+                    let (t0, t1) = (a_start.min(b.start), a_start.max(b.start));
+                    let (k0, k1) = (a_track.min(b.track), a_track.max(b.track));
+                    let mut hits: Vec<&Block> =
+                        doc.paradigm.blocks.iter().filter(|o| o.start >= t0 - 1e-6 && o.start <= t1 + 1e-6 && (k0..=k1).contains(&o.track)).collect();
+                    hits.sort_by(|x, y| x.start.total_cmp(&y.start).then(x.track.cmp(&y.track)));
+                    let ids: Vec<String> = hits.into_iter().map(|o| o.id.clone()).collect();
+                    let n = ids.len();
+                    doc.select(ids);
+                    actions.push(Action::Status(format!("{n} blocks selected – Del deletes them, Shift+Del also closes the gap")));
+                    mode = Mode::Move;
+                } else if toggle {
                     let mut sel = doc.selection.clone();
                     if let Some(i) = sel.iter().position(|s| *s == id) {
                         sel.remove(i);
@@ -482,8 +507,14 @@ impl Timeline {
                         sel.push(id.clone());
                     }
                     doc.select(sel);
-                } else if !doc.is_selected(&id) {
-                    doc.select(vec![id.clone()]);
+                    self.anchor = Some(id.clone());
+                } else {
+                    // keep a larger selection for now – the click may start dragging all of it
+                    collapse = doc.is_selected(&id) && doc.selection.len() > 1;
+                    if !doc.is_selected(&id) {
+                        doc.select(vec![id.clone()]);
+                    }
+                    self.anchor = Some(id.clone());
                 }
                 if !doc.is_selected(&id) {
                     return;
@@ -507,6 +538,7 @@ impl Timeline {
                 let mut d = mk(mode);
                 d.block = id;
                 d.orig = orig;
+                d.collapse = collapse;
                 self.drag = Some(d);
             }
         }
@@ -640,6 +672,9 @@ impl Timeline {
         let d = self.drag.take().unwrap();
         self.band = None;
         self.snap_line = None;
+        if d.collapse && !d.moved {
+            doc.select(vec![d.block.clone()]);
+        }
         if matches!(d.mode, Mode::Move | Mode::Left | Mode::Right) && d.moved {
             let overl = d.orig.iter().any(|(i, ..)| doc.paradigm.block(i).map(|b| doc.paradigm.has_overlap(b)).unwrap_or(false));
             if overl {
@@ -1269,5 +1304,69 @@ pub fn nudge_selected(doc: &mut Document, step: f64) {
         doc.cancel_edit();
     } else {
         doc.commit_edit();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// A timeline 1200 px wide at 10 px/s and a run of `n` 4-second fixation blocks.
+    fn setup(n: usize) -> (Timeline, Document) {
+        let mut doc = Document::default();
+        for i in 0..n {
+            doc.paradigm.blocks.push(Block::create("fixation", i as f64 * 4.0, Some(4.0)));
+        }
+        let tl = Timeline { pps: 10.0, view: Rect::from_min_size(Pos2::ZERO, Vec2::new(1200.0, 200.0)), ..Default::default() };
+        (tl, doc)
+    }
+
+    fn click(tl: &mut Timeline, doc: &mut Document, i: usize, mods: egui::Modifiers) {
+        let b = doc.paradigm.blocks[i].clone();
+        let pos = tl.block_rect(&b, doc.paradigm.tracks.len()).center();
+        let mut actions = vec![];
+        tl.on_press(pos, mods, doc, &mut actions);
+        tl.on_release(doc, &mut actions);
+    }
+
+    fn selected(doc: &Document) -> Vec<usize> {
+        let mut v: Vec<usize> = doc.selection.iter().filter_map(|id| doc.paradigm.blocks.iter().position(|b| &b.id == id)).collect();
+        v.sort();
+        v
+    }
+
+    #[test]
+    fn shift_click_selects_everything_in_between() {
+        let (mut tl, mut doc) = setup(10);
+        click(&mut tl, &mut doc, 2, egui::Modifiers::NONE);
+        assert_eq!(selected(&doc), vec![2]);
+        click(&mut tl, &mut doc, 6, egui::Modifiers::SHIFT);
+        assert_eq!(selected(&doc), vec![2, 3, 4, 5, 6]);
+        // the anchor stays: another Shift+click changes the range, also backwards
+        click(&mut tl, &mut doc, 0, egui::Modifiers::SHIFT);
+        assert_eq!(selected(&doc), vec![0, 1, 2]);
+        // Ctrl+click still adds / removes single blocks
+        click(&mut tl, &mut doc, 8, egui::Modifiers::CTRL);
+        assert_eq!(selected(&doc), vec![0, 1, 2, 8]);
+        // a plain click (no drag) on one of them selects only that one …
+        click(&mut tl, &mut doc, 1, egui::Modifiers::NONE);
+        assert_eq!(selected(&doc), vec![1]);
+        click(&mut tl, &mut doc, 0, egui::Modifiers::SHIFT);
+        click(&mut tl, &mut doc, 8, egui::Modifiers::CTRL);
+        assert_eq!(selected(&doc), vec![0, 1, 8]);
+        // … and delete removes the whole range at once
+        delete_selected(&mut doc, false);
+        assert_eq!(doc.paradigm.blocks.len(), 7);
+    }
+
+    #[test]
+    fn clicking_a_block_moves_the_playhead_there() {
+        let (mut tl, mut doc) = setup(5);
+        click(&mut tl, &mut doc, 3, egui::Modifiers::NONE);
+        assert_eq!(tl.playhead, 12.0);
+        // already inside the block: the playhead stays
+        tl.playhead = 13.5;
+        click(&mut tl, &mut doc, 3, egui::Modifiers::NONE);
+        assert_eq!(tl.playhead, 13.5);
     }
 }

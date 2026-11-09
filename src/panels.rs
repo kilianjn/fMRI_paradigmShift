@@ -1025,6 +1025,20 @@ fn params_ui(ui: &mut Ui, doc: &mut Document, blocks: &[Block], blur: bool) {
                         set_params(doc, &id_list, "flicker_path", json!(p));
                     }
                 }
+                section(ui, "TEXT UNDER THE PICTURE");
+                let mx = mixed(blocks, "caption");
+                let mut s = if mx { String::new() } else { b.params.s("caption", "") };
+                let hint = if mx { "Different texts – type here to give all selected blocks the same text" } else { "optional – shown underneath the picture" };
+                if ui
+                    .add(egui::TextEdit::multiline(&mut s).id_salt("caption_multi").hint_text(hint).desired_rows(2).desired_width(f32::INFINITY))
+                    .changed()
+                {
+                    set_params(doc, &id_list, "caption", json!(s));
+                }
+                if !b.params.s("caption", "").trim().is_empty() || mx {
+                    num_param(ui, doc, blocks, "caption_size", "Size", 40.0, (8.0, 300.0), 1.0, 0, " px", true);
+                    color_param(ui, doc, blocks, "caption_color", "Colour", "#FFFFFF");
+                }
             }
         }
         _ => {}

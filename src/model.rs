@@ -46,10 +46,13 @@ pub static BLOCK_TYPES: &[BlockType] = &[
         kind: "image",
         title: "Image",
         color: "#E0913A",
-        description: "Shows a picture. Drop image files straight onto the timeline.",
+        description: "Shows a picture, optionally with a text underneath. Drop image files straight onto the timeline.",
         default_duration: 4.0,
         default_track: 0,
-        defaults: || json!({"path": "", "scale": 0.8, "flicker_path": "", "flicker_hz": 0.0}),
+        defaults: || {
+            json!({"path": "", "scale": 0.8, "flicker_path": "", "flicker_hz": 0.0,
+                   "caption": "", "caption_size": 40, "caption_color": "#FFFFFF"})
+        },
     },
     BlockType {
         kind: "rating",
@@ -1091,6 +1094,7 @@ pub const TEXT_FIELDS: &[(&str, &str)] = &[
     ("question", "Rating question"),
     ("left_label", "Rating left label"),
     ("right_label", "Rating right label"),
+    ("caption", "Text under a picture"),
     ("label", "Block label"),
 ];
 

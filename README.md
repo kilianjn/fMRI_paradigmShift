@@ -67,7 +67,7 @@ defaults follow the published protocols, but check them against the protocol you
 
 | Area | What you do there |
 |---|---|
-| **Blocks** (left) | Drag *Fixation, Image, Rating, Instruction, Pause, …* onto the timeline – or double-click to append. |
+| **Blocks** (left) | Drag *Fixation, Image, Rating, Instruction, Pause, …* onto the timeline – or double-click to append. An *Image* block can show a text underneath the picture (inspector → *Text under the picture*, with its own size and colour). |
 | **Task blocks** (left) | Stroop/flanker/N-back trials and whole MID, emotion-regulation, N-back, Hariri, tapping, checkerboard and resting-state sequences – drag them onto the timeline like blocks. |
 | **Pictures** (left) | Import pictures or drop files/folders on the window; drag one or many onto the timeline (each becomes an image block) – or drag a picture straight onto a picture field in the inspector, e.g. the top/left/right faces of a matching trial. |
 | **Tool strip** (far left) | Always visible, like the tool strip of an image or video editor. *Blocks*, *Task blocks* and *Pictures* are independent panels: the small **×** in a panel's title minimises it into the strip, a click on its icon in the strip (or Ctrl+1 / 2 / 3, *View* menu) brings it back. Drag the gap between two panels to give one more room. With all three minimised the preview gets the whole width. The layout is remembered. |
@@ -77,6 +77,10 @@ defaults follow the published protocols, but check them against the protocol you
 | **✦ Quick design** | Builds a whole block design (ON/OFF, alternating or randomised) or an event-related design with jittered ITIs and optional ratings. |
 | **⚙ Hardware** | Configure and *live-test* the SyncBox and grips (lamps light up, measured TR is shown, built-in scanner simulator). |
 | **Run in scanner** | Participant ID, session, run, screen → full-screen presentation that waits for the trigger. |
+
+**Selecting blocks:** click a block, then **Shift+click** another one – everything in between is selected (e.g. to
+delete a whole stretch with **Del**; **Shift+Del** also closes the gap). **Ctrl+click** adds or removes single blocks,
+dragging over empty track space draws a selection frame.
 
 **Editing many blocks at once:** select several blocks of the same type (right-click → *Select all … blocks*,
 **Edit → Select…**, or *Edit all … blocks together* in the inspector). Every setting then applies to all of them;
