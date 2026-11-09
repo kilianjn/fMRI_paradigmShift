@@ -79,7 +79,8 @@ impl App {
         let ctx = &cc.egui_ctx;
         theme::install_fonts(ctx);
         stimulus::init(ctx);
-        let settings = Settings::load();
+        // screenshots for the docs use the default preferences, not the ones saved on this computer
+        let settings = if shot.is_some() { Settings::default() } else { Settings::load() };
         theme::apply(ctx, settings.prefs.ui_scale);
         let mut app = App {
             doc: Document::default(),
@@ -101,6 +102,8 @@ impl App {
             monitors: vec![],
         };
         app.tl.stim_dir = Some(presets::default_stim_dir());
+        app.lib.blocks_folded = app.settings.library_blocks_folded;
+        app.lib.pictures_folded = app.settings.library_pictures_folded;
         app.apply_prefs(ctx);
         app.new_paradigm();
         if let Some(hw) = app.settings.hardware.clone() {
@@ -368,6 +371,21 @@ impl App {
                 self.apply_prefs(ctx);
                 self.save_settings();
             }
+            Action::ToggleLibrary => {
+                self.settings.library_hidden = !self.settings.library_hidden;
+                self.save_settings();
+            }
+            Action::ShowLibrarySection(which) => {
+                self.settings.library_hidden = false;
+                if which == "pictures" {
+                    self.lib.pictures_folded = false;
+                } else {
+                    self.lib.blocks_folded = false;
+                }
+                self.settings.library_blocks_folded = self.lib.blocks_folded;
+                self.settings.library_pictures_folded = self.lib.pictures_folded;
+                self.save_settings();
+            }
             Action::SetShowHints(v) => {
                 self.settings.prefs.show_hints = v;
                 self.save_settings();
@@ -471,7 +489,7 @@ impl App {
         }
         let cmd = Modifiers::COMMAND;
         let cs = Modifiers::COMMAND | Modifiers::SHIFT;
-        let list: [(Modifiers, Key, Action); 23] = [
+        let list: [(Modifiers, Key, Action); 24] = [
             (cs, Key::S, Action::SaveAs),
             (cs, Key::Z, Action::Redo),
             (cs, Key::N, Action::QuickDesign),
@@ -495,6 +513,7 @@ impl App {
             (cmd, Key::Comma, Action::Preferences),
             (cmd, Key::Q, Action::Quit),
             (cmd, Key::A, Action::SelectAll),
+            (cmd, Key::L, Action::ToggleLibrary),
         ];
         let typing = ctx.text_edit_focused();
         for (m, k, a) in list {
@@ -606,6 +625,9 @@ impl App {
                 item!(ui, "Zoom in", "Ctrl+=", Action::ZoomIn, true);
                 item!(ui, "Zoom out", "Ctrl+-", Action::ZoomOut, true);
                 item!(ui, "Fit whole run", "Ctrl+0", Action::ZoomFit, true);
+                ui.separator();
+                let lib = if self.settings.library_hidden { "☐  Library panel (blocks & pictures)" } else { "☑  Library panel (blocks & pictures)" };
+                item!(ui, lib, "Ctrl+L", Action::ToggleLibrary, true);
             });
             ui.menu_button("Options", |ui| {
                 let check = |ui: &mut Ui, on: bool, text: &str, sc: &str| -> bool {
@@ -723,7 +745,7 @@ impl App {
     fn monitor_panel(&mut self, ui: &mut Ui) {
         theme::panel_frame().show(ui, |ui| {
             ui.set_width(ui.available_width());
-            ui.set_height(ui.available_height() - 22.0);
+            ui.set_height((ui.available_height() - 22.0).max(0.0));
             panels::panel_header(ui, "Participant view", "what the participant sees at the playhead");
             let h = ui.available_height() - 40.0;
             ui.allocate_ui(Vec2::new(ui.available_width(), h.max(100.0)), |ui| {
@@ -750,6 +772,48 @@ impl App {
                         ))
                         .color(TEXT_DIM),
                     );
+                }
+            });
+        });
+    }
+
+    /// The hidden library: a narrow strip with one button per section, like the tool strips of an
+    /// image or video editor.
+    fn library_strip(&mut self, ui: &mut Ui) {
+        theme::panel_frame().inner_margin(egui::Margin::symmetric(4, 8)).show(ui, |ui| {
+            ui.set_width(ui.available_width());
+            ui.set_height((ui.available_height() - 22.0).max(0.0));
+            ui.vertical_centered(|ui| {
+                if ui
+                    .add(egui::Button::new(RichText::new("»").font(theme::bold(16.0)).color(TEXT_DIM)).frame(false))
+                    .on_hover_text("Show the library (Ctrl+L)")
+                    .clicked()
+                {
+                    self.actions.push(Action::ToggleLibrary);
+                }
+                ui.add_space(6.0);
+                let n = self.lib.media.len();
+                for (key, label, tip) in [
+                    ("blocks", "BLOCKS", "Blocks – drag them onto the timeline".to_string()),
+                    ("pictures", "PICTURES", format!("Pictures ({n} imported)")),
+                ] {
+                    let g = ui.painter().layout_no_wrap(label.to_string(), theme::bold(11.0), TEXT_DIM);
+                    let h = 30.0 + g.size().x + 14.0;
+                    let (r, resp) = ui.allocate_exact_size(Vec2::new(40.0, h), egui::Sense::click());
+                    let hovered = resp.hovered();
+                    if hovered {
+                        ui.painter().rect_filled(r, egui::CornerRadius::same(6), theme::PANEL_2);
+                    }
+                    let icon = egui::Rect::from_center_size(Pos2::new(r.center().x, r.top() + 16.0), Vec2::splat(22.0));
+                    panels::paint_strip_icon(ui.painter(), key, icon, hovered);
+                    // vertical caption, read bottom-to-top like in video editors
+                    let pos = Pos2::new(r.center().x - g.size().y / 2.0, r.bottom() - 6.0);
+                    let color = if hovered { theme::TEXT } else { TEXT_DIM };
+                    ui.painter().add(egui::epaint::TextShape::new(pos, g, color).with_angle(-std::f32::consts::FRAC_PI_2));
+                    if resp.on_hover_text(tip).on_hover_cursor(egui::CursorIcon::PointingHand).clicked() {
+                        self.actions.push(Action::ShowLibrarySection(key.to_string()));
+                    }
+                    ui.add_space(8.0);
                 }
             });
         });
@@ -1030,16 +1094,29 @@ impl App {
             .size_range(200.0..=600.0)
             .show_separator_line(false)
             .show(ui, |ui| self.timeline_panel(ui));
-        egui::Panel::left("library")
-            .frame(frame)
-            .resizable(true)
-            .default_size(268.0)
-            .size_range(240.0..=320.0)
-            .show_separator_line(false)
-            .show(ui, |ui| {
-                let blur = self.settings.prefs.blur_previews;
-                self.lib.ui(ui, blur, &mut self.actions)
-            });
+        if self.settings.library_hidden {
+            egui::Panel::left("library_strip")
+                .frame(frame)
+                .resizable(false)
+                .exact_size(52.0)
+                .show_separator_line(false)
+                .show(ui, |ui| self.library_strip(ui));
+        } else {
+            egui::Panel::left("library")
+                .frame(frame)
+                .resizable(true)
+                .default_size(268.0)
+                .size_range(240.0..=320.0)
+                .show_separator_line(false)
+                .show(ui, |ui| {
+                    let blur = self.settings.prefs.blur_previews;
+                    if self.lib.ui(ui, blur, &mut self.actions) {
+                        self.settings.library_blocks_folded = self.lib.blocks_folded;
+                        self.settings.library_pictures_folded = self.lib.pictures_folded;
+                        self.save_settings();
+                    }
+                });
+        }
         egui::Panel::right("inspector")
             .frame(frame)
             .resizable(true)
@@ -1222,6 +1299,15 @@ impl App {
                     self.actions.push(Action::QuickDesign);
                 }
                 "prefs" => self.actions.push(Action::Preferences),
+                "library_hidden" => {
+                    self.open_example("hariri_face_matching");
+                    self.settings.library_hidden = true;
+                    let pick = self.doc.paradigm.blocks.iter().find(|b| b.kind == "match").map(|b| (b.id.clone(), b.start + 0.1));
+                    if let Some((id, t)) = pick {
+                        self.doc.select(vec![id]);
+                        self.tl.set_playhead(t, false);
+                    }
+                }
                 "run_dialog" => {
                     self.open_example("hariri_face_matching");
                     self.run_paradigm(true);

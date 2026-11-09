@@ -55,6 +55,10 @@ pub enum Action {
     CloseGaps(usize),
     Status(String),
     ToggleBlur,
+    /// hide / show the library panel on the left (it then shrinks to a narrow strip)
+    ToggleLibrary,
+    /// show the library and unfold one of its sections ("blocks" | "pictures")
+    ShowLibrarySection(String),
     SetShowHints(bool),
     SetConfirmAbort(bool),
     SetSaveCopy(bool),

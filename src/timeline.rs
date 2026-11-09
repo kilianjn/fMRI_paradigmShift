@@ -92,7 +92,16 @@ pub fn elided(p: &Painter, text: &str, font: FontId, color: Color32, width: f32)
 pub fn paint_tip(ctx: &egui::Context, pos: Pos2, text: &str) {
     let p = ctx.layer_painter(LayerId::new(Order::Tooltip, Id::unique("tl_tip")));
     let g = p.layout(text.to_string(), theme::font(12.5), TEXT, 360.0);
-    let r = Rect::from_min_size(pos + Vec2::new(16.0, 16.0), g.size() + Vec2::new(14.0, 10.0));
+    let size = g.size() + Vec2::new(14.0, 10.0);
+    let mut r = Rect::from_min_size(pos + Vec2::new(16.0, 16.0), size);
+    // keep it inside the window: flip to the left / above the pointer near the edges
+    let screen = ctx.content_rect();
+    if r.right() > screen.right() - 4.0 {
+        r = r.translate(Vec2::new(-(size.x + 32.0), 0.0));
+    }
+    if r.bottom() > screen.bottom() - 4.0 {
+        r = r.translate(Vec2::new(0.0, -(size.y + 32.0)));
+    }
     p.rect(r, CornerRadius::same(5), PANEL_2, Stroke::new(1.0, BORDER), StrokeKind::Inside);
     p.galley(r.min + Vec2::new(7.0, 5.0), g, TEXT);
 }

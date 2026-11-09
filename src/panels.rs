@@ -66,6 +66,52 @@ pub struct Library {
     pub media: Vec<String>,
     pub media_sel: Vec<usize>,
     anchor: Option<usize>,
+    pub blocks_folded: bool,
+    pub pictures_folded: bool,
+}
+
+/// Title row of a foldable library section: ▾/▸ TITLE, a hint, and (optionally) the « hide button.
+fn fold_header(ui: &mut Ui, title: &str, hint: &str, folded: &mut bool, hide: bool, actions: &mut Vec<Action>) -> bool {
+    let mut changed = false;
+    ui.horizontal(|ui| {
+        let arrow = if *folded { "▸  " } else { "▾  " };
+        let r = ui
+            .add(egui::Button::new(RichText::new(format!("{arrow}{}", title.to_uppercase())).font(theme::bold(11.0)).color(TEXT_DIM)).frame(false))
+            .on_hover_text(if *folded { "Click to unfold" } else { "Click to fold" });
+        if r.clicked() {
+            *folded = !*folded;
+            changed = true;
+        }
+        ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+            if hide
+                && ui
+                    .add(egui::Button::new(RichText::new("«").font(theme::bold(14.0)).color(TEXT_DIM)).frame(false))
+                    .on_hover_text("Hide the library – it shrinks to a narrow strip (Ctrl+L)")
+                    .clicked()
+            {
+                actions.push(Action::ToggleLibrary);
+            }
+            if !hint.is_empty() && !*folded {
+                ui.label(RichText::new(hint).color(TEXT_DIM).size(12.0));
+            }
+        });
+    });
+    changed
+}
+
+/// Small icons for the collapsed library strip.
+pub fn paint_strip_icon(p: &egui::Painter, which: &str, r: Rect, active: bool) {
+    let col = if active { TEXT } else { TEXT_DIM };
+    if which == "blocks" {
+        let cols = [hex("#4C8DF6"), hex("#E0913A"), hex("#D45C9E")];
+        for (i, c) in cols.iter().enumerate() {
+            let y = r.top() + 5.0 + i as f32 * 7.0;
+            let x0 = r.left() + 4.0 + (i % 2) as f32 * 5.0;
+            p.rect_filled(Rect::from_min_size(Pos2::new(x0, y), Vec2::new(r.width() - 13.0, 5.0)), CornerRadius::same(2), *c);
+        }
+    } else {
+        theme::draw_kind_glyph(p, "image", r, col);
+    }
 }
 
 impl Library {
@@ -83,13 +129,21 @@ impl Library {
         self.anchor = None;
     }
 
-    pub fn ui(&mut self, ui: &mut Ui, blur: bool, actions: &mut Vec<Action>) {
+    /// Returns true when a section was folded or unfolded (so the app can remember it).
+    pub fn ui(&mut self, ui: &mut Ui, blur: bool, actions: &mut Vec<Action>) -> bool {
         let total_h = ui.available_height();
-        let blocks_h = (total_h * 0.68).max(200.0);
+        let mut changed = false;
+        let blocks_h = if self.pictures_folded { total_h - 64.0 } else { (total_h * 0.68).max(200.0) };
+        let (mut bf, mut pf) = (self.blocks_folded, self.pictures_folded);
         theme::panel_frame().show(ui, |ui| {
-            ui.set_height(blocks_h - 24.0);
             ui.set_width(ui.available_width());
-            panel_header(ui, "Blocks", "drag → timeline");
+            if !bf {
+                ui.set_height((blocks_h - 24.0).max(0.0));
+            }
+            changed |= fold_header(ui, "Blocks", "drag → timeline", &mut bf, true, actions);
+            if bf {
+                return;
+            }
             ui.horizontal(|ui| {
                 for (i, t) in ["Basic", "Task blocks"].iter().enumerate() {
                     let sel = self.tab == i;
@@ -135,8 +189,14 @@ impl Library {
         ui.add_space(8.0);
         theme::panel_frame().show(ui, |ui| {
             ui.set_width(ui.available_width());
-            ui.set_height(ui.available_height() - 22.0);
-            panel_header(ui, "Pictures", "");
+            if !pf {
+                ui.set_height((ui.available_height() - 22.0).max(0.0));
+            }
+            let hint = if self.media.is_empty() { String::new() } else { format!("{}", self.media.len()) };
+            changed |= fold_header(ui, "Pictures", &hint, &mut pf, false, actions);
+            if pf {
+                return;
+            }
             let bin_h = (ui.available_height() - 34.0).max(60.0);
             egui::Frame::new().fill(BG).stroke(Stroke::new(1.0, BORDER)).corner_radius(CornerRadius::same(6)).inner_margin(4).show(ui, |ui| {
                 ui.set_height(bin_h);
@@ -155,6 +215,9 @@ impl Library {
                 actions.push(Action::ImportPictures);
             }
         });
+        self.blocks_folded = bf;
+        self.pictures_folded = pf;
+        changed
     }
 
     fn media_grid(&mut self, ui: &mut Ui, blur: bool) {
@@ -179,7 +242,9 @@ impl Library {
                     }
                     let name: String = crate::model::stem(path).chars().take(11).collect();
                     ui.painter().text(Pos2::new(r.center().x, r.bottom() - 9.0), Align2::CENTER_CENTER, name, theme::font(11.0), TEXT);
-                    let resp = resp.on_hover_text(path.as_str());
+                    let resp = resp.on_hover_text(format!(
+                        "{path}\n\nDrag onto the timeline, or onto a picture field in the inspector"
+                    ));
                     if resp.clicked() {
                         clicked = Some(idx);
                     }
@@ -195,7 +260,7 @@ impl Library {
                         let n = files.len();
                         egui::DragAndDrop::set_payload(ui.ctx(), DragPayload::Images(files));
                         if let Some(p) = ui.ctx().pointer_interact_pos() {
-                            crate::timeline::paint_tip(ui.ctx(), p - Vec2::new(16.0, 16.0), &format!("{n} picture(s) → timeline"));
+                            crate::timeline::paint_tip(ui.ctx(), p, &format!("{n} picture{}", if n == 1 { "" } else { "s" }));
                         }
                     }
                 }
@@ -445,22 +510,57 @@ fn color_param(ui: &mut Ui, doc: &mut Document, blocks: &[Block], key: &str, tit
     });
 }
 
+/// A picture field: preview, file name and "Choose…". Pictures can also be dropped onto it – from the
+/// picture bin on the left or straight from the desktop.
 fn image_picker(ui: &mut Ui, path: &str, height: f32, blur: bool) -> Option<String> {
     let w = ui.available_width();
     let (r, _) = ui.allocate_exact_size(Vec2::new(w, height), Sense::hover());
+    let ctx = ui.ctx().clone();
+    let bin_payload = egui::DragAndDrop::payload::<DragPayload>(&ctx).and_then(|p| match &*p {
+        DragPayload::Images(files) => files.first().cloned(),
+        DragPayload::Kind(_) => None,
+    });
+    let desktop_drag = ui.input(|i| !i.raw.hovered_files.is_empty());
+    let over = ui
+        .input(|i| i.pointer.latest_pos())
+        .map(|pos| r.contains(pos) && ui.clip_rect().contains(pos))
+        .unwrap_or(false);
+    let dragging = bin_payload.is_some() || desktop_drag;
+    let mut out = None;
+
     let p = ui.painter();
-    p.rect_filled(r, CornerRadius::same(6), BG);
+    p.rect_filled(r, CornerRadius::same(6), if dragging && over { theme::alpha(ACCENT, 40) } else { BG });
+    let (bw, bc) = if dragging { (if over { 2.5 } else { 1.5 }, ACCENT) } else { (1.0, BORDER) };
     let pts = [r.left_top(), r.right_top(), r.right_bottom(), r.left_bottom(), r.left_top()];
     for wv in pts.windows(2) {
-        p.add(egui::Shape::dashed_line(&[wv[0], wv[1]], Stroke::new(1.0, BORDER), 5.0, 3.0));
+        p.add(egui::Shape::dashed_line(&[wv[0], wv[1]], Stroke::new(bw, bc), 5.0, 3.0));
     }
-    if path.is_empty() {
-        stimulus::draw_text(p, r, "No picture – click Choose…", theme::font(12.0), TEXT_DIM, false);
+    if dragging && over {
+        stimulus::draw_text(p, r, "Drop to use this picture", theme::bold(13.0), ACCENT, true);
+    } else if path.is_empty() {
+        let msg = if dragging { "Drop a picture here" } else { "No picture – drag one here from Pictures, or click Choose…" };
+        stimulus::draw_text(p, r.shrink(6.0), msg, theme::font(12.0), if dragging { ACCENT } else { TEXT_DIM }, true);
     } else if !stimulus::paint_thumb(p, r.shrink(3.0), path, blur) {
         let msg = if std::path::Path::new(path).exists() { "loading…" } else { "File not found" };
         stimulus::draw_text(p, r, msg, theme::font(12.0), TEXT_DIM, false);
     }
-    let mut out = None;
+    if over {
+        // dropped from the picture bin
+        if let Some(f) = &bin_payload {
+            if ui.input(|i| i.pointer.any_released()) {
+                egui::DragAndDrop::clear_payload(&ctx);
+                out = Some(f.clone());
+            } else {
+                ctx.request_repaint();
+            }
+        }
+        // dropped from the desktop / file manager
+        let dropped: Vec<std::path::PathBuf> =
+            ui.input(|i| i.raw.dropped_files.iter().map(|f| f.path().to_path_buf()).filter(|p| !p.as_os_str().is_empty()).collect());
+        if let Some(f) = expand_images(&dropped).into_iter().next() {
+            out = Some(f);
+        }
+    }
     ui.horizontal(|ui| {
         let name = crate::model::basename(path);
         ui.add(egui::Label::new(RichText::new(name).color(TEXT_DIM).size(12.0)).truncate()).on_hover_text(path);
@@ -477,7 +577,7 @@ impl Inspector {
     pub fn ui(&mut self, ui: &mut Ui, doc: &mut Document, blur: bool, actions: &mut Vec<Action>) {
         theme::panel_frame().show(ui, |ui| {
             ui.set_width(ui.available_width());
-            ui.set_height(ui.available_height() - 22.0);
+            ui.set_height((ui.available_height() - 22.0).max(0.0));
             panel_header(ui, "Inspector", "");
             egui::ScrollArea::vertical().id_salt("inspector_scroll").auto_shrink([false, false]).show(ui, |ui| {
                 ui.set_width(ui.available_width() - 8.0);

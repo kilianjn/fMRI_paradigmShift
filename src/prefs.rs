@@ -107,6 +107,10 @@ pub struct Settings {
     pub last_file: String,
     pub dir: String,
     pub controlroom_folded: Vec<String>,
+    /// library panel on the left: hidden (narrow strip) and its folded sections
+    pub library_hidden: bool,
+    pub library_blocks_folded: bool,
+    pub library_pictures_folded: bool,
     pub hardware: Option<crate::model::Hardware>,
 }
 
