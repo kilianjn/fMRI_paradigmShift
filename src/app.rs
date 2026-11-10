@@ -1497,6 +1497,7 @@ impl eframe::App for App {
                 ctx.request_repaint_after(std::time::Duration::from_millis(500));
             }
         }
+        self.shot_overlay(&ctx);
         self.demo_step(&ctx);
     }
 
@@ -1509,6 +1510,26 @@ impl eframe::App for App {
 // Scripted screenshots for the documentation (`--screenshot out.png --scene <name>`)
 // =============================================================================
 impl App {
+    /// Screenshot scenes of the participant's screen: paint exactly what it shows over the whole
+    /// main window (same painter, same reference height), so the main window can be captured.
+    /// Use with `--size 1280x720` to get the participant window's size.
+    fn shot_overlay(&mut self, ctx: &Context) {
+        let Some(scene) = self.shot.as_ref().map(|p| p.scene.clone()) else { return };
+        if !(scene == "participant" || scene == "test_participant") {
+            return;
+        }
+        let rect = ctx.content_rect();
+        let painter = ctx.layer_painter(egui::LayerId::new(egui::Order::Debug, egui::Id::new("shot_overlay")));
+        if let Some(s) = &self.run {
+            if let Ok(c) = s.ctl.lock() {
+                crate::controlroom::paint_participant(&painter, rect, &c, false);
+            }
+        }
+        if let Some(t) = &self.test {
+            t.paint_full(&painter, rect);
+        }
+    }
+
     fn demo_step(&mut self, ctx: &Context) {
         let (frame, scene, done_flag, out_path) = {
             let Some(plan) = self.shot.as_mut() else { return };
@@ -1684,19 +1705,9 @@ impl App {
                 let _ = buf.save(&out);
                 done.store(true, std::sync::atomic::Ordering::Relaxed);
             };
-            if scene == "test_participant" {
-                ctx.send_viewport_cmd_to(
-                    egui::ViewportId::from_hash_of(crate::selftest::TEST_SCREEN_ID),
-                    egui::ViewportCommand::Screenshot(egui::ScreenshotCallback::new(cb)),
-                );
-            } else if scene.starts_with("participant") {
-                ctx.send_viewport_cmd_to(
-                    egui::ViewportId::from_hash_of(crate::controlroom::PARTICIPANT_ID),
-                    egui::ViewportCommand::Screenshot(egui::ScreenshotCallback::new(cb)),
-                );
-            } else {
-                ctx.request_screenshot(cb);
-            }
+            // (the participant screens are immediate viewports, which eframe can't screenshot;
+            // for those scenes the main window shows the very same picture – see `shot_overlay`)
+            ctx.request_screenshot(cb);
         }
     }
 }

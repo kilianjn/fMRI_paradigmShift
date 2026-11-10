@@ -101,11 +101,13 @@ fn clock_thread(ctx: Context, ctl: SharedRun, stop: Arc<AtomicBool>) -> Option<s
                     (c.phase() == Phase::Done, c.stimulus_version, c.state.version, c.settings.control_refresh_ms)
                 };
                 let t = now();
+                // the participant screen is drawn in the control room's pass (immediate viewport),
+                // so waking the main window updates both
                 if stim != last_stim {
                     last_stim = stim;
                     last_part = t;
+                    ctx.request_repaint_of(ViewportId::ROOT);
                     ctx.request_repaint_of(pid);
-                    ctx.request_repaint_of(ViewportId::ROOT); // the live mirror
                     last_cr = t;
                 }
                 if version != last_version && t - last_cr >= 0.03 {
@@ -119,7 +121,7 @@ fn clock_thread(ctx: Context, ctl: SharedRun, stop: Arc<AtomicBool>) -> Option<s
                 }
                 if t - last_part >= 0.25 {
                     last_part = t;
-                    ctx.request_repaint_of(pid);
+                    ctx.request_repaint_of(ViewportId::ROOT);
                 }
                 if done {
                     ctx.request_repaint_of(pid);
@@ -150,13 +152,18 @@ impl RunSession {
     }
 
     /// Show the participant window (call every frame while the session exists).
+    ///
+    /// It is an *immediate* viewport: drawn in the same pass as the control room, so both windows
+    /// always update together, whichever of them has the focus. (With a separately scheduled
+    /// "deferred" viewport, egui ignores repaint requests for the window that is not active on some
+    /// systems – the background window froze until it was clicked: egui issue #4945.)
     pub fn show_participant(&self, ctx: &Context) {
         if self.participant_closed.load(Ordering::Relaxed) {
             return;
         }
-        let ctl = self.ctl.clone();
-        let closed = self.participant_closed.clone();
-        ctx.show_viewport_deferred(ViewportId::from_hash_of(PARTICIPANT_ID), self.builder.clone(), move |ui, _class| {
+        let ctl = &self.ctl;
+        let closed = &self.participant_closed;
+        ctx.show_viewport_immediate(ViewportId::from_hash_of(PARTICIPANT_ID), self.builder.clone(), |ui, _class| {
             let ctx = ui.ctx().clone();
             stimulus::poll(&ctx);
             let Ok(mut c) = ctl.lock() else { return };
@@ -172,8 +179,6 @@ impl RunSession {
             c.screen_size = Some((r.width(), r.height()));
             paint_participant(ui.painter(), r, &c, false);
             ctx.set_cursor_icon(egui::CursorIcon::None);
-            // the run clock wakes this window on every stimulus change; this is only a safety net
-            ctx.request_repaint_after(std::time::Duration::from_millis(250));
         });
     }
 }

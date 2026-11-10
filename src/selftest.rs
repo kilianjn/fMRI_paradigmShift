@@ -304,12 +304,11 @@ fn ticker(ctx: Context, state: Arc<Mutex<TestState>>, stop: Arc<AtomicBool>) -> 
     std::thread::Builder::new()
         .name("function-test-ticker".into())
         .spawn(move || {
-            let screen = ViewportId::from_hash_of(TEST_SCREEN_ID);
             while !stop.load(Ordering::Relaxed) {
                 if let Ok(mut s) = state.lock() {
                     s.poll();
                 }
-                ctx.request_repaint_of(screen);
+                // the test screen is drawn in the main window's pass, so this updates both
                 ctx.request_repaint_of(ViewportId::ROOT);
                 std::thread::sleep(std::time::Duration::from_millis(16));
             }
@@ -342,10 +341,7 @@ impl TestSession {
     pub fn new(ctx: &Context, hw: Hardware, settings: TestSettings) -> Self {
         let builder = screen_builder("Function test – participant screen".into(), settings.fullscreen, settings.screen, settings.window_size);
         let c = ctx.clone();
-        let wake = Arc::new(move || {
-            c.request_repaint_of(ViewportId::from_hash_of(TEST_SCREEN_ID));
-            c.request_repaint_of(ViewportId::ROOT);
-        });
+        let wake = Arc::new(move || c.request_repaint_of(ViewportId::ROOT));
         let state = Arc::new(Mutex::new(TestState::new(hw, settings, wake)));
         let size = 128;
         let img = egui::ColorImage::from_rgba_unmultiplied([size, size], &crate::placeholders::app_icon_rgba(size as u32));
@@ -355,15 +351,18 @@ impl TestSession {
         TestSession { state, builder, closed: Arc::new(AtomicBool::new(false)), logo, ticker_stop, ticker }
     }
 
-    /// The participant's test screen (call every frame while the test runs).
+    /// The participant's test screen (call every frame while the test runs). An *immediate*
+    /// viewport: drawn in the same pass as the main window, so both always update together,
+    /// whichever has the focus (separately scheduled "deferred" viewports froze in the background
+    /// on some systems – egui issue #4945).
     pub fn show_screen(&self, ctx: &Context) {
         if self.closed.load(Ordering::Relaxed) {
             return;
         }
-        let state = self.state.clone();
-        let closed = self.closed.clone();
+        let state = &self.state;
+        let closed = &self.closed;
         let logo = self.logo.clone();
-        ctx.show_viewport_deferred(ViewportId::from_hash_of(TEST_SCREEN_ID), self.builder.clone(), move |ui, _class| {
+        ctx.show_viewport_immediate(ViewportId::from_hash_of(TEST_SCREEN_ID), self.builder.clone(), |ui, _class| {
             let ctx = ui.ctx().clone();
             let Ok(mut s) = state.lock() else { return };
             route(&ctx, &mut s);
@@ -377,8 +376,14 @@ impl TestSession {
             s.frame_drawn();
             paint_test(ui.painter(), r, &s, logo.as_ref());
             ctx.set_cursor_icon(egui::CursorIcon::None);
-            // the ticker thread wakes this window ~60× a second, whether or not it has the focus
         });
+    }
+
+    /// The participant's test screen painted into `rect` (used for documentation screenshots).
+    pub fn paint_full(&self, p: &egui::Painter, rect: Rect) {
+        if let Ok(s) = self.state.lock() {
+            paint_test(p, rect, &s, self.logo.as_ref());
+        }
     }
 
     /// The operator's view in the main window. Returns true when the test should end.
@@ -509,7 +514,6 @@ mod tests {
         let session = TestSession::new(&ctx, Hardware::default(), TestSettings::default());
         session.state.lock().unwrap().key("a", now());
         std::thread::sleep(std::time::Duration::from_millis(120));
-        assert!(ctx.has_requested_repaint_for(&ViewportId::from_hash_of(TEST_SCREEN_ID)));
         assert!(ctx.has_requested_repaint_for(&ViewportId::ROOT));
         assert_eq!(session.state.lock().unwrap().presses[0].1, 1);
         drop(session); // stops and joins the ticker
