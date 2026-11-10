@@ -406,6 +406,17 @@ impl Block {
         SCORED_TRIAL_KINDS.contains(&self.kind.as_str())
     }
 
+    /// Rating scale, cursor mode: the value the cursor starts at – `start` (kept within the scale),
+    /// or by default the middle of the scale (the upper of the two middle values when their number
+    /// is even, e.g. 3 on a 1–4 scale).
+    pub fn rating_start(&self) -> i64 {
+        let (lo, hi) = (self.params.i("min", 1), self.params.i("max", 4));
+        match v_f64(self.params.get("start")) {
+            Some(v) => (v.round() as i64).clamp(lo.min(hi), lo.max(hi)),
+            None => (lo + hi + 1).div_euclid(2),
+        }
+    }
+
     /// Rating scale, cursor mode: the buttons that move left / right and confirm. Each can be set per
     /// block (`cursor_left`, `cursor_right`, `cursor_confirm`); empty = the hardware setup's default.
     pub fn rating_cursor_buttons(&self, hw: &Hardware) -> [String; 3] {
@@ -1336,6 +1347,17 @@ mod tests {
         assert_eq!(p.block(&ids[5]).map(|b| (b.track, b.start)), Some((1, 0.0)));
         assert_eq!(p.block(&ids[6]).unwrap().start, 24.0);
         assert!(p.blocks.iter().any(|b| b.track == 1 && b.start == 4.0));
+    }
+
+    #[test]
+    fn rating_cursor_starts_in_the_middle_or_where_set() {
+        let r = |params: serde_json::Value| Block::create("rating", 0.0, None).with(params).rating_start();
+        assert_eq!(r(json!({"min": 1, "max": 5})), 3);
+        assert_eq!(r(json!({"min": 1, "max": 4})), 3); // even: the upper of the two middle values
+        assert_eq!(r(json!({"min": 1, "max": 7})), 4);
+        assert_eq!(r(json!({"min": 1, "max": 7, "start": "middle"})), 4);
+        assert_eq!(r(json!({"min": 1, "max": 7, "start": 1})), 1);
+        assert_eq!(r(json!({"min": 1, "max": 4, "start": 9})), 4); // kept within the scale
     }
 
     #[test]

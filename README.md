@@ -175,7 +175,9 @@ report themselves over HDMI/DisplayPort – the name the Windows display setting
   `d` (right thumb). Rename, add, or re-learn keys in the Hardware dialog.
 * **Rating scales** – *cursor* (move ◀ ▶, confirm ✓; the default) or *direct* (each grip button = one value).
   The buttons can be chosen freely for each rating block in the inspector (*Buttons*: ◀ / ▶ / ✓, or one button
-  per value) – also for many selected ratings at once. The Hardware dialog only sets the defaults.
+  per value) – also for many selected ratings at once. The Hardware dialog only sets the defaults. Per rating
+  block you can also hide the numbers under the options and choose where the cursor starts (the middle by
+  default – on an even scale the upper of the two middle values, e.g. 3 on 1–4).
 * **Simulate scanner** – test any paradigm on a laptop; triggers are generated at the TR.
 
 > **Driver for serial mode:** the SyncBox's USB connection uses an **FTDI** chip. To use it in *serial mode* the

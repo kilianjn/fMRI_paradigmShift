@@ -384,8 +384,7 @@ impl RunState {
         }
         self.log.push(LogRow { time: self.rel(t), kind: "onset".into(), value: b.kind.clone(), info: b.display_label() });
         if b.kind == "rating" {
-            let (lo, hi) = (b.params.i("min", 1), b.params.i("max", 4));
-            let start = if b.params.s("mode", "direct") == "cursor" { Some((lo + hi + 1).div_euclid(2)) } else { None };
+            let start = if b.params.s("mode", "direct") == "cursor" { Some(b.rating_start()) } else { None };
             self.ratings.insert(b.id.clone(), RatingState { value: start, confirmed: false, rt: None });
         }
         self.index.insert(b.id.clone(), self.events.len());

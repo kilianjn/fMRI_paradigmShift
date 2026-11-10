@@ -401,6 +401,8 @@ fn paint_rating(p: &Painter, rect: Rect, b: &Block, st: &PaintState, blur: bool)
     let (x0, x1) = (rect.left() + w * 0.22, rect.right() - w * 0.22);
     let lw = (h * 0.004).max(1.0);
     p.line_segment([Pos2::new(x0, y), Pos2::new(x1, y)], Stroke::new(lw, Color32::from_gray(0xBB)));
+    // the numbers under the options can be switched off (only the circles and the end labels)
+    let show_numbers = prm.b("show_numbers", true);
     // circles shrink when many scale points share a narrow screen
     let r = (h * 0.022).min((x1 - x0) / (n.max(2) - 1) as f32 * 0.3);
     for i in 0..n {
@@ -413,9 +415,11 @@ fn paint_rating(p: &Painter, rect: Rect, b: &Block, st: &PaintState, blur: bool)
         }
         let rad = r * if sel { 1.35 } else { 1.0 };
         p.circle(Pos2::new(x, y), rad, if sel { col } else { Color32::BLACK }, Stroke::new(lw, col));
-        let f = if sel { theme::bold(qsize(h * 0.03)) } else { theme::font(qsize(h * 0.03)) };
-        let slot = Vec2::new(((x1 - x0) / (n.max(2) - 1) as f32).max(r * 2.0), h * 0.05);
-        text_in(p, Pos2::new(x, y + r * 1.6), Align2::CENTER_TOP, &v.to_string(), f, Color32::WHITE, slot);
+        if show_numbers {
+            let f = if sel { theme::bold(qsize(h * 0.03)) } else { theme::font(qsize(h * 0.03)) };
+            let slot = Vec2::new(((x1 - x0) / (n.max(2) - 1) as f32).max(r * 2.0), h * 0.05);
+            text_in(p, Pos2::new(x, y + r * 1.6), Align2::CENTER_TOP, &v.to_string(), f, Color32::WHITE, slot);
+        }
     }
     let lf = theme::font(qsize(h * 0.026));
     let grey = Color32::from_gray(0xAA);
@@ -430,7 +434,7 @@ fn paint_rating(p: &Painter, rect: Rect, b: &Block, st: &PaintState, blur: bool)
         text_in(p, Pos2::new(x1 + gap, y), Align2::LEFT_CENTER, &rl, lf, grey, side);
     } else {
         // … or, on narrow (portrait) screens where they would have to shrink a lot, under its ends
-        let yl = y + r * 1.6 + h * 0.055;
+        let yl = y + r * 1.6 + if show_numbers { h * 0.055 } else { 0.0 };
         let below = Vec2::new(((x1 - x0) / 2.0 + r - w * 0.02).max(1.0), h * 0.045);
         text_in(p, Pos2::new(x0 - r, yl), Align2::LEFT_TOP, &ll, lf.clone(), grey, below);
         text_in(p, Pos2::new(x1 + r, yl), Align2::RIGHT_TOP, &rl, lf, grey, below);
@@ -466,8 +470,7 @@ pub fn preview_state(b: Option<&Block>, t: f64) -> PaintState {
     if let Some(b) = b {
         st.t = t - b.start;
         if b.kind == "rating" && b.params.s("mode", "direct") == "cursor" {
-            let (lo, hi) = (b.params.i("min", 1), b.params.i("max", 4));
-            st.value = Some((lo + hi + 1).div_euclid(2));
+            st.value = Some(b.rating_start());
         }
         st.success = true;
     }

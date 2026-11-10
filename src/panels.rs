@@ -1097,6 +1097,15 @@ fn params_ui(ui: &mut Ui, doc: &mut Document, blocks: &[Block], blur: bool) {
                     set_params(doc, &id_list, "max", json!(hi));
                 }
             });
+            // numbers under the options: on by default
+            let mx = mixed(blocks, "show_numbers");
+            let mut show = b.params.b("show_numbers", true);
+            row(ui, lab("Numbers", blocks, &["show_numbers"]), |ui| {
+                let text = if mx { "Show under each option  (different – click to set all)" } else { "Show under each option" };
+                if ui.checkbox(&mut show, text).on_hover_text("The value of each option, written under its circle").changed() {
+                    set_params(doc, &id_list, "show_numbers", json!(show));
+                }
+            });
             text_param(ui, doc, blocks, "left_label", "Left label", "");
             text_param(ui, doc, blocks, "right_label", "Right label", "");
             combo_param(
@@ -1108,6 +1117,14 @@ fn params_ui(ui: &mut Ui, doc: &mut Document, blocks: &[Block], blur: bool) {
                 &[("Move cursor ◀ ▶ and confirm".into(), json!("cursor")), ("One grip button per value".into(), json!("direct"))],
                 json!("direct"),
             );
+            if b.params.s("mode", "direct") == "cursor" {
+                // where the cursor starts: the middle by default, or any value of the scale
+                let (lo, hi) = (lo.min(hi), lo.max(hi));
+                let mid = (lo + hi + 1).div_euclid(2);
+                let mut items = vec![(format!("Middle  ({mid})"), json!("middle"))];
+                items.extend((lo..=hi).map(|v| (v.to_string(), json!(v))));
+                combo_param(ui, doc, blocks, "start", "Cursor starts at", &items, json!("middle"));
+            }
             rating_buttons_ui(ui, doc, blocks);
         }
         "match" => {
@@ -1270,7 +1287,7 @@ fn rating_buttons_ui(ui: &mut Ui, doc: &mut Document, blocks: &[Block]) {
             });
         }
         row(ui, RichText::new(""), |ui| {
-            theme::hint(ui, "The cursor starts in the middle; the participant moves it and confirms. Defaults: Hardware → ResponseGrips.");
+            theme::hint(ui, "The cursor starts where set above (the middle by default); the participant moves it and confirms. Defaults: Hardware → ResponseGrips.");
         });
         return;
     }
