@@ -87,9 +87,14 @@ impl TestState {
         self.log.truncate(200);
     }
 
-    /// A key from the keyboard (USB-keyboard SyncBox, grips) – from either window.
+    /// A key from the keyboard (USB-keyboard SyncBox, grips) – from either window. In serial mode
+    /// the keyboard doesn't count (only the SyncBox does); such keys are only listed.
     pub fn key(&mut self, text: &str, t: f64) {
-        self.router.feed(text, t);
+        if self.router.accepts_keyboard() {
+            self.router.feed(text, t);
+        } else if !text.trim().is_empty() {
+            self.push_log(t, format!("Keyboard “{text}” ignored – serial mode: only the SyncBox counts"), TEXT_DIM);
+        }
     }
 
     /// Take in everything that arrived (keys, serial data, simulated pulses).
@@ -517,6 +522,18 @@ mod tests {
         assert!(ctx.has_requested_repaint_for(&ViewportId::ROOT));
         assert_eq!(session.state.lock().unwrap().presses[0].1, 1);
         drop(session); // stops and joins the ticker
+    }
+
+    #[test]
+    fn serial_mode_ignores_the_keyboard() {
+        let hw = Hardware { sync_mode: "serial".into(), ..Default::default() }; // no port set: nothing arrives
+        let mut s = TestState::new(hw, TestSettings::default(), no_waker());
+        for k in ["a", "s", "b"] {
+            s.key(k, now());
+        }
+        s.poll();
+        assert_eq!((s.buttons_tested(), s.pulses), (0, 0));
+        assert!(s.log.iter().any(|(_, t, _)| t.contains("ignored")));
     }
 
     #[test]

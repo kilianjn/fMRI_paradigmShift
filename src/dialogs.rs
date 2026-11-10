@@ -298,8 +298,25 @@ impl HardwareDialog {
     }
 
     fn poll(&mut self) {
+        let mut learned = false;
         if let Some(r) = self.router.as_mut() {
             for ev in r.poll() {
+                // assigning a key: in serial mode the character comes from the SyncBox
+                if let (Some(cap), Input::Pressed(key, _, _)) = (self.capture, &ev) {
+                    if self.hw.sync_mode == "serial" && !key.trim().is_empty() {
+                        match cap {
+                            Capture::Trigger => self.hw.trigger_key = key.clone(),
+                            Capture::Button(i) => {
+                                if let Some(b) = self.hw.buttons.get_mut(i) {
+                                    b.key = key.clone();
+                                }
+                            }
+                        }
+                        self.capture = None;
+                        learned = true;
+                        continue;
+                    }
+                }
                 match ev {
                     Input::Trigger(t) => {
                         self.triggers.push(t);
@@ -321,6 +338,9 @@ impl HardwareDialog {
                     Input::Pressed(..) => {}
                 }
             }
+        }
+        if learned {
+            self.restart_router(self.sim_on && self.hardware_sim());
         }
         if let Some(sc) = &self.scanner {
             let mut done = None;
@@ -478,7 +498,8 @@ impl HardwareDialog {
                     self.restart_router(self.sim_on && self.hardware_sim());
                 }
                 None => {
-                    if self.hw.sync_mode == "keyboard" || self.hw.button_for_key(&text).is_some() {
+                    // live test: in serial mode only what the SyncBox sends counts, not the keyboard
+                    if self.hw.sync_mode == "keyboard" {
                         if let Some(r) = self.router.as_mut() {
                             r.feed(&text, now());
                         }
@@ -689,6 +710,11 @@ impl HardwareDialog {
         if self.hw.sync_mode == "keyboard" {
             theme::hint(ui, "USB keyboard mode: keep this window in front – the trigger and grip buttons arrive as key presses.");
         } else {
+            theme::hint(
+                ui,
+                "Serial mode: only what the SyncBox sends counts – keys typed on the computer's keyboard are ignored (in runs, \
+                 in the function test and in the lamp test here; Esc still aborts a run).",
+            );
             // the most common reason why a SyncBox cannot be found in serial mode
             ui.add_space(6.0);
             egui::Frame::new().fill(theme::BG).stroke(egui::Stroke::new(1.0, theme::BORDER)).corner_radius(6).inner_margin(8).show(ui, |ui| {
@@ -1006,7 +1032,7 @@ impl TestDialog {
             format!("SyncBox via serial port {}", if hw.serial_port.is_empty() { "(not set!)" } else { &hw.serial_port })
         };
         let s = crate::selftest::TestSettings {
-            screen: if monitors.len() > 1 { 1 } else { 0 },
+            screen: crate::monitors::default_participant_screen(&monitors),
             fullscreen: monitors.len() > 1,
             simulate: false,
             tr: if tr > 0.0 { tr } else { 2.0 },
@@ -1081,7 +1107,8 @@ impl RunDialog {
         let summary = format!("{}  ·  {}  ·  {} volumes\n{sync}", par.name, fmt_time(par.duration(), 1), par.volumes());
         let s = RunSettings {
             out_dir: out_dir.to_string(),
-            screen: if monitors.len() > 1 { 1 } else { 0 }, // the projector is usually the 2nd screen
+            // the projector: the first screen that is not the main screen
+            screen: crate::monitors::default_participant_screen(&monitors),
             dummy_scans: par.dummy_scans,
             waiting_screen: par.waiting_screen.clone(),
             waiting_text: par.waiting_text.clone(),

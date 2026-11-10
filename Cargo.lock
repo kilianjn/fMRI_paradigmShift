@@ -1806,7 +1806,7 @@ dependencies = [
 
 [[package]]
 name = "paradigmshift"
-version = "0.5.3"
+version = "0.5.4"
 dependencies = [
  "chrono",
  "directories",
@@ -1820,6 +1820,8 @@ dependencies = [
  "serde_json",
  "serialport",
  "tiny-skia",
+ "windows-sys 0.59.0",
+ "winit",
  "winresource",
 ]
 

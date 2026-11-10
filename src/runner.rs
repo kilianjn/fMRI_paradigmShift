@@ -1044,9 +1044,10 @@ impl RunController {
         self.state.version += 1;
     }
 
-    /// A key typed while the run windows have focus (USB keyboard SyncBox, grips, Esc).
+    /// A key typed while the run windows have focus (USB keyboard SyncBox, grips). Ignored in
+    /// serial mode – then only the SyncBox counts. (Esc is handled separately.)
     pub fn key(&mut self, text: &str, t: f64) {
-        if !self.done {
+        if !self.done && self.router.accepts_keyboard() {
             self.router.feed(text, t);
         }
     }
@@ -1158,6 +1159,23 @@ mod tests {
         p.blocks.push(Block::create("rating", 4.0, Some(4.0)).with(json!({"path": "x.png", "mode": "direct"})).cond("pos"));
         p.blocks.push(Block::create("rating", 8.0, Some(4.0)).with(json!({"mode": "cursor"})));
         p
+    }
+
+    #[test]
+    fn keyboard_counts_only_in_keyboard_mode() {
+        for (mode, expected) in [("keyboard", 1), ("serial", 0)] {
+            let mut p = paradigm();
+            p.hardware.sync_mode = mode.into(); // serial without a port: nothing arrives from the SyncBox
+            let dir = std::env::temp_dir().join(format!("ps_kb_{}", crate::model::new_id()));
+            let settings = RunSettings { out_dir: dir.to_string_lossy().to_string(), ..Default::default() };
+            let mut c = RunController::new(p, settings, crate::hardware::no_waker());
+            c.start();
+            c.key("s", now()); // the trigger key, typed on the keyboard
+            c.tick();
+            assert_eq!(c.state.triggers.len(), expected, "{mode}");
+            c.finish(true);
+            let _ = std::fs::remove_dir_all(&dir);
+        }
     }
 
     #[test]

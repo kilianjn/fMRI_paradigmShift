@@ -8,6 +8,7 @@ mod dialogs;
 mod document;
 mod hardware;
 mod model;
+mod monitors;
 mod panels;
 mod placeholders;
 mod prefs;

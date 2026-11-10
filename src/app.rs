@@ -1439,14 +1439,8 @@ impl eframe::App for App {
         stimulus::poll(&ctx);
         if self.monitors.is_empty() {
             if let Some(w) = frame.winit_window() {
-                self.monitors = w
-                    .available_monitors()
-                    .enumerate()
-                    .map(|(i, m)| {
-                        let s = m.size();
-                        format!("{}: {}  {}×{}", i + 1, m.name().unwrap_or_else(|| "screen".into()), s.width, s.height)
-                    })
-                    .collect();
+                // the monitors' own names (as in the system's display settings), not "Display 1"
+                self.monitors = crate::monitors::describe(w);
             }
         }
         self.update_title(&ctx);
@@ -1519,7 +1513,7 @@ impl App {
             return;
         }
         let rect = ctx.content_rect();
-        let painter = ctx.layer_painter(egui::LayerId::new(egui::Order::Debug, egui::Id::new("shot_overlay")));
+        let painter = ctx.layer_painter(egui::LayerId::new(egui::Order::Debug, egui::Id::unique("shot_overlay")));
         if let Some(s) = &self.run {
             if let Ok(c) = s.ctl.lock() {
                 crate::controlroom::paint_participant(&painter, rect, &c, false);

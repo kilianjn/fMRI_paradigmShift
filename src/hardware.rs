@@ -538,7 +538,15 @@ impl InputRouter {
         self.reader.is_some()
     }
 
-    /// Route a key/character coming from the keyboard or the serial port.
+    /// Whether keys typed on the computer's keyboard count. In serial mode they don't: triggers and
+    /// grip presses then come from the SyncBox only, so a key pressed by accident is never taken
+    /// for a scanner pulse or an answer.
+    pub fn accepts_keyboard(&self) -> bool {
+        self.hw.sync_mode != "serial"
+    }
+
+    /// Route a key/character coming from the keyboard (check `accepts_keyboard` first) or the
+    /// serial port.
     pub fn feed(&mut self, text: &str, t: f64) {
         if text.is_empty() {
             return;

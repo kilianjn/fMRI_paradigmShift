@@ -132,7 +132,9 @@ participant's monitor and mirrors it in the main window – the participant and 
 ## During a run: control room & participant screen
 
 **Run in scanner** turns the main window into the **control room** and opens the **participant screen**
-(full screen on the chosen monitor, usually the projector):
+(full screen on the chosen monitor, usually the projector). *Show on screen* lists the monitors by the name they
+report themselves over HDMI/DisplayPort – the name the Windows display settings show, e.g. “2: EPSON PJ ·
+1280×800” – with the main screen marked; the first screen that is not the main screen is preselected.
 
 * The participant only ever sees the paradigm. Before the start – including the **dummy scans** – they see a
   fixation cross, an empty screen or a text of your choice; after the run an end text.
@@ -155,7 +157,9 @@ participant's monitor and mirrors it in the main window – the participant and 
 
 ## Scanner hardware (NNL)
 
-* **SyncBox** – *USB keyboard mode* (default): the trigger arrives as a key, default `s`.
+* **SyncBox** – *USB keyboard mode* (default): the trigger arrives as a key, default `s`. In *serial mode* the
+  computer's keyboard is ignored – triggers and grip presses only count when they come from the SyncBox, so a key
+  pressed by accident is never taken for a scanner pulse or an answer (Esc still aborts a run).
   *Serial mode* follows **NordicNeuroLab's own serial protocol** (from NNL's
   [py_syncbox](https://github.com/nordicneurolab/py_syncbox)): 57600 baud, trigger `s`, grips `a`–`d`.
   * **Auto-detect** sends NNL's computer-mode command to every serial port. The SyncBox answers it, so it is
