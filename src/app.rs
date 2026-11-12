@@ -194,14 +194,15 @@ impl App {
             Ok(()) => {
                 self.settings.dir = path.parent().map(path_str).unwrap_or_default();
                 self.save_settings();
-                let imgs: Vec<String> = {
-                    let mut v: Vec<String> = self.doc.paradigm.blocks.iter().flat_map(|b| b.image_files()).collect();
+                // the Media panel: every picture, video and sound the paradigm uses
+                let files: Vec<String> = {
+                    let mut v: Vec<String> = self.doc.paradigm.blocks.iter().flat_map(|b| b.media_files()).collect();
                     v.sort();
                     v.dedup();
                     v
                 };
                 self.lib.clear();
-                self.lib.add_files(&imgs);
+                self.lib.add_files(&files);
                 self.tl.set_playhead(0.0, false);
                 self.tl.zoom_fit();
                 self.playing = None;
@@ -322,7 +323,11 @@ impl App {
             Action::Templates => {
                 self.modal = Some(Modal::Templates(Box::new(TemplateDialog::new(&self.doc.paradigm.hardware, presets::default_stim_dir(), "hariri"))))
             }
-            Action::QuickDesign => self.modal = Some(Modal::Quick(Box::new(QuickDesign::new(&self.doc.paradigm, &self.lib.media)))),
+            Action::QuickDesign => {
+                // the quick design builds image blocks: only the pictures of the Media panel
+                let pictures: Vec<String> = self.lib.media.iter().filter(|f| model::is_image(f)).cloned().collect();
+                self.modal = Some(Modal::Quick(Box::new(QuickDesign::new(&self.doc.paradigm, &pictures))))
+            }
             Action::Hardware => {
                 let par = self.present.as_ref().map(|p| &p.par).unwrap_or(&self.doc.paradigm);
                 self.modal = Some(Modal::Hardware(Box::new(HardwareDialog::new(ctx, &par.hardware, par.tr))))
@@ -391,8 +396,8 @@ impl App {
                 self.quit = true;
                 ctx.send_viewport_cmd(egui::ViewportCommand::Close);
             }
-            Action::ImportPictures => {
-                let files = panels::pick_images("Import pictures");
+            Action::ImportMedia => {
+                let files = panels::pick_media_files("Import pictures, videos and sounds");
                 self.lib.add_files(&files);
             }
             Action::AddKind { kind, start, track } => timeline::add_block(&mut self.doc, &kind, start, track, ph),
@@ -1228,21 +1233,15 @@ impl App {
             self.actions.push(Action::Open(Some(p.clone())));
             return;
         }
-        let imgs = panels::expand_images(&dropped);
-        // videos and sound files become video / audio blocks
-        let media: Vec<String> = dropped
-            .iter()
-            .map(|p| path_str(p))
-            .filter(|p| crate::media::is_video_file(p) || crate::media::is_audio_file(p))
-            .collect();
-        if imgs.is_empty() && media.is_empty() {
+        // pictures, videos and sounds (also whole folders) go into the Media panel; dropped onto the
+        // timeline they become image / video / audio blocks
+        let files = panels::expand_media(&dropped);
+        if files.is_empty() {
             return;
         }
-        self.lib.add_files(&imgs);
+        self.lib.add_files(&files);
         if let Some(pos) = ctx.pointer_latest_pos() {
             if self.tl.contains(pos) {
-                let mut files = imgs;
-                files.extend(media);
                 self.tl.drop_images(&mut self.doc, files, pos);
             }
         }

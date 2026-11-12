@@ -197,7 +197,7 @@ pub fn shortcuts_text() -> &'static str {
      Ctrl+Z / Ctrl+Shift+Z\tundo / redo\n\
      Ctrl+T\ttemplates\n\
      Ctrl+H\tfind and replace\n\
-     Ctrl+1 / 2 / 3\tshow / minimise the Blocks / Task blocks / Pictures panel\n\
+     Ctrl+1 / 2 / 3\tshow / minimise the Blocks / Task blocks / Media panel\n\
      F5\trun\n\
      Ctrl+Shift+O\topen a paradigm for presenting (read-only, straight to the run)\n\
      Ctrl+Shift+F\tfunction test (buttons, scanner pulses, display)"
@@ -1074,7 +1074,7 @@ impl QuickDesign {
             ui.label(if n > 0 {
                 format!("{n} pictures selected")
             } else {
-                "No pictures yet – choose some, or import them into the Pictures bin first.".into()
+                "No pictures yet – choose some, or import them into the Media panel first.".into()
             });
             ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                 if ui.button("Choose pictures…").clicked() {
@@ -1644,7 +1644,7 @@ impl PrefsDialog {
                         });
                         section(ui, "Unpleasant pictures");
                         row(ui, "", |ui| {
-                            ui.checkbox(&mut p.blur_previews, "Blur picture previews in the editor (timeline, picture bin, inspector, preview)");
+                            ui.checkbox(&mut p.blur_previews, "Blur picture previews in the editor (timeline, media bin, inspector, preview)");
                         });
                         row(ui, "", |ui| {
                             ui.checkbox(&mut p.blur_control_mirror, "Blur pictures in the control-room mirror");

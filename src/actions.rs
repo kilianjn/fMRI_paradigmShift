@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use egui::Pos2;
 use serde_json::Value;
 
-/// Payload of a drag from the library or the picture bin onto the timeline.
+/// Payload of a drag from the library or the media bin onto the timeline.
 #[derive(Clone, Debug)]
 pub enum DragPayload {
     /// a block kind, or "preset:<key>" for a task block
@@ -51,7 +51,8 @@ pub enum Action {
     Preferences,
     Shortcuts,
     Quit,
-    ImportPictures,
+    /// pictures, videos and sounds into the Media panel
+    ImportMedia,
     AddKind { kind: String, start: Option<f64>, track: Option<usize> },
     AddPreset { key: String, start: Option<f64>, variant: Option<Value> },
     /// ask which variant of a task block to insert (popup at `pos`)

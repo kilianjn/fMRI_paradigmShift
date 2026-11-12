@@ -9,7 +9,6 @@
 //!   since the block's onset.
 
 use std::collections::{HashMap, VecDeque};
-use std::io::Cursor;
 use std::path::Path;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc::{channel, Receiver, Sender};
@@ -350,7 +349,8 @@ pub struct VideoInfo {
 
 /// One H.264 track of an MP4/MOV file, ready to be decoded.
 struct H264Track {
-    mp4: mp4::Mp4Reader<Cursor<Vec<u8>>>,
+    // read straight from the file: only the header and the samples that are decoded are loaded
+    mp4: mp4::Mp4Reader<std::io::BufReader<std::fs::File>>,
     track_id: u32,
     length_size: usize,
     sps: Vec<Vec<u8>>,
@@ -361,9 +361,9 @@ struct H264Track {
 }
 
 fn open_h264(path: &str) -> Result<H264Track, String> {
-    let data = std::fs::read(path).map_err(|e| format!("Could not open {}: {e}", basename(path)))?;
-    let size = data.len() as u64;
-    let mp4 = mp4::Mp4Reader::read_header(Cursor::new(data), size)
+    let file = std::fs::File::open(path).map_err(|e| format!("Could not open {}: {e}", basename(path)))?;
+    let size = file.metadata().map(|m| m.len()).map_err(|e| format!("Could not open {}: {e}", basename(path)))?;
+    let mp4 = mp4::Mp4Reader::read_header(std::io::BufReader::new(file), size)
         .map_err(|e| format!("{}: not an MP4/MOV video this app can read ({e})", basename(path)))?;
     let (track_id, track) = mp4
         .tracks()
@@ -639,6 +639,82 @@ pub fn video_frame(ctx: &egui::Context, key: &str, path: &str, t: f64) -> VideoS
         (None, None) if done => VideoStatus::Failed("no picture".into()),
         _ => VideoStatus::Loading,
     }
+}
+
+// =============================================================================
+// Video posters (first frame, small) for the Media panel
+// =============================================================================
+enum Poster {
+    Pending(Arc<Mutex<Option<Option<ColorImage>>>>),
+    Ready(TextureHandle),
+    Failed,
+}
+
+static POSTERS: LazyLock<Mutex<HashMap<String, Poster>>> = LazyLock::new(|| Mutex::new(HashMap::new()));
+
+fn first_frame(path: &str, blur: bool) -> Option<ColorImage> {
+    use openh264::decoder::{Decoder, DecoderConfig};
+    use openh264::formats::YUVSource;
+    let mut t = open_h264(path).ok()?;
+    let mut dec = Decoder::with_api_config(openh264::OpenH264API::from_source(), DecoderConfig::new()).ok()?;
+    let mut buf = vec![];
+    for i in 1..=t.samples.min(120) {
+        let Ok(Some(s)) = t.mp4.read_sample(t.track_id, i) else { continue };
+        to_annex_b(&s.bytes, t.length_size, &t.sps, &t.pps, &mut buf);
+        if let Ok(Some(img)) = dec.decode(&buf) {
+            let (w, h) = img.dimensions();
+            let mut rgba = vec![0u8; w * h * 4];
+            img.write_rgba8(&mut rgba);
+            let full = image::RgbaImage::from_raw(w as u32, h as u32, rgba)?;
+            let mut small = image::DynamicImage::ImageRgba8(full).resize(256, 256, image::imageops::FilterType::Triangle);
+            if blur {
+                small = crate::stimulus::blurred(&small);
+            }
+            let rgba = small.to_rgba8();
+            return Some(ColorImage::from_rgba_unmultiplied([rgba.width() as usize, rgba.height() as usize], rgba.as_raw()));
+        }
+    }
+    None
+}
+
+/// A small picture of a video's first frame (decoded once, in the background).
+pub fn poster(ctx: &egui::Context, path: &str, blur: bool) -> Option<crate::stimulus::Tex> {
+    let key = format!("{}{}", file_key(path), if blur { "@blur" } else { "" });
+    let Ok(mut m) = POSTERS.lock() else { return None };
+    match m.get(&key) {
+        Some(Poster::Ready(t)) => return Some(crate::stimulus::Tex { id: t.id(), size: t.size_vec2() }),
+        Some(Poster::Failed) => return None,
+        Some(Poster::Pending(slot)) => {
+            let done = slot.lock().ok().and_then(|mut s| s.take());
+            match done {
+                Some(Some(img)) => {
+                    let t = ctx.load_texture(format!("poster:{key}"), img, egui::TextureOptions::LINEAR);
+                    let tex = crate::stimulus::Tex { id: t.id(), size: t.size_vec2() };
+                    m.insert(key, Poster::Ready(t));
+                    return Some(tex);
+                }
+                Some(None) => {
+                    m.insert(key, Poster::Failed);
+                }
+                None => {}
+            }
+            return None;
+        }
+        None => {}
+    }
+    let slot = Arc::new(Mutex::new(None));
+    let (s2, p) = (slot.clone(), path.to_string());
+    let _ = std::thread::Builder::new().name("video-poster".into()).spawn(move || {
+        let img = first_frame(&p, blur);
+        if let Ok(mut s) = s2.lock() {
+            *s = Some(img);
+        }
+        if let Some(c) = crate::stimulus::ctx() {
+            c.request_repaint();
+        }
+    });
+    m.insert(key, Poster::Pending(slot));
+    None
 }
 
 // =============================================================================

@@ -267,6 +267,20 @@ pub fn is_image(path: &str) -> bool {
     IMAGE_EXT.iter().any(|e| lower.ends_with(&format!(".{e}")))
 }
 
+/// Pictures, videos and sounds – what the Media panel holds.
+pub fn is_media(path: &str) -> bool {
+    is_image(path) || crate::media::is_video_file(path) || crate::media::is_audio_file(path)
+}
+
+/// Pictures, videos and sounds in a folder, sorted.
+pub fn list_media(folder: &str) -> Vec<String> {
+    let Ok(rd) = std::fs::read_dir(folder) else { return vec![] };
+    let mut out: Vec<String> =
+        rd.filter_map(|e| e.ok()).map(|e| e.path()).filter(|p| p.is_file()).map(|p| p.to_string_lossy().to_string()).filter(|p| is_media(p)).collect();
+    out.sort();
+    out
+}
+
 /// Image files in a folder, sorted.
 pub fn list_images(folder: &str) -> Vec<String> {
     if folder.is_empty() {
@@ -411,6 +425,15 @@ impl Block {
             return vec![]; // their "path" is a video / sound file
         }
         IMAGE_PARAMS.iter().filter_map(|k| self.params.nonempty(k)).collect()
+    }
+
+    /// All pictures, videos and sounds this block uses (for the Media panel).
+    pub fn media_files(&self) -> Vec<String> {
+        let mut v = self.image_files();
+        if self.kind == "video" || self.kind == "audio" {
+            v.extend(self.params.nonempty("path"));
+        }
+        v
     }
 
     /// The sound this block plays: its audio file, or the sound of its video (if switched on).
@@ -1406,6 +1429,21 @@ mod tests {
         assert_eq!(p.block(&ids[5]).map(|b| (b.track, b.start)), Some((1, 0.0)));
         assert_eq!(p.block(&ids[6]).unwrap().start, 24.0);
         assert!(p.blocks.iter().any(|b| b.track == 1 && b.start == 4.0));
+    }
+
+    #[test]
+    fn media_files_are_pictures_videos_and_sounds() {
+        for f in ["a.png", "b.JPG", "c.mp4", "d.MOV", "e.wav", "f.mp3", "g.flac", "h.m4a"] {
+            assert!(is_media(f), "{f}");
+        }
+        for f in ["a.txt", "b.json", "c.avi", ""] {
+            assert!(!is_media(f), "{f}");
+        }
+        let v = Block::create("video", 0.0, None).with(json!({"path": "/x/clip.mp4"}));
+        assert_eq!(v.media_files(), vec!["/x/clip.mp4".to_string()]);
+        assert!(v.image_files().is_empty());
+        let m = Block::create("match", 0.0, None).with(json!({"top": "/a.png", "left": "/b.png", "right": ""}));
+        assert_eq!(m.media_files().len(), 2);
     }
 
     #[test]

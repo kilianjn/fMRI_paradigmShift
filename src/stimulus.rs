@@ -52,15 +52,20 @@ fn decode(path: &str, blur: bool) -> Option<ColorImage> {
         img
     };
     if blur {
-        // strongly blurred copy: shrink to a few pixels, then scale back up smoothly
-        let (w, h) = (img.width(), img.height());
-        let base = img.resize(w.min(360 * w / h.max(1)), 360, image::imageops::FilterType::Triangle);
-        let (bw, bh) = (base.width(), base.height());
-        let tiny = base.resize_exact((bw / 40).max(1), (bh / 40).max(1), image::imageops::FilterType::Triangle);
-        img = tiny.resize_exact((bw / 8).max(1), (bh / 8).max(1), image::imageops::FilterType::CatmullRom);
+        img = blurred(&img);
     }
     let rgba = img.to_rgba8();
     Some(ColorImage::from_rgba_unmultiplied([rgba.width() as usize, rgba.height() as usize], rgba.as_raw()))
+}
+
+/// A strongly blurred copy (for unpleasant pictures in the editor): shrink to a few pixels, then
+/// scale back up smoothly.
+pub fn blurred(img: &image::DynamicImage) -> image::DynamicImage {
+    let (w, h) = (img.width(), img.height());
+    let base = img.resize(w.min(360 * w / h.max(1)), 360, image::imageops::FilterType::Triangle);
+    let (bw, bh) = (base.width(), base.height());
+    let tiny = base.resize_exact((bw / 40).max(1), (bh / 40).max(1), image::imageops::FilterType::Triangle);
+    tiny.resize_exact((bw / 8).max(1), (bh / 8).max(1), image::imageops::FilterType::CatmullRom)
 }
 
 static CACHE: LazyLock<Mutex<Cache>> = LazyLock::new(|| {

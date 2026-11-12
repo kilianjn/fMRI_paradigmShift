@@ -1,4 +1,4 @@
-//! Side panels: block library + picture bin, participant-view monitor, inspector.
+//! Side panels: block library + media bin (pictures, videos, sounds), participant-view monitor, inspector.
 
 use egui::epaint::CornerRadius;
 use egui::{Align, Align2, Color32, Layout, Pos2, Rect, RichText, Sense, Stroke, StrokeKind, Ui, Vec2};
@@ -87,7 +87,21 @@ fn media_file_ui(ui: &mut Ui, doc: &mut Document, blocks: &[Block], video: bool)
             None => ("This sound file can't be read".to_string(), false, None),
         }
     };
-    egui::Frame::new().fill(BG).stroke(Stroke::new(1.0, BORDER)).corner_radius(6).inner_margin(8).show(ui, |ui| {
+    // a matching file dragged from the Media panel or the desktop can be dropped here
+    let fits = |f: &String| if video { crate::media::is_video_file(f) } else { crate::media::is_audio_file(f) };
+    let ctx = ui.ctx().clone();
+    let bin_file = egui::DragAndDrop::payload::<DragPayload>(&ctx).and_then(|p| match &*p {
+        DragPayload::Images(files) => files.iter().find(|f| fits(f)).cloned(),
+        DragPayload::Kind(_) => None,
+    });
+    let desktop_drag = ui.input(|i| !i.raw.hovered_files.is_empty());
+    let dragging = bin_file.is_some() || desktop_drag;
+    let frame = egui::Frame::new()
+        .fill(BG)
+        .stroke(Stroke::new(if dragging { 2.0 } else { 1.0 }, if dragging { ACCENT } else { BORDER }))
+        .corner_radius(6)
+        .inner_margin(8);
+    let resp = frame.show(ui, |ui| {
         ui.set_width(ui.available_width());
         ui.horizontal(|ui| {
             let (r, _) = ui.allocate_exact_size(Vec2::splat(30.0), Sense::hover());
@@ -112,7 +126,25 @@ fn media_file_ui(ui: &mut Ui, doc: &mut Document, blocks: &[Block], video: bool)
                 }
             }
         });
+        if dragging {
+            ui.label(RichText::new(if video { "Drop a video here" } else { "Drop a sound here" }).color(ACCENT).size(12.0));
+        }
     });
+    let over = ui.input(|i| i.pointer.latest_pos()).map(|p| resp.response.rect.contains(p)).unwrap_or(false);
+    if over {
+        if let Some(f) = bin_file {
+            if ui.input(|i| i.pointer.any_released()) {
+                egui::DragAndDrop::clear_payload(&ctx);
+                set_params(doc, &id_list, "path", json!(f));
+            } else {
+                ctx.request_repaint();
+            }
+        }
+        let dropped: Vec<String> = ui.input(|i| i.raw.dropped_files.iter().map(|f| f.path().to_string_lossy().to_string()).collect());
+        if let Some(f) = dropped.into_iter().find(|f| fits(f)) {
+            set_params(doc, &id_list, "path", json!(f));
+        }
+    }
 }
 
 /// Volume of a video's / audio block's sound, in %.
@@ -132,6 +164,87 @@ fn sound_off_hint(ui: &mut Ui, doc: &Document) {
             egui::Label::new(RichText::new("🔇 Sound is off – choose a sound output in ⚙ Hardware → Audio, otherwise this block stays silent.").color(ACCENT).size(12.0))
                 .wrap(),
         );
+    }
+}
+
+/// Import pictures, videos and sounds into the Media panel.
+pub fn pick_media_files(title: &str) -> Vec<String> {
+    let mut all: Vec<&str> = IMAGE_EXT.to_vec();
+    all.extend(crate::media::VIDEO_EXTS);
+    all.extend(crate::media::AUDIO_EXTS);
+    rfd::FileDialog::new()
+        .set_title(title)
+        .add_filter("Pictures, videos and sounds", &all)
+        .add_filter("Pictures", IMAGE_EXT)
+        .add_filter("Videos (H.264)", crate::media::VIDEO_EXTS)
+        .add_filter("Sounds", crate::media::AUDIO_EXTS)
+        .pick_files()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|p| p.to_string_lossy().to_string())
+        .collect()
+}
+
+/// Files of dropped folders (or the files themselves): pictures, videos and sounds.
+pub fn expand_media(paths: &[std::path::PathBuf]) -> Vec<String> {
+    let mut out = vec![];
+    for p in paths {
+        let s = p.to_string_lossy().to_string();
+        if p.is_dir() {
+            out.extend(crate::model::list_media(&s));
+        } else if crate::model::is_media(&s) {
+            out.push(s);
+        }
+    }
+    out
+}
+
+/// The small picture of a media file: the picture itself, a video's first frame (with a play badge),
+/// or a loudspeaker for sounds – with the length for videos and sounds.
+fn paint_media_thumb(ui: &Ui, r: Rect, path: &str, blur: bool) {
+    let p = ui.painter();
+    let video = crate::media::is_video_file(path);
+    let sound = crate::media::is_audio_file(path);
+    if !video && !sound {
+        if !stimulus::paint_thumb(p, r, path, blur) {
+            p.rect_stroke(r, CornerRadius::same(3), Stroke::new(1.0, BORDER), StrokeKind::Inside);
+        }
+        return;
+    }
+    p.rect_filled(r, CornerRadius::same(3), Color32::from_gray(18));
+    let kind = if video { "video" } else { "audio" };
+    let color = hex(crate::model::block_type(kind).map(|t| t.color).unwrap_or("#888888"));
+    if video {
+        match crate::media::poster(ui.ctx(), path, blur) {
+            Some(t) => {
+                let s = (r.width() / t.size.x).min(r.height() / t.size.y);
+                p.image(t.id, Rect::from_center_size(r.center(), t.size * s), Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)), Color32::WHITE);
+            }
+            None => theme::draw_kind_glyph(p, "video", Rect::from_center_size(r.center(), Vec2::splat(26.0)), color),
+        }
+        // play badge
+        let c = Pos2::new(r.left() + 9.0, r.bottom() - 9.0);
+        p.circle_filled(c, 7.0, theme::alpha(color, 230));
+        p.add(egui::epaint::PathShape::convex_polygon(
+            vec![Pos2::new(c.x - 2.0, c.y - 3.5), Pos2::new(c.x - 2.0, c.y + 3.5), Pos2::new(c.x + 3.5, c.y)],
+            Color32::WHITE,
+            Stroke::NONE,
+        ));
+    } else {
+        theme::paint_kind_icon(p, "audio", Rect::from_center_size(r.center() - Vec2::new(0.0, 4.0), Vec2::splat(28.0)), color);
+    }
+    let len = if video { crate::media::video_info(path).ok().map(|i| i.duration) } else { crate::media::sound_duration(path) };
+    match len {
+        Some(d) => {
+            let g = p.layout_no_wrap(fmt_time(d, 0), theme::bold(9.5), Color32::WHITE);
+            let tag = Rect::from_min_size(Pos2::new(r.right() - g.size().x - 6.0, r.bottom() - 13.0), g.size() + Vec2::new(4.0, 1.0));
+            p.rect_filled(tag, CornerRadius::same(2), Color32::from_black_alpha(170));
+            p.galley(tag.min + Vec2::new(2.0, 0.5), g, Color32::WHITE);
+        }
+        None if !std::path::Path::new(path).exists() => {
+            p.text(r.center(), Align2::CENTER_CENTER, "missing", theme::font(10.0), DANGER);
+        }
+        None => {}
     }
 }
 
@@ -167,7 +280,7 @@ pub fn panel_header(ui: &mut Ui, title: &str, hint: &str) {
 pub const PANELS: [(&str, &str, &str); 3] = [
     ("blocks", "Blocks", "drag → timeline"),
     ("tasks", "Task blocks", "drag → timeline"),
-    ("pictures", "Pictures", ""),
+    ("pictures", "Media", ""),
 ];
 const DEFAULT_WEIGHTS: [f32; 3] = [1.0, 1.05, 0.95];
 const MIN_PANEL_H: f32 = 96.0;
@@ -206,14 +319,23 @@ pub fn paint_strip_icon(p: &egui::Painter, which: &str, r: Rect, active: bool) {
                 p.rect_filled(Rect::from_min_size(Pos2::new(x, y - h / 2.0), Vec2::new((r.width() - 6.0) / 3.0 - 1.5, h)), CornerRadius::same(2), *c);
             }
         }
-        _ => theme::draw_kind_glyph(p, "image", r, col),
+        _ => {
+            // media: a picture with a small play triangle
+            theme::draw_kind_glyph(p, "image", r.shrink(1.0), col);
+            let c = Pos2::new(r.right() - 4.0, r.bottom() - 3.0);
+            p.add(egui::epaint::PathShape::convex_polygon(
+                vec![Pos2::new(c.x - 6.0, c.y - 8.0), Pos2::new(c.x - 6.0, c.y), Pos2::new(c.x + 1.0, c.y - 4.0)],
+                col,
+                Stroke::NONE,
+            ));
+        }
     }
 }
 
 impl Library {
     pub fn add_files(&mut self, files: &[String]) {
         for f in files {
-            if is_image(f) && !self.media.contains(f) {
+            if crate::model::is_media(f) && !self.media.contains(f) {
                 self.media.push(f.clone());
             }
         }
@@ -320,10 +442,10 @@ impl Library {
                         });
                     }
                     _ => {
-                        // button at the bottom, the picture bin takes the rest
+                        // button at the bottom, the media bin takes the rest
                         ui.with_layout(Layout::bottom_up(Align::Min), |ui| {
-                            if ui.add_sized([ui.available_width(), 28.0], egui::Button::new("+  Import pictures…")).clicked() {
-                                actions.push(Action::ImportPictures);
+                            if ui.add_sized([ui.available_width(), 28.0], egui::Button::new("+  Import media…")).on_hover_text("Pictures, videos (H.264 MP4/MOV) and sounds (WAV, MP3, OGG, FLAC, M4A)").clicked() {
+                                actions.push(Action::ImportMedia);
                             }
                             // the bin frame adds 2 × (4 margin + 1 stroke)
                             let bin_h = (ui.available_height() - 10.0).max(20.0);
@@ -333,7 +455,7 @@ impl Library {
                                     ui.set_width(ui.available_width());
                                     if self.media.is_empty() {
                                         ui.centered_and_justified(|ui| {
-                                            ui.label(RichText::new("Drop pictures or folders here").color(TEXT_DIM));
+                                            ui.label(RichText::new("Drop pictures, videos, sounds or folders here").color(TEXT_DIM));
                                         });
                                     } else {
                                         egui::ScrollArea::vertical().id_salt("media_scroll").auto_shrink([false, false]).show(ui, |ui| {
@@ -386,14 +508,17 @@ impl Library {
                         ui.painter().rect_filled(r.shrink(1.0), CornerRadius::same(4), theme::alpha(ACCENT, 60));
                     }
                     let thumb = Rect::from_min_size(Pos2::new(r.left() + 6.0, r.top() + 3.0), Vec2::new(64.0, 48.0));
-                    if !stimulus::paint_thumb(ui.painter(), thumb, path, blur) {
-                        ui.painter().rect_stroke(thumb, CornerRadius::same(3), Stroke::new(1.0, BORDER), StrokeKind::Inside);
-                    }
+                    paint_media_thumb(ui, thumb, path, blur);
                     let name: String = crate::model::stem(path).chars().take(11).collect();
                     ui.painter().text(Pos2::new(r.center().x, r.bottom() - 9.0), Align2::CENTER_CENTER, name, theme::font(11.0), TEXT);
-                    let resp = resp.on_hover_text(format!(
-                        "{path}\n\nDrag onto the timeline, or onto a picture field in the inspector"
-                    ));
+                    let what = if crate::media::is_video_file(path) {
+                        "a video block, or onto a video block's file in the inspector"
+                    } else if crate::media::is_audio_file(path) {
+                        "an audio block, or onto an audio block's file in the inspector"
+                    } else {
+                        "an image block, or onto a picture field in the inspector"
+                    };
+                    let resp = resp.on_hover_text(format!("{path}\n\nDrag onto the timeline ({what})"));
                     if resp.clicked() {
                         clicked = Some(idx);
                     }
@@ -409,7 +534,7 @@ impl Library {
                         let n = files.len();
                         egui::DragAndDrop::set_payload(ui.ctx(), DragPayload::Images(files));
                         if let Some(p) = ui.ctx().pointer_interact_pos() {
-                            crate::timeline::paint_tip(ui.ctx(), p, &format!("{n} picture{}", if n == 1 { "" } else { "s" }));
+                            crate::timeline::paint_tip(ui.ctx(), p, &format!("{n} file{}", if n == 1 { "" } else { "s" }));
                         }
                     }
                 }
@@ -660,13 +785,13 @@ fn color_param(ui: &mut Ui, doc: &mut Document, blocks: &[Block], key: &str, tit
 }
 
 /// A picture field: preview, file name and "Choose…". Pictures can also be dropped onto it – from the
-/// picture bin on the left or straight from the desktop.
+/// Media panel on the left or straight from the desktop.
 fn image_picker(ui: &mut Ui, path: &str, height: f32, blur: bool) -> Option<String> {
     let w = ui.available_width();
     let (r, _) = ui.allocate_exact_size(Vec2::new(w, height), Sense::hover());
     let ctx = ui.ctx().clone();
     let bin_payload = egui::DragAndDrop::payload::<DragPayload>(&ctx).and_then(|p| match &*p {
-        DragPayload::Images(files) => files.first().cloned(),
+        DragPayload::Images(files) => files.iter().find(|f| is_image(f)).cloned(),
         DragPayload::Kind(_) => None,
     });
     let desktop_drag = ui.input(|i| !i.raw.hovered_files.is_empty());
@@ -687,14 +812,14 @@ fn image_picker(ui: &mut Ui, path: &str, height: f32, blur: bool) -> Option<Stri
     if dragging && over {
         stimulus::draw_text(p, r, "Drop to use this picture", theme::bold(13.0), ACCENT, true);
     } else if path.is_empty() {
-        let msg = if dragging { "Drop a picture here" } else { "No picture – drag one here from Pictures, or click Choose…" };
+        let msg = if dragging { "Drop a picture here" } else { "No picture – drag one here from Media, or click Choose…" };
         stimulus::draw_text(p, r.shrink(6.0), msg, theme::font(12.0), if dragging { ACCENT } else { TEXT_DIM }, true);
     } else if !stimulus::paint_thumb(p, r.shrink(3.0), path, blur) {
         let msg = if std::path::Path::new(path).exists() { "loading…" } else { "File not found" };
         stimulus::draw_text(p, r, msg, theme::font(12.0), TEXT_DIM, false);
     }
     if over {
-        // dropped from the picture bin
+        // dropped from the Media panel
         if let Some(f) = &bin_payload {
             if ui.input(|i| i.pointer.any_released()) {
                 egui::DragAndDrop::clear_payload(&ctx);
