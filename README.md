@@ -69,7 +69,7 @@ defaults follow the published protocols, but check them against the protocol you
 
 | Area | What you do there |
 |---|---|
-| **Blocks** (left) | Drag *Fixation, Image, Rating, Instruction, Pause, …* onto the timeline – or double-click to append. An *Image* block can show a text underneath the picture (inspector → *Text under the picture*, with its own size and colour). |
+| **Blocks** (left) | Drag *Fixation, Image, Video, Audio, Rating, Instruction, Pause, …* onto the timeline – or double-click to append. An *Image* block can show a text underneath the picture (inspector → *Text under the picture*, with its own size and colour). Video and sound files dropped onto the timeline become video / audio blocks as long as the file (see [Video and sound](#video-and-sound)). |
 | **Task blocks** (left) | Stroop/flanker/N-back trials and whole MID, emotion-regulation, N-back, Hariri, tapping, checkerboard and resting-state sequences – drag them onto the timeline like blocks. |
 | **Pictures** (left) | Import pictures or drop files/folders on the window; drag one or many onto the timeline (each becomes an image block) – or drag a picture straight onto a picture field in the inspector, e.g. the top/left/right faces of a matching trial. |
 | **Tool strip** (far left) | Always visible, like the tool strip of an image or video editor. *Blocks*, *Task blocks* and *Pictures* are independent panels: the small **×** in a panel's title minimises it into the strip, a click on its icon in the strip (or Ctrl+1 / 2 / 3, *View* menu) brings it back. Drag the gap between two panels to give one more room. With all three minimised the preview gets the whole width. The layout is remembered. |
@@ -154,6 +154,29 @@ report themselves over HDMI/DisplayPort – the name the Windows display setting
 | | |
 |---|---|
 | ![](docs/screenshots/08_control_room.png) Control room during a (simulated) Hariri run | ![](docs/screenshots/09_participant_screen.png) …and what the participant sees: the chosen face is framed |
+
+## Video and sound
+
+* **Video block** – plays an MP4 / MOV / M4V video with **H.264** (baseline, main and high profile – what phones,
+  cameras and HandBrake produce). Other codecs (e.g. HEVC from iPhones) give a clear message; convert them with
+  HandBrake or `ffmpeg -i in.mov -c:v libx264 -c:a aac out.mp4`. Size on screen, what happens when the block is
+  longer than the video (*keep the last frame*, *loop*, *empty screen*) and the video's own sound (on/off, volume)
+  are set in the inspector; *Block as long as the file* fits the block to the video. Videos are decoded on a
+  background thread a few frames ahead (from 1.5 s before their onset), and the participant screen shows the frame
+  that belongs to the time since the block's onset – the same picture in the editor preview and the control-room
+  mirror.
+* **Audio block** – plays a WAV, MP3, OGG, FLAC or M4A/AAC file while the participant sees a fixation cross, an empty
+  screen or a text. Volume per block; **▶ Listen** in the inspector plays it once.
+* **Sound output: off by default.** Choose it in **⚙ Hardware → Audio** – the system default output or a specific
+  device by its name (e.g. the MR-compatible headphone amplifier) – and check it with **♪ Test sound** (also in the
+  function test). Until then audio blocks and videos stay silent; the inspector, the run dialog and *Check paradigm*
+  say so.
+* All sounds of a run are decoded into memory **before** the run (no disk access while running). The run clock starts
+  each one at its block's onset and it is cut at the block's end; an aborted run is silent at once.
+
+| | |
+|---|---|
+| ![](docs/screenshots/20_video_block.png) A video block: the preview shows the frame at the playhead | ![](docs/screenshots/21_hardware_audio.png) Hardware → Audio: the sound output, off by default |
 
 ## Scanner hardware (NNL)
 
@@ -240,8 +263,9 @@ cargo run --release -- examples/emotional_rating.paradigm.json
 cargo test                              # unit tests (model, templates, runner, SyncBox protocol)
 ```
 
-On Linux the build needs no extra libraries; at runtime the usual desktop libraries (X11 or Wayland, OpenGL,
-`libxkbcommon`) are loaded.
+A C/C++ compiler is needed (the H.264 decoder, OpenH264, is compiled into the executable). On Linux the build also
+needs the ALSA headers (`sudo apt install libasound2-dev`); at runtime the usual desktop libraries (X11 or Wayland,
+OpenGL, `libxkbcommon`, ALSA's `libasound2`) are loaded.
 
 The release workflow (`.github/workflows/release.yml`) builds the Windows `.exe`, a universal macOS `.app` and the
 Linux binary on every push to `main` or a `v*` tag, and publishes them as a GitHub Release.
@@ -250,6 +274,9 @@ Code layout (`src/`): `model.rs` (paradigm, blocks, generators – no GUI), `tem
 modules), `presets.rs` (task blocks), `placeholders.rs` (generated stimuli), `hardware.rs` (SyncBox/grips input,
 NNL serial protocol, auto-detect), `runner.rs` (run clock, scoring, logging), `stimulus.rs` (shared renderer),
 `timeline.rs`, `panels.rs` (library, picture bin, inspector), `dialogs.rs`, `controlroom.rs`, `app.rs` (main window),
+`media.rs` (sound output, audio and H.264 video decoding), `selftest.rs` (function test), `monitors.rs` (screen names),
 `prefs.rs`, `document.rs` (undo/redo).
 
 Bundled fonts: Inter (SIL Open Font License) and DejaVu Sans (Bitstream Vera license), see `assets/fonts/`.
+Video decoding uses Cisco's [OpenH264](https://github.com/cisco/openh264) (BSD-2-Clause), compiled from source via the
+`openh264` crate; sound uses [symphonia](https://github.com/pdeljanov/Symphonia) and [rodio](https://github.com/RustAudio/rodio).

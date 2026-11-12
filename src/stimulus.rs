@@ -93,6 +93,11 @@ pub fn init(ctx: &egui::Context) {
     let _ = CTX.set(ctx.clone());
 }
 
+/// The app's egui context (for background threads that need to wake the windows).
+pub fn ctx() -> Option<&'static egui::Context> {
+    CTX.get()
+}
+
 /// Turn decoded pictures into textures (call once per frame).
 pub fn poll(ctx: &egui::Context) {
     let Ok(mut c) = CACHE.lock() else { return };
@@ -310,6 +315,21 @@ pub fn paint_stimulus(
             let f = theme::font(qsize(prm.f("size", 40.0) as f32 * k));
             draw_text(&p, rect.shrink2(Vec2::new(rect.width() * 0.1, 0.0)), &prm.s("text", ""), f, hex(&prm.s("color", "#FFFFFF")), true);
         }
+        "video" => paint_video(&p, rect, b, st, blur),
+        "audio" => {
+            // what the participant sees while the sound plays
+            match prm.s("screen", "fixation").as_str() {
+                "blank" => {}
+                "text" => {
+                    let f = theme::font(qsize(prm.f("size", 40.0) as f32 * k));
+                    draw_text(&p, rect.shrink2(Vec2::new(rect.width() * 0.1, 0.0)), &prm.s("text", ""), f, hex(&prm.s("color", "#FFFFFF")), true);
+                }
+                _ => {
+                    let f = theme::sym(qsize(prm.f("size", 72.0) as f32 * k), false);
+                    draw_text(&p, rect, &prm.s("symbol", "+"), f, hex(&prm.s("color", "#FFFFFF")), false);
+                }
+            }
+        }
         "rating" => paint_rating(&p, rect, b, st, blur),
         "match" => paint_match(&p, rect, b, st.chosen.as_deref(), blur),
         "gonogo" | "choice" => {
@@ -359,6 +379,39 @@ fn paint_captioned(p: &Painter, rect: Rect, path: &str, scale: f32, caption: &st
     let shown = draw_image(p, rect, path, 1.0, pic_rect, blur);
     let cap_rect = Rect::from_min_size(Pos2::new(rect.left(), shown.bottom() + gap), Vec2::new(w, cap_h));
     p.galley(cap_rect.center() - g.rect.center().to_vec2(), g, color);
+}
+
+/// A video frame, letterboxed into `scale` of the screen. When the block is longer than the video,
+/// its last frame stays ("hold"), the video starts again ("loop") or the screen goes dark ("blank").
+fn paint_video(p: &Painter, rect: Rect, b: &Block, st: &PaintState, blur: bool) {
+    let prm = &b.params;
+    let path = prm.s("path", "");
+    let key = st.media_key.clone().unwrap_or_else(|| b.id.clone());
+    let mut t = st.t.max(0.0);
+    if let Ok(info) = crate::media::video_info(&path) {
+        if info.duration > 0.0 && t >= info.duration {
+            match prm.s("after_end", "hold").as_str() {
+                "loop" => t %= info.duration,
+                "blank" => return,
+                _ => t = (info.duration - 0.001).max(0.0),
+            }
+        }
+    }
+    let bx = Rect::from_center_size(rect.center(), rect.size() * prm.f("scale", 0.9) as f32);
+    match crate::media::video_frame(p.ctx(), &key, &path, t) {
+        crate::media::VideoStatus::Ready(tex) => {
+            let s = (bx.width() / tex.size.x).min(bx.height() / tex.size.y);
+            let target = Rect::from_center_size(bx.center(), tex.size * s);
+            let tint = if blur { Color32::from_gray(40) } else { Color32::WHITE };
+            p.image(tex.id, target, Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)), tint);
+        }
+        crate::media::VideoStatus::Loading => {}
+        crate::media::VideoStatus::Failed(msg) => {
+            dashed_rect(p, bx, Color32::from_gray(0x66), 2.0);
+            let msg = if path.is_empty() { "no video".to_string() } else { msg };
+            draw_text(p, bx.shrink(bx.width() * 0.05), &msg, theme::font(qsize(rect.height() * 0.03)), Color32::from_gray(0x88), true);
+        }
+    }
 }
 
 /// Hariri layout: target on top, two choices below. A frame marks the participant's choice.
@@ -466,7 +519,7 @@ pub fn paint_waiting(p: &Painter, rect: Rect, par: &Paradigm, text: Option<&str>
 
 /// The paint state the editor preview uses (rating cursor in the middle, nothing chosen).
 pub fn preview_state(b: Option<&Block>, t: f64) -> PaintState {
-    let mut st = PaintState::default();
+    let mut st = PaintState { media_key: Some("preview".into()), ..Default::default() };
     if let Some(b) = b {
         st.t = t - b.start;
         if b.kind == "rating" && b.params.s("mode", "direct") == "cursor" {

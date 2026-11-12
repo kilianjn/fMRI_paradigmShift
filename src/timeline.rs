@@ -803,7 +803,16 @@ impl Timeline {
                 files
                     .iter()
                     .map(|f| {
-                        let mut b = Block::create("image", cur, None).with(serde_json::json!({ "path": f }));
+                        // pictures become image blocks; videos and sounds video / audio blocks as long as the file
+                        let kind = if crate::media::is_video_file(f) {
+                            "video"
+                        } else if crate::media::is_audio_file(f) {
+                            "audio"
+                        } else {
+                            "image"
+                        };
+                        let dur = if kind == "image" { None } else { crate::media::media_duration(f).map(|d| round4((d * 100.0).ceil() / 100.0)) };
+                        let mut b = Block::create(kind, cur, dur.filter(|d| *d > 0.0)).with(serde_json::json!({ "path": f }));
                         b.track = track;
                         cur += b.duration;
                         b
@@ -1430,6 +1439,7 @@ pub fn nudge_selected(doc: &mut Document, step: f64) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::model::ParamExt;
 
     /// A timeline 1200 px wide at 10 px/s and a run of `n` 4-second fixation blocks.
     fn setup(n: usize) -> (Timeline, Document) {
@@ -1477,6 +1487,18 @@ mod tests {
         // … and delete removes the whole range at once
         delete_selected(&mut doc, false);
         assert_eq!(doc.paradigm.blocks.len(), 7);
+    }
+
+    #[test]
+    fn dropped_videos_become_video_blocks_as_long_as_the_file() {
+        let (mut tl, mut doc) = setup(0);
+        let video = format!("{}/tests/media/tiny_h264_high.mp4", env!("CARGO_MANIFEST_DIR"));
+        let pos = Pos2::new(HEADER_W + 5.0, RULER_H + 20.0);
+        tl.drop_images(&mut doc, vec![video.clone()], pos);
+        let b = &doc.paradigm.blocks[0];
+        assert_eq!(b.kind, "video");
+        assert_eq!(b.params.s("path", ""), video);
+        assert!((b.duration - 1.0).abs() < 0.02, "{}", b.duration);
     }
 
     #[test]

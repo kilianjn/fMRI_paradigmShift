@@ -32,6 +32,109 @@ pub fn pick_image(title: &str, start: &str) -> Option<String> {
     d.pick_file().map(|p| p.to_string_lossy().to_string())
 }
 
+/// Choose a video (`video = true`) or sound file.
+pub fn pick_media(video: bool, start: &str) -> Option<String> {
+    let (title, name, exts) = if video {
+        ("Choose video", "Videos (H.264)", crate::media::VIDEO_EXTS)
+    } else {
+        ("Choose sound", "Sounds", crate::media::AUDIO_EXTS)
+    };
+    let mut d = rfd::FileDialog::new().set_title(title).add_filter(name, exts);
+    if let Some(parent) = std::path::Path::new(start).parent() {
+        if parent.is_dir() {
+            d = d.set_directory(parent);
+        }
+    }
+    d.pick_file().map(|p| p.to_string_lossy().to_string())
+}
+
+/// Give blocks a new length; the blocks after each of them move along (no gaps or overlaps).
+fn set_lengths(doc: &mut Document, ids: &[String], v: f64) {
+    let v = round4(v.max(0.05));
+    doc.edit(|par| {
+        for id in ids {
+            let Some(b) = par.block(id).cloned() else { continue };
+            let delta = v - b.duration;
+            for o in par.blocks.iter_mut() {
+                if o.track == b.track && o.start >= b.end() - 1e-9 && o.id != b.id {
+                    o.start = round4(o.start + delta);
+                }
+            }
+            if let Some(x) = par.block_mut(id) {
+                x.duration = v;
+            }
+        }
+    });
+}
+
+/// The file of a video / audio block: name, what it is, Choose…, and "block as long as the file".
+fn media_file_ui(ui: &mut Ui, doc: &mut Document, blocks: &[Block], video: bool) {
+    let b = &blocks[0];
+    let id_list = ids(blocks);
+    let path = if mixed(blocks, "path") { String::new() } else { b.params.s("path", "") };
+    let (info, ok, len) = if path.is_empty() {
+        (if blocks.len() > 1 { "different files".to_string() } else { "No file – drop one onto the timeline, or Choose…".to_string() }, false, None)
+    } else if !std::path::Path::new(&path).exists() {
+        ("File not found".to_string(), false, None)
+    } else if video {
+        match crate::media::video_info(&path) {
+            Ok(i) => (format!("{}×{}  ·  {:.0} frames/s  ·  {}", i.width, i.height, i.fps, fmt_time(i.duration, 2)), true, Some(i.duration)),
+            Err(e) => (e, false, None),
+        }
+    } else {
+        match crate::media::sound_duration(&path) {
+            Some(d) => (format!("Sound  ·  {}", fmt_time(d, 2)), true, Some(d)),
+            None => ("This sound file can't be read".to_string(), false, None),
+        }
+    };
+    egui::Frame::new().fill(BG).stroke(Stroke::new(1.0, BORDER)).corner_radius(6).inner_margin(8).show(ui, |ui| {
+        ui.set_width(ui.available_width());
+        ui.horizontal(|ui| {
+            let (r, _) = ui.allocate_exact_size(Vec2::splat(30.0), Sense::hover());
+            theme::paint_kind_icon(ui.painter(), b.kind.as_str(), r, hex(crate::model::block_type(&b.kind).map(|t| t.color).unwrap_or("#888888")));
+            ui.vertical(|ui| {
+                let name = if path.is_empty() { "—".to_string() } else { crate::model::basename(&path) };
+                ui.add(egui::Label::new(RichText::new(name).strong()).truncate()).on_hover_text(&path);
+                ui.add(egui::Label::new(RichText::new(&info).size(12.0).color(if ok || path.is_empty() { TEXT_DIM } else { DANGER })).wrap());
+            });
+        });
+        ui.horizontal(|ui| {
+            if ui.button("Choose…").clicked() {
+                if let Some(p) = pick_media(video, &path) {
+                    set_params(doc, &id_list, "path", json!(p));
+                }
+            }
+            if let Some(d) = len {
+                let d = (d * 100.0).ceil() / 100.0;
+                let differs = blocks.iter().any(|x| (x.duration - d).abs() > 0.01);
+                if differs && ui.button(format!("Block as long as the file ({})", fmt_g(round4(d)) + " s")).clicked() {
+                    set_lengths(doc, &id_list, d);
+                }
+            }
+        });
+    });
+}
+
+/// Volume of a video's / audio block's sound, in %.
+fn volume_ui(ui: &mut Ui, doc: &mut Document, blocks: &[Block]) {
+    let mut v = blocks[0].params.f("volume", 1.0) * 100.0;
+    row(ui, lab("Volume", blocks, &["volume"]), |ui| {
+        if ui.add(egui::DragValue::new(&mut v).range(0.0..=200.0).speed(1.0).suffix(" %").max_decimals(0)).on_hover_text("100 % = as recorded").changed() {
+            set_params(doc, &ids(blocks), "volume", json!(round4(v / 100.0)));
+        }
+    });
+}
+
+/// Sound is off until an output is chosen – say so where it matters.
+fn sound_off_hint(ui: &mut Ui, doc: &Document) {
+    if doc.paradigm.hardware.audio_device.is_empty() {
+        ui.add(
+            egui::Label::new(RichText::new("🔇 Sound is off – choose a sound output in ⚙ Hardware → Audio, otherwise this block stays silent.").color(ACCENT).size(12.0))
+                .wrap(),
+        );
+    }
+}
+
 /// Files of a dropped folder (or the file itself), images only.
 pub fn expand_images(paths: &[std::path::PathBuf]) -> Vec<String> {
     let mut out = vec![];
@@ -1083,6 +1186,92 @@ fn params_ui(ui: &mut Ui, doc: &mut Document, blocks: &[Block], blur: bool) {
             }
             num_param(ui, doc, blocks, "size", "Size", 40.0, (8.0, 300.0), 1.0, 0, " px", true);
             color_param(ui, doc, blocks, "color", "Colour", "#FFFFFF");
+        }
+        "video" => {
+            section(ui, "VIDEO");
+            media_file_ui(ui, doc, blocks, true);
+            let mut sc = b.params.f("scale", 0.9) * 100.0;
+            row(ui, lab("Size", blocks, &["scale"]), |ui| {
+                if ui.add(egui::DragValue::new(&mut sc).range(5.0..=100.0).speed(0.5).suffix(" %").max_decimals(0)).on_hover_text("How much of the screen the video may fill").changed() {
+                    set_params(doc, &id_list, "scale", json!(round4(sc / 100.0)));
+                }
+            });
+            combo_param(
+                ui,
+                doc,
+                blocks,
+                "after_end",
+                "After its end",
+                &[
+                    ("Keep the last frame".into(), json!("hold")),
+                    ("Play it again (loop)".into(), json!("loop")),
+                    ("Empty screen".into(), json!("blank")),
+                ],
+                json!("hold"),
+            );
+            section(ui, "SOUND OF THE VIDEO");
+            let mx = mixed(blocks, "sound");
+            let mut on = b.params.b("sound", true);
+            row(ui, lab("Sound", blocks, &["sound"]), |ui| {
+                let text = if mx { "Play the video's sound  (different – click to set all)" } else { "Play the video's sound" };
+                if ui.checkbox(&mut on, text).changed() {
+                    set_params(doc, &id_list, "sound", json!(on));
+                }
+            });
+            if on {
+                volume_ui(ui, doc, blocks);
+            }
+            sound_off_hint(ui, doc);
+        }
+        "audio" => {
+            section(ui, "SOUND");
+            media_file_ui(ui, doc, blocks, false);
+            volume_ui(ui, doc, blocks);
+            if blocks.len() == 1 {
+                let path = b.params.s("path", "");
+                let device = doc.paradigm.hardware.audio_device.clone();
+                row(ui, RichText::new(""), |ui| {
+                    let playing = crate::media::preview_playing();
+                    let label = if playing { "■  Stop" } else { "▶  Listen" };
+                    if ui.add_enabled(!path.is_empty() && !device.is_empty(), egui::Button::new(label)).on_hover_text("Play the sound once on the chosen sound output").clicked() {
+                        if playing {
+                            crate::media::stop_preview();
+                        } else if let Err(e) = crate::media::preview_sound(&device, &path, b.params.f("volume", 1.0) as f32) {
+                            ui.ctx().data_mut(|d| d.insert_temp(egui::Id::unique("sound_preview_error"), e));
+                        }
+                    }
+                    if playing {
+                        ui.ctx().request_repaint_after(std::time::Duration::from_millis(200));
+                    }
+                });
+                if let Some(e) = ui.ctx().data(|d| d.get_temp::<String>(egui::Id::unique("sound_preview_error"))) {
+                    ui.add(egui::Label::new(RichText::new(format!("⚠ {e}")).color(DANGER).size(12.0)).wrap());
+                }
+            }
+            sound_off_hint(ui, doc);
+            section(ui, "ON SCREEN WHILE THE SOUND PLAYS");
+            combo_param(
+                ui,
+                doc,
+                blocks,
+                "screen",
+                "Screen",
+                &[("Fixation cross".into(), json!("fixation")), ("Empty screen".into(), json!("blank")), ("Text".into(), json!("text"))],
+                json!("fixation"),
+            );
+            match b.params.s("screen", "fixation").as_str() {
+                "text" => {
+                    text_param(ui, doc, blocks, "text", "Text", "");
+                    num_param(ui, doc, blocks, "size", "Size", 40.0, (8.0, 300.0), 1.0, 0, " px", true);
+                    color_param(ui, doc, blocks, "color", "Colour", "#FFFFFF");
+                }
+                "blank" => {}
+                _ => {
+                    text_param(ui, doc, blocks, "symbol", "Symbol", "+");
+                    num_param(ui, doc, blocks, "size", "Size", 72.0, (8.0, 600.0), 1.0, 0, " px", true);
+                    color_param(ui, doc, blocks, "color", "Colour", "#FFFFFF");
+                }
+            }
         }
         "rating" => {
             section(ui, "RATING SCALE");

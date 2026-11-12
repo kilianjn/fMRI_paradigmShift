@@ -300,6 +300,8 @@ pub struct TestSession {
     logo: Option<TextureHandle>,
     ticker_stop: Arc<AtomicBool>,
     ticker: Option<std::thread::JoinHandle<()>>,
+    /// a test tone playing on the chosen sound output, until when
+    sound_test: Option<(crate::media::AudioEngine, f64)>,
 }
 
 /// About 60 times a second: take in the inputs and wake *both* windows. A window's own repaint
@@ -353,7 +355,7 @@ impl TestSession {
         let logo = Some(ctx.load_texture("function_test_logo", img, egui::TextureOptions::LINEAR));
         let ticker_stop = Arc::new(AtomicBool::new(false));
         let ticker = ticker(ctx.clone(), state.clone(), ticker_stop.clone());
-        TestSession { state, builder, closed: Arc::new(AtomicBool::new(false)), logo, ticker_stop, ticker }
+        TestSession { state, builder, closed: Arc::new(AtomicBool::new(false)), logo, ticker_stop, ticker, sound_test: None }
     }
 
     /// The participant's test screen (call every frame while the test runs). An *immediate*
@@ -422,6 +424,22 @@ impl TestSession {
                     }
                     if ui.button("Reset").on_hover_text("Clear the counters and the list").clicked() {
                         s.reset();
+                    }
+                    // the sound output, if one is chosen (Hardware → Audio)
+                    let device = s.hw.audio_device.clone();
+                    if self.sound_test.as_ref().map(|t| now() > t.1).unwrap_or(false) {
+                        self.sound_test = None;
+                    }
+                    let tip = if device.is_empty() { "Sound is off – choose a sound output in Hardware → Audio" } else { "Play a short tone on the sound output" };
+                    if ui.add_enabled(!device.is_empty() && self.sound_test.is_none(), egui::Button::new("♪  Test sound")).on_hover_text(tip).clicked() {
+                        let t = now();
+                        match crate::media::test_sound(&device) {
+                            Ok(e) => {
+                                self.sound_test = Some((e, t + 1.2));
+                                s.push_log(t, "Test sound played – can the participant hear it?".into(), OK);
+                            }
+                            Err(e) => s.push_log(t, format!("Sound: {e}"), DANGER),
+                        }
                     }
                 });
             });

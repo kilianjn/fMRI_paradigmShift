@@ -24,6 +24,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+      - name: Sound library (ALSA) for building
+        run: sudo apt-get update && sudo apt-get install -y libasound2-dev
       - name: Unit tests
         run: cargo test --locked
 
@@ -60,6 +62,7 @@ jobs:
       - name: Build (Linux)
         if: matrix.name == 'linux'
         run: |
+          sudo apt-get update && sudo apt-get install -y libasound2-dev
           cargo build --release --locked
           mkdir -p dist/ParadigmShift-linux-x86_64
           cp target/release/paradigmshift dist/ParadigmShift-linux-x86_64/paradigmshift

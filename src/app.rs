@@ -12,7 +12,7 @@ use crate::dialogs::{self, Confirm, FindReplace, HardwareDialog, Message, Outcom
 use crate::selftest::TestSession;
 use crate::document::Document;
 use crate::hardware::now;
-use crate::model::{self, fmt_g, fmt_time, Paradigm, FILE_SUFFIX};
+use crate::model::{self, fmt_g, fmt_time, Paradigm, FILE_SUFFIX, ParamExt};
 use crate::panels::{self, Inspector, Library};
 use crate::presets;
 use crate::prefs::{self, Settings};
@@ -576,11 +576,64 @@ impl App {
         // preload pictures – no disk access while running
         let imgs: Vec<String> = par.blocks.iter().flat_map(|b| b.image_files()).collect();
         stimulus::preload(ctx, &imgs);
+        // sounds (audio blocks, the sound of videos): decoded into memory now, played from memory
+        let sound = Self::load_sounds(&par);
+        // videos that start right away: decode their first frames while waiting for the scanner
+        for b in par.blocks.iter().filter(|b| b.kind == "video" && b.start < 1.5) {
+            crate::media::video_prepare(&b.id, &b.params.s("path", ""));
+        }
         let c = ctx.clone();
         let mut ctl = RunController::new(par, s, Arc::new(move || c.request_repaint()));
+        match sound {
+            Ok(Some((engine, clips))) => ctl.set_sound(engine, clips),
+            Ok(None) => {}
+            Err(e) => ctl.error = e,
+        }
         ctl.start();
         self.run = Some(RunSession::new(ctx, ctl, self.settings.controlroom_folded.clone()));
         ctx.send_viewport_cmd(egui::ViewportCommand::Focus);
+    }
+
+    /// Decode the sounds of a paradigm and open the sound output – if one is chosen and there is
+    /// anything to play. Errors keep the run going (silently) but are shown in the control room.
+    #[allow(clippy::type_complexity)]
+    fn load_sounds(
+        par: &crate::model::Paradigm,
+    ) -> Result<Option<(crate::media::AudioEngine, std::collections::HashMap<String, (crate::media::AudioClip, f32)>)>, String> {
+        let device = par.hardware.audio_device.clone();
+        let wanted: Vec<(&crate::model::Block, String)> = par.blocks.iter().filter_map(|b| b.sound_file().map(|f| (b, f))).collect();
+        if device.is_empty() || wanted.is_empty() {
+            return Ok(None);
+        }
+        let mut by_file: std::collections::HashMap<String, crate::media::AudioClip> = std::collections::HashMap::new();
+        let mut clips = std::collections::HashMap::new();
+        let mut problems = vec![];
+        for (b, f) in wanted {
+            let clip = match by_file.get(&f) {
+                Some(c) => Some(c.clone()),
+                None => match crate::media::decode_audio(&f) {
+                    Ok(c) => {
+                        by_file.insert(f.clone(), c.clone());
+                        Some(c)
+                    }
+                    // a video without a sound track is fine
+                    Err(e) if b.kind == "video" && e.contains("has no sound") => None,
+                    Err(e) => {
+                        problems.push(e);
+                        None
+                    }
+                },
+            };
+            if let Some(c) = clip {
+                clips.insert(b.id.clone(), (c, b.params.f("volume", 1.0) as f32));
+            }
+        }
+        let engine = crate::media::AudioEngine::start(&device).map_err(|e| format!("Sound: {e}"))?;
+        if !problems.is_empty() {
+            problems.dedup();
+            return Err(format!("Sound: {}", problems.join(" · ")));
+        }
+        Ok(Some((engine, clips)))
     }
 
     // ------------------------------------------------------------------ keyboard
@@ -1176,13 +1229,21 @@ impl App {
             return;
         }
         let imgs = panels::expand_images(&dropped);
-        if imgs.is_empty() {
+        // videos and sound files become video / audio blocks
+        let media: Vec<String> = dropped
+            .iter()
+            .map(|p| path_str(p))
+            .filter(|p| crate::media::is_video_file(p) || crate::media::is_audio_file(p))
+            .collect();
+        if imgs.is_empty() && media.is_empty() {
             return;
         }
         self.lib.add_files(&imgs);
         if let Some(pos) = ctx.pointer_latest_pos() {
             if self.tl.contains(pos) {
-                self.tl.drop_images(&mut self.doc, imgs, pos);
+                let mut files = imgs;
+                files.extend(media);
+                self.tl.drop_images(&mut self.doc, files, pos);
             }
         }
     }
@@ -1491,6 +1552,7 @@ impl eframe::App for App {
                 ctx.request_repaint_after(std::time::Duration::from_millis(500));
             }
         }
+        crate::media::housekeeping();
         self.shot_overlay(&ctx);
         self.demo_step(&ctx);
     }

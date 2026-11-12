@@ -55,6 +55,28 @@ pub static BLOCK_TYPES: &[BlockType] = &[
         },
     },
     BlockType {
+        kind: "video",
+        title: "Video",
+        color: "#E4604E",
+        description: "Plays a video (MP4/MOV with H.264) – with its sound if a sound output is set (Hardware → Audio). \
+                      Drop video files straight onto the timeline.",
+        default_duration: 6.0,
+        default_track: 0,
+        defaults: || json!({"path": "", "scale": 0.9, "sound": true, "volume": 1.0, "after_end": "hold"}),
+    },
+    BlockType {
+        kind: "audio",
+        title: "Audio",
+        color: "#2FA88A",
+        description: "Plays a sound file (WAV, MP3, OGG, FLAC, M4A) while the screen shows a fixation cross, nothing or a \
+                      text. Needs a sound output (Hardware → Audio).",
+        default_duration: 4.0,
+        default_track: 0,
+        defaults: || {
+            json!({"path": "", "volume": 1.0, "screen": "fixation", "symbol": "+", "text": "", "color": "#FFFFFF", "size": 72})
+        },
+    },
+    BlockType {
         kind: "rating",
         title: "Rating",
         color: "#D45C9E",
@@ -144,13 +166,13 @@ pub fn block_type(kind: &str) -> Option<&'static BlockType> {
 }
 
 fn bt(kind: &str) -> &'static BlockType {
-    block_type(kind).unwrap_or(&BLOCK_TYPES[4])
+    block_type(kind).or_else(|| block_type("rest")).unwrap_or(&BLOCK_TYPES[0])
 }
 
 /// Kinds whose trials are scored (they have a right/wrong or hit/miss outcome)
 pub const SCORED_TRIAL_KINDS: &[&str] = &["match", "gonogo", "choice"];
 pub const STIMULUS_KINDS: &[&str] =
-    &["fixation", "image", "rating", "text", "rest", "match", "gonogo", "choice", "feedback"];
+    &["fixation", "image", "video", "audio", "rating", "text", "rest", "match", "gonogo", "choice", "feedback"];
 /// Params that hold picture files.
 pub const IMAGE_PARAMS: &[&str] = &["path", "top", "left", "right", "flicker_path"];
 pub const NOGO_COLOR: &str = "#E5484D";
@@ -385,7 +407,19 @@ impl Block {
     }
 
     pub fn image_files(&self) -> Vec<String> {
+        if self.kind == "video" || self.kind == "audio" {
+            return vec![]; // their "path" is a video / sound file
+        }
         IMAGE_PARAMS.iter().filter_map(|k| self.params.nonempty(k)).collect()
+    }
+
+    /// The sound this block plays: its audio file, or the sound of its video (if switched on).
+    pub fn sound_file(&self) -> Option<String> {
+        match self.kind.as_str() {
+            "audio" => self.params.nonempty("path"),
+            "video" if self.params.b("sound", true) => self.params.nonempty("path"),
+            _ => None,
+        }
     }
 
     pub fn clone_new(&self) -> Block {
@@ -535,6 +569,13 @@ pub struct Hardware {
     pub move_right: String,
     #[serde(default = "d_confirm")]
     pub confirm: String,
+    /// Sound output for audio blocks and the sound of videos: a device id, "default" (the system's
+    /// default output) or "" = no sound (the default).
+    #[serde(default)]
+    pub audio_device: String,
+    /// The chosen output's name (shown when it is not connected)
+    #[serde(default)]
+    pub audio_device_name: String,
 }
 
 impl Default for Hardware {
@@ -551,6 +592,8 @@ impl Default for Hardware {
             move_left: d_left(),
             move_right: d_right(),
             confirm: d_confirm(),
+            audio_device: String::new(),
+            audio_device_name: String::new(),
         }
     }
 }
@@ -833,6 +876,16 @@ impl Paradigm {
             if b.kind == "image" && p.nonempty("path").is_none() {
                 problems.push(format!("{place}: no image chosen"));
             }
+            if (b.kind == "video" || b.kind == "audio") && p.nonempty("path").is_none() {
+                problems.push(format!("{place}: no {} file chosen", b.kind));
+            }
+            if b.kind == "video" || b.kind == "audio" {
+                if let Some(f) = p.nonempty("path") {
+                    if !Path::new(&f).exists() {
+                        problems.push(format!("{place}: {} file not found", b.kind));
+                    }
+                }
+            }
             if b.kind == "choice" && p.nonempty("text").is_none() && p.nonempty("path").is_none() {
                 problems.push(format!("{place}: choice trial shows nothing (no text or picture)"));
             }
@@ -848,6 +901,12 @@ impl Paradigm {
             if self.has_overlap(b) {
                 problems.push(format!("{place}: overlaps another block"));
             }
+        }
+        let sounds = self.blocks.iter().filter(|b| b.kind == "audio").count();
+        if sounds > 0 && self.hardware.audio_device.is_empty() {
+            problems.push(format!(
+                "Sound is off: {sounds} audio block(s) will be silent – choose a sound output in Hardware → Audio"
+            ));
         }
         problems
     }

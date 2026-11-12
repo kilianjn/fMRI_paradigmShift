@@ -7,6 +7,7 @@ mod controlroom;
 mod dialogs;
 mod document;
 mod hardware;
+mod media;
 mod model;
 mod monitors;
 mod panels;

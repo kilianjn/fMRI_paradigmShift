@@ -93,14 +93,19 @@ fn clock_thread(ctx: Context, ctl: SharedRun, stop: Arc<AtomicBool>) -> Option<s
             let pid = ViewportId::from_hash_of(PARTICIPANT_ID);
             let mut last_stim = u64::MAX;
             let mut last_version = u64::MAX;
-            let (mut last_cr, mut last_part) = (0.0, 0.0);
+            let (mut last_cr, mut last_part, mut last_video) = (0.0, 0.0, 0.0);
             while !stop.load(Ordering::Relaxed) {
-                let (done, stim, version, refresh) = {
+                let (done, stim, version, refresh, video) = {
                     let Ok(mut c) = ctl.lock() else { return };
                     c.tick();
-                    (c.phase() == Phase::Done, c.stimulus_version, c.state.version, c.settings.control_refresh_ms)
+                    (c.phase() == Phase::Done, c.stimulus_version, c.state.version, c.settings.control_refresh_ms, c.showing_video())
                 };
                 let t = now();
+                // a video plays: new frames at the display rate
+                if video && t - last_video >= 1.0 / 60.0 {
+                    last_video = t;
+                    ctx.request_repaint_of(ViewportId::ROOT);
+                }
                 // the participant screen is drawn in the control room's pass (immediate viewport),
                 // so waking the main window updates both
                 if stim != last_stim {

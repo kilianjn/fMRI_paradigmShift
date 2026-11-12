@@ -246,6 +246,34 @@ pub fn draw_kind_glyph(p: &Painter, kind: &str, r: Rect, color: Color32) {
             ));
             p.circle_stroke(fp(0.78, 0.28), w * 0.05, st);
         }
+        "video" => {
+            // a film frame with a play triangle
+            let fr = Rect::from_min_max(pt(0.12, 0.22), pt(0.88, 0.78));
+            rr(p, fr, 2.0, st);
+            p.add(PathShape::convex_polygon(
+                vec![pt(0.42, 0.36), pt(0.42, 0.64), pt(0.64, 0.5)],
+                color,
+                Stroke::NONE,
+            ));
+        }
+        "audio" => {
+            // a loudspeaker with two sound waves
+            p.add(PathShape::convex_polygon(
+                vec![pt(0.16, 0.4), pt(0.3, 0.4), pt(0.46, 0.24), pt(0.46, 0.76), pt(0.3, 0.6), pt(0.16, 0.6)],
+                color,
+                Stroke::NONE,
+            ));
+            for (rad, a) in [(0.14, 0.75), (0.26, 0.85)] {
+                let n = 10;
+                let pts: Vec<Pos2> = (0..=n)
+                    .map(|i| {
+                        let ang = -a + 2.0 * a * i as f32 / n as f32;
+                        Pos2::new(r.left() + w * 0.5 + w * rad * ang.cos(), c.y + h * rad * ang.sin())
+                    })
+                    .collect();
+                p.add(PathShape::line(pts, PathStroke::new(st.width, color)));
+            }
+        }
         "rating" => {
             let y = c.y + h * 0.12;
             p.line_segment([Pos2::new(r.left() + w * 0.14, y), Pos2::new(r.right() - w * 0.14, y)], st);

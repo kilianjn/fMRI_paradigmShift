@@ -232,6 +232,11 @@ pub struct HardwareDialog {
     scan_keys: Vec<String>,
     advanced: bool,
     cursor_fold: bool,
+    /// sound outputs of this computer (listed when the Audio tab is opened)
+    audio_devices: Option<Vec<crate::media::OutputDevice>>,
+    audio_note: String,
+    /// the output a test sound is playing on, until when
+    audio_test: Option<(crate::media::AudioEngine, f64)>,
 }
 
 impl HardwareDialog {
@@ -257,6 +262,9 @@ impl HardwareDialog {
             scan_keys: vec![],
             advanced: false,
             cursor_fold: false,
+            audio_devices: None,
+            audio_note: String::new(),
+            audio_test: None,
         };
         d.refresh_ports(true);
         d.restart_router(false);
@@ -509,6 +517,81 @@ impl HardwareDialog {
         }
     }
 
+    /// Sound output for audio blocks and the sound of videos – off unless chosen here.
+    fn audio_tab(&mut self, ui: &mut Ui) {
+        use crate::media::{output_devices, DEFAULT_OUTPUT};
+        if self.audio_devices.is_none() {
+            self.audio_devices = Some(output_devices());
+        }
+        let devices = self.audio_devices.clone().unwrap_or_default();
+        let label_of = |id: &str, name: &str| -> String {
+            match id {
+                "" => "Off – no sound".to_string(),
+                DEFAULT_OUTPUT => "System default output".to_string(),
+                _ => match devices.iter().find(|d| d.id == id) {
+                    Some(d) => d.name.clone(),
+                    None => format!("{}  (not connected)", if name.is_empty() { id } else { name }),
+                },
+            }
+        };
+        let current = label_of(&self.hw.audio_device, &self.hw.audio_device_name);
+        let mut chosen: Option<(String, String)> = None;
+        row(ui, "Sound output", |ui| {
+            egui::ComboBox::from_id_salt("audio_out").width(360.0).selected_text(current).show_ui(ui, |ui| {
+                if ui.selectable_label(self.hw.audio_device.is_empty(), "Off – no sound").clicked() {
+                    chosen = Some((String::new(), String::new()));
+                }
+                if ui.selectable_label(self.hw.audio_device == DEFAULT_OUTPUT, "System default output").clicked() {
+                    chosen = Some((DEFAULT_OUTPUT.to_string(), String::new()));
+                }
+                if !devices.is_empty() {
+                    ui.separator();
+                }
+                for d in &devices {
+                    if ui.selectable_label(self.hw.audio_device == d.id, &d.name).on_hover_text(&d.id).clicked() {
+                        chosen = Some((d.id.clone(), d.name.clone()));
+                    }
+                }
+            });
+            if ui.button("Refresh").on_hover_text("List the sound outputs again (e.g. after plugging in a USB sound card)").clicked() {
+                self.audio_devices = Some(output_devices());
+            }
+        });
+        if let Some((id, name)) = chosen {
+            self.hw.audio_device = id;
+            self.hw.audio_device_name = name;
+            self.audio_note.clear();
+        }
+        row(ui, "", |ui| {
+            let on = !self.hw.audio_device.is_empty();
+            let playing = self.audio_test.is_some();
+            if ui.add_enabled(on && !playing, egui::Button::new("♪  Test sound")).on_hover_text("Plays a short tone on the chosen output").clicked() {
+                match crate::media::test_sound(&self.hw.audio_device) {
+                    Ok(e) => {
+                        self.audio_test = Some((e, now() + 1.2));
+                        self.audio_note = "♪ A short tone is playing – can the participant hear it?".into();
+                    }
+                    Err(e) => self.audio_note = format!("⚠ {e}"),
+                }
+            }
+        });
+        if !self.audio_note.is_empty() {
+            // on its own line, wrapped: error messages can be long
+            let col = if self.audio_note.starts_with('⚠') { DANGER } else { TEXT };
+            ui.add(egui::Label::new(RichText::new(&self.audio_note).color(col)).wrap());
+        }
+        ui.add_space(6.0);
+        theme::hint(
+            ui,
+            "Sound is off by default: audio blocks and the sound of video blocks stay silent until an output is chosen \
+             here. Choose the output the participant's headphones are connected to (e.g. the MR-compatible headphone \
+             amplifier). Sounds are loaded into memory before the run and start exactly at their block's onset.",
+        );
+        if devices.is_empty() {
+            theme::hint(ui, "No sound outputs found on this computer.");
+        }
+    }
+
     fn capture_button(ui: &mut Ui, active: bool, key: &str) -> bool {
         let text = if active {
             RichText::new("press now…").color(ACCENT)
@@ -529,10 +612,17 @@ impl HardwareDialog {
         if self.scanner.is_some() || lamp_level(self.trig_flash) > 0.0 || self.flashes.iter().any(|f| lamp_level(*f) > 0.0) {
             ctx.request_repaint();
         }
+        // a test sound plays ~0.7 s; then the output is closed again
+        if self.audio_test.as_ref().map(|t| now() > t.1).unwrap_or(false) {
+            self.audio_test = None;
+        }
+        if self.audio_test.is_some() {
+            ctx.request_repaint_after(std::time::Duration::from_millis(200));
+        }
         let out = modal(ctx, "hardware", 680.0, |ui| {
-            title(ui, "Scanner hardware – NNL SyncBox & ResponseGrips");
+            title(ui, "Hardware – NNL SyncBox, ResponseGrips & sound");
             ui.horizontal(|ui| {
-                for (i, t) in ["SyncBox", "ResponseGrips"].iter().enumerate() {
+                for (i, t) in ["SyncBox", "ResponseGrips", "Audio"].iter().enumerate() {
                     if ui.selectable_label(self.tab == i, *t).clicked() {
                         self.tab = i;
                     }
@@ -543,8 +633,10 @@ impl HardwareDialog {
                 ui.set_min_height(380.0);
                 if self.tab == 0 {
                     self.sync_tab(ui, lamp_level(self.trig_flash));
-                } else {
+                } else if self.tab == 1 {
                     self.grips_tab(ui, &lamp_level);
+                } else {
+                    self.audio_tab(ui);
                 }
             });
             buttons(ui, "Save hardware setup", true)
@@ -1104,7 +1196,14 @@ impl RunDialog {
         } else {
             format!("SyncBox via serial port {}", if hw.serial_port.is_empty() { "(not set!)" } else { &hw.serial_port })
         };
-        let summary = format!("{}  ·  {}  ·  {} volumes\n{sync}", par.name, fmt_time(par.duration(), 1), par.volumes());
+        let mut summary = format!("{}  ·  {}  ·  {} volumes\n{sync}", par.name, fmt_time(par.duration(), 1), par.volumes());
+        if par.blocks.iter().any(|b| b.sound_file().is_some()) {
+            summary.push_str(&match hw.audio_device.as_str() {
+                "" => "\nSound: off – audio blocks and videos stay silent (Hardware → Audio)".to_string(),
+                crate::media::DEFAULT_OUTPUT => "\nSound: system default output".to_string(),
+                _ => format!("\nSound: {}", if hw.audio_device_name.is_empty() { &hw.audio_device } else { &hw.audio_device_name }),
+            });
+        }
         let s = RunSettings {
             out_dir: out_dir.to_string(),
             // the projector: the first screen that is not the main screen

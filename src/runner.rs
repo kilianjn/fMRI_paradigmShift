@@ -206,6 +206,8 @@ pub struct PaintState {
     pub confirmed: bool,
     pub chosen: Option<String>,
     pub success: bool,
+    /// which video playback to show: the block's id during a run, "preview" in the editor
+    pub media_key: Option<String>,
 }
 
 /// Was a finished trial done right? (Unanswered trials count as over – used for feedback blocks.)
@@ -396,7 +398,7 @@ impl RunState {
     pub fn paint_state(&self, b: Option<&Block>, t: f64) -> PaintState {
         let Some(b) = b else { return PaintState::default() };
         let rs = self.ratings.get(&b.id).cloned().unwrap_or_default();
-        let mut st = PaintState { t: t - b.start, value: rs.value, confirmed: rs.confirmed, ..Default::default() };
+        let mut st = PaintState { t: t - b.start, value: rs.value, confirmed: rs.confirmed, media_key: Some(b.id.clone()), ..Default::default() };
         if let Some(ev) = self.event(&b.id) {
             if b.kind == "match" {
                 if let Some(r) = &ev.response {
@@ -879,6 +881,10 @@ pub struct RunController {
     t_end: Option<f64>,
     abort_armed_at: Option<f64>,
     router: InputRouter,
+    /// sound output and the decoded sounds of the audio / video blocks (None = sound off)
+    sound: Option<RunSound>,
+    /// when the upcoming videos were last checked (they are decoded ahead of their onset)
+    video_check: f64,
     press_file: Option<File>,
     press_path: Option<PathBuf>,
     t_open: f64,
@@ -888,6 +894,12 @@ pub struct RunController {
     pub stimulus_version: u64,
     /// size of the participant screen (set by its window) – the control-room mirror uses its shape
     pub screen_size: Option<(f32, f32)>,
+}
+
+/// The sound output of a run and the decoded sounds of its blocks.
+struct RunSound {
+    engine: crate::media::AudioEngine,
+    clips: HashMap<String, (crate::media::AudioClip, f32)>,
 }
 
 impl RunController {
@@ -907,6 +919,8 @@ impl RunController {
             t_end: None,
             abort_armed_at: None,
             router,
+            sound: None,
+            video_check: f64::NEG_INFINITY,
             press_file: None,
             press_path: None,
             t_open: now(),
@@ -995,6 +1009,13 @@ impl RunController {
     pub fn finish(&mut self, aborted: bool) {
         if self.done {
             return;
+        }
+        // silence and stop the video decoders
+        if let Some(s) = &self.sound {
+            s.engine.stop_all();
+        }
+        for b in self.state.p.blocks.iter().filter(|b| b.kind == "video") {
+            crate::media::video_release(&b.id);
         }
         let dur = self.state.p.duration();
         if let Some(t0) = self.state.t0 {
@@ -1098,7 +1119,11 @@ impl RunController {
         for input in self.router.poll() {
             self.apply(input);
         }
-        if self.done || self.state.t0.is_none() {
+        if self.done {
+            return;
+        }
+        self.prepare_videos();
+        if self.state.t0.is_none() {
             return;
         }
         let t = self.elapsed();
@@ -1125,6 +1150,37 @@ impl RunController {
             if self.state.event(&b.id).is_none() {
                 self.state.onset(&b, tnow);
                 self.stimulus_version += 1;
+                // its sound starts right now and stops at the block's end
+                if let Some(s) = &self.sound {
+                    if let Some((clip, volume)) = s.clips.get(&b.id) {
+                        s.engine.play(&b.id, clip.clone(), *volume, Some((b.end() - t).max(0.0)));
+                    }
+                }
+            }
+        }
+    }
+
+    /// Use this sound output and these decoded sounds (block id → sound, volume).
+    pub fn set_sound(&mut self, engine: crate::media::AudioEngine, clips: HashMap<String, (crate::media::AudioClip, f32)>) {
+        self.sound = Some(RunSound { engine, clips });
+    }
+
+    /// Whether a video is on screen (the windows then repaint at the display rate).
+    pub fn showing_video(&self) -> bool {
+        self.current_block().map(|b| b.kind == "video").unwrap_or(false)
+    }
+
+    /// Videos are decoded from 1.5 s before their onset, so their first frame is ready in time.
+    fn prepare_videos(&mut self) {
+        let tnow = now();
+        if tnow - self.video_check < 0.1 {
+            return;
+        }
+        self.video_check = tnow;
+        let t = self.elapsed();
+        for b in self.state.p.blocks.iter().filter(|b| b.kind == "video") {
+            if t >= b.start - 1.5 && t < b.end() {
+                crate::media::video_prepare(&b.id, &b.params.s("path", ""));
             }
         }
     }
