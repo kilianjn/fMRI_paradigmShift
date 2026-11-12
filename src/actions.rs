@@ -50,6 +50,8 @@ pub enum Action {
     FindReplace,
     Preferences,
     Shortcuts,
+    /// Help → About
+    About,
     Quit,
     /// pictures, videos and sounds into the Media panel
     ImportMedia,

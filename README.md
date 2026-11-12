@@ -278,6 +278,11 @@ NNL serial protocol, auto-detect), `runner.rs` (run clock, scoring, logging), `s
 `media.rs` (sound output, audio and H.264 video decoding), `selftest.rs` (function test), `monitors.rs` (screen names),
 `prefs.rs`, `document.rs` (undo/redo).
 
+## Credits
+
+ParadigmShift was made by **Kilian Jain** together with **Claude**, an AI by Anthropic. *Help → About* shows the
+version and links to this repository.
+
 Bundled fonts: Inter (SIL Open Font License) and DejaVu Sans (Bitstream Vera license), see `assets/fonts/`.
 Video decoding uses Cisco's [OpenH264](https://github.com/cisco/openh264) (BSD-2-Clause), compiled from source via the
 `openh264` crate; sound uses [symphonia](https://github.com/pdeljanov/Symphonia) and [rodio](https://github.com/RustAudio/rodio).

@@ -113,6 +113,68 @@ impl Message {
     }
 }
 
+/// Help → About: who made the app, the version and where it lives on GitHub.
+pub struct AboutDialog {
+    icon: Option<egui::TextureHandle>,
+}
+
+pub const REPO_URL: &str = "https://github.com/kilianjn/fMRI_paradigmShift";
+
+impl AboutDialog {
+    pub fn new(ctx: &Context) -> Self {
+        let size = 128;
+        let img = egui::ColorImage::from_rgba_unmultiplied([size, size], &crate::placeholders::app_icon_rgba(size as u32));
+        AboutDialog { icon: Some(ctx.load_texture("about_icon", img, egui::TextureOptions::LINEAR)) }
+    }
+
+    pub fn ui(&mut self, ctx: &Context) -> Outcome {
+        modal(ctx, "about", 470.0, |ui| {
+            ui.vertical_centered(|ui| {
+                if let Some(t) = &self.icon {
+                    ui.add(egui::Image::new((t.id(), Vec2::splat(88.0))));
+                }
+                ui.add_space(4.0);
+                ui.label(RichText::new("ParadigmShift").font(theme::bold(26.0)));
+                ui.label(RichText::new(format!("Version {}", env!("CARGO_PKG_VERSION"))).color(TEXT_DIM));
+                ui.add_space(8.0);
+                ui.label("A film-editor style app for designing and running fMRI paradigms.");
+                ui.add_space(10.0);
+                ui.horizontal_wrapped(|ui| {
+                    ui.spacing_mut().item_spacing.x = 0.0;
+                    let w = ui.available_width();
+                    // centre the sentence
+                    let text = "Made by Kilian Jain together with Claude, an AI by Anthropic.";
+                    let g = ui.painter().layout_no_wrap(text.into(), theme::font(14.0), TEXT);
+                    ui.add_space(((w - g.size().x) / 2.0).max(0.0));
+                    ui.label(RichText::new("Made by ").size(14.0));
+                    ui.label(RichText::new("Kilian Jain").size(14.0).strong());
+                    ui.label(RichText::new(" together with ").size(14.0));
+                    ui.label(RichText::new("Claude").size(14.0).strong());
+                    ui.label(RichText::new(", an AI by Anthropic.").size(14.0));
+                });
+                ui.add_space(12.0);
+                ui.hyperlink_to(RichText::new("github.com/kilianjn/fMRI_paradigmShift").size(14.0), REPO_URL)
+                    .on_hover_text("Source code, documentation and issues");
+                ui.hyperlink_to("Downloads and release notes", format!("{REPO_URL}/releases"));
+                ui.add_space(12.0);
+                theme::hint(
+                    ui,
+                    "Built with egui. Fonts: Inter (SIL Open Font License), DejaVu Sans. Video decoding: OpenH264 \
+                     (BSD). Sound: symphonia, rodio.",
+                );
+            });
+            let mut out = Outcome::Open;
+            ui.add_space(8.0);
+            ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                if theme::primary_button(ui, "Close").clicked() {
+                    out = Outcome::Accept;
+                }
+            });
+            out
+        })
+    }
+}
+
 /// A yes/no question; `Accept` = yes.
 pub struct Confirm {
     pub title: String,

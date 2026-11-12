@@ -8,7 +8,7 @@ use egui::{Align, Context, Key, KeyboardShortcut, Layout, Modifiers, Pos2, RichT
 
 use crate::actions::Action;
 use crate::controlroom::{CrAction, RunSession};
-use crate::dialogs::{self, Confirm, FindReplace, HardwareDialog, Message, Outcome, PrefsDialog, QuickDesign, RepeatAsk, RunDialog, SaveChoice, TemplateDialog, TestDialog};
+use crate::dialogs::{self, AboutDialog, Confirm, FindReplace, HardwareDialog, Message, Outcome, PrefsDialog, QuickDesign, RepeatAsk, RunDialog, SaveChoice, TemplateDialog, TestDialog};
 use crate::selftest::TestSession;
 use crate::document::Document;
 use crate::hardware::now;
@@ -27,6 +27,7 @@ mod examples {
 
 enum Modal {
     Message(Message),
+    About(Box<AboutDialog>),
     RunAnyway(Confirm),
     Unsaved(Action),
     Repeat(RepeatAsk),
@@ -392,6 +393,7 @@ impl App {
             Action::FindReplace => self.modal = Some(Modal::Find(Box::new(FindReplace::new()))),
             Action::Preferences => self.modal = Some(Modal::Prefs(Box::new(PrefsDialog::new(&self.settings.prefs)))),
             Action::Shortcuts => self.message("Keyboard shortcuts", dialogs::shortcuts_text()),
+            Action::About => self.modal = Some(Modal::About(Box::new(AboutDialog::new(ctx)))),
             Action::Quit => {
                 self.quit = true;
                 ctx.send_viewport_cmd(egui::ViewportCommand::Close);
@@ -826,10 +828,7 @@ impl App {
             });
             ui.menu_button("Help", |ui| {
                 item!(ui, "Keyboard shortcuts", "F1", Action::Shortcuts, true);
-                if ui.button("About ParadigmShift").clicked() {
-                    a.push(Action::Status(format!("ParadigmShift {} – timeline editor and presenter for fMRI paradigms", env!("CARGO_PKG_VERSION"))));
-                    ui.close();
-                }
+                item!(ui, "About ParadigmShift…", "", Action::About, true);
             });
         });
     }
@@ -1071,6 +1070,7 @@ impl App {
         let mut keep = true;
         match &mut m {
             Modal::Message(d) => keep = d.ui(ctx) == Outcome::Open,
+            Modal::About(d) => keep = d.ui(ctx) == Outcome::Open,
             Modal::RunAnyway(d) => match d.ui(ctx) {
                 Outcome::Accept => {
                     keep = false;
@@ -1299,6 +1299,9 @@ impl App {
                 ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                     if ui.button("✎ Back to the editor").on_hover_text("Leave presentation mode. The presented file is not opened for editing.").clicked() {
                         a.push(Action::LeavePresentation);
+                    }
+                    if ui.button("ⓘ").on_hover_text("About ParadigmShift").clicked() {
+                        a.push(Action::About);
                     }
                     if ui.button("Open another…").on_hover_text("Open another paradigm for presenting (Ctrl+O)").clicked() {
                         a.push(Action::OpenForPresenting(None));
@@ -1655,6 +1658,10 @@ impl App {
                 "run_dialog" => {
                     self.open_example("hariri_face_matching");
                     self.run_paradigm(true);
+                }
+                "about" => {
+                    self.open_example("emotional_rating");
+                    self.actions.push(Action::About);
                 }
                 "present" | "present_run" => {
                     self.open_example("hariri_face_matching");
