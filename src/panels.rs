@@ -290,6 +290,8 @@ pub struct Library {
     pub media: Vec<String>,
     pub media_sel: Vec<usize>,
     anchor: Option<usize>,
+    /// where the media bin was drawn last (Del there removes the selected files)
+    bin_rect: Option<Rect>,
     /// panels minimised into the tool strip
     pub closed: Vec<String>,
     /// relative heights of the panels (blocks, task blocks, pictures)
@@ -345,6 +347,29 @@ impl Library {
         self.media.clear();
         self.media_sel.clear();
         self.anchor = None;
+    }
+
+    /// Take files out of the Media panel (not off the disk, not out of the timeline). Returns how many.
+    pub fn remove(&mut self, files: &[String]) -> usize {
+        let n = self.media.len();
+        self.media.retain(|f| !files.contains(f));
+        self.media_sel.clear();
+        self.anchor = None;
+        n - self.media.len()
+    }
+
+    pub fn selected_files(&self) -> Vec<String> {
+        let mut idx = self.media_sel.clone();
+        idx.sort_unstable();
+        idx.into_iter().filter_map(|i| self.media.get(i).cloned()).collect()
+    }
+
+    /// Del with the mouse over the media bin and files selected there: remove those files
+    /// (instead of deleting timeline blocks).
+    pub fn wants_delete(&self, ctx: &egui::Context) -> bool {
+        !self.media_sel.is_empty()
+            && self.is_open("pictures")
+            && self.bin_rect.zip(ctx.pointer_latest_pos()).is_some_and(|(r, p)| r.contains(p))
     }
 
     pub fn is_open(&self, key: &str) -> bool {
@@ -444,13 +469,24 @@ impl Library {
                     _ => {
                         // button at the bottom, the media bin takes the rest
                         ui.with_layout(Layout::bottom_up(Align::Min), |ui| {
-                            if ui.add_sized([ui.available_width(), 28.0], egui::Button::new("+  Import media…")).on_hover_text("Pictures, videos (H.264 MP4/MOV) and sounds (WAV, MP3, OGG, FLAC, M4A)").clicked() {
-                                actions.push(Action::ImportMedia);
-                            }
+                            // "⋯" on the right first, the import button takes the rest (never wider than the panel)
+                            ui.allocate_ui_with_layout(Vec2::new(ui.available_width(), 28.0), Layout::right_to_left(Align::Center), |ui| {
+                                ui.spacing_mut().item_spacing.x = 4.0;
+                                let sel = self.selected_files();
+                                let all = self.media.clone();
+                                let more = ui
+                                    .add_enabled(!all.is_empty(), egui::Button::new(RichText::new("⋯").size(15.0)).min_size(Vec2::new(28.0, 28.0)))
+                                    .on_hover_text("Tidy up the Media panel: remove files from it (the files on disk and the timeline stay)");
+                                egui::Popup::menu(&more).show(|ui| self.remove_menu(ui, sel, all, actions));
+                                let w = ui.available_width();
+                                if ui.add_sized([w, 28.0], egui::Button::new("+  Import media…")).on_hover_text("Pictures, videos (H.264 MP4/MOV) and sounds (WAV, MP3, OGG, FLAC, M4A)").clicked() {
+                                    actions.push(Action::ImportMedia);
+                                }
+                            });
                             // the bin frame adds 2 × (4 margin + 1 stroke)
                             let bin_h = (ui.available_height() - 10.0).max(20.0);
                             ui.with_layout(Layout::top_down(Align::Min), |ui| {
-                                egui::Frame::new().fill(BG).stroke(Stroke::new(1.0, BORDER)).corner_radius(CornerRadius::same(6)).inner_margin(4).show(ui, |ui| {
+                                let bin = egui::Frame::new().fill(BG).stroke(Stroke::new(1.0, BORDER)).corner_radius(CornerRadius::same(6)).inner_margin(4).show(ui, |ui| {
                                     ui.set_height(bin_h);
                                     ui.set_width(ui.available_width());
                                     if self.media.is_empty() {
@@ -459,10 +495,11 @@ impl Library {
                                         });
                                     } else {
                                         egui::ScrollArea::vertical().id_salt("media_scroll").auto_shrink([false, false]).show(ui, |ui| {
-                                            self.media_grid(ui, blur);
+                                            self.media_grid(ui, blur, actions);
                                         });
                                     }
                                 });
+                                self.bin_rect = Some(bin.response.rect);
                             });
                         });
                     }
@@ -491,12 +528,37 @@ impl Library {
         changed
     }
 
-    fn media_grid(&mut self, ui: &mut Ui, blur: bool) {
+    /// "Remove …" entries (the ⋯ menu below the bin and the right-click menu of a file).
+    fn remove_menu(&self, ui: &mut Ui, sel: Vec<String>, all: Vec<String>, actions: &mut Vec<Action>) {
+        let n = sel.len();
+        if ui
+            .add_enabled(n > 0, egui::Button::new(if n > 1 { format!("Remove the {n} selected files") } else { "Remove the selected file".to_string() }))
+            .on_hover_text("Del with the mouse over the Media panel does the same")
+            .clicked()
+        {
+            actions.push(Action::RemoveMedia(sel));
+            ui.close();
+        }
+        if ui.button("Remove the files not used in the timeline").clicked() {
+            actions.push(Action::RemoveUnusedMedia);
+            ui.close();
+        }
+        if ui.button(format!("Remove all ({})", all.len())).clicked() {
+            actions.push(Action::RemoveMedia(all));
+            ui.close();
+        }
+        ui.separator();
+        ui.label(RichText::new("Only the list is tidied up: the files on disk\nand the blocks in the timeline stay.").size(11.5).color(TEXT_DIM));
+    }
+
+    fn media_grid(&mut self, ui: &mut Ui, blur: bool, actions: &mut Vec<Action>) {
         let cell = Vec2::new(76.0, 70.0);
         let cols = ((ui.available_width() / cell.x).floor() as usize).max(1);
         let mods = ui.input(|i| i.modifiers);
+        let pointer = ui.input(|i| i.pointer.latest_pos());
         let mut clicked: Option<usize> = None;
         let mut drag_start: Option<usize> = None;
+        let mut remove: Option<Vec<String>> = None;
         for row in self.media.chunks(cols).enumerate() {
             ui.horizontal(|ui| {
                 ui.spacing_mut().item_spacing.x = 0.0;
@@ -518,10 +580,29 @@ impl Library {
                     } else {
                         "an image block, or onto a picture field in the inspector"
                     };
-                    let resp = resp.on_hover_text(format!("{path}\n\nDrag onto the timeline ({what})"));
-                    if resp.clicked() {
-                        clicked = Some(idx);
+                    // × to take it out of the Media panel
+                    let x = Rect::from_center_size(Pos2::new(thumb.right() - 7.0, thumb.top() + 7.0), Vec2::splat(14.0));
+                    let on_x = pointer.is_some_and(|q| x.contains(q));
+                    if resp.hovered() && !resp.dragged() {
+                        ui.painter().circle_filled(x.center(), 7.0, if on_x { DANGER } else { Color32::from_black_alpha(190) });
+                        ui.painter().text(x.center(), Align2::CENTER_CENTER, "×", theme::bold(11.5), Color32::WHITE);
                     }
+                    let resp = if on_x {
+                        resp.on_hover_text("Remove from the Media panel (the file and the timeline stay)")
+                    } else {
+                        resp.on_hover_text(format!("{path}\n\nDrag onto the timeline ({what})\nRight-click or × to remove it from the Media panel"))
+                    };
+                    if resp.clicked() {
+                        if on_x {
+                            remove = Some(vec![path.clone()]);
+                        } else {
+                            clicked = Some(idx);
+                        }
+                    }
+                    resp.context_menu(|ui| {
+                        let sel = if self.media_sel.contains(&idx) { self.selected_files() } else { vec![path.clone()] };
+                        self.remove_menu(ui, sel, self.media.clone(), actions);
+                    });
                     if resp.drag_started() {
                         drag_start = Some(idx);
                     }
@@ -539,6 +620,9 @@ impl Library {
                     }
                 }
             });
+        }
+        if let Some(files) = remove {
+            actions.push(Action::RemoveMedia(files));
         }
         if let Some(i) = drag_start {
             if !self.media_sel.contains(&i) {

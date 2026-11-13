@@ -55,6 +55,10 @@ pub enum Action {
     Quit,
     /// pictures, videos and sounds into the Media panel
     ImportMedia,
+    /// take files out of the Media panel (not off the disk, not out of the timeline)
+    RemoveMedia(Vec<String>),
+    /// take the files out of the Media panel that no block uses
+    RemoveUnusedMedia,
     AddKind { kind: String, start: Option<f64>, track: Option<usize> },
     AddPreset { key: String, start: Option<f64>, variant: Option<Value> },
     /// ask which variant of a task block to insert (popup at `pos`)

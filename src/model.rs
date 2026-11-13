@@ -1200,18 +1200,17 @@ pub fn generate_block_design(
 }
 
 /// Event-related design: every picture of every condition once, each marked with its condition,
-/// with a jittered fixation ITI. `shuffle`: all conditions mixed at random; otherwise in the
-/// listed order, condition by condition.
+/// followed by a fixation ITI. `itis` are the ITIs in presentation order (repeated if there are
+/// fewer than pictures; an ITI of 0 leaves the fixation out). `shuffle`: all conditions mixed at
+/// random; otherwise in the listed order, condition by condition.
 #[allow(clippy::too_many_arguments)]
 pub fn generate_event_design(
     conditions: &[DesignCondition],
     stim_dur: f64,
-    iti_min: f64,
-    iti_max: f64,
+    itis: &[f64],
     rating: bool,
     shuffle: bool,
     start: f64,
-    tr: f64,
     seed: Option<u64>,
 ) -> Vec<Block> {
     let mut rng = Rng::new(seed);
@@ -1222,20 +1221,211 @@ pub fn generate_event_design(
     }
     let mut blocks = vec![];
     let mut t = start;
-    for (cond, img) in events {
+    for (i, (cond, img)) in events.into_iter().enumerate() {
         let kind = if rating { "rating" } else { "image" };
         blocks.push(Block::create(kind, t, Some(stim_dur)).with(json!({"path": img})).cond(cond));
-        t += stim_dur;
-        let mut iti = rng.uniform(iti_min, iti_max);
-        if tr > 0.0 {
-            // keep the jitter on a 1/4-TR grid – easier for modelling
-            let q = tr / 4.0;
-            iti = q.max((iti / q).round() * q);
+        t = round4(t + stim_dur);
+        let iti = if itis.is_empty() { 0.0 } else { itis[i % itis.len()] };
+        if iti > 0.0 {
+            blocks.push(Block::create("fixation", t, Some(round4(iti))).lab("ITI"));
+            t = round4(t + iti);
         }
-        blocks.push(Block::create("fixation", t, Some(round_to(iti, 3))).lab("ITI"));
-        t += iti;
     }
     blocks
+}
+
+// --------------------------------------------------------------------------
+// Jitter: the ITIs of the event-related design
+// --------------------------------------------------------------------------
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum JitterShape {
+    /// every length between min and max equally often
+    Uniform,
+    /// many short, few long ITIs (truncated exponential with a chosen mean)
+    Exponential,
+}
+
+/// How the ITIs are chosen: from a distribution, or from an own list of values.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Jitter {
+    pub from_list: bool,
+    pub shape: JitterShape,
+    pub min: f64,
+    pub max: f64,
+    /// exponential: the wanted mean – between min and the middle of min and max
+    pub mean: f64,
+    /// round the values of the distribution to multiples of this (s); 0 = not at all
+    pub grid: f64,
+    /// own values (s) and how often each is wanted
+    pub list: Vec<(f64, u32)>,
+}
+
+impl Jitter {
+    /// The `n` ITIs, sorted. A distribution is sampled at evenly spaced quantiles from min to max,
+    /// so `n` values follow its shape exactly (no lucky or unlucky random draws); a list is used in
+    /// the proportions of its counts.
+    pub fn sorted(&self, n: usize) -> Vec<f64> {
+        if n == 0 {
+            return vec![];
+        }
+        let mut v: Vec<f64> = if self.from_list {
+            list_values(&self.list, n)
+        } else {
+            // uniform: from "min" to "max" inclusive; exponential: the middle of n equal parts
+            // (so that the mean is the one asked for, even with few values)
+            let uniform = self.shape == JitterShape::Uniform || !self.mean_ok();
+            let q = |i: usize| if uniform && n > 1 { i as f64 / (n - 1) as f64 } else { (i as f64 + 0.5) / n as f64 };
+            (0..n).map(|i| self.snap(self.quantile(q(i)))).collect()
+        };
+        v.sort_by(f64::total_cmp);
+        v
+    }
+
+    /// The `n` ITIs in random order.
+    pub fn values(&self, n: usize, seed: Option<u64>) -> Vec<f64> {
+        let mut v = self.sorted(n);
+        Rng::new(seed).shuffle(&mut v);
+        v
+    }
+
+    fn bounds(&self) -> (f64, f64) {
+        let (a, b) = (self.min.max(0.0), self.max.max(0.0));
+        if a <= b { (a, b) } else { (b, a) }
+    }
+
+    /// Round to the grid – staying between min and max when a grid value lies in between.
+    fn snap(&self, x: f64) -> f64 {
+        let g = self.grid;
+        if g <= 0.0 {
+            return round_to(x, 3);
+        }
+        let (lo, hi) = self.bounds();
+        let mut k = (x / g).round_ties_even();
+        let (k_lo, k_hi) = ((lo / g - 1e-9).ceil(), (hi / g + 1e-9).floor());
+        if k_lo <= k_hi {
+            k = k.clamp(k_lo, k_hi);
+        }
+        round4(k * g).max(0.0)
+    }
+
+    fn quantile(&self, q: f64) -> f64 {
+        let (lo, hi) = self.bounds();
+        match (self.shape, exp_scale(lo, hi, self.mean)) {
+            (JitterShape::Exponential, Some(m)) => lo - m * (1.0 - q * (1.0 - (-(hi - lo) / m).exp())).ln(),
+            _ => lo + q * (hi - lo),
+        }
+    }
+
+    /// Exponential: is the mean possible (between min and the middle)?
+    pub fn mean_ok(&self) -> bool {
+        let (lo, hi) = self.bounds();
+        exp_scale(lo, hi, self.mean).is_some()
+    }
+
+    /// Multiply all times (e.g. when the TR changes and the times are meant in TRs).
+    pub fn scale(&mut self, f: f64) {
+        self.min = round4(self.min * f);
+        self.max = round4(self.max * f);
+        self.mean = round4(self.mean * f);
+        for (v, _) in self.list.iter_mut() {
+            *v = round4(*v * f);
+        }
+    }
+}
+
+/// Scale of the exponential on [lo, hi] (cut off at hi) whose mean is `mean`.
+fn exp_scale(lo: f64, hi: f64, mean: f64) -> Option<f64> {
+    let l = hi - lo;
+    let target = mean - lo;
+    if l <= 0.0 || target <= 0.0 || target >= l / 2.0 - 1e-9 {
+        return None;
+    }
+    // mean above lo of the cut-off exponential: grows from 0 (m → 0) to l/2 (m → ∞)
+    let f = |m: f64| {
+        let e = (-l / m).exp();
+        m - l * e / (1.0 - e)
+    };
+    let (mut a, mut b) = (1e-6_f64.ln(), 1e6_f64.ln());
+    for _ in 0..200 {
+        let c = 0.5 * (a + b);
+        if f(c.exp()) < target {
+            a = c;
+        } else {
+            b = c;
+        }
+    }
+    Some((0.5 * (a + b)).exp())
+}
+
+/// `n` values from a list of (value, how often), in the proportions of the counts.
+pub fn list_values(list: &[(f64, u32)], n: usize) -> Vec<f64> {
+    let total: u64 = list.iter().map(|(_, c)| *c as u64).sum();
+    if total == 0 || n == 0 {
+        return vec![];
+    }
+    // largest remainder: floor of each share, then one more for the biggest remainders
+    let shares: Vec<f64> = list.iter().map(|(_, c)| *c as f64 * n as f64 / total as f64).collect();
+    let mut counts: Vec<usize> = shares.iter().map(|s| s.floor() as usize).collect();
+    let mut order: Vec<usize> = (0..list.len()).collect();
+    order.sort_by(|&a, &b| (shares[b] - shares[b].floor()).total_cmp(&(shares[a] - shares[a].floor())).then(a.cmp(&b)));
+    let mut missing = n - counts.iter().sum::<usize>();
+    for i in order {
+        if missing == 0 {
+            break;
+        }
+        counts[i] += 1;
+        missing -= 1;
+    }
+    list.iter().zip(counts).flat_map(|((v, _), k)| std::iter::repeat_n(*v, k)).collect()
+}
+
+/// Sorted values → (value, how often).
+pub fn compact_values(sorted: &[f64]) -> Vec<(f64, u32)> {
+    let mut out: Vec<(f64, u32)> = vec![];
+    for &v in sorted {
+        match out.last_mut() {
+            Some((w, c)) if (*w - v).abs() < 1e-6 => *c += 1,
+            _ => out.push((v, 1)),
+        }
+    }
+    out
+}
+
+/// "2, 3, 4.5×2" – values (in units of `unit` seconds: 1 = seconds, TR = in TRs) with an
+/// optional "×n" for how often. Separated by commas, semicolons or spaces.
+pub fn parse_jitter_list(text: &str, unit: f64) -> Result<Vec<(f64, u32)>, String> {
+    static TIMES: LazyLock<regex::Regex> = LazyLock::new(|| regex::Regex::new(r"\s*[×xX*]\s*").unwrap());
+    let norm = TIMES.replace_all(text.trim(), "×");
+    let mut out = vec![];
+    for tok in norm.split(|c: char| c == ',' || c == ';' || c.is_whitespace()).filter(|t| !t.is_empty()) {
+        let (v, c) = match tok.split_once('×') {
+            Some((v, c)) => (v, c),
+            None => (tok, "1"),
+        };
+        let v: f64 = v.parse().map_err(|_| format!("“{tok}” is not a number"))?;
+        let c: u32 = c.parse().map_err(|_| format!("“{tok}”: after × comes how often, e.g. 3×4"))?;
+        if !(0.0..=600.0).contains(&(v * unit)) {
+            return Err(format!("“{tok}”: between 0 and 600 s, please"));
+        }
+        if c > 0 {
+            out.push((round4(v * unit), c));
+        }
+    }
+    if out.is_empty() {
+        return Err("Type the ITI lengths, e.g. 2, 3, 4.5×2".into());
+    }
+    Ok(out)
+}
+
+/// The list as text, in units of `unit` seconds.
+pub fn format_jitter_list(list: &[(f64, u32)], unit: f64) -> String {
+    list.iter()
+        .map(|(v, c)| {
+            let x = fmt_g(round_to(v / unit, 4));
+            if *c == 1 { x } else { format!("{x}×{c}") }
+        })
+        .collect::<Vec<_>>()
+        .join(", ")
 }
 
 // --------------------------------------------------------------------------
@@ -1611,7 +1801,8 @@ mod tests {
     fn event_design_jitter_on_quarter_tr() {
         let imgs: Vec<String> = (0..10).map(|i| format!("{i}.png")).collect();
         let conds = vec![DesignCondition { name: "pic".into(), kind: "image".into(), images: imgs }];
-        let blocks = generate_event_design(&conds, 3.0, 2.0, 6.0, false, true, 0.0, 2.0, Some(3));
+        let jit = Jitter { from_list: false, shape: JitterShape::Uniform, min: 2.0, max: 6.0, mean: 3.0, grid: 0.5, list: vec![] };
+        let blocks = generate_event_design(&conds, 3.0, &jit.values(10, Some(3)), false, true, 0.0, Some(3));
         let itis: Vec<&Block> = blocks.iter().filter(|b| b.label == "ITI").collect();
         assert_eq!(itis.len(), 10);
         for b in itis {
@@ -1630,7 +1821,8 @@ mod tests {
         };
         let conds = vec![cond("negative", 6), cond("neutral", 4), DesignCondition { name: "empty".into(), kind: "image".into(), images: vec![] }];
         // every picture once, with its own condition
-        let blocks = generate_event_design(&conds, 2.0, 1.0, 3.0, true, true, 0.0, 2.0, Some(7));
+        let itis = [1.0, 2.0, 3.0];
+        let blocks = generate_event_design(&conds, 2.0, &itis, true, true, 0.0, Some(7));
         let pics: Vec<&Block> = blocks.iter().filter(|b| b.kind == "rating").collect();
         assert_eq!(pics.len(), 10);
         for b in &pics {
@@ -1641,10 +1833,55 @@ mod tests {
         let order: Vec<&str> = pics.iter().map(|b| b.condition.as_str()).collect();
         assert!(order.windows(2).any(|w| w[0] != w[1]) && order[..6] != ["negative"; 6]);
         // as listed: condition by condition, in order
-        let blocks = generate_event_design(&conds, 2.0, 1.0, 3.0, false, false, 0.0, 2.0, Some(7));
+        let blocks = generate_event_design(&conds, 2.0, &itis, false, false, 0.0, Some(7));
         let paths: Vec<String> = blocks.iter().filter(|b| b.kind == "image").map(|b| b.params.s("path", "")).collect();
         let want: Vec<String> = conds.iter().flat_map(|c| c.images.clone()).collect();
         assert_eq!(paths, want);
+    }
+
+    #[test]
+    fn jitter_from_distribution_and_list() {
+        let base = Jitter { from_list: false, shape: JitterShape::Uniform, min: 2.0, max: 6.0, mean: 3.0, grid: 0.5, list: vec![] };
+        // uniform: evenly spread over the range, on the grid
+        let v = base.sorted(9);
+        assert_eq!(v.len(), 9);
+        assert!(v.iter().all(|x| (2.0..=6.0).contains(x) && ((x / 0.5) - (x / 0.5).round()).abs() < 1e-9));
+        let mean = v.iter().sum::<f64>() / 9.0;
+        assert!((mean - 4.0).abs() < 1e-9, "{mean}");
+        assert_eq!((v[0], v[8]), (2.0, 6.0));
+        // exponential: the wanted mean, more short than long ones
+        let ex = Jitter { shape: JitterShape::Exponential, min: 2.0, max: 10.0, mean: 3.5, grid: 0.0, ..base.clone() };
+        assert!(ex.mean_ok());
+        let v = ex.sorted(200);
+        let mean = v.iter().sum::<f64>() / 200.0;
+        assert!((mean - 3.5).abs() < 0.05, "{mean}");
+        let few = ex.sorted(8);
+        let mean8 = few.iter().sum::<f64>() / 8.0;
+        assert!((mean8 - 3.5).abs() < 0.15, "{mean8}");
+        assert!(v.iter().filter(|x| **x < 4.0).count() > v.iter().filter(|x| **x >= 4.0).count() * 2);
+        assert!(v.iter().all(|x| (2.0..=10.0).contains(x)));
+        // "from" off the grid: the values stay inside the range
+        let off = Jitter { min: 2.0, max: 6.0, grid: 0.375, ..base.clone() }.sorted(8);
+        assert!(off.iter().all(|x| (2.0..=6.0).contains(x)), "{off:?}");
+        // impossible mean → falls back to uniform
+        let bad = Jitter { mean: 7.0, ..ex.clone() };
+        assert!(!bad.mean_ok());
+        // own list: proportions kept for any number of events, shuffled but the same values
+        let list = parse_jitter_list("2, 3 ×2; 6x1", 1.0).unwrap();
+        assert_eq!(list, vec![(2.0, 1), (3.0, 2), (6.0, 1)]);
+        let li = Jitter { from_list: true, list, ..base.clone() };
+        assert_eq!(li.sorted(8), [2.0, 2.0, 3.0, 3.0, 3.0, 3.0, 6.0, 6.0]);
+        assert_eq!(li.sorted(5).len(), 5);
+        let mut sh = li.values(8, Some(4));
+        sh.sort_by(f64::total_cmp);
+        assert_eq!(sh, li.sorted(8));
+        // lists in TRs, back to text
+        let tr = parse_jitter_list("1, 1.5×3", 2.0).unwrap();
+        assert_eq!(tr, vec![(2.0, 1), (3.0, 3)]);
+        assert_eq!(format_jitter_list(&tr, 2.0), "1, 1.5×3");
+        assert_eq!(format_jitter_list(&compact_values(&[2.0, 2.0, 3.5]), 1.0), "2×2, 3.5");
+        assert!(parse_jitter_list("2, abc", 1.0).is_err());
+        assert!(parse_jitter_list("", 1.0).is_err());
     }
 
     #[test]

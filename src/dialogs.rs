@@ -12,7 +12,8 @@ use crate::hardware::{
     describe_ports, nnl_button_key, now, Input, InputRouter, PortInfo, PortScanner, ScanMsg, Waker, BAUD_RATES, NNL_TRIGGER,
 };
 use crate::model::{
-    find_text, fmt_g, fmt_time, generate_block_design, generate_event_design, replace_text, text_field_title, DesignCondition,
+    compact_values, find_text, fmt_g, fmt_time, format_jitter_list, generate_block_design, generate_event_design, parse_jitter_list, replace_text,
+    round4, round_to, text_field_title, DesignCondition, Jitter, JitterShape,
     GripButton, Hardware, Paradigm, TEXT_FIELDS,
 };
 use crate::prefs::Prefs;
@@ -1017,17 +1018,29 @@ pub struct QuickDesign {
     bd_random: bool,
     bd_lead: f64,
     ev_dur: f64,
-    ev_min: f64,
-    ev_max: f64,
+    /// the ITIs (times in seconds; `grid` is chosen with `grid_choice`)
+    jitter: Jitter,
+    grid_choice: usize,
+    /// the own list as typed (in seconds or TRs)
+    list_text: String,
+    list_err: Option<String>,
     ev_rating: bool,
     ev_shuffle: bool,
     pub replace: bool,
+    /// the TR set here – building the timeline sets it for the paradigm
     tr: f64,
+    /// the paradigm's TR when the dialog was opened
+    par_tr: f64,
+    /// show and type all times in TRs instead of seconds
+    unit_tr: bool,
 }
+
+/// What the jitter values are rounded to.
+const JITTER_GRIDS: [&str; 5] = ["¼ TR", "½ TR", "whole TRs", "0.1 s", "not rounded"];
 
 impl QuickDesign {
     pub fn new(par: &Paradigm, media: &[String], blur: bool) -> Self {
-        let tr = if par.tr > 0.0 { par.tr } else { 1.0 };
+        let tr = if par.tr > 0.0 { par.tr } else { 2.0 };
         let name = if media.is_empty() { "cond1" } else { "pictures" };
         QuickDesign {
             tab: 0,
@@ -1043,13 +1056,22 @@ impl QuickDesign {
             bd_random: false,
             bd_lead: tr * 5.0,
             ev_dur: 4.0,
-            ev_min: 2.0,
-            ev_max: 6.0,
+            jitter: Jitter { from_list: false, shape: JitterShape::Uniform, min: 2.0, max: 6.0, mean: 3.0, grid: tr / 4.0, list: vec![] },
+            grid_choice: 0,
+            list_text: String::new(),
+            list_err: None,
             ev_rating: true,
             ev_shuffle: true,
             replace: par.blocks.is_empty(),
-            tr: par.tr,
+            tr,
+            par_tr: par.tr,
+            unit_tr: false,
         }
+    }
+
+    /// The TR to set for the paradigm when the timeline is built.
+    pub fn tr(&self) -> f64 {
+        self.tr
     }
 
     /// Open again with what was set up last time (conditions, pictures, numbers) – for the
@@ -1057,7 +1079,10 @@ impl QuickDesign {
     pub fn refresh(&mut self, par: &Paradigm, media: &[String], blur: bool) {
         self.media = media.to_vec();
         self.blur = blur;
-        self.tr = par.tr;
+        if par.tr > 0.0 {
+            self.tr = par.tr;
+        }
+        self.par_tr = par.tr;
         self.replace = par.blocks.is_empty();
         self.picked.clear();
         self.anchor = None;
@@ -1075,6 +1100,14 @@ impl QuickDesign {
         self.tab = 1;
         self.sel = 0;
         self.picked = [1, 2].into_iter().collect();
+    }
+
+    /// For the screenshots: an exponential jitter, times shown in TRs.
+    pub fn demo_jitter(&mut self) {
+        self.demo();
+        self.picked.clear();
+        self.jitter = Jitter { shape: JitterShape::Exponential, min: 2.0, max: 10.0, mean: 4.0, ..self.jitter.clone() };
+        self.set_unit(true);
     }
 
     /// The conditions the current design uses (empty picture conditions are left out).
@@ -1101,8 +1134,12 @@ impl QuickDesign {
             }
             return blocks;
         }
-        let (lo, hi) = if self.ev_min <= self.ev_max { (self.ev_min, self.ev_max) } else { (self.ev_max, self.ev_min) };
-        generate_event_design(&conds, self.ev_dur, lo, hi, self.ev_rating, self.ev_shuffle, 0.0, self.tr, seed)
+        if self.jitter.from_list && self.list_err.is_some() {
+            return vec![]; // fix the list first
+        }
+        let n = conds.iter().map(|c| c.images.len()).sum();
+        let itis = self.jitter_now().values(n, seed);
+        generate_event_design(&conds, self.ev_dur, &itis, self.ev_rating, self.ev_shuffle, 0.0, seed)
     }
 
     // ---- editing the conditions -------------------------------------------------------------
@@ -1255,19 +1292,26 @@ impl QuickDesign {
                 }
             });
             ui.separator();
-            self.conditions_ui(ui);
-            ui.add_space(6.0);
-            ui.allocate_ui(Vec2::new(780.0, 150.0), |ui| {
-                ui.set_min_height(150.0);
-                if self.tab == 0 {
-                    self.block_settings(ui);
-                } else {
-                    self.event_settings(ui);
-                }
+            // on a small screen the middle part scrolls
+            let max_h = (ctx.content_rect().height() - 250.0).max(240.0);
+            egui::ScrollArea::vertical().id_salt("qd_body").max_height(max_h).auto_shrink([false, true]).show(ui, |ui| {
+                self.conditions_ui(ui);
+                ui.add_space(6.0);
+                self.timing_row(ui);
+                ui.allocate_ui(Vec2::new(ui.available_width(), 230.0), |ui| {
+                    ui.set_min_height(230.0);
+                    if self.tab == 0 {
+                        self.block_settings(ui);
+                    } else {
+                        self.event_settings(ui);
+                    }
+                });
             });
             let blocks = self.blocks(Some(1));
             let summary = if blocks.is_empty() {
-                if self.tab == 1 {
+                if self.tab == 1 && self.jitter.from_list && self.list_err.is_some() {
+                    "Fix the list of ITI lengths to build a timeline.".to_string()
+                } else if self.tab == 1 {
                     "Add pictures to at least one condition to build a timeline.".to_string()
                 } else {
                     "Add pictures or a text condition to build a timeline.".to_string()
@@ -1567,15 +1611,111 @@ impl QuickDesign {
         }
     }
 
+    // ---- times ------------------------------------------------------------------------------
+
+    /// The unit times are shown in: 1 s, or the TR.
+    fn unit(&self) -> f64 {
+        if self.unit_tr && self.tr > 0.0 { self.tr } else { 1.0 }
+    }
+
+    fn grid_seconds(&self) -> f64 {
+        match self.grid_choice {
+            0 => self.tr / 4.0,
+            1 => self.tr / 2.0,
+            2 => self.tr,
+            3 => 0.1,
+            _ => 0.0,
+        }
+    }
+
+    /// The jitter with the chosen rounding.
+    fn jitter_now(&self) -> Jitter {
+        Jitter { grid: self.grid_seconds(), ..self.jitter.clone() }
+    }
+
+    /// The design's main times (not the jitter), which should usually be whole TRs.
+    fn main_times(&mut self) -> Vec<&mut f64> {
+        if self.tab == 0 { vec![&mut self.bd_block, &mut self.bd_rest, &mut self.bd_lead] } else { vec![&mut self.ev_dur] }
+    }
+
+    fn off_tr_grid(&mut self) -> bool {
+        let tr = self.tr;
+        tr > 0.0 && self.main_times().into_iter().any(|v| !whole_trs(*v, tr))
+    }
+
+    fn round_to_trs(&mut self) {
+        let tr = self.tr;
+        let tab = self.tab;
+        for (i, v) in self.main_times().into_iter().enumerate() {
+            // rest and baseline may be 0, block and picture at least one TR
+            let min = if tab == 0 && i > 0 { 0.0 } else { 1.0 };
+            *v = round4((*v / tr).round().max(min) * tr);
+        }
+    }
+
+    /// The TR changed while times are shown in TRs: keep the numbers of TRs.
+    fn scale_times(&mut self, f: f64) {
+        for v in [&mut self.bd_block, &mut self.bd_rest, &mut self.bd_lead, &mut self.ev_dur] {
+            *v = round4(*v * f);
+        }
+        self.jitter.scale(f);
+    }
+
+    fn set_unit(&mut self, tr_units: bool) {
+        self.unit_tr = tr_units;
+        if self.list_err.is_none() && !self.jitter.list.is_empty() {
+            self.list_text = format_jitter_list(&self.jitter.list, self.unit());
+        }
+    }
+
+    /// TR, seconds ⇄ TRs, round to whole TRs.
+    fn timing_row(&mut self, ui: &mut Ui) {
+        row(ui, "TR (repetition time)", |ui| {
+            let old = self.tr;
+            let r = ui
+                .add(egui::DragValue::new(&mut self.tr).range(0.1..=20.0).speed(0.01).suffix(" s").max_decimals(3))
+                .on_hover_text("The scanner's repetition time. Building the timeline sets it for the whole paradigm.");
+            if r.changed() && self.unit_tr && old > 0.0 {
+                self.scale_times(self.tr / old);
+            }
+            ui.add_space(14.0);
+            ui.label(RichText::new("Times in").color(TEXT_DIM));
+            let mut u = self.unit_tr;
+            ui.selectable_value(&mut u, false, "seconds").on_hover_text("Show and type all times in seconds");
+            ui.selectable_value(&mut u, true, "TRs").on_hover_text("Show and type all times in TRs – to see at a glance that you work in the TR steps you want");
+            if u != self.unit_tr {
+                self.set_unit(u);
+            }
+            if self.off_tr_grid() {
+                ui.add_space(8.0);
+                let what = if self.tab == 0 { "block length, rest and baseline" } else { "the picture's time on screen" };
+                if ui
+                    .button("Round to whole TRs")
+                    .on_hover_text(format!("Rounds {what} to whole TRs. For the jitter, choose “Round to: whole TRs”."))
+                    .clicked()
+                {
+                    self.round_to_trs();
+                }
+            }
+        });
+        if self.par_tr > 0.0 && (self.tr - self.par_tr).abs() > 1e-9 {
+            row(ui, "", |ui| {
+                ui.label(
+                    RichText::new(format!("Building the timeline changes the paradigm's TR from {} s to {} s.", fmt_g(self.par_tr), fmt_g(self.tr)))
+                        .color(ACCENT)
+                        .size(12.0),
+                );
+            });
+        }
+    }
+
     fn block_settings(&mut self, ui: &mut Ui) {
-        let step = if self.tr > 0.0 { self.tr } else { 0.5 };
+        let (u, tr) = (self.unit_tr, self.tr);
         row(ui, "Block length", |ui| {
-            ui.add(egui::DragValue::new(&mut self.bd_block).range(0.5..=600.0).speed(step / 10.0).suffix(" s").max_decimals(2))
-                .on_hover_text("The pictures of a condition share its block equally");
+            time_value(ui, &mut self.bd_block, u, tr, 0.5..=600.0, true).on_hover_text("The pictures of a condition share its block equally");
         });
         row(ui, "Rest between blocks", |ui| {
-            ui.add(egui::DragValue::new(&mut self.bd_rest).range(0.0..=600.0).speed(step / 10.0).suffix(" s").max_decimals(2))
-                .on_hover_text("Fixation between blocks. 0 = no rest.");
+            time_value(ui, &mut self.bd_rest, u, tr, 0.0..=600.0, true).on_hover_text("Fixation between blocks. 0 = no rest.");
         });
         row(ui, "Repetitions", |ui| {
             ui.add(egui::DragValue::new(&mut self.bd_reps).range(1..=100).suffix(" cycles"));
@@ -1585,20 +1725,115 @@ impl QuickDesign {
             ui.radio_value(&mut self.bd_random, true, "Randomised per cycle");
         });
         row(ui, "Baseline at start", |ui| {
-            ui.add(egui::DragValue::new(&mut self.bd_lead).range(0.0..=600.0).speed(step / 10.0).suffix(" s").max_decimals(2))
-                .on_hover_text("Baseline fixation before the first block");
+            time_value(ui, &mut self.bd_lead, u, tr, 0.0..=600.0, true).on_hover_text("Baseline fixation before the first block");
         });
     }
 
+    /// Number of pictures the event-related design shows.
+    fn n_events(&self) -> usize {
+        self.conds.iter().filter(|c| c.kind == "image").map(|c| c.images.len()).sum()
+    }
+
+    /// Fill the own list with the values the distribution gives now.
+    fn distribution_to_list(&mut self) {
+        let n = match self.n_events() {
+            0 => 12,
+            n => n,
+        };
+        self.jitter.list = compact_values(&self.jitter_now().sorted(n));
+        self.list_text = format_jitter_list(&self.jitter.list, self.unit());
+        self.list_err = None;
+        self.jitter.from_list = true;
+    }
+
     fn event_settings(&mut self, ui: &mut Ui) {
+        let (u, tr) = (self.unit_tr, self.tr);
+        let unit_name = if u { "TRs" } else { "seconds" };
         row(ui, "Picture on screen", |ui| {
-            ui.add(egui::DragValue::new(&mut self.ev_dur).range(0.1..=120.0).speed(0.05).suffix(" s").max_decimals(2));
+            time_value(ui, &mut self.ev_dur, u, tr, 0.1..=120.0, true);
         });
         row(ui, "Fixation between (jitter)", |ui| {
-            ui.add(egui::DragValue::new(&mut self.ev_min).range(0.0..=120.0).speed(0.05).suffix(" s").max_decimals(2));
-            ui.label("to");
-            ui.add(egui::DragValue::new(&mut self.ev_max).range(0.0..=120.0).speed(0.05).suffix(" s").max_decimals(2));
+            let mut from_list = self.jitter.from_list;
+            ui.radio_value(&mut from_list, false, "From a distribution");
+            ui.radio_value(&mut from_list, true, "My own list of values");
+            if from_list != self.jitter.from_list {
+                if from_list && self.jitter.list.is_empty() {
+                    self.distribution_to_list();
+                }
+                self.jitter.from_list = from_list;
+            }
         });
+        if !self.jitter.from_list {
+            row(ui, "Distribution", |ui| {
+                egui::ComboBox::from_id_salt("qd_shape")
+                    .width(250.0)
+                    .selected_text(match self.jitter.shape {
+                        JitterShape::Uniform => "Uniform – all lengths equally often",
+                        JitterShape::Exponential => "Exponential – many short, few long",
+                    })
+                    .show_ui(ui, |ui| {
+                        ui.selectable_value(&mut self.jitter.shape, JitterShape::Uniform, "Uniform – all lengths equally often");
+                        ui.selectable_value(&mut self.jitter.shape, JitterShape::Exponential, "Exponential – many short, few long");
+                    });
+            });
+            row(ui, "From … to", |ui| {
+                time_value(ui, &mut self.jitter.min, u, tr, 0.0..=120.0, false);
+                ui.label("to");
+                time_value(ui, &mut self.jitter.max, u, tr, 0.0..=120.0, false);
+            });
+            if self.jitter.shape == JitterShape::Exponential {
+                row(ui, "Mean", |ui| {
+                    time_value(ui, &mut self.jitter.mean, u, tr, 0.0..=120.0, false);
+                    if !self.jitter.mean_ok() {
+                        let (lo, hi) = (self.jitter.min.min(self.jitter.max), self.jitter.min.max(self.jitter.max));
+                        let mid = fmt_g(round_to((lo + hi) / 2.0 / self.unit(), 3));
+                        ui.label(RichText::new(format!("must be between “from” and {mid} – uniform until then")).color(ACCENT).size(12.0));
+                    }
+                });
+            }
+            row(ui, "Round to", |ui| {
+                egui::ComboBox::from_id_salt("qd_grid").width(110.0).selected_text(JITTER_GRIDS[self.grid_choice]).show_ui(ui, |ui| {
+                    for (i, g) in JITTER_GRIDS.iter().enumerate() {
+                        ui.selectable_value(&mut self.grid_choice, i, *g);
+                    }
+                });
+                ui.add_space(8.0);
+                if ui.button("Edit as list →").on_hover_text("Take these values into your own list and change them there").clicked() {
+                    self.distribution_to_list();
+                }
+            });
+        } else {
+            row(ui, "Values", |ui| {
+                let r = ui.add(egui::TextEdit::multiline(&mut self.list_text).desired_rows(2).desired_width(400.0).hint_text("e.g. 2, 3, 4.5×2"));
+                if r.changed() {
+                    match parse_jitter_list(&self.list_text, self.unit()) {
+                        Ok(l) => {
+                            self.jitter.list = l;
+                            self.list_err = None;
+                        }
+                        Err(e) => self.list_err = Some(e),
+                    }
+                }
+                ui.label(RichText::new(unit_name).color(TEXT_DIM));
+            });
+            row(ui, "", |ui| {
+                match &self.list_err {
+                    Some(e) => ui.label(RichText::new(e).color(DANGER).size(12.0)),
+                    None => ui.label(
+                        RichText::new(format!(
+                            "Lengths in {unit_name}, “×3” = three times. They are shuffled and used in these proportions for the {} pictures.",
+                            self.n_events()
+                        ))
+                        .color(TEXT_DIM)
+                        .size(12.0),
+                    ),
+                };
+            });
+        }
+        if !(self.jitter.from_list && self.list_err.is_some()) {
+            let values = self.jitter_now().sorted(self.n_events());
+            row(ui, "", |ui| jitter_preview(ui, &values, self.unit(), if u { "TR" } else { "s" }));
+        }
         row(ui, "Order", |ui| {
             ui.radio_value(&mut self.ev_shuffle, true, "All conditions mixed at random");
             ui.radio_value(&mut self.ev_shuffle, false, "As listed, condition by condition");
@@ -1606,8 +1841,83 @@ impl QuickDesign {
         row(ui, "", |ui| {
             ui.checkbox(&mut self.ev_rating, "Participant rates each picture with the grips");
         });
-        theme::hint(ui, "Every picture is shown once and marked with its condition (for the onset files).");
     }
+}
+
+fn whole_trs(v: f64, tr: f64) -> bool {
+    let n = v / tr;
+    (n - n.round()).abs() < 1e-4
+}
+
+/// A time setting shown in seconds or in TRs (stored in seconds). Next to it the value in the
+/// other unit – amber when `mark` and it is not a whole number of TRs.
+fn time_value(ui: &mut Ui, v: &mut f64, tr_units: bool, tr: f64, range: std::ops::RangeInclusive<f64>, mark: bool) -> egui::Response {
+    let resp = if tr_units && tr > 0.0 {
+        let mut x = *v / tr;
+        let r = ui.add(egui::DragValue::new(&mut x).range(*range.start() / tr..=*range.end() / tr).speed(0.02).suffix(" TR").max_decimals(3));
+        if r.changed() {
+            *v = round4(x * tr);
+        }
+        r
+    } else {
+        ui.add(egui::DragValue::new(v).range(range).speed(0.05).suffix(" s").max_decimals(3))
+    };
+    if tr > 0.0 {
+        let whole = whole_trs(*v, tr);
+        let txt = if tr_units { format!("= {} s", fmt_g(round4(*v))) } else { format!("= {} TR", fmt_g(crate::model::round_to(*v / tr, 3))) };
+        let col = if mark && !whole { ACCENT } else { TEXT_DIM };
+        let l = ui.label(RichText::new(txt).size(12.0).color(col));
+        if mark {
+            l.on_hover_text(if whole { "A whole number of TRs" } else { "Not a whole number of TRs" });
+        }
+    }
+    resp
+}
+
+/// Small bar chart of the ITIs: how often each length comes up.
+fn jitter_preview(ui: &mut Ui, sorted: &[f64], unit: f64, unit_name: &str) {
+    if sorted.is_empty() {
+        ui.label(RichText::new("Add pictures to see the ITIs they get").color(TEXT_DIM).size(12.0));
+        return;
+    }
+    let lo = sorted[0];
+    let hi = sorted[sorted.len() - 1];
+    // one bar per length – or 20 bins when the values are not rounded
+    let mut bars = compact_values(sorted);
+    if bars.len() > 30 {
+        let k = 20;
+        let w = (hi - lo) / k as f64;
+        let mut counts = vec![0u32; k];
+        for v in sorted {
+            counts[(((v - lo) / w) as usize).min(k - 1)] += 1;
+        }
+        bars = counts.into_iter().enumerate().map(|(i, c)| (lo + (i as f64 + 0.5) * w, c)).collect();
+    }
+    let size = Vec2::new(300.0, 56.0);
+    let (r, resp) = ui.allocate_exact_size(size, egui::Sense::hover());
+    let p = ui.painter();
+    p.rect_filled(r, 4, theme::BG);
+    let plot = egui::Rect::from_min_max(r.min + Vec2::new(6.0, 6.0), r.max - Vec2::new(6.0, 16.0));
+    let max_c = bars.iter().map(|b| b.1).max().unwrap_or(1).max(1) as f32;
+    let span = (hi - lo).max(1e-9);
+    let bw = (plot.width() / bars.len().max(1) as f32 * 0.8).clamp(2.0, 18.0);
+    for (v, c) in &bars {
+        let x = if bars.len() == 1 { plot.center().x } else { plot.left() + bw / 2.0 + ((v - lo) / span) as f32 * (plot.width() - bw) };
+        let h = (*c as f32 / max_c) * plot.height();
+        p.rect_filled(egui::Rect::from_min_max(egui::Pos2::new(x - bw / 2.0, plot.bottom() - h), egui::Pos2::new(x + bw / 2.0, plot.bottom())), 1, theme::alpha(ACCENT, 200));
+    }
+    let lab = |x: f64| format!("{} {unit_name}", fmt_g(crate::model::round_to(x / unit, 2)));
+    p.text(egui::Pos2::new(plot.left(), r.bottom() - 3.0), egui::Align2::LEFT_BOTTOM, lab(lo), theme::font(10.5), TEXT_DIM);
+    p.text(egui::Pos2::new(plot.right(), r.bottom() - 3.0), egui::Align2::RIGHT_BOTTOM, lab(hi), theme::font(10.5), TEXT_DIM);
+    let tip = bars.iter().map(|(v, c)| format!("{} × {c}", lab(*v))).collect::<Vec<_>>().join("\n");
+    resp.on_hover_text(tip);
+    let mean = sorted.iter().sum::<f64>() / sorted.len() as f64;
+    let total: f64 = sorted.iter().sum();
+    ui.vertical(|ui| {
+        ui.label(RichText::new(format!("{} ITIs  ·  mean {}", sorted.len(), lab(mean))).size(12.0));
+        ui.label(RichText::new(format!("{} – {}  ·  together {}", lab(lo), lab(hi), fmt_time(total, 1))).size(12.0).color(TEXT_DIM));
+        ui.label(RichText::new("hover the bars for the counts").size(11.0).color(TEXT_DIM));
+    });
 }
 
 // =============================================================================

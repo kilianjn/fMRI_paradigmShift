@@ -77,7 +77,7 @@ defaults follow the published protocols, but check them against the protocol you
 |---|---|
 | **Blocks** (left) | Drag *Fixation, Image, Video, Audio, Rating, Instruction, Pause, …* onto the timeline – or double-click to append. An *Image* block can show a text underneath the picture (inspector → *Text under the picture*, with its own size and colour). Video and sound files dropped onto the timeline become video / audio blocks as long as the file (see [Video and sound](#video-and-sound)). |
 | **Task blocks** (left) | Stroop/flanker/N-back trials and whole MID, emotion-regulation, N-back, Hariri, tapping, checkerboard and resting-state sequences – drag them onto the timeline like blocks. |
-| **Media** (left) | All media files of the project: pictures, videos and sounds. *Import media…* or drop files/folders on the window. Pictures show a thumbnail, videos their first frame with a ▶ badge and their length, sounds a loudspeaker and their length. Drag one or many onto the timeline – each becomes an image, video or audio block (videos and sounds as long as the file) – or drag a picture straight onto a picture field in the inspector (e.g. the faces of a matching trial), a video onto a video block's file, a sound onto an audio block's file. |
+| **Media** (left) | All media files of the project: pictures, videos and sounds. *Import media…* or drop files/folders on the window. Pictures show a thumbnail, videos their first frame with a ▶ badge and their length, sounds a loudspeaker and their length. Drag one or many onto the timeline – each becomes an image, video or audio block (videos and sounds as long as the file) – or drag a picture straight onto a picture field in the inspector (e.g. the faces of a matching trial), a video onto a video block's file, a sound onto an audio block's file. To tidy up: **×** on a file, **Del** with files selected (mouse over the panel), right-click, or the **⋯** button below (*remove the selected files / the files not used in the timeline / all*) – only the list changes, the files on disk and the timeline stay. |
 | **Tool strip** (far left) | Always visible, like the tool strip of an image or video editor. *Blocks*, *Task blocks* and *Media* are independent panels: the small **×** in a panel's title minimises it into the strip, a click on its icon in the strip (or Ctrl+1 / 2 / 3, *View* menu) brings it back. Drag the gap between two panels to give one more room. With all three minimised the preview gets the whole width. The layout is remembered. |
 | **Participant view** (centre) | Shows the screen at the playhead. ▶ / Space plays a preview of the run. |
 | **Inspector** (right) | Edit the selected block(s). With nothing selected: TR, dummy scans, background, run summary. |
@@ -106,6 +106,18 @@ removes pictures. The **event-related design** shows every picture once – all 
 by condition – and marks each event with its condition, so the onset files are split by condition. The **block design**
 uses the same conditions (one block per condition and cycle, the pictures share the block) plus *text conditions*
 (e.g. “TAP”). The dialog remembers its conditions while you work on the same paradigm.
+
+**Timing in the quick design:** the **TR** is set right in the dialog (building the timeline sets it for the paradigm).
+*Times in* **seconds | TRs** switches every time field between seconds and TRs; next to each field the other unit is
+shown, amber when a block length, rest, baseline or picture time is not a whole number of TRs – *Round to whole TRs*
+fixes that with one click. With times shown in TRs, changing the TR keeps the numbers of TRs.
+
+**Jitter (event-related):** the fixation between the pictures comes either **from a distribution** – *uniform* (all
+lengths between “from” and “to” equally often) or *exponential* (many short, few long, with a chosen mean) – rounded to
+¼ TR, ½ TR, whole TRs, 0.1 s or not at all; or from **your own list**, e.g. `2, 3, 4.5×2` (in seconds or TRs, “×2” =
+twice), used in these proportions and shuffled. The distribution is sampled evenly (not by chance), so the values follow
+it exactly; *Edit as list →* turns them into a list you can change. A small bar chart shows the ITIs that will be used,
+with their mean and total.
 
 **Unpleasant pictures:** *Options → Blur picture previews* (Ctrl+Shift+B) blurs every picture in the editor; a
 separate preference blurs the control-room mirror. The participant's screen always shows the real pictures.
@@ -276,12 +288,12 @@ Paradigms are saved as `*.paradigm.json` (picture paths stored relative to the f
 | ![](docs/screenshots/10_find_replace.png) Find and replace in all texts | ![](docs/screenshots/11_preferences.png) Preferences |
 | ![](docs/screenshots/15_panels.png) *Task blocks* minimised into the tool strip | ![](docs/screenshots/16_drop_picture_on_inspector.png) Dragging a face from *Media* onto the matching trial's top picture |
 | ![](docs/screenshots/14_blurred_previews.png) Blurred previews | ![](docs/screenshots/23_syncbox_status.png) SyncBox status in the corner of the status bar: USB keyboard mode, connected, not connected |
-| ![](docs/screenshots/24_quick_design_conditions.png) Quick design, event-related: pictures sorted into “negative” and “positive” | |
+| ![](docs/screenshots/24_quick_design_conditions.png) Quick design, event-related: pictures sorted into “negative” and “positive” | ![](docs/screenshots/25_quick_design_jitter.png) Exponential jitter, all times shown in TRs |
 
 The screenshots are generated by the app itself, e.g.
 `paradigmshift --screenshot out.png --scene editor` (the participant scenes with `--size 1280x720`; scenes: `editor`, `templates`, `bulk`, `quick`,
 `hardware`, `run_dialog`, `control`, `participant`, `find`, `prefs`, `hariri`, `mid`, `blur`, `panels`,
-`control_small`, `participant_small`, `present`, `present_run`, `test`, `test_participant`, `quick_event`). For the run scenes, `PARADIGMSHIFT_DEMO_SIZE=WxH`,
+`control_small`, `participant_small`, `present`, `present_run`, `test`, `test_participant`, `quick_event`, `quick_jitter`). For the run scenes, `PARADIGMSHIFT_DEMO_SIZE=WxH`,
 `PARADIGMSHIFT_DEMO_EXAMPLE=<example>` and `PARADIGMSHIFT_DEMO_TIME=<seconds>` set the participant window size,
 the example and the moment of the screenshot.
 

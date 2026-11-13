@@ -429,6 +429,22 @@ impl App {
                 let files = panels::pick_media_files("Import pictures, videos and sounds");
                 self.lib.add_files(&files);
             }
+            Action::RemoveMedia(files) => {
+                let n = self.lib.remove(&files);
+                if n > 0 {
+                    self.flash(format!("Removed {n} file{} from the Media panel – the files and the timeline are unchanged.", if n == 1 { "" } else { "s" }));
+                }
+            }
+            Action::RemoveUnusedMedia => {
+                let used: std::collections::HashSet<String> = self.doc.paradigm.blocks.iter().flat_map(|b| b.media_files()).collect();
+                let unused: Vec<String> = self.lib.media.iter().filter(|f| !used.contains(*f)).cloned().collect();
+                let n = self.lib.remove(&unused);
+                self.flash(if n == 0 {
+                    "Every file in the Media panel is used in the timeline.".to_string()
+                } else {
+                    format!("Removed {n} file{} that no block uses from the Media panel.", if n == 1 { "" } else { "s" })
+                });
+            }
             Action::AddKind { kind, start, track } => timeline::add_block(&mut self.doc, &kind, start, track, ph),
             Action::AddPreset { key, start, variant } => {
                 let pctx = self.tl.preset_ctx();
@@ -739,6 +755,11 @@ impl App {
         if plain(Key::S) {
             self.actions.push(Action::Split);
         }
+        // Del over the Media panel with files selected there: take them out of the panel
+        if self.lib.wants_delete(ctx) && (plain(Key::Delete) || plain(Key::Backspace)) {
+            self.actions.push(Action::RemoveMedia(self.lib.selected_files()));
+            return;
+        }
         let shift_del = ctx.input_mut(|i| i.consume_key(Modifiers::SHIFT, Key::Delete) || i.consume_key(Modifiers::SHIFT, Key::Backspace));
         if shift_del {
             self.actions.push(Action::Delete { ripple: true });
@@ -912,7 +933,7 @@ impl App {
                     par.volumes(),
                     fmt_g(par.tr),
                     par.blocks.len(),
-                    if conds.is_empty() { String::new() } else { format!("  ·  {} conditions", conds.len()) }
+                    if conds.is_empty() { String::new() } else { format!("  ·  {} condition{}", conds.len(), if conds.len() == 1 { "" } else { "s" }) }
                 );
                 ui.label(RichText::new(info).color(TEXT_DIM).size(12.0));
                 ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
@@ -1240,9 +1261,11 @@ impl App {
                     self.quick_last = Some(d.clone());
                     let blocks = d.blocks(None);
                     let replace = d.replace;
+                    let tr = d.tr();
                     if !blocks.is_empty() {
                         let paths: Vec<String> = blocks.iter().filter_map(|b| b.params.get("path").and_then(|v| v.as_str()).map(String::from)).collect();
                         self.doc.edit(|par| {
+                            par.tr = tr;
                             if replace {
                                 par.blocks.clear();
                             }
@@ -1649,6 +1672,13 @@ fn select_menu(ui: &mut Ui, doc: &Document, a: &mut Vec<Action>) {
 }
 
 impl eframe::App for App {
+    /// Screenshots: ignore where the mouse happens to be, so no hover or tooltip ends up in them.
+    fn raw_input_hook(&mut self, _ctx: &Context, raw_input: &mut egui::RawInput) {
+        if self.shot.is_some() {
+            raw_input.events.retain(|e| !matches!(e, egui::Event::PointerMoved(_) | egui::Event::PointerButton { .. }));
+        }
+    }
+
     fn ui(&mut self, ui: &mut Ui, frame: &mut eframe::Frame) {
         let ctx = ui.ctx().clone();
         stimulus::poll(&ctx);
@@ -1794,12 +1824,15 @@ impl App {
                 "templates" => self.modal = Some(Modal::Templates(Box::new(TemplateDialog::new(&self.doc.paradigm.hardware, presets::default_stim_dir(), "hariri")))),
                 "templates_stroop" => self.modal = Some(Modal::Templates(Box::new(TemplateDialog::new(&self.doc.paradigm.hardware, presets::default_stim_dir(), "stroop")))),
                 "hardware" => self.actions.push(Action::Hardware),
-                "quick" | "quick_event" => {
+                "quick" | "quick_event" | "quick_jitter" => {
                     self.open_example("emotional_rating");
                     let pictures: Vec<String> = self.lib.media.iter().filter(|f| model::is_image(f)).cloned().collect();
                     let mut d = QuickDesign::new(&self.doc.paradigm, &pictures, self.settings.prefs.blur_previews);
                     if scene == "quick_event" {
                         d.demo();
+                    }
+                    if scene == "quick_jitter" {
+                        d.demo_jitter();
                     }
                     self.modal = Some(Modal::Quick(Box::new(d)));
                 }
