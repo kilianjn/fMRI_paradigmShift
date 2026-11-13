@@ -162,6 +162,8 @@ impl AboutDialog {
                     "Built with egui. Fonts: Inter (SIL Open Font License), DejaVu Sans. Video decoding: OpenH264 \
                      (BSD). Sound: symphonia, rodio.",
                 );
+                ui.add_space(8.0);
+                theme::hint(ui, crate::hardware::NNL_DISCLAIMER);
             });
             let mut out = Outcome::Open;
             ui.add_space(8.0);
@@ -701,6 +703,16 @@ impl HardwareDialog {
                     self.audio_tab(ui);
                 }
             });
+            ui.add_space(4.0);
+            ui.add(
+                egui::Label::new(
+                    RichText::new("Compatible with NordicNeuroLab hardware · not affiliated with or endorsed by NordicNeuroLab AS")
+                        .color(TEXT_DIM)
+                        .size(11.0),
+                )
+                .wrap(),
+            )
+            .on_hover_text(crate::hardware::NNL_DISCLAIMER);
             buttons(ui, "Save hardware setup", true)
         });
         if out != Outcome::Open {

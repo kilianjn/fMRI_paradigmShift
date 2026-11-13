@@ -8,6 +8,12 @@ exactly what the participant will see, then press **Run in scanner**. The app wa
 **NordicNeuroLab SyncBox** trigger and records **NNL ResponseGrip** presses and picture ratings into BIDS-style
 `events.tsv` files.
 
+> **Hardware compatibility & disclaimer:** ParadigmShift is designed for compatibility with **NordicNeuroLab (NNL)**
+> hardware – the **SyncBox** (USB keyboard mode and NNL's serial protocol) and the **ResponseGrips**. It is an
+> independent project and is **not affiliated with, endorsed, sponsored or supported by NordicNeuroLab AS**.
+> NordicNeuroLab, NNL, SyncBox and ResponseGrip are names of NordicNeuroLab AS, used here only to describe
+> compatibility.
+
 ![Editor](docs/screenshots/01_editor.png)
 
 ## Download
@@ -180,6 +186,11 @@ report themselves over HDMI/DisplayPort – the name the Windows display setting
 | ![](docs/screenshots/22_media_panel.png) The Media panel: a picture, a video (first frame, length) and a sound | |
 
 ## Scanner hardware (NNL)
+
+The hardware support is built around compatibility with NordicNeuroLab's SyncBox and ResponseGrips – using the
+SyncBox's USB keyboard output or NNL's own serial protocol, as published in their
+[py_syncbox](https://github.com/nordicneurolab/py_syncbox) project. ParadigmShift is not affiliated with or endorsed by
+NordicNeuroLab AS; please test your setup with the built-in function test before scanning participants.
 
 * **SyncBox** – *USB keyboard mode* (default): the trigger arrives as a key, default `s`. In *serial mode* the
   computer's keyboard is ignored – triggers and grip presses only count when they come from the SyncBox, so a key

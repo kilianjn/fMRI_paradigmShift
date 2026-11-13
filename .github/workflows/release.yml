@@ -164,6 +164,8 @@ jobs:
 
           The example paradigms are built in: *File → Open example*.
 
+          Designed for compatibility with NordicNeuroLab (NNL) hardware – the SyncBox and the ResponseGrips. ParadigmShift is an independent project and is not affiliated with, endorsed, sponsored or supported by NordicNeuroLab AS; the names are used only to describe compatibility.
+
           Built from commit $GITHUB_SHA.
           EOF
           if [[ "$GITHUB_REF" != refs/tags/* ]]; then

@@ -76,6 +76,12 @@ pub fn describe_ports() -> Vec<PortInfo> {
 }
 
 /// Turn a serial-port error into something an operator can act on.
+/// Shown wherever NNL hardware is mentioned prominently (About, Hardware dialog, README, releases).
+pub const NNL_DISCLAIMER: &str = "Designed for compatibility with NordicNeuroLab (NNL) hardware – the SyncBox and the \
+    ResponseGrips. ParadigmShift is an independent project: it is not affiliated with, endorsed, sponsored or supported \
+    by NordicNeuroLab AS. NordicNeuroLab, NNL, SyncBox and ResponseGrip are names of NordicNeuroLab AS, used here only \
+    to describe compatibility.";
+
 /// Where FTDI's Virtual COM Port driver can be downloaded.
 pub const FTDI_VCP_URL: &str = "https://ftdichip.com/drivers/vcp-drivers/";
 
