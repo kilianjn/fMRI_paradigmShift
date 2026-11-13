@@ -1115,9 +1115,7 @@ impl QuickDesign {
         self.demo();
         self.picked.clear();
         self.jitter = Jitter::even(2.0, 6.0, 5);
-        for (s, w) in self.jitter.steps.iter_mut().zip([30.0, 25.0, 20.0, 15.0, 10.0]) {
-            s.1 = w;
-        }
+        self.jitter.set_counts(&[3, 2, 1, 1, 1]);
         self.eq_open = true;
     }
 
@@ -1145,10 +1143,10 @@ impl QuickDesign {
             }
             return blocks;
         }
-        if self.list_open && self.list_err.is_some() {
-            return vec![]; // fix the list first
-        }
         let n = conds.iter().map(|c| c.images.len()).sum();
+        if (self.list_open && self.list_err.is_some()) || !self.jitter.fits(n) {
+            return vec![]; // fix the list / the distribution first
+        }
         let itis = self.jitter.values(n, seed);
         generate_event_design(&conds, self.ev_dur, &itis, self.ev_rating, self.ev_shuffle, 0.0, seed)
     }
@@ -1322,7 +1320,9 @@ impl QuickDesign {
             let blocks = self.blocks(Some(1));
             let summary = if blocks.is_empty() {
                 if self.tab == 1 && self.list_open && self.list_err.is_some() {
-                    "Fix the list of ITI lengths to build a timeline.".to_string()
+                    "Fix the list of fixation lengths to build a timeline.".to_string()
+                } else if self.tab == 1 && self.n_events() > 0 && !self.jitter.fits(self.n_events()) {
+                    format!("{}. Make them add up to build a timeline.", misfit_text(self.jitter.assigned(self.n_events()), self.n_events()))
                 } else if self.tab == 1 {
                     "Add pictures to at least one condition to build a timeline.".to_string()
                 } else {
@@ -1760,7 +1760,7 @@ impl QuickDesign {
                 .on_hover_text("How many different fixation lengths, evenly spread from … to")
                 .changed();
             if a || b || c {
-                self.jitter.respace(from, to, k, self.share_pct, n);
+                self.jitter.respace(from, to, k);
                 self.list_err = None;
                 self.sync_list();
             }
@@ -1768,6 +1768,16 @@ impl QuickDesign {
         let values = self.jitter.sorted(n);
         if !(self.list_open && self.list_err.is_some()) {
             row(ui, "", |ui| jitter_preview(ui, &values, self.unit(), if u { "TR" } else { "s" }));
+        }
+        if n > 0 && !self.jitter.fits(n) {
+            row(ui, "", |ui| {
+                ui.label(RichText::new(misfit_text(self.jitter.assigned(n), n)).color(ACCENT).size(12.5));
+                if ui.button(format!("Fit to {n} pictures")).on_hover_text("Scale the numbers so they add up, keeping the proportions").clicked() {
+                    self.jitter.fit(n);
+                    self.list_err = None;
+                    self.sync_list();
+                }
+            });
         }
         row(ui, "", |ui| {
             if ui
@@ -1787,7 +1797,6 @@ impl QuickDesign {
                 if ui.button("All equally often").on_hover_text("Back to evenly spread lengths, each equally often").clicked() {
                     let (f, t, k) = (self.jitter.from(), self.jitter.to(), self.jitter.steps.len());
                     self.jitter = Jitter::even(f, t, k);
-                    self.share_pct = true;
                     self.list_err = None;
                     self.sync_list();
                 }
@@ -1802,7 +1811,6 @@ impl QuickDesign {
                     match parse_jitter_list(&self.list_text, self.unit()) {
                         Ok(l) => {
                             self.jitter = Jitter::from_list(&l);
-                            self.share_pct = false;
                             self.list_err = None;
                         }
                         Err(e) => self.list_err = Some(e),
@@ -1814,7 +1822,7 @@ impl QuickDesign {
                 match &self.list_err {
                     Some(e) => ui.label(RichText::new(e).color(DANGER).size(12.0)),
                     None => ui.label(
-                        RichText::new(format!("In {unit_name}; “×3” = three times. Shuffled and used in these proportions for the {n} pictures."))
+                        RichText::new(format!("In {unit_name}; “×3” = three times – together one length for each of the {n} pictures, in random order."))
                             .color(TEXT_DIM)
                             .size(12.0),
                     ),
@@ -1855,69 +1863,80 @@ impl QuickDesign {
                 ui.label("in");
                 let c = ui.add(egui::DragValue::new(&mut k).range(1..=20).suffix(" steps")).on_hover_text("How many different fixation lengths").changed();
                 if a || b || c {
-                    self.jitter.respace(from, to, k, self.share_pct, n);
+                    self.jitter.respace(from, to, k);
                 }
             });
-            row(ui, "Shares as", |ui| {
-                let mut pct = self.share_pct;
-                ui.radio_value(&mut pct, true, "percent");
-                ui.radio_value(&mut pct, false, "number of pictures");
-                if pct != self.share_pct {
-                    if pct {
-                        self.jitter.to_percent();
-                    } else {
-                        self.jitter.to_counts(n.max(self.jitter.steps.len()));
-                    }
-                    self.share_pct = pct;
-                }
+            row(ui, "Show shares as", |ui| {
+                ui.radio_value(&mut self.share_pct, true, "percent");
+                ui.radio_value(&mut self.share_pct, false, "number of pictures");
             });
+            let note = if n == 0 {
+                RichText::new("Add pictures to the conditions first – the sliders move in steps of one picture.").color(ACCENT)
+            } else {
+                RichText::new(format!(
+                    "{n} pictures, so each one is {} %: the sliders move in these steps – what you set is exactly what the timeline gets.",
+                    fmt_g(round_to(100.0 / n as f64, 2))
+                ))
+                .color(TEXT_DIM)
+                .size(12.0)
+            };
+            ui.add(egui::Label::new(note).wrap());
             ui.add_space(6.0);
-            // the bands
+            // the bands: whole pictures; percent is only another way to show them
             let pct = self.share_pct;
-            let top = if pct { 100.0 } else { (n.max(1) as f64).max(self.jitter.steps.iter().map(|s| s.1).fold(0.0, f64::max)) };
+            let mut counts = self.jitter.counts(n);
+            let top = n.max(counts.iter().copied().max().unwrap_or(0)).max(1);
+            let mut changed = false;
             egui::Frame::new().fill(theme::BG).stroke(egui::Stroke::new(1.0, BORDER)).corner_radius(6).inner_margin(10).show(ui, |ui| {
                 ui.set_width(ui.available_width());
-                egui::ScrollArea::horizontal().id_salt("qd_eq_bands").show(ui, |ui| {
-                    ui.horizontal(|ui| {
-                        ui.spacing_mut().item_spacing.x = 6.0;
-                        ui.spacing_mut().slider_width = 150.0;
-                        for step in self.jitter.steps.iter_mut() {
-                            ui.vertical(|ui| {
-                                ui.set_width(58.0);
-                                ui.vertical_centered(|ui| {
-                                    ui.add(egui::Slider::new(&mut step.1, 0.0..=top).vertical().show_value(false).trailing_fill(true).step_by(if pct { 0.5 } else { 1.0 }))
-                                        .on_hover_text(format!("How often {} comes up", lab(step.0)));
-                                    let dv = egui::DragValue::new(&mut step.1).range(0.0..=if pct { 100.0 } else { 9999.0 });
-                                    let dv = if pct { dv.speed(0.5).max_decimals(1).suffix(" %") } else { dv.speed(0.2).max_decimals(0).suffix("×") };
-                                    ui.add_sized([54.0, 20.0], dv);
-                                    ui.label(RichText::new(lab(step.0)).strong().size(12.5));
+                ui.add_enabled_ui(n > 0, |ui| {
+                    egui::ScrollArea::horizontal().id_salt("qd_eq_bands").show(ui, |ui| {
+                        ui.horizontal(|ui| {
+                            ui.spacing_mut().item_spacing.x = 6.0;
+                            ui.spacing_mut().slider_width = 150.0;
+                            for (step, c) in self.jitter.steps.iter().zip(counts.iter_mut()) {
+                                ui.vertical(|ui| {
+                                    ui.set_width(58.0);
+                                    ui.vertical_centered(|ui| {
+                                        changed |= ui
+                                            .add(egui::Slider::new(c, 0..=top).vertical().show_value(false).trailing_fill(true))
+                                            .on_hover_text(format!("How many pictures get {}", lab(step.0)))
+                                            .changed();
+                                        if pct {
+                                            // typed percentages snap to whole pictures
+                                            let mut p = *c as f64 * 100.0 / n.max(1) as f64;
+                                            let r = ui.add_sized(
+                                                [54.0, 20.0],
+                                                egui::DragValue::new(&mut p).range(0.0..=100.0).speed(100.0 / n.max(1) as f64 / 4.0).max_decimals(1).suffix(" %"),
+                                            );
+                                            if r.changed() {
+                                                *c = (p * n as f64 / 100.0).round() as usize;
+                                                changed = true;
+                                            }
+                                        } else {
+                                            changed |= ui.add_sized([54.0, 20.0], egui::DragValue::new(c).range(0..=9999).speed(0.1).suffix("×")).changed();
+                                        }
+                                        ui.label(RichText::new(lab(step.0)).strong().size(12.5));
+                                    });
                                 });
-                            });
-                        }
+                            }
+                        });
                     });
                 });
             });
+            if changed {
+                self.jitter.set_counts(&counts);
+            }
             ui.add_space(4.0);
-            // totals
-            let total = self.jitter.total();
+            // total: one length for every picture
+            let assigned = self.jitter.assigned(n);
             ui.horizontal(|ui| {
-                if pct {
-                    let ok = (total - 100.0).abs() < 0.05;
-                    ui.label(RichText::new(format!("Total {} %", fmt_g(round_to(total, 1)))).color(if ok { OK } else { ACCENT }));
-                    if !ok {
-                        if ui.button("Make it 100 %").clicked() {
-                            self.jitter.to_percent();
-                        }
-                        ui.label(RichText::new("(the shares are used in proportion anyway)").color(TEXT_DIM).size(12.0));
-                    }
-                } else {
-                    let ok = (total - n as f64).abs() < 0.5;
-                    ui.label(RichText::new(format!("Total {}  ·  your design has {n} pictures", total.round())).color(if ok { OK } else { ACCENT }));
-                    if !ok && n > 0 {
-                        if ui.button(format!("Fit to {n} pictures")).clicked() {
-                            self.jitter.to_counts(n);
-                        }
-                        ui.label(RichText::new("(otherwise used in proportion)").color(TEXT_DIM).size(12.0));
+                if n > 0 && assigned == n {
+                    ui.label(RichText::new(if pct { format!("Total 100 %  ·  all {n} pictures") } else { format!("Total {n} of {n} pictures") }).color(OK));
+                } else if n > 0 {
+                    ui.label(RichText::new(misfit_text(assigned, n)).color(ACCENT));
+                    if ui.button(format!("Fit to {n} pictures")).on_hover_text("Scale the numbers so they add up, keeping the proportions").clicked() {
+                        self.jitter.fit(n);
                     }
                 }
             });
@@ -1925,17 +1944,16 @@ impl QuickDesign {
             let counts = self.jitter.counts(n);
             let parts: Vec<String> = self.jitter.steps.iter().zip(&counts).filter(|(_, c)| **c > 0).map(|(s, c)| format!("{} ×{c}", lab(s.0))).collect();
             let sorted = self.jitter.sorted(n);
-            let res = if n == 0 {
-                "Add pictures to see how many each length gets.".to_string()
-            } else {
-                let mean = sorted.iter().sum::<f64>() / sorted.len().max(1) as f64;
-                format!("For your {n} pictures:  {}   ·   mean {}  ·  together {}", parts.join("  ·  "), lab(mean), fmt_time(sorted.iter().sum(), 1))
-            };
-            ui.add(egui::Label::new(RichText::new(res).size(12.5)).wrap());
+            if n > 0 && !sorted.is_empty() {
+                let mean = sorted.iter().sum::<f64>() / sorted.len() as f64;
+                let res = format!("Fixations:  {}   ·   mean {}  ·  together {}", parts.join("  ·  "), lab(mean), fmt_time(sorted.iter().sum(), 1));
+                ui.add(egui::Label::new(RichText::new(res).size(12.5)).wrap());
+            }
             ui.add_space(8.0);
             ui.horizontal(|ui| {
                 if ui.button("All equally often").clicked() {
-                    self.jitter.equalize(self.share_pct, n);
+                    let (f, t, k) = (self.jitter.from(), self.jitter.to(), self.jitter.steps.len());
+                    self.jitter = Jitter::even(f, t, k);
                 }
                 ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                     if ui.add(egui::Button::new(RichText::new("Done").font(theme::bold(13.5)).color(hex("#1B1B1B"))).fill(ACCENT)).clicked() {
@@ -1949,6 +1967,15 @@ impl QuickDesign {
             self.list_err = None;
             self.sync_list();
         }
+    }
+}
+
+/// "6 of 8 pictures have a fixation length – 2 still missing" / "… 2 too many".
+fn misfit_text(assigned: usize, n: usize) -> String {
+    if assigned < n {
+        format!("{assigned} of {n} pictures have a fixation length – {} still missing", n - assigned)
+    } else {
+        format!("{assigned} fixation lengths for {n} pictures – {} too many", assigned - n)
     }
 }
 

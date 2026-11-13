@@ -115,9 +115,12 @@ fixes that with one click. With times shown in TRs, changing the TR keeps the nu
 **Jitter (event-related):** the fixation between the pictures is set with *from … to … in N lengths* – by default the
 lengths are spread evenly and each comes up equally often (e.g. 2, 3, 4, 5, 6 s). A small bar chart shows the ITIs the
 pictures get, with their mean and total. To change how often each length comes up, click **✎ Edit distribution…**: a
-window like an equalizer with one slider per length – shares in **percent** or as **number of pictures**, with the total
-and what your pictures get. Or click **Edit as list** and type the lengths yourself, e.g. `2, 3×3, 5` (in seconds or
-TRs, “×3” = three times). The lengths are shuffled; *All equally often* goes back to the even distribution.
+window like an equalizer with one slider per length, shown in **percent** or as **number of pictures**. The sliders move
+in steps of **one picture** (with 8 pictures: 0, 12.5, 25 … %), so a distribution can only be set the way the pictures
+can really get it. Or click **Edit as list** and type the lengths yourself, e.g. `2, 3×3, 5` (in seconds or TRs, “×3” =
+three times). Every picture needs exactly one length: if the numbers don't add up (e.g. after adding pictures), the
+dialog says so, *Fit to N pictures* scales them, and the timeline can't be built until they do. The lengths are
+shuffled; *All equally often* goes back to the even distribution.
 
 **Unpleasant pictures:** *Options → Blur picture previews* (Ctrl+Shift+B) blurs every picture in the editor; a
 separate preference blurs the control-room mirror. The participant's screen always shows the real pictures.
