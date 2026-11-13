@@ -12,8 +12,8 @@ use crate::hardware::{
     describe_ports, nnl_button_key, now, Input, InputRouter, PortInfo, PortScanner, ScanMsg, Waker, BAUD_RATES, NNL_TRIGGER,
 };
 use crate::model::{
-    compact_values, find_text, fmt_g, fmt_time, format_jitter_list, generate_block_design, generate_event_design, parse_jitter_list, replace_text,
-    round4, round_to, text_field_title, DesignCondition, Jitter, JitterShape,
+    compact_values, find_text, fmt_g, fmt_time, generate_block_design, generate_event_design, parse_jitter_list, replace_text,
+    round4, round_to, text_field_title, DesignCondition, Jitter,
     GripButton, Hardware, Paradigm, TEXT_FIELDS,
 };
 use crate::prefs::Prefs;
@@ -1018,10 +1018,14 @@ pub struct QuickDesign {
     bd_random: bool,
     bd_lead: f64,
     ev_dur: f64,
-    /// the ITIs (times in seconds; `grid` is chosen with `grid_choice`)
+    /// the fixation lengths between the pictures and their shares (lengths in seconds)
     jitter: Jitter,
-    grid_choice: usize,
-    /// the own list as typed (in seconds or TRs)
+    /// shares in percent (or as numbers of pictures)
+    share_pct: bool,
+    /// the distribution editor (equalizer) is open
+    eq_open: bool,
+    /// the list editor is shown, with the list as typed (in seconds or TRs)
+    list_open: bool,
     list_text: String,
     list_err: Option<String>,
     ev_rating: bool,
@@ -1035,8 +1039,10 @@ pub struct QuickDesign {
     unit_tr: bool,
 }
 
-/// What the jitter values are rounded to.
-const JITTER_GRIDS: [&str; 5] = ["¼ TR", "½ TR", "whole TRs", "0.1 s", "not rounded"];
+/// Default number of fixation lengths from 2 to 6 s: about one every half TR.
+fn default_steps(tr: f64) -> usize {
+    ((4.0 / (tr / 2.0)).round() as usize + 1).clamp(2, 9)
+}
 
 impl QuickDesign {
     pub fn new(par: &Paradigm, media: &[String], blur: bool) -> Self {
@@ -1056,8 +1062,10 @@ impl QuickDesign {
             bd_random: false,
             bd_lead: tr * 5.0,
             ev_dur: 4.0,
-            jitter: Jitter { from_list: false, shape: JitterShape::Uniform, min: 2.0, max: 6.0, mean: 3.0, grid: tr / 4.0, list: vec![] },
-            grid_choice: 0,
+            jitter: Jitter::even(2.0, 6.0, default_steps(tr)),
+            share_pct: true,
+            eq_open: false,
+            list_open: false,
             list_text: String::new(),
             list_err: None,
             ev_rating: true,
@@ -1102,12 +1110,15 @@ impl QuickDesign {
         self.picked = [1, 2].into_iter().collect();
     }
 
-    /// For the screenshots: an exponential jitter, times shown in TRs.
+    /// For the screenshots: the distribution editor with more short than long fixations.
     pub fn demo_jitter(&mut self) {
         self.demo();
         self.picked.clear();
-        self.jitter = Jitter { shape: JitterShape::Exponential, min: 2.0, max: 10.0, mean: 4.0, ..self.jitter.clone() };
-        self.set_unit(true);
+        self.jitter = Jitter::even(2.0, 6.0, 5);
+        for (s, w) in self.jitter.steps.iter_mut().zip([30.0, 25.0, 20.0, 15.0, 10.0]) {
+            s.1 = w;
+        }
+        self.eq_open = true;
     }
 
     /// The conditions the current design uses (empty picture conditions are left out).
@@ -1134,11 +1145,11 @@ impl QuickDesign {
             }
             return blocks;
         }
-        if self.jitter.from_list && self.list_err.is_some() {
+        if self.list_open && self.list_err.is_some() {
             return vec![]; // fix the list first
         }
         let n = conds.iter().map(|c| c.images.len()).sum();
-        let itis = self.jitter_now().values(n, seed);
+        let itis = self.jitter.values(n, seed);
         generate_event_design(&conds, self.ev_dur, &itis, self.ev_rating, self.ev_shuffle, 0.0, seed)
     }
 
@@ -1281,7 +1292,8 @@ impl QuickDesign {
     // ---- drawing ----------------------------------------------------------------------------
 
     pub fn ui(&mut self, ctx: &Context) -> Outcome {
-        modal(ctx, "quick", 780.0, |ui| {
+        let eq_was_open = self.eq_open;
+        let out = modal(ctx, "quick", 780.0, |ui| {
             title(ui, "✦ Quick design");
             theme::hint(ui, "Pick a design, sort your pictures into conditions, fill in a few numbers – the whole timeline is built for you. You can fine-tune every block afterwards.");
             ui.horizontal(|ui| {
@@ -1309,7 +1321,7 @@ impl QuickDesign {
             });
             let blocks = self.blocks(Some(1));
             let summary = if blocks.is_empty() {
-                if self.tab == 1 && self.jitter.from_list && self.list_err.is_some() {
+                if self.tab == 1 && self.list_open && self.list_err.is_some() {
                     "Fix the list of ITI lengths to build a timeline.".to_string()
                 } else if self.tab == 1 {
                     "Add pictures to at least one condition to build a timeline.".to_string()
@@ -1336,7 +1348,12 @@ impl QuickDesign {
                 });
             });
             out
-        })
+        });
+        // the distribution editor on top; Esc closes only it
+        if self.eq_open {
+            self.equalizer_ui(ctx);
+        }
+        if eq_was_open && out == Outcome::Cancel { Outcome::Open } else { out }
     }
 
     /// Condition list on the left, the shown condition's pictures on the right.
@@ -1618,21 +1635,6 @@ impl QuickDesign {
         if self.unit_tr && self.tr > 0.0 { self.tr } else { 1.0 }
     }
 
-    fn grid_seconds(&self) -> f64 {
-        match self.grid_choice {
-            0 => self.tr / 4.0,
-            1 => self.tr / 2.0,
-            2 => self.tr,
-            3 => 0.1,
-            _ => 0.0,
-        }
-    }
-
-    /// The jitter with the chosen rounding.
-    fn jitter_now(&self) -> Jitter {
-        Jitter { grid: self.grid_seconds(), ..self.jitter.clone() }
-    }
-
     /// The design's main times (not the jitter), which should usually be whole TRs.
     fn main_times(&mut self) -> Vec<&mut f64> {
         if self.tab == 0 { vec![&mut self.bd_block, &mut self.bd_rest, &mut self.bd_lead] } else { vec![&mut self.ev_dur] }
@@ -1663,8 +1665,13 @@ impl QuickDesign {
 
     fn set_unit(&mut self, tr_units: bool) {
         self.unit_tr = tr_units;
-        if self.list_err.is_none() && !self.jitter.list.is_empty() {
-            self.list_text = format_jitter_list(&self.jitter.list, self.unit());
+        self.sync_list();
+    }
+
+    /// The jitter changed elsewhere: show it in the list editor too.
+    fn sync_list(&mut self) {
+        if self.list_err.is_none() {
+            self.list_text = self.jitter.to_list_text(self.n_events().max(self.jitter.steps.len()), self.unit());
         }
     }
 
@@ -1691,7 +1698,7 @@ impl QuickDesign {
                 let what = if self.tab == 0 { "block length, rest and baseline" } else { "the picture's time on screen" };
                 if ui
                     .button("Round to whole TRs")
-                    .on_hover_text(format!("Rounds {what} to whole TRs. For the jitter, choose “Round to: whole TRs”."))
+                    .on_hover_text(format!("Rounds {what} to whole TRs (not the jitter)."))
                     .clicked()
                 {
                     self.round_to_trs();
@@ -1734,81 +1741,68 @@ impl QuickDesign {
         self.conds.iter().filter(|c| c.kind == "image").map(|c| c.images.len()).sum()
     }
 
-    /// Fill the own list with the values the distribution gives now.
-    fn distribution_to_list(&mut self) {
-        let n = match self.n_events() {
-            0 => 12,
-            n => n,
-        };
-        self.jitter.list = compact_values(&self.jitter_now().sorted(n));
-        self.list_text = format_jitter_list(&self.jitter.list, self.unit());
-        self.list_err = None;
-        self.jitter.from_list = true;
-    }
-
     fn event_settings(&mut self, ui: &mut Ui) {
         let (u, tr) = (self.unit_tr, self.tr);
-        let unit_name = if u { "TRs" } else { "seconds" };
+        let n = self.n_events();
         row(ui, "Picture on screen", |ui| {
             time_value(ui, &mut self.ev_dur, u, tr, 0.1..=120.0, true);
         });
+        // from … to … in k steps – changing them spreads the lengths evenly again
+        let (mut from, mut to, mut k) = (self.jitter.from(), self.jitter.to(), self.jitter.steps.len());
         row(ui, "Fixation between (jitter)", |ui| {
-            let mut from_list = self.jitter.from_list;
-            ui.radio_value(&mut from_list, false, "From a distribution");
-            ui.radio_value(&mut from_list, true, "My own list of values");
-            if from_list != self.jitter.from_list {
-                if from_list && self.jitter.list.is_empty() {
-                    self.distribution_to_list();
-                }
-                self.jitter.from_list = from_list;
+            let a = time_value(ui, &mut from, u, tr, 0.0..=120.0, false).changed();
+            ui.label("to");
+            let b = time_value(ui, &mut to, u, tr, 0.0..=120.0, false).changed();
+            ui.label("in");
+            let suffix = if k == 1 { " length" } else { " lengths" };
+            let c = ui
+                .add(egui::DragValue::new(&mut k).range(1..=20).suffix(suffix))
+                .on_hover_text("How many different fixation lengths, evenly spread from … to")
+                .changed();
+            if a || b || c {
+                self.jitter.respace(from, to, k, self.share_pct, n);
+                self.list_err = None;
+                self.sync_list();
             }
         });
-        if !self.jitter.from_list {
-            row(ui, "Distribution", |ui| {
-                egui::ComboBox::from_id_salt("qd_shape")
-                    .width(250.0)
-                    .selected_text(match self.jitter.shape {
-                        JitterShape::Uniform => "Uniform – all lengths equally often",
-                        JitterShape::Exponential => "Exponential – many short, few long",
-                    })
-                    .show_ui(ui, |ui| {
-                        ui.selectable_value(&mut self.jitter.shape, JitterShape::Uniform, "Uniform – all lengths equally often");
-                        ui.selectable_value(&mut self.jitter.shape, JitterShape::Exponential, "Exponential – many short, few long");
-                    });
-            });
-            row(ui, "From … to", |ui| {
-                time_value(ui, &mut self.jitter.min, u, tr, 0.0..=120.0, false);
-                ui.label("to");
-                time_value(ui, &mut self.jitter.max, u, tr, 0.0..=120.0, false);
-            });
-            if self.jitter.shape == JitterShape::Exponential {
-                row(ui, "Mean", |ui| {
-                    time_value(ui, &mut self.jitter.mean, u, tr, 0.0..=120.0, false);
-                    if !self.jitter.mean_ok() {
-                        let (lo, hi) = (self.jitter.min.min(self.jitter.max), self.jitter.min.max(self.jitter.max));
-                        let mid = fmt_g(round_to((lo + hi) / 2.0 / self.unit(), 3));
-                        ui.label(RichText::new(format!("must be between “from” and {mid} – uniform until then")).color(ACCENT).size(12.0));
-                    }
-                });
+        let values = self.jitter.sorted(n);
+        if !(self.list_open && self.list_err.is_some()) {
+            row(ui, "", |ui| jitter_preview(ui, &values, self.unit(), if u { "TR" } else { "s" }));
+        }
+        row(ui, "", |ui| {
+            if ui
+                .button("✎ Edit distribution…")
+                .on_hover_text("Set how often each fixation length comes up – like an equalizer, in percent or as numbers of pictures")
+                .clicked()
+            {
+                self.eq_open = true;
             }
-            row(ui, "Round to", |ui| {
-                egui::ComboBox::from_id_salt("qd_grid").width(110.0).selected_text(JITTER_GRIDS[self.grid_choice]).show_ui(ui, |ui| {
-                    for (i, g) in JITTER_GRIDS.iter().enumerate() {
-                        ui.selectable_value(&mut self.grid_choice, i, *g);
-                    }
-                });
-                ui.add_space(8.0);
-                if ui.button("Edit as list →").on_hover_text("Take these values into your own list and change them there").clicked() {
-                    self.distribution_to_list();
+            let list_label = if self.list_open { "Hide list" } else { "Edit as list" };
+            if ui.button(list_label).on_hover_text("Type the fixation lengths yourself, e.g. 2, 3, 4.5×2").clicked() {
+                self.list_open = !self.list_open;
+                self.list_err = None;
+                self.sync_list();
+            }
+            if !self.jitter.is_even() {
+                if ui.button("All equally often").on_hover_text("Back to evenly spread lengths, each equally often").clicked() {
+                    let (f, t, k) = (self.jitter.from(), self.jitter.to(), self.jitter.steps.len());
+                    self.jitter = Jitter::even(f, t, k);
+                    self.share_pct = true;
+                    self.list_err = None;
+                    self.sync_list();
                 }
-            });
-        } else {
-            row(ui, "Values", |ui| {
+                ui.label(RichText::new("own distribution").color(TEXT_DIM).size(12.0));
+            }
+        });
+        if self.list_open {
+            let unit_name = if u { "TRs" } else { "seconds" };
+            row(ui, "Lengths", |ui| {
                 let r = ui.add(egui::TextEdit::multiline(&mut self.list_text).desired_rows(2).desired_width(400.0).hint_text("e.g. 2, 3, 4.5×2"));
                 if r.changed() {
                     match parse_jitter_list(&self.list_text, self.unit()) {
                         Ok(l) => {
-                            self.jitter.list = l;
+                            self.jitter = Jitter::from_list(&l);
+                            self.share_pct = false;
                             self.list_err = None;
                         }
                         Err(e) => self.list_err = Some(e),
@@ -1820,19 +1814,12 @@ impl QuickDesign {
                 match &self.list_err {
                     Some(e) => ui.label(RichText::new(e).color(DANGER).size(12.0)),
                     None => ui.label(
-                        RichText::new(format!(
-                            "Lengths in {unit_name}, “×3” = three times. They are shuffled and used in these proportions for the {} pictures.",
-                            self.n_events()
-                        ))
-                        .color(TEXT_DIM)
-                        .size(12.0),
+                        RichText::new(format!("In {unit_name}; “×3” = three times. Shuffled and used in these proportions for the {n} pictures."))
+                            .color(TEXT_DIM)
+                            .size(12.0),
                     ),
                 };
             });
-        }
-        if !(self.jitter.from_list && self.list_err.is_some()) {
-            let values = self.jitter_now().sorted(self.n_events());
-            row(ui, "", |ui| jitter_preview(ui, &values, self.unit(), if u { "TR" } else { "s" }));
         }
         row(ui, "Order", |ui| {
             ui.radio_value(&mut self.ev_shuffle, true, "All conditions mixed at random");
@@ -1841,6 +1828,127 @@ impl QuickDesign {
         row(ui, "", |ui| {
             ui.checkbox(&mut self.ev_rating, "Participant rates each picture with the grips");
         });
+    }
+
+    /// The distribution editor: one slider per fixation length, like the bands of an equalizer.
+    fn equalizer_ui(&mut self, ctx: &Context) {
+        let n = self.n_events();
+        let (u, tr) = (self.unit_tr, self.tr);
+        let unit = self.unit();
+        let uname = if u { "TR" } else { "s" };
+        let lab = move |x: f64| format!("{} {uname}", fmt_g(round_to(x / unit, 3)));
+        let mut close = false;
+        let resp = egui::Modal::new(Id::unique("qd_equalizer")).frame(egui::Frame::window(&ctx.global_style()).inner_margin(18)).show(ctx, |ui| {
+            ui.set_width(720.0);
+            title(ui, "Jitter distribution");
+            theme::hint(
+                ui,
+                "Like an equalizer: choose how many different fixation lengths there are, then pull each slider up or down \
+                 to set how often that length comes up.",
+            );
+            ui.add_space(4.0);
+            let (mut from, mut to, mut k) = (self.jitter.from(), self.jitter.to(), self.jitter.steps.len());
+            row(ui, "Lengths", |ui| {
+                let a = time_value(ui, &mut from, u, tr, 0.0..=120.0, false).changed();
+                ui.label("to");
+                let b = time_value(ui, &mut to, u, tr, 0.0..=120.0, false).changed();
+                ui.label("in");
+                let c = ui.add(egui::DragValue::new(&mut k).range(1..=20).suffix(" steps")).on_hover_text("How many different fixation lengths").changed();
+                if a || b || c {
+                    self.jitter.respace(from, to, k, self.share_pct, n);
+                }
+            });
+            row(ui, "Shares as", |ui| {
+                let mut pct = self.share_pct;
+                ui.radio_value(&mut pct, true, "percent");
+                ui.radio_value(&mut pct, false, "number of pictures");
+                if pct != self.share_pct {
+                    if pct {
+                        self.jitter.to_percent();
+                    } else {
+                        self.jitter.to_counts(n.max(self.jitter.steps.len()));
+                    }
+                    self.share_pct = pct;
+                }
+            });
+            ui.add_space(6.0);
+            // the bands
+            let pct = self.share_pct;
+            let top = if pct { 100.0 } else { (n.max(1) as f64).max(self.jitter.steps.iter().map(|s| s.1).fold(0.0, f64::max)) };
+            egui::Frame::new().fill(theme::BG).stroke(egui::Stroke::new(1.0, BORDER)).corner_radius(6).inner_margin(10).show(ui, |ui| {
+                ui.set_width(ui.available_width());
+                egui::ScrollArea::horizontal().id_salt("qd_eq_bands").show(ui, |ui| {
+                    ui.horizontal(|ui| {
+                        ui.spacing_mut().item_spacing.x = 6.0;
+                        ui.spacing_mut().slider_width = 150.0;
+                        for step in self.jitter.steps.iter_mut() {
+                            ui.vertical(|ui| {
+                                ui.set_width(58.0);
+                                ui.vertical_centered(|ui| {
+                                    ui.add(egui::Slider::new(&mut step.1, 0.0..=top).vertical().show_value(false).trailing_fill(true).step_by(if pct { 0.5 } else { 1.0 }))
+                                        .on_hover_text(format!("How often {} comes up", lab(step.0)));
+                                    let dv = egui::DragValue::new(&mut step.1).range(0.0..=if pct { 100.0 } else { 9999.0 });
+                                    let dv = if pct { dv.speed(0.5).max_decimals(1).suffix(" %") } else { dv.speed(0.2).max_decimals(0).suffix("×") };
+                                    ui.add_sized([54.0, 20.0], dv);
+                                    ui.label(RichText::new(lab(step.0)).strong().size(12.5));
+                                });
+                            });
+                        }
+                    });
+                });
+            });
+            ui.add_space(4.0);
+            // totals
+            let total = self.jitter.total();
+            ui.horizontal(|ui| {
+                if pct {
+                    let ok = (total - 100.0).abs() < 0.05;
+                    ui.label(RichText::new(format!("Total {} %", fmt_g(round_to(total, 1)))).color(if ok { OK } else { ACCENT }));
+                    if !ok {
+                        if ui.button("Make it 100 %").clicked() {
+                            self.jitter.to_percent();
+                        }
+                        ui.label(RichText::new("(the shares are used in proportion anyway)").color(TEXT_DIM).size(12.0));
+                    }
+                } else {
+                    let ok = (total - n as f64).abs() < 0.5;
+                    ui.label(RichText::new(format!("Total {}  ·  your design has {n} pictures", total.round())).color(if ok { OK } else { ACCENT }));
+                    if !ok && n > 0 {
+                        if ui.button(format!("Fit to {n} pictures")).clicked() {
+                            self.jitter.to_counts(n);
+                        }
+                        ui.label(RichText::new("(otherwise used in proportion)").color(TEXT_DIM).size(12.0));
+                    }
+                }
+            });
+            // what the pictures get
+            let counts = self.jitter.counts(n);
+            let parts: Vec<String> = self.jitter.steps.iter().zip(&counts).filter(|(_, c)| **c > 0).map(|(s, c)| format!("{} ×{c}", lab(s.0))).collect();
+            let sorted = self.jitter.sorted(n);
+            let res = if n == 0 {
+                "Add pictures to see how many each length gets.".to_string()
+            } else {
+                let mean = sorted.iter().sum::<f64>() / sorted.len().max(1) as f64;
+                format!("For your {n} pictures:  {}   ·   mean {}  ·  together {}", parts.join("  ·  "), lab(mean), fmt_time(sorted.iter().sum(), 1))
+            };
+            ui.add(egui::Label::new(RichText::new(res).size(12.5)).wrap());
+            ui.add_space(8.0);
+            ui.horizontal(|ui| {
+                if ui.button("All equally often").clicked() {
+                    self.jitter.equalize(self.share_pct, n);
+                }
+                ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                    if ui.add(egui::Button::new(RichText::new("Done").font(theme::bold(13.5)).color(hex("#1B1B1B"))).fill(ACCENT)).clicked() {
+                        close = true;
+                    }
+                });
+            });
+        });
+        if close || resp.should_close() {
+            self.eq_open = false;
+            self.list_err = None;
+            self.sync_list();
+        }
     }
 }
 

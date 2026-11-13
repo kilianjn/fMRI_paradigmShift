@@ -1237,48 +1237,125 @@ pub fn generate_event_design(
 // --------------------------------------------------------------------------
 // Jitter: the ITIs of the event-related design
 // --------------------------------------------------------------------------
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum JitterShape {
-    /// every length between min and max equally often
-    Uniform,
-    /// many short, few long ITIs (truncated exponential with a chosen mean)
-    Exponential,
-}
-
-/// How the ITIs are chosen: from a distribution, or from an own list of values.
+/// The fixation lengths to choose from and how big a share of the pictures gets each – like the
+/// bands of an equalizer. Shares are percentages or numbers of pictures; they are used in
+/// proportion, so they need not add up to anything in particular.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Jitter {
-    pub from_list: bool,
-    pub shape: JitterShape,
-    pub min: f64,
-    pub max: f64,
-    /// exponential: the wanted mean – between min and the middle of min and max
-    pub mean: f64,
-    /// round the values of the distribution to multiples of this (s); 0 = not at all
-    pub grid: f64,
-    /// own values (s) and how often each is wanted
-    pub list: Vec<(f64, u32)>,
+    /// (length in s, share), sorted by length
+    pub steps: Vec<(f64, f64)>,
+}
+
+/// `k` lengths evenly spread from `from` to `to`.
+fn spread(from: f64, to: f64, k: usize) -> Vec<f64> {
+    let (a, b) = if from <= to { (from, to) } else { (to, from) };
+    if k <= 1 {
+        return vec![round4(a.max(0.0))];
+    }
+    (0..k).map(|i| round4((a + (b - a) * i as f64 / (k - 1) as f64).max(0.0))).collect()
+}
+
+/// Split `n` into whole numbers in proportion to `weights` (largest remainder).
+fn allocate(weights: &[f64], n: usize) -> Vec<usize> {
+    let total: f64 = weights.iter().map(|w| w.max(0.0)).sum();
+    if total <= 0.0 || n == 0 {
+        return vec![0; weights.len()];
+    }
+    let shares: Vec<f64> = weights.iter().map(|w| w.max(0.0) * n as f64 / total).collect();
+    let mut counts: Vec<usize> = shares.iter().map(|s| (s + 1e-9).floor() as usize).collect();
+    let mut order: Vec<usize> = (0..weights.len()).collect();
+    order.sort_by(|&a, &b| (shares[b] - shares[b].floor()).total_cmp(&(shares[a] - shares[a].floor())).then(a.cmp(&b)));
+    let mut missing = n.saturating_sub(counts.iter().sum::<usize>());
+    for i in order {
+        if missing == 0 {
+            break;
+        }
+        counts[i] += 1;
+        missing -= 1;
+    }
+    counts
 }
 
 impl Jitter {
-    /// The `n` ITIs, sorted. A distribution is sampled at evenly spaced quantiles from min to max,
-    /// so `n` values follow its shape exactly (no lucky or unlucky random draws); a list is used in
-    /// the proportions of its counts.
-    pub fn sorted(&self, n: usize) -> Vec<f64> {
-        if n == 0 {
-            return vec![];
-        }
-        let mut v: Vec<f64> = if self.from_list {
-            list_values(&self.list, n)
+    /// `k` lengths evenly spread from `from` to `to`, all equally often (shares in %).
+    pub fn even(from: f64, to: f64, k: usize) -> Jitter {
+        let k = k.max(1);
+        let pct = round_to(100.0 / k as f64, 2);
+        Jitter { steps: spread(from, to, k).into_iter().map(|v| (v, pct)).collect() }
+    }
+
+    pub fn from(&self) -> f64 {
+        self.steps.first().map(|s| s.0).unwrap_or(0.0)
+    }
+
+    pub fn to(&self) -> f64 {
+        self.steps.last().map(|s| s.0).unwrap_or(0.0)
+    }
+
+    pub fn total(&self) -> f64 {
+        self.steps.iter().map(|s| s.1.max(0.0)).sum()
+    }
+
+    /// Spread the lengths evenly from `from` to `to` in `k` steps. The shares stay when the number
+    /// of steps does; otherwise all lengths become equally often (`pct`: as percentages).
+    pub fn respace(&mut self, from: f64, to: f64, k: usize, pct: bool, n: usize) {
+        let k = k.clamp(1, 40);
+        let values = spread(from, to, k);
+        if values.len() == self.steps.len() {
+            for (s, v) in self.steps.iter_mut().zip(values) {
+                s.0 = v;
+            }
         } else {
-            // uniform: from "min" to "max" inclusive; exponential: the middle of n equal parts
-            // (so that the mean is the one asked for, even with few values)
-            let uniform = self.shape == JitterShape::Uniform || !self.mean_ok();
-            let q = |i: usize| if uniform && n > 1 { i as f64 / (n - 1) as f64 } else { (i as f64 + 0.5) / n as f64 };
-            (0..n).map(|i| self.snap(self.quantile(q(i)))).collect()
+            self.steps = values.into_iter().map(|v| (v, 1.0)).collect();
+            self.equalize(pct, n);
+        }
+    }
+
+    /// All lengths equally often.
+    pub fn equalize(&mut self, pct: bool, n: usize) {
+        let k = self.steps.len().max(1);
+        let shares: Vec<f64> = if pct {
+            vec![round_to(100.0 / k as f64, 2); k]
+        } else {
+            allocate(&vec![1.0; k], n.max(k)).into_iter().map(|c| c as f64).collect()
         };
-        v.sort_by(f64::total_cmp);
-        v
+        for (s, w) in self.steps.iter_mut().zip(shares) {
+            s.1 = w;
+        }
+    }
+
+    /// Shares as percentages (adding up to 100).
+    pub fn to_percent(&mut self) {
+        let t = self.total();
+        for s in self.steps.iter_mut() {
+            s.1 = if t > 0.0 { round_to(s.1.max(0.0) / t * 100.0, 2) } else { 0.0 };
+        }
+    }
+
+    /// Shares as numbers of pictures, for `n` pictures.
+    pub fn to_counts(&mut self, n: usize) {
+        let w: Vec<f64> = self.steps.iter().map(|s| s.1).collect();
+        for (s, c) in self.steps.iter_mut().zip(allocate(&w, n)) {
+            s.1 = c as f64;
+        }
+    }
+
+    /// How many of `n` pictures get each length.
+    pub fn counts(&self, n: usize) -> Vec<usize> {
+        allocate(&self.steps.iter().map(|s| s.1).collect::<Vec<_>>(), n)
+    }
+
+    /// Lengths evenly spaced and all equally often?
+    pub fn is_even(&self) -> bool {
+        let k = self.steps.len();
+        let spaced = spread(self.from(), self.to(), k).iter().zip(&self.steps).all(|(v, s)| (v - s.0).abs() < 1e-3);
+        let first = self.steps.first().map(|s| s.1).unwrap_or(0.0);
+        spaced && self.steps.iter().all(|s| (s.1 - first).abs() < 0.02)
+    }
+
+    /// The `n` ITIs, sorted.
+    pub fn sorted(&self, n: usize) -> Vec<f64> {
+        self.steps.iter().zip(self.counts(n)).flat_map(|(s, c)| std::iter::repeat_n(s.0, c)).collect()
     }
 
     /// The `n` ITIs in random order.
@@ -1288,95 +1365,40 @@ impl Jitter {
         v
     }
 
-    fn bounds(&self) -> (f64, f64) {
-        let (a, b) = (self.min.max(0.0), self.max.max(0.0));
-        if a <= b { (a, b) } else { (b, a) }
-    }
-
-    /// Round to the grid – staying between min and max when a grid value lies in between.
-    fn snap(&self, x: f64) -> f64 {
-        let g = self.grid;
-        if g <= 0.0 {
-            return round_to(x, 3);
-        }
-        let (lo, hi) = self.bounds();
-        let mut k = (x / g).round_ties_even();
-        let (k_lo, k_hi) = ((lo / g - 1e-9).ceil(), (hi / g + 1e-9).floor());
-        if k_lo <= k_hi {
-            k = k.clamp(k_lo, k_hi);
-        }
-        round4(k * g).max(0.0)
-    }
-
-    fn quantile(&self, q: f64) -> f64 {
-        let (lo, hi) = self.bounds();
-        match (self.shape, exp_scale(lo, hi, self.mean)) {
-            (JitterShape::Exponential, Some(m)) => lo - m * (1.0 - q * (1.0 - (-(hi - lo) / m).exp())).ln(),
-            _ => lo + q * (hi - lo),
-        }
-    }
-
-    /// Exponential: is the mean possible (between min and the middle)?
-    pub fn mean_ok(&self) -> bool {
-        let (lo, hi) = self.bounds();
-        exp_scale(lo, hi, self.mean).is_some()
-    }
-
-    /// Multiply all times (e.g. when the TR changes and the times are meant in TRs).
+    /// Multiply all lengths (e.g. when the TR changes and the times are meant in TRs).
     pub fn scale(&mut self, f: f64) {
-        self.min = round4(self.min * f);
-        self.max = round4(self.max * f);
-        self.mean = round4(self.mean * f);
-        for (v, _) in self.list.iter_mut() {
-            *v = round4(*v * f);
+        for s in self.steps.iter_mut() {
+            s.0 = round4(s.0 * f);
         }
     }
-}
 
-/// Scale of the exponential on [lo, hi] (cut off at hi) whose mean is `mean`.
-fn exp_scale(lo: f64, hi: f64, mean: f64) -> Option<f64> {
-    let l = hi - lo;
-    let target = mean - lo;
-    if l <= 0.0 || target <= 0.0 || target >= l / 2.0 - 1e-9 {
-        return None;
-    }
-    // mean above lo of the cut-off exponential: grows from 0 (m → 0) to l/2 (m → ∞)
-    let f = |m: f64| {
-        let e = (-l / m).exp();
-        m - l * e / (1.0 - e)
-    };
-    let (mut a, mut b) = (1e-6_f64.ln(), 1e6_f64.ln());
-    for _ in 0..200 {
-        let c = 0.5 * (a + b);
-        if f(c.exp()) < target {
-            a = c;
-        } else {
-            b = c;
+    /// From a typed list: same lengths merged, sorted.
+    pub fn from_list(list: &[(f64, f64)]) -> Jitter {
+        let mut steps: Vec<(f64, f64)> = vec![];
+        for &(v, w) in list {
+            match steps.iter_mut().find(|s| (s.0 - v).abs() < 1e-6) {
+                Some(s) => s.1 += w,
+                None => steps.push((v, w)),
+            }
         }
+        steps.sort_by(|a, b| a.0.total_cmp(&b.0));
+        Jitter { steps }
     }
-    Some((0.5 * (a + b)).exp())
-}
 
-/// `n` values from a list of (value, how often), in the proportions of the counts.
-pub fn list_values(list: &[(f64, u32)], n: usize) -> Vec<f64> {
-    let total: u64 = list.iter().map(|(_, c)| *c as u64).sum();
-    if total == 0 || n == 0 {
-        return vec![];
+    /// As a list for `n` pictures, e.g. "2×3, 3×2, 4" (in units of `unit` seconds).
+    pub fn to_list_text(&self, n: usize, unit: f64) -> String {
+        let counts = self.counts(n.max(1));
+        self.steps
+            .iter()
+            .zip(counts)
+            .filter(|(_, c)| *c > 0)
+            .map(|(s, c)| {
+                let x = fmt_g(round_to(s.0 / unit, 4));
+                if c == 1 { x } else { format!("{x}×{c}") }
+            })
+            .collect::<Vec<_>>()
+            .join(", ")
     }
-    // largest remainder: floor of each share, then one more for the biggest remainders
-    let shares: Vec<f64> = list.iter().map(|(_, c)| *c as f64 * n as f64 / total as f64).collect();
-    let mut counts: Vec<usize> = shares.iter().map(|s| s.floor() as usize).collect();
-    let mut order: Vec<usize> = (0..list.len()).collect();
-    order.sort_by(|&a, &b| (shares[b] - shares[b].floor()).total_cmp(&(shares[a] - shares[a].floor())).then(a.cmp(&b)));
-    let mut missing = n - counts.iter().sum::<usize>();
-    for i in order {
-        if missing == 0 {
-            break;
-        }
-        counts[i] += 1;
-        missing -= 1;
-    }
-    list.iter().zip(counts).flat_map(|((v, _), k)| std::iter::repeat_n(*v, k)).collect()
 }
 
 /// Sorted values → (value, how often).
@@ -1391,9 +1413,9 @@ pub fn compact_values(sorted: &[f64]) -> Vec<(f64, u32)> {
     out
 }
 
-/// "2, 3, 4.5×2" – values (in units of `unit` seconds: 1 = seconds, TR = in TRs) with an
+/// "2, 3, 4.5×2" – lengths (in units of `unit` seconds: 1 = seconds, TR = in TRs) with an
 /// optional "×n" for how often. Separated by commas, semicolons or spaces.
-pub fn parse_jitter_list(text: &str, unit: f64) -> Result<Vec<(f64, u32)>, String> {
+pub fn parse_jitter_list(text: &str, unit: f64) -> Result<Vec<(f64, f64)>, String> {
     static TIMES: LazyLock<regex::Regex> = LazyLock::new(|| regex::Regex::new(r"\s*[×xX*]\s*").unwrap());
     let norm = TIMES.replace_all(text.trim(), "×");
     let mut out = vec![];
@@ -1408,24 +1430,13 @@ pub fn parse_jitter_list(text: &str, unit: f64) -> Result<Vec<(f64, u32)>, Strin
             return Err(format!("“{tok}”: between 0 and 600 s, please"));
         }
         if c > 0 {
-            out.push((round4(v * unit), c));
+            out.push((round4(v * unit), c as f64));
         }
     }
     if out.is_empty() {
-        return Err("Type the ITI lengths, e.g. 2, 3, 4.5×2".into());
+        return Err("Type the fixation lengths, e.g. 2, 3, 4.5×2".into());
     }
     Ok(out)
-}
-
-/// The list as text, in units of `unit` seconds.
-pub fn format_jitter_list(list: &[(f64, u32)], unit: f64) -> String {
-    list.iter()
-        .map(|(v, c)| {
-            let x = fmt_g(round_to(v / unit, 4));
-            if *c == 1 { x } else { format!("{x}×{c}") }
-        })
-        .collect::<Vec<_>>()
-        .join(", ")
 }
 
 // --------------------------------------------------------------------------
@@ -1801,7 +1812,7 @@ mod tests {
     fn event_design_jitter_on_quarter_tr() {
         let imgs: Vec<String> = (0..10).map(|i| format!("{i}.png")).collect();
         let conds = vec![DesignCondition { name: "pic".into(), kind: "image".into(), images: imgs }];
-        let jit = Jitter { from_list: false, shape: JitterShape::Uniform, min: 2.0, max: 6.0, mean: 3.0, grid: 0.5, list: vec![] };
+        let jit = Jitter::even(2.0, 6.0, 9);
         let blocks = generate_event_design(&conds, 3.0, &jit.values(10, Some(3)), false, true, 0.0, Some(3));
         let itis: Vec<&Block> = blocks.iter().filter(|b| b.label == "ITI").collect();
         assert_eq!(itis.len(), 10);
@@ -1840,48 +1851,45 @@ mod tests {
     }
 
     #[test]
-    fn jitter_from_distribution_and_list() {
-        let base = Jitter { from_list: false, shape: JitterShape::Uniform, min: 2.0, max: 6.0, mean: 3.0, grid: 0.5, list: vec![] };
-        // uniform: evenly spread over the range, on the grid
-        let v = base.sorted(9);
-        assert_eq!(v.len(), 9);
-        assert!(v.iter().all(|x| (2.0..=6.0).contains(x) && ((x / 0.5) - (x / 0.5).round()).abs() < 1e-9));
-        let mean = v.iter().sum::<f64>() / 9.0;
-        assert!((mean - 4.0).abs() < 1e-9, "{mean}");
-        assert_eq!((v[0], v[8]), (2.0, 6.0));
-        // exponential: the wanted mean, more short than long ones
-        let ex = Jitter { shape: JitterShape::Exponential, min: 2.0, max: 10.0, mean: 3.5, grid: 0.0, ..base.clone() };
-        assert!(ex.mean_ok());
-        let v = ex.sorted(200);
-        let mean = v.iter().sum::<f64>() / 200.0;
-        assert!((mean - 3.5).abs() < 0.05, "{mean}");
-        let few = ex.sorted(8);
-        let mean8 = few.iter().sum::<f64>() / 8.0;
-        assert!((mean8 - 3.5).abs() < 0.15, "{mean8}");
-        assert!(v.iter().filter(|x| **x < 4.0).count() > v.iter().filter(|x| **x >= 4.0).count() * 2);
-        assert!(v.iter().all(|x| (2.0..=10.0).contains(x)));
-        // "from" off the grid: the values stay inside the range
-        let off = Jitter { min: 2.0, max: 6.0, grid: 0.375, ..base.clone() }.sorted(8);
-        assert!(off.iter().all(|x| (2.0..=6.0).contains(x)), "{off:?}");
-        // impossible mean → falls back to uniform
-        let bad = Jitter { mean: 7.0, ..ex.clone() };
-        assert!(!bad.mean_ok());
-        // own list: proportions kept for any number of events, shuffled but the same values
-        let list = parse_jitter_list("2, 3 ×2; 6x1", 1.0).unwrap();
-        assert_eq!(list, vec![(2.0, 1), (3.0, 2), (6.0, 1)]);
-        let li = Jitter { from_list: true, list, ..base.clone() };
-        assert_eq!(li.sorted(8), [2.0, 2.0, 3.0, 3.0, 3.0, 3.0, 6.0, 6.0]);
-        assert_eq!(li.sorted(5).len(), 5);
-        let mut sh = li.values(8, Some(4));
+    fn jitter_steps_like_an_equalizer() {
+        // even: 5 lengths from 2 to 6 s, all equally often
+        let mut j = Jitter::even(2.0, 6.0, 5);
+        assert_eq!(j.steps.iter().map(|s| s.0).collect::<Vec<_>>(), [2.0, 3.0, 4.0, 5.0, 6.0]);
+        assert!(j.is_even());
+        assert_eq!(j.sorted(10), [2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 5.0, 5.0, 6.0, 6.0]);
+        assert_eq!(j.sorted(7).len(), 7);
+        // shares in percent: 40 % short, the rest even
+        for (s, w) in j.steps.iter_mut().zip([40.0, 15.0, 15.0, 15.0, 15.0]) {
+            s.1 = w;
+        }
+        assert!(!j.is_even());
+        assert_eq!(j.counts(20), [8, 3, 3, 3, 3]);
+        let mut sh = j.values(20, Some(5));
         sh.sort_by(f64::total_cmp);
-        assert_eq!(sh, li.sorted(8));
-        // lists in TRs, back to text
-        let tr = parse_jitter_list("1, 1.5×3", 2.0).unwrap();
-        assert_eq!(tr, vec![(2.0, 1), (3.0, 3)]);
-        assert_eq!(format_jitter_list(&tr, 2.0), "1, 1.5×3");
-        assert_eq!(format_jitter_list(&compact_values(&[2.0, 2.0, 3.5]), 1.0), "2×2, 3.5");
+        assert_eq!(sh, j.sorted(20));
+        // as numbers of pictures and back
+        j.to_counts(20);
+        assert_eq!(j.steps.iter().map(|s| s.1).collect::<Vec<_>>(), [8.0, 3.0, 3.0, 3.0, 3.0]);
+        j.to_percent();
+        assert!((j.total() - 100.0).abs() < 0.05);
+        // new range, same number of steps: the shares stay
+        j.respace(1.0, 9.0, 5, true, 20);
+        assert_eq!(j.steps.iter().map(|s| s.0).collect::<Vec<_>>(), [1.0, 3.0, 5.0, 7.0, 9.0]);
+        assert_eq!(j.counts(20), [8, 3, 3, 3, 3]);
+        // other number of steps: equal again
+        j.respace(2.0, 4.0, 3, true, 20);
+        assert!(j.is_even());
+        // lists: merged and sorted, as text for n pictures, in TRs
+        let l = parse_jitter_list("3, 2 ×2; 3x1", 1.0).unwrap();
+        let lj = Jitter::from_list(&l);
+        assert_eq!(lj.steps, vec![(2.0, 2.0), (3.0, 2.0)]);
+        assert_eq!(lj.to_list_text(4, 1.0), "2×2, 3×2");
+        let tr = Jitter::from_list(&parse_jitter_list("1, 1.5×3", 2.0).unwrap());
+        assert_eq!(tr.steps, vec![(2.0, 1.0), (3.0, 3.0)]);
+        assert_eq!(tr.to_list_text(4, 2.0), "1, 1.5×3");
         assert!(parse_jitter_list("2, abc", 1.0).is_err());
         assert!(parse_jitter_list("", 1.0).is_err());
+        assert_eq!(compact_values(&[2.0, 2.0, 3.5]), vec![(2.0, 2), (3.5, 1)]);
     }
 
     #[test]
