@@ -87,6 +87,11 @@ pub struct App {
     pub run: Option<RunSession>,
     pub test: Option<TestSession>,
     pub present: Option<Presenter>,
+    /// is the SyncBox there? (checked from start-up on, shown in the status bar)
+    syncbox: Option<crate::hardware::SyncBoxMonitor>,
+    /// the hardware setup last checked (mode | port | baud), and whether the monitor is paused
+    syncbox_checked: String,
+    syncbox_paused: bool,
     last_autosave: f64,
     problems: (u64, Vec<String>),
     title: String,
@@ -122,6 +127,9 @@ impl App {
             run: None,
             test: None,
             present: None,
+            syncbox: None,
+            syncbox_checked: String::new(),
+            syncbox_paused: false,
             last_autosave: now(),
             problems: (u64::MAX, vec![]),
             title: String::new(),
@@ -137,6 +145,11 @@ impl App {
         app.new_paradigm();
         if let Some(hw) = app.settings.hardware.clone() {
             app.doc.paradigm.hardware = hw; // the last hardware setup carries over to new paradigms
+        }
+        // look for the SyncBox right away (not when making documentation screenshots)
+        if app.shot.is_none() {
+            let c = ctx.clone();
+            app.syncbox = Some(crate::hardware::SyncBoxMonitor::new(Arc::new(move || c.request_repaint())));
         }
         // the app always starts with an empty paradigm – unless a file was passed to it
         // (e.g. by double-clicking a .paradigm.json)
@@ -1008,6 +1021,9 @@ impl App {
                 }
             }
             ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                // the SyncBox in the corner, then the paradigm's state
+                self.syncbox_indicator(ui);
+                ui.separator();
                 let n = self.problems.1.len();
                 if n > 0 {
                     if ui.add(egui::Label::new(RichText::new(format!("⚠ {n} issue(s) – Ctrl+K to check")).color(DANGER)).sense(egui::Sense::click())).clicked() {
@@ -1018,6 +1034,84 @@ impl App {
                 }
             });
         });
+    }
+
+    /// The hardware setup in use: the presented paradigm's, or the editor's.
+    fn active_hardware(&self) -> &crate::model::Hardware {
+        &self.present.as_ref().map(|p| &p.par).unwrap_or(&self.doc.paradigm).hardware
+    }
+
+    /// Keep the SyncBox monitor in step: check again when the hardware setup changes, keep it off
+    /// the port while something else uses it, and take over the port the box was found on.
+    fn syncbox_upkeep(&mut self) {
+        let Some(mon) = &self.syncbox else { return };
+        let hw = self.active_hardware().clone();
+        let busy = self.run.is_some() || self.test.is_some() || matches!(self.modal, Some(Modal::Hardware(_)));
+        if busy != self.syncbox_paused {
+            self.syncbox_paused = busy;
+            mon.pause(busy);
+            if !busy {
+                mon.check(&hw); // after a run / test / the hardware dialog: is it still there?
+            }
+        }
+        let sig = format!("{}|{}|{}", hw.sync_mode, hw.serial_port, hw.baud_rate);
+        if sig != self.syncbox_checked {
+            self.syncbox_checked = sig;
+            mon.check(&hw);
+        }
+        // found on another port (e.g. after plugging it into another USB socket): use that one
+        if let Some(crate::hardware::SyncBoxStatus::Connected(port)) = mon.status() {
+            if hw.sync_mode == "serial" && hw.serial_port != port {
+                let mut new_hw = hw.clone();
+                new_hw.serial_port = port.clone();
+                if let Some(pr) = self.present.as_mut() {
+                    pr.par.hardware.serial_port = port.clone();
+                } else {
+                    self.doc.paradigm.hardware.serial_port = port.clone();
+                }
+                self.syncbox_checked = format!("{}|{}|{}", new_hw.sync_mode, new_hw.serial_port, new_hw.baud_rate);
+                self.settings.hardware = Some(new_hw);
+                self.save_settings();
+                self.flash(format!("SyncBox found on {port} – using this port."));
+            }
+        }
+    }
+
+    /// "● SyncBox connected · COM3" in the corner of the status bar; a click checks again.
+    fn syncbox_indicator(&mut self, ui: &mut Ui) {
+        use crate::hardware::SyncBoxStatus;
+        let Some(mon) = &self.syncbox else { return };
+        let (dot, text, tip) = match mon.status() {
+            None | Some(SyncBoxStatus::Checking) => (TEXT_DIM, "SyncBox: checking…".to_string(), "Asking the SyncBox on its serial port …".to_string()),
+            Some(SyncBoxStatus::Keyboard) => (
+                TEXT_DIM,
+                "SyncBox: USB keyboard mode".to_string(),
+                "In USB keyboard mode the SyncBox is just a keyboard and can't be checked. Switch to serial mode in Hardware to see whether it is connected.".to_string(),
+            ),
+            Some(SyncBoxStatus::Connected(p)) => (OK, format!("SyncBox connected · {p}"), format!("The SyncBox answered on {p}.")),
+            Some(SyncBoxStatus::NotConnected(why)) => (DANGER, "SyncBox not connected".to_string(), why),
+        };
+        let resp = ui
+            .horizontal(|ui| {
+                ui.spacing_mut().item_spacing.x = 5.0;
+                ui.add(egui::Label::new(RichText::new(text).color(if dot == TEXT_DIM { TEXT_DIM } else { theme::TEXT })).sense(egui::Sense::click()))
+                    | {
+                        let (r, resp) = ui.allocate_exact_size(Vec2::splat(10.0), egui::Sense::click());
+                        ui.painter().circle_filled(r.center(), 4.5, dot);
+                        resp
+                    }
+            })
+            .inner;
+        let hw = self.active_hardware().clone();
+        if resp
+            .on_hover_text(format!("{tip}\n\nClick to check again · Hardware settings: Ctrl+Shift+H"))
+            .on_hover_cursor(egui::CursorIcon::PointingHand)
+            .clicked()
+        {
+            if let Some(mon) = &self.syncbox {
+                mon.check(&hw);
+            }
+        }
     }
 
     fn popups(&mut self, ctx: &Context) {
@@ -1318,6 +1412,10 @@ impl App {
                 }
             });
         }
+        // the status bar of presentation mode: the SyncBox in the corner
+        egui::Panel::bottom("present_status").frame(egui::Frame::new().fill(theme::BG).inner_margin(egui::Margin::symmetric(12, 4))).show(ui, |ui| {
+            ui.with_layout(Layout::right_to_left(Align::Center), |ui| self.syncbox_indicator(ui));
+        });
         let Some(pr) = self.present.as_ref() else { return };
         let a = &mut self.actions;
         egui::Panel::top("present_bar").frame(egui::Frame::new().fill(theme::BG).inner_margin(egui::Margin::symmetric(14, 8))).show(ui, |ui| {
@@ -1331,7 +1429,7 @@ impl App {
                     if ui.button("✎ Back to the editor").on_hover_text("Leave presentation mode. The presented file is not opened for editing.").clicked() {
                         a.push(Action::LeavePresentation);
                     }
-                    if ui.button("ⓘ").on_hover_text("About ParadigmShift").clicked() {
+                    if ui.button("About").on_hover_text("About ParadigmShift: version, credits, repository").clicked() {
                         a.push(Action::About);
                     }
                     if ui.button("Open another…").on_hover_text("Open another paradigm for presenting (Ctrl+O)").clicked() {
@@ -1538,6 +1636,7 @@ impl eframe::App for App {
             }
         }
         self.update_title(&ctx);
+        self.syncbox_upkeep();
         if let Some(t) = self.test.as_mut() {
             t.show_screen(&ctx);
             if t.ui(ui) {

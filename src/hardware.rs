@@ -11,9 +11,9 @@
 
 use std::collections::BTreeMap;
 use std::io::{Read, Write};
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::mpsc::{channel, Receiver, Sender};
-use std::sync::{Arc, LazyLock};
+use std::sync::{Arc, LazyLock, Mutex};
 use std::thread::JoinHandle;
 use std::time::{Duration, Instant};
 
@@ -281,6 +281,213 @@ pub fn nnl_probe(port: &str, baud: u32, timeout: f64) -> bool {
 }
 
 // =============================================================================
+// SyncBox connection status (status bar)
+// =============================================================================
+/// Runs / the function test / auto-detect that are using a serial port right now. While one is,
+/// the status-bar monitor opens no port (COM ports can be opened only once).
+static PORT_USERS: AtomicUsize = AtomicUsize::new(0);
+/// Held by the monitor while it asks the SyncBox; a run waits for it before opening the port.
+static PROBE_LOCK: Mutex<()> = Mutex::new(());
+
+/// "This thread uses a serial port" – for as long as it lives. Waits until a status check that is
+/// asking the SyncBox right now is done (about a second at most).
+struct PortUse;
+
+impl PortUse {
+    fn begin() -> PortUse {
+        PORT_USERS.fetch_add(1, Ordering::SeqCst);
+        drop(PROBE_LOCK.lock().unwrap_or_else(|e| e.into_inner()));
+        PortUse
+    }
+}
+
+impl Drop for PortUse {
+    fn drop(&mut self) {
+        PORT_USERS.fetch_sub(1, Ordering::SeqCst);
+    }
+}
+
+/// Is the SyncBox there? Shown in the status bar from start-up on.
+#[derive(Clone, Debug, PartialEq)]
+pub enum SyncBoxStatus {
+    /// USB keyboard mode: the box can't be asked (it is just a keyboard)
+    Keyboard,
+    Checking,
+    /// answered NNL's handshake on this port
+    Connected(String),
+    /// not found – why
+    NotConnected(String),
+}
+
+enum MonitorCmd {
+    Check(Hardware),
+    Pause(bool),
+    Quit,
+}
+
+#[derive(Default)]
+struct MonitorShared {
+    status: Option<SyncBoxStatus>,
+}
+
+/// Checks in the background whether the SyncBox answers on its serial port. The box is only
+/// *asked* (NNL's computer-mode handshake, then straight back to manual mode) at start-up, on
+/// request and when a serial port appears – never periodically, so it can't disturb a scan.
+/// In between it only watches whether the port is still there.
+pub struct SyncBoxMonitor {
+    shared: Arc<Mutex<MonitorShared>>,
+    tx: Sender<MonitorCmd>,
+    handle: Option<JoinHandle<()>>,
+}
+
+/// Ports worth asking: the configured one first, then likely SyncBoxes (NNL names, FTDI chips).
+fn syncbox_candidates(hw: &Hardware, ports: &[PortInfo]) -> Vec<String> {
+    let mut out = vec![];
+    // the configured port always first (also when the system does not list it)
+    if !hw.serial_port.is_empty() {
+        out.push(hw.serial_port.clone());
+    }
+    for p in ports {
+        let ftdi = p.vid_pid.map(|(v, _)| v == 0x0403).unwrap_or(false);
+        if (p.likely || ftdi) && !out.contains(&p.device) {
+            out.push(p.device.clone());
+        }
+    }
+    out
+}
+
+/// Ask the SyncBox: on the configured port, else on the likely ports. Ok(port) or why not.
+fn find_syncbox(hw: &Hardware) -> Result<String, String> {
+    let ports = describe_ports();
+    let candidates = syncbox_candidates(hw, &ports);
+    if candidates.is_empty() && ports.is_empty() {
+        return Err("No serial ports found – is the SyncBox connected by USB and switched on, and is the FTDI driver installed?".into());
+    }
+    let baud = if hw.baud_rate > 0 { hw.baud_rate } else { 57_600 };
+    for c in &candidates {
+        if nnl_probe(c, baud, 0.6) {
+            return Ok(c.clone());
+        }
+    }
+    Err(if !hw.serial_port.is_empty() && !ports.iter().any(|p| p.device == hw.serial_port) {
+        format!("Port {} is not there – is the SyncBox plugged in?", hw.serial_port)
+    } else if candidates.is_empty() {
+        "No SyncBox-like serial port found – set the port in Hardware (Auto-detect).".into()
+    } else {
+        format!(
+            "No answer from the SyncBox on {} – is it switched on and set to serial mode, and is no other program using it?",
+            candidates.join(", ")
+        )
+    })
+}
+
+impl SyncBoxMonitor {
+    pub fn new(waker: Waker) -> Self {
+        let shared = Arc::new(Mutex::new(MonitorShared::default()));
+        let (tx, rx) = channel::<MonitorCmd>();
+        let sh = shared.clone();
+        let handle = std::thread::Builder::new()
+            .name("syncbox-monitor".into())
+            .spawn(move || {
+                let set = |s: SyncBoxStatus| {
+                    let changed = sh.lock().map(|mut m| {
+                        let c = m.status.as_ref() != Some(&s);
+                        m.status = Some(s);
+                        c
+                    });
+                    if changed.unwrap_or(false) {
+                        waker();
+                    }
+                };
+                let mut hw: Option<Hardware> = None;
+                let mut paused = false;
+                let mut pending = false;
+                let mut last_ports: Vec<String> = vec![];
+                loop {
+                    let mut ask = false;
+                    match rx.recv_timeout(Duration::from_secs(2)) {
+                        Ok(MonitorCmd::Check(h)) => {
+                            hw = Some(h);
+                            ask = true;
+                        }
+                        Ok(MonitorCmd::Pause(p)) => {
+                            paused = p;
+                            if !p && pending {
+                                ask = true;
+                            }
+                        }
+                        Ok(MonitorCmd::Quit) | Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => return,
+                        // a check put off while a run etc. had the port: try again
+                        Err(std::sync::mpsc::RecvTimeoutError::Timeout) => ask = pending && !paused,
+                    }
+                    let Some(h) = hw.clone() else { continue };
+                    if h.sync_mode != "serial" {
+                        set(SyncBoxStatus::Keyboard);
+                        pending = false;
+                        continue;
+                    }
+                    // passive watch: which ports are there (opening nothing)
+                    let ports: Vec<String> = serialport::available_ports().unwrap_or_default().into_iter().map(|p| p.port_name).collect();
+                    let current = sh.lock().ok().and_then(|m| m.status.clone());
+                    match &current {
+                        // only a port that was listed and is gone counts as unplugged
+                        Some(SyncBoxStatus::Connected(p)) if last_ports.contains(p) && !ports.contains(p) => {
+                            set(SyncBoxStatus::NotConnected(format!("Port {p} disappeared – the SyncBox was unplugged or switched off.")));
+                        }
+                        Some(SyncBoxStatus::NotConnected(_)) if ports.iter().any(|p| !last_ports.contains(p)) => ask = true,
+                        _ => {}
+                    }
+                    last_ports = ports;
+                    if ask {
+                        if paused {
+                            pending = true; // the port is busy (run, test, hardware dialog) – ask afterwards
+                            continue;
+                        }
+                        let guard = PROBE_LOCK.lock().unwrap_or_else(|e| e.into_inner());
+                        if PORT_USERS.load(Ordering::SeqCst) > 0 {
+                            pending = true; // a run etc. is starting on the port right now
+                            continue;
+                        }
+                        pending = false;
+                        set(SyncBoxStatus::Checking);
+                        let found = find_syncbox(&h);
+                        drop(guard);
+                        match found {
+                            Ok(p) => set(SyncBoxStatus::Connected(p)),
+                            Err(e) => set(SyncBoxStatus::NotConnected(e)),
+                        }
+                    }
+                }
+            })
+            .ok();
+        SyncBoxMonitor { shared, tx, handle }
+    }
+
+    /// Ask the SyncBox (now, in the background) with this hardware setup.
+    pub fn check(&self, hw: &Hardware) {
+        let _ = self.tx.send(MonitorCmd::Check(hw.clone()));
+    }
+
+    /// While a run, the function test or the hardware dialog uses the port, the monitor keeps off it.
+    pub fn pause(&self, paused: bool) {
+        let _ = self.tx.send(MonitorCmd::Pause(paused));
+    }
+
+    pub fn status(&self) -> Option<SyncBoxStatus> {
+        self.shared.lock().ok().and_then(|m| m.status.clone())
+    }
+}
+
+impl Drop for SyncBoxMonitor {
+    fn drop(&mut self) {
+        let _ = self.tx.send(MonitorCmd::Quit);
+        if let Some(h) = self.handle.take() {
+            let _ = h.join();
+        }
+    }
+}
+
+// =============================================================================
 // Serial reader thread
 // =============================================================================
 #[derive(Clone, Debug)]
@@ -330,6 +537,7 @@ impl SerialReader {
         let handle = std::thread::Builder::new()
             .name("serial-reader".into())
             .spawn(move || {
+                let _port_use = PortUse::begin();
                 let send = |e: HwEvent| {
                     let _ = tx.send(e);
                     waker();
@@ -627,6 +835,7 @@ impl PortScanner {
         let handle = std::thread::Builder::new()
             .name("port-scanner".into())
             .spawn(move || {
+                let _port_use = PortUse::begin();
                 let send = |m: ScanMsg| {
                     let _ = tx.send(m);
                     waker();
@@ -815,6 +1024,60 @@ mod tests {
         std::thread::sleep(Duration::from_millis(180));
         let n = sim.poll().iter().filter(|e| matches!(e, Input::Trigger(_))).count();
         assert!((3..=5).contains(&n), "{n} simulated triggers");
+    }
+
+    /// The status-bar monitor finds a (fake) SyncBox on its configured port, says "not connected"
+    /// when nothing answers, and "USB keyboard mode" in keyboard mode.
+    #[cfg(unix)]
+    #[test]
+    fn syncbox_monitor_reports_the_connection() {
+        use serialport::{SerialPort, TTYPort};
+        let (mut master, slave) = TTYPort::pair().expect("pty");
+        let dev = slave.name().unwrap();
+        // fake SyncBox: echoes every command (that is how it confirms them)
+        let stop = Arc::new(AtomicBool::new(false));
+        let st = stop.clone();
+        let fake = std::thread::spawn(move || {
+            let mut buf = [0u8; 64];
+            master.set_timeout(Duration::from_millis(5)).ok();
+            while !st.load(Ordering::Relaxed) {
+                if let Ok(n) = master.read(&mut buf) {
+                    master.write_all(&buf[..n]).ok();
+                }
+            }
+        });
+        let wait = |m: &SyncBoxMonitor, want: &dyn Fn(&SyncBoxStatus) -> bool| -> SyncBoxStatus {
+            let end = now() + 5.0;
+            loop {
+                if let Some(s) = m.status() {
+                    if want(&s) || now() > end {
+                        return s;
+                    }
+                }
+                std::thread::sleep(Duration::from_millis(20));
+            }
+        };
+        let m = SyncBoxMonitor::new(no_waker());
+        let hw = Hardware { sync_mode: "serial".into(), serial_port: dev.clone(), ..Default::default() };
+        // while a run has the port, the monitor stays off it – and checks once it is free again
+        let busy = PortUse::begin();
+        m.check(&hw);
+        std::thread::sleep(Duration::from_millis(400));
+        assert!(!matches!(m.status(), Some(SyncBoxStatus::Connected(_) | SyncBoxStatus::Checking)), "probed a busy port");
+        drop(busy);
+        let s = wait(&m, &|s| matches!(s, SyncBoxStatus::Connected(_)));
+        assert_eq!(s, SyncBoxStatus::Connected(dev.clone()));
+        // nothing answers
+        stop.store(true, Ordering::Relaxed);
+        fake.join().unwrap();
+        drop(slave);
+        let gone = Hardware { serial_port: "/dev/does-not-exist".into(), ..hw.clone() };
+        m.check(&gone);
+        let s = wait(&m, &|s| matches!(s, SyncBoxStatus::NotConnected(_)));
+        assert!(matches!(s, SyncBoxStatus::NotConnected(_)), "{s:?}");
+        // keyboard mode can't be checked
+        m.check(&Hardware::default());
+        assert_eq!(wait(&m, &|s| *s == SyncBoxStatus::Keyboard), SyncBoxStatus::Keyboard);
     }
 
     /// A pseudo-terminal that speaks NNL's SyncBox protocol (Linux/macOS).
