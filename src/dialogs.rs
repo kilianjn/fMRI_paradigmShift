@@ -968,17 +968,54 @@ impl HardwareDialog {
 // =============================================================================
 // Quick design wizard
 // =============================================================================
+/// Colours of the quick design's conditions (dots in the list, frame of the picture box).
+const COND_COLORS: [&str; 8] = ["#4C9AFF", "#F5A524", "#2FB37A", "#E05FA5", "#A57BF5", "#2FA8C8", "#E4604E", "#9AAE3A"];
+/// Height of the condition list and the picture box.
+const QD_BOX_H: f32 = 196.0;
+const QD_THUMB: Vec2 = Vec2::new(76.0, 57.0);
+
+fn cond_color(i: usize) -> egui::Color32 {
+    hex(COND_COLORS[i % COND_COLORS.len()])
+}
+
+/// Pictures dragged out of the picture box: from which condition, which ones.
+#[derive(Clone)]
+struct PictureDrag {
+    from: usize,
+    pics: Vec<usize>,
+}
+
+/// Changes collected while the dialog is drawn, applied afterwards.
+enum QdAct {
+    Select(usize),
+    AddCondition(&'static str),
+    RemoveCondition(usize),
+    Click(usize, egui::Modifiers),
+    SelectAll,
+    RemovePictures(Vec<usize>),
+    Move { from: usize, pics: Vec<usize>, to: Option<usize> },
+    AddPictures(Vec<String>),
+}
+
+#[derive(Clone)]
 pub struct QuickDesign {
     tab: usize,
+    /// One list for both designs. The block design uses picture and text conditions, the
+    /// event-related design the picture conditions.
     conds: Vec<DesignCondition>,
-    sel: Option<usize>,
+    /// the condition shown in the picture box
+    sel: usize,
+    /// selected pictures in the box (indices into the shown condition's pictures)
+    picked: std::collections::BTreeSet<usize>,
+    anchor: Option<usize>,
+    /// the pictures of the Media panel
+    media: Vec<String>,
+    blur: bool,
     bd_block: f64,
     bd_rest: f64,
     bd_reps: u32,
     bd_random: bool,
     bd_lead: f64,
-    ev_images: Vec<String>,
-    ev_cond: String,
     ev_dur: f64,
     ev_min: f64,
     ev_max: f64,
@@ -989,23 +1026,22 @@ pub struct QuickDesign {
 }
 
 impl QuickDesign {
-    pub fn new(par: &Paradigm, media: &[String]) -> Self {
+    pub fn new(par: &Paradigm, media: &[String], blur: bool) -> Self {
         let tr = if par.tr > 0.0 { par.tr } else { 1.0 };
-        let mut conds = vec![];
-        if !media.is_empty() {
-            conds.push(DesignCondition { name: "pictures".into(), kind: "image".into(), images: media.to_vec() });
-        }
+        let name = if media.is_empty() { "cond1" } else { "pictures" };
         QuickDesign {
             tab: 0,
-            conds,
-            sel: None,
+            conds: vec![DesignCondition { name: name.into(), kind: "image".into(), images: media.to_vec() }],
+            sel: 0,
+            picked: Default::default(),
+            anchor: None,
+            media: media.to_vec(),
+            blur,
             bd_block: tr * 10.0,
             bd_rest: tr * 10.0,
             bd_reps: 4,
             bd_random: false,
             bd_lead: tr * 5.0,
-            ev_images: media.to_vec(),
-            ev_cond: "picture".into(),
             ev_dur: 4.0,
             ev_min: 2.0,
             ev_max: 6.0,
@@ -1016,13 +1052,48 @@ impl QuickDesign {
         }
     }
 
+    /// Open again with what was set up last time (conditions, pictures, numbers) – for the
+    /// current paradigm and Media panel.
+    pub fn refresh(&mut self, par: &Paradigm, media: &[String], blur: bool) {
+        self.media = media.to_vec();
+        self.blur = blur;
+        self.tr = par.tr;
+        self.replace = par.blocks.is_empty();
+        self.picked.clear();
+        self.anchor = None;
+    }
+
+    /// For the screenshots: the example pictures sorted into "negative" and "positive",
+    /// event-related, with a few pictures selected.
+    pub fn demo(&mut self) {
+        let all: Vec<String> = self.conds.iter().flat_map(|c| c.images.clone()).collect();
+        let (neg, pos): (Vec<String>, Vec<String>) = all.into_iter().partition(|f| crate::model::basename(f).starts_with("neg"));
+        self.conds = vec![
+            DesignCondition { name: "negative".into(), kind: "image".into(), images: neg },
+            DesignCondition { name: "positive".into(), kind: "image".into(), images: pos },
+        ];
+        self.tab = 1;
+        self.sel = 0;
+        self.picked = [1, 2].into_iter().collect();
+    }
+
+    /// The conditions the current design uses (empty picture conditions are left out).
+    fn used_conditions(&self) -> Vec<DesignCondition> {
+        let event = self.tab == 1;
+        self.conds
+            .iter()
+            .filter(|c| if c.kind == "image" { !c.images.is_empty() } else { !event })
+            .cloned()
+            .collect()
+    }
+
     pub fn blocks(&self, seed: Option<u64>) -> Vec<crate::model::Block> {
+        let conds = self.used_conditions();
+        if conds.is_empty() {
+            return vec![];
+        }
         if self.tab == 0 {
-            if self.conds.is_empty() {
-                return vec![];
-            }
-            let mut blocks =
-                generate_block_design(&self.conds, self.bd_block, self.bd_rest, self.bd_reps, self.bd_random, 0.0, self.bd_lead, seed);
+            let mut blocks = generate_block_design(&conds, self.bd_block, self.bd_rest, self.bd_reps, self.bd_random, 0.0, self.bd_lead, seed);
             for b in blocks.iter_mut() {
                 if b.kind == "text" && !b.condition.is_empty() {
                     b.params.insert("text".into(), serde_json::json!(b.condition.to_uppercase()));
@@ -1030,17 +1101,152 @@ impl QuickDesign {
             }
             return blocks;
         }
-        if self.ev_images.is_empty() {
-            return vec![];
-        }
         let (lo, hi) = if self.ev_min <= self.ev_max { (self.ev_min, self.ev_max) } else { (self.ev_max, self.ev_min) };
-        generate_event_design(&self.ev_images, self.ev_dur, lo, hi, &self.ev_cond, self.ev_rating, self.ev_shuffle, 0.0, self.tr, seed)
+        generate_event_design(&conds, self.ev_dur, lo, hi, self.ev_rating, self.ev_shuffle, 0.0, self.tr, seed)
     }
 
+    // ---- editing the conditions -------------------------------------------------------------
+
+    fn unique_name(&self, base: &str) -> String {
+        let mut n = self.conds.len() + 1;
+        loop {
+            let s = format!("{base}{n}");
+            if !self.conds.iter().any(|c| c.name == s) {
+                return s;
+            }
+            n += 1;
+        }
+    }
+
+    fn select(&mut self, i: usize) {
+        if self.sel != i {
+            self.sel = i;
+            self.picked.clear();
+            self.anchor = None;
+        }
+    }
+
+    fn add_condition(&mut self, kind: &str) -> usize {
+        let name = self.unique_name(if kind == "text" { "task" } else { "cond" });
+        self.conds.push(DesignCondition { name, kind: kind.into(), images: vec![] });
+        let i = self.conds.len() - 1;
+        self.select(i);
+        i
+    }
+
+    fn remove_condition(&mut self, i: usize) {
+        if i >= self.conds.len() {
+            return;
+        }
+        self.conds.remove(i);
+        if self.sel > i || self.sel >= self.conds.len() {
+            self.sel = self.sel.saturating_sub(1);
+        }
+        self.picked.clear();
+        self.anchor = None;
+    }
+
+    /// Pictures dropped on the dialog, chosen or taken from the Media panel go into the shown
+    /// condition – or into a new one if a text condition is shown.
+    pub fn add_pictures(&mut self, files: Vec<String>) {
+        let files: Vec<String> = files.into_iter().filter(|f| crate::model::is_image(f)).collect();
+        if files.is_empty() {
+            return;
+        }
+        if self.conds.get(self.sel).is_none_or(|c| c.kind != "image") {
+            self.add_condition("image");
+        }
+        let c = &mut self.conds[self.sel];
+        for f in files {
+            if !c.images.contains(&f) {
+                c.images.push(f);
+            }
+        }
+    }
+
+    fn remove_pictures(&mut self, cond: usize, pics: &[usize]) {
+        let Some(c) = self.conds.get_mut(cond) else { return };
+        let mut idx = pics.to_vec();
+        idx.sort_unstable();
+        idx.dedup();
+        for i in idx.into_iter().rev() {
+            if i < c.images.len() {
+                c.images.remove(i);
+            }
+        }
+        if cond == self.sel {
+            self.picked.clear();
+            self.anchor = None;
+        }
+    }
+
+    /// Move pictures to another picture condition (`None`: a new one).
+    fn move_pictures(&mut self, from: usize, pics: &[usize], to: Option<usize>) {
+        let Some(src) = self.conds.get(from) else { return };
+        let mut idx = pics.to_vec();
+        idx.sort_unstable();
+        idx.dedup();
+        let files: Vec<String> = idx.iter().filter_map(|&i| src.images.get(i).cloned()).collect();
+        let to = match to {
+            Some(t) if t != from && self.conds.get(t).is_some_and(|c| c.kind == "image") => t,
+            Some(_) => return,
+            None => {
+                let name = self.unique_name("cond");
+                self.conds.push(DesignCondition { name, kind: "image".into(), images: vec![] });
+                self.conds.len() - 1
+            }
+        };
+        self.remove_pictures(from, &idx);
+        let dst = &mut self.conds[to];
+        for f in files {
+            if !dst.images.contains(&f) {
+                dst.images.push(f);
+            }
+        }
+    }
+
+    fn click_picture(&mut self, j: usize, m: egui::Modifiers) {
+        if m.shift {
+            let a = self.anchor.unwrap_or(j);
+            if !m.command {
+                self.picked.clear();
+            }
+            self.picked.extend(a.min(j)..=a.max(j));
+        } else if m.command {
+            if !self.picked.remove(&j) {
+                self.picked.insert(j);
+            }
+            self.anchor = Some(j);
+        } else {
+            self.picked = [j].into_iter().collect();
+            self.anchor = Some(j);
+        }
+    }
+
+    fn apply(&mut self, a: QdAct) {
+        match a {
+            QdAct::Select(i) => self.select(i),
+            QdAct::AddCondition(kind) => {
+                self.add_condition(kind);
+            }
+            QdAct::RemoveCondition(i) => self.remove_condition(i),
+            QdAct::Click(j, m) => self.click_picture(j, m),
+            QdAct::SelectAll => {
+                let n = self.conds.get(self.sel).map(|c| c.images.len()).unwrap_or(0);
+                self.picked = (0..n).collect();
+            }
+            QdAct::RemovePictures(p) => self.remove_pictures(self.sel, &p),
+            QdAct::Move { from, pics, to } => self.move_pictures(from, &pics, to),
+            QdAct::AddPictures(f) => self.add_pictures(f),
+        }
+    }
+
+    // ---- drawing ----------------------------------------------------------------------------
+
     pub fn ui(&mut self, ctx: &Context) -> Outcome {
-        modal(ctx, "quick", 720.0, |ui| {
+        modal(ctx, "quick", 780.0, |ui| {
             title(ui, "✦ Quick design");
-            theme::hint(ui, "Pick a template, fill in a few numbers, and the whole timeline is built for you. You can fine-tune every block afterwards.");
+            theme::hint(ui, "Pick a design, sort your pictures into conditions, fill in a few numbers – the whole timeline is built for you. You can fine-tune every block afterwards.");
             ui.horizontal(|ui| {
                 for (i, t) in ["Block design  (ON / OFF)", "Event-related  (single pictures)"].iter().enumerate() {
                     if ui.selectable_label(self.tab == i, *t).clicked() {
@@ -1049,23 +1255,35 @@ impl QuickDesign {
                 }
             });
             ui.separator();
-            ui.allocate_ui(Vec2::new(720.0, 360.0), |ui| {
-                ui.set_min_height(360.0);
+            self.conditions_ui(ui);
+            ui.add_space(6.0);
+            ui.allocate_ui(Vec2::new(780.0, 150.0), |ui| {
+                ui.set_min_height(150.0);
                 if self.tab == 0 {
-                    self.block_tab(ui);
+                    self.block_settings(ui);
                 } else {
-                    self.event_tab(ui);
+                    self.event_settings(ui);
                 }
             });
             let blocks = self.blocks(Some(1));
             let summary = if blocks.is_empty() {
-                "Add at least one condition / picture to build a timeline.".to_string()
+                if self.tab == 1 {
+                    "Add pictures to at least one condition to build a timeline.".to_string()
+                } else {
+                    "Add pictures or a text condition to build a timeline.".to_string()
+                }
             } else {
                 let dur = blocks.iter().map(|b| b.end()).fold(0.0, f64::max);
                 let vols = if self.tr > 0.0 { (dur / self.tr - 1e-9).ceil() as i64 } else { 0 };
                 format!("→ {} blocks  ·  {} min  ·  {vols} volumes at TR {}s", blocks.len(), fmt_time(dur, 1), fmt_g(self.tr))
             };
-            ui.label(RichText::new(summary).color(ACCENT).font(theme::bold(13.0)));
+            let empty: Vec<&str> = self.conds.iter().filter(|c| c.kind == "image" && c.images.is_empty()).map(|c| c.name.as_str()).collect();
+            ui.horizontal(|ui| {
+                ui.label(RichText::new(summary).color(ACCENT).font(theme::bold(13.0)));
+                if !empty.is_empty() && !blocks.is_empty() {
+                    ui.add(egui::Label::new(RichText::new(format!("·  left out (no pictures yet): {}", empty.join(", "))).color(TEXT_DIM).size(12.0)).truncate());
+                }
+            });
             let mut out = Outcome::Open;
             ui.horizontal(|ui| {
                 ui.checkbox(&mut self.replace, "Replace the current timeline");
@@ -1077,53 +1295,283 @@ impl QuickDesign {
         })
     }
 
-    fn block_tab(&mut self, ui: &mut Ui) {
-        egui::Frame::new().fill(theme::BG).stroke(egui::Stroke::new(1.0, BORDER)).corner_radius(6).inner_margin(6).show(ui, |ui| {
-            ui.set_width(ui.available_width());
-            ui.set_min_height(130.0);
-            egui::Grid::new("conds").num_columns(3).striped(true).min_col_width(140.0).show(ui, |ui| {
-                ui.label(RichText::new("Condition").color(TEXT_DIM));
-                ui.label(RichText::new("Shows").color(TEXT_DIM));
-                ui.label(RichText::new("Pictures").color(TEXT_DIM));
-                ui.end_row();
-                for (i, c) in self.conds.iter_mut().enumerate() {
-                    let r = ui.add(egui::TextEdit::singleline(&mut c.name).desired_width(180.0));
-                    if r.gained_focus() {
-                        self.sel = Some(i);
+    /// Condition list on the left, the shown condition's pictures on the right.
+    fn conditions_ui(&mut self, ui: &mut Ui) {
+        if self.sel >= self.conds.len() {
+            self.sel = self.conds.len().saturating_sub(1);
+        }
+        let mut acts: Vec<QdAct> = vec![];
+        let event = self.tab == 1;
+        ui.horizontal_top(|ui| {
+            ui.vertical(|ui| {
+                ui.set_width(232.0);
+                ui.label(RichText::new("CONDITIONS").font(theme::bold(11.0)).color(TEXT_DIM));
+                egui::Frame::new().fill(theme::BG).stroke(egui::Stroke::new(1.0, BORDER)).corner_radius(6).inner_margin(4).show(ui, |ui| {
+                    ui.set_width(ui.available_width());
+                    ui.set_height(QD_BOX_H);
+                    egui::ScrollArea::vertical().id_salt("qd_conds").auto_shrink([false, false]).show(ui, |ui| {
+                        for i in 0..self.conds.len() {
+                            self.condition_row(ui, i, event, &mut acts);
+                        }
+                        if self.conds.is_empty() {
+                            ui.label(RichText::new("No conditions yet").color(TEXT_DIM));
+                        }
+                    });
+                });
+                ui.horizontal(|ui| {
+                    if ui.button("+ Condition").on_hover_text("A new condition with pictures").clicked() {
+                        acts.push(QdAct::AddCondition("image"));
                     }
-                    let sel = self.sel == Some(i);
-                    if ui.selectable_label(sel, if c.images.is_empty() { "Instruction text" } else { "Pictures" }).clicked() {
-                        self.sel = Some(i);
+                    if !event
+                        && ui
+                            .button("+ Text condition")
+                            .on_hover_text("A block that shows a task text instead of pictures (its name, e.g. “TAP”) – block design only")
+                            .clicked()
+                    {
+                        acts.push(QdAct::AddCondition("text"));
                     }
-                    ui.label(if c.images.is_empty() { "–".to_string() } else { format!("{} pictures", c.images.len()) });
-                    ui.end_row();
+                });
+            });
+            ui.add_space(4.0);
+            ui.vertical(|ui| self.picture_box(ui, &mut acts));
+        });
+        for a in acts {
+            self.apply(a);
+        }
+    }
+
+    fn condition_row(&mut self, ui: &mut Ui, i: usize, event: bool, acts: &mut Vec<QdAct>) {
+        let ctx = ui.ctx().clone();
+        let selected = self.sel == i;
+        let c = &mut self.conds[i];
+        let text_cond = c.kind != "image";
+        let (rect, resp) = ui.allocate_exact_size(Vec2::new(ui.available_width(), 30.0), egui::Sense::click());
+        // pictures dragged from the box can be dropped on another picture condition
+        let drag = egui::DragAndDrop::payload::<PictureDrag>(&ctx);
+        let over = ui.input(|inp| inp.pointer.latest_pos()).is_some_and(|p| rect.contains(p));
+        let drop_ok = drag.as_ref().is_some_and(|d| d.from != i && !text_cond);
+        let p = ui.painter();
+        if drop_ok && over {
+            p.rect(rect, 4, theme::alpha(ACCENT, 40), egui::Stroke::new(1.5, ACCENT), egui::StrokeKind::Inside);
+        } else if selected {
+            p.rect_filled(rect, 4, PANEL_2);
+        } else if resp.hovered() {
+            p.rect_filled(rect, 4, theme::alpha(PANEL_2, 120));
+        }
+        let col = if event && text_cond { theme::alpha(cond_color(i), 70) } else { cond_color(i) };
+        let dot = egui::Pos2::new(rect.left() + 11.0, rect.center().y);
+        if text_cond {
+            p.rect_filled(egui::Rect::from_center_size(dot, Vec2::splat(9.0)), 2, col);
+        } else {
+            p.circle_filled(dot, 5.0, col);
+        }
+        let count = if text_cond {
+            if event { "block design only".to_string() } else { "text".to_string() }
+        } else {
+            c.images.len().to_string()
+        };
+        let x_rect = egui::Rect::from_center_size(egui::Pos2::new(rect.right() - 11.0, rect.center().y), Vec2::splat(18.0));
+        let g = p.layout_no_wrap(count, theme::font(if text_cond && event { 10.5 } else { 12.0 }), TEXT_DIM);
+        let count_w = g.size().x;
+        p.galley(egui::Pos2::new(x_rect.left() - 4.0 - count_w, rect.center().y - g.size().y / 2.0), g, TEXT_DIM);
+        let name_rect = egui::Rect::from_min_max(
+            egui::Pos2::new(rect.left() + 22.0, rect.top() + 3.0),
+            egui::Pos2::new(x_rect.left() - 10.0 - count_w, rect.bottom() - 3.0),
+        );
+        let r = ui.put(name_rect, egui::TextEdit::singleline(&mut c.name).hint_text("name").text_color(if event && text_cond { TEXT_DIM } else { TEXT }));
+        if r.gained_focus() || r.clicked() {
+            acts.push(QdAct::Select(i));
+        }
+        let n = c.images.len();
+        let tip = if n > 0 { format!("Remove “{}” and its {n} picture(s) from the design", c.name) } else { format!("Remove “{}”", c.name) };
+        if ui.put(x_rect, egui::Button::new(RichText::new("×").color(TEXT_DIM)).frame(false)).on_hover_text(tip).clicked() {
+            acts.push(QdAct::RemoveCondition(i));
+        }
+        if resp.clicked() {
+            acts.push(QdAct::Select(i));
+        }
+        if drop_ok && over {
+            if ui.input(|inp| inp.pointer.any_released()) {
+                if let Some(d) = egui::DragAndDrop::take_payload::<PictureDrag>(&ctx) {
+                    acts.push(QdAct::Move { from: d.from, pics: d.pics.clone(), to: Some(i) });
+                    acts.push(QdAct::Select(i));
+                }
+            } else {
+                ctx.request_repaint();
+            }
+        }
+    }
+
+    /// The pictures of the shown condition: add, select, remove, drag onto another condition.
+    fn picture_box(&mut self, ui: &mut Ui, acts: &mut Vec<QdAct>) {
+        let ctx = ui.ctx().clone();
+        let ci = self.sel;
+        let Some(c) = self.conds.get(ci) else {
+            ui.label(RichText::new("PICTURES").font(theme::bold(11.0)).color(TEXT_DIM));
+            ui.allocate_space(Vec2::new(ui.available_width(), QD_BOX_H));
+            return;
+        };
+        let text_cond = c.kind != "image";
+        let n = c.images.len();
+        ui.horizontal(|ui| {
+            let head = if text_cond { format!("TEXT CONDITION  “{}”", c.name) } else { format!("PICTURES OF  “{}”  ·  {n}", c.name) };
+            ui.label(RichText::new(head).font(theme::bold(11.0)).color(TEXT_DIM));
+            if text_cond {
+                return;
+            }
+            ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                // the Media panel's pictures that are in no condition yet – handy for sorting
+                let free: Vec<String> = self.media.iter().filter(|f| !self.conds.iter().any(|c| c.images.contains(f))).cloned().collect();
+                if ui
+                    .add_enabled(!free.is_empty(), egui::Button::new("From Media panel"))
+                    .on_hover_text(format!("Add the {} picture(s) of the Media panel that are in no condition yet", free.len()))
+                    .on_disabled_hover_text(if self.media.is_empty() {
+                        "The Media panel has no pictures"
+                    } else {
+                        "All pictures of the Media panel are already in a condition"
+                    })
+                    .clicked()
+                {
+                    acts.push(QdAct::AddPictures(free));
+                }
+                if ui.button("+ Add pictures…").on_hover_text("Choose pictures for this condition").clicked() {
+                    let files = crate::panels::pick_images("Choose pictures");
+                    if !files.is_empty() {
+                        acts.push(QdAct::AddPictures(files));
+                    }
                 }
             });
         });
-        ui.horizontal(|ui| {
-            if ui.button("+ Condition with pictures…").clicked() {
-                let files = crate::panels::pick_images("Choose pictures");
-                if !files.is_empty() {
-                    let n = self.conds.len() + 1;
-                    self.conds.push(DesignCondition { name: format!("cond{n}"), kind: "image".into(), images: files });
+        let desktop_drag = ui.input(|i| !i.raw.hovered_files.is_empty());
+        let stroke = if desktop_drag { egui::Stroke::new(2.0, ACCENT) } else { egui::Stroke::new(1.0, theme::alpha(cond_color(ci), if text_cond { 60 } else { 140 })) };
+        egui::Frame::new().fill(theme::BG).stroke(stroke).corner_radius(6).inner_margin(6).show(ui, |ui| {
+            ui.set_width(ui.available_width());
+            ui.set_height(QD_BOX_H - 4.0);
+            let center_hint = |ui: &mut Ui, t: &str| {
+                ui.centered_and_justified(|ui| {
+                    ui.add(egui::Label::new(RichText::new(t).color(TEXT_DIM)).wrap());
+                });
+            };
+            if text_cond {
+                center_hint(
+                    ui,
+                    &format!(
+                        "Each block of this condition shows the text “{}” (its name).\nUsed in the block design only; change the text afterwards in the inspector.",
+                        c.name.to_uppercase()
+                    ),
+                );
+                return;
+            }
+            if n == 0 {
+                center_hint(ui, "Drop pictures or a folder here\n– or use + Add pictures… / From Media panel");
+                return;
+            }
+            let pointer = ui.input(|i| i.pointer.latest_pos());
+            let mods = ui.input(|i| i.modifiers);
+            egui::ScrollArea::vertical().id_salt(("qd_pics", ci)).auto_shrink([false, false]).show(ui, |ui| {
+                ui.horizontal_wrapped(|ui| {
+                    ui.spacing_mut().item_spacing = Vec2::splat(6.0);
+                    for (j, f) in c.images.iter().enumerate() {
+                        let (r, resp) = ui.allocate_exact_size(QD_THUMB, egui::Sense::click_and_drag());
+                        if !ui.is_rect_visible(r) {
+                            continue;
+                        }
+                        let picked = self.picked.contains(&j);
+                        let p = ui.painter();
+                        p.rect_filled(r, 4, egui::Color32::from_gray(18));
+                        if !crate::stimulus::paint_thumb(p, r.shrink(2.0), f, self.blur) && !std::path::Path::new(f).exists() {
+                            p.text(r.center(), egui::Align2::CENTER_CENTER, "missing", theme::font(10.0), DANGER);
+                        }
+                        let (w, col) = if picked { (2.0, ACCENT) } else if resp.hovered() { (1.0, TEXT_DIM) } else { (1.0, BORDER) };
+                        p.rect_stroke(r, 4, egui::Stroke::new(w, col), egui::StrokeKind::Inside);
+                        // × to remove this picture
+                        let x = egui::Rect::from_center_size(r.right_top() + Vec2::new(-9.0, 9.0), Vec2::splat(15.0));
+                        let on_x = pointer.is_some_and(|q| x.contains(q));
+                        if resp.hovered() {
+                            p.circle_filled(x.center(), 7.5, if on_x { DANGER } else { egui::Color32::from_black_alpha(190) });
+                            p.text(x.center(), egui::Align2::CENTER_CENTER, "×", theme::bold(12.0), egui::Color32::WHITE);
+                        }
+                        let resp = resp.on_hover_text(if on_x { "Remove from this condition".to_string() } else { crate::model::basename(f) });
+                        if resp.clicked() {
+                            if on_x {
+                                acts.push(QdAct::RemovePictures(vec![j]));
+                            } else {
+                                acts.push(QdAct::Click(j, mods));
+                            }
+                        }
+                        if resp.drag_started() {
+                            let pics: Vec<usize> = if picked { self.picked.iter().copied().collect() } else { vec![j] };
+                            egui::DragAndDrop::set_payload(&ctx, PictureDrag { from: ci, pics });
+                        }
+                    }
+                });
+            });
+        });
+        // the dragged pictures follow the pointer
+        if let (Some(d), Some(pos)) = (egui::DragAndDrop::payload::<PictureDrag>(&ctx), ctx.pointer_latest_pos()) {
+            if d.from == ci {
+                ctx.set_cursor_icon(egui::CursorIcon::Grabbing);
+                let p = ctx.layer_painter(egui::LayerId::new(egui::Order::Tooltip, Id::unique("qd_drag")));
+                let r = egui::Rect::from_min_size(pos + Vec2::new(10.0, 6.0), QD_THUMB * 0.7);
+                p.rect_filled(r, 4, egui::Color32::from_gray(18));
+                if let Some(f) = d.pics.first().and_then(|&j| c.images.get(j)) {
+                    crate::stimulus::paint_thumb(&p, r.shrink(2.0), f, self.blur);
+                }
+                p.rect_stroke(r, 4, egui::Stroke::new(1.5, ACCENT), egui::StrokeKind::Inside);
+                if d.pics.len() > 1 {
+                    let b = r.right_top();
+                    p.circle_filled(b, 10.0, ACCENT);
+                    p.text(b, egui::Align2::CENTER_CENTER, d.pics.len().to_string(), theme::bold(11.0), hex("#1B1B1B"));
                 }
             }
-            if ui.button("+ Text / task condition").clicked() {
-                let n = self.conds.len() + 1;
-                self.conds.push(DesignCondition { name: format!("task{n}"), kind: "text".into(), images: vec![] });
+        }
+        // what to do with the selection
+        let others: Vec<(usize, String)> =
+            self.conds.iter().enumerate().filter(|(i, o)| *i != ci && o.kind == "image").map(|(i, o)| (i, o.name.clone())).collect();
+        ui.horizontal(|ui| {
+            if self.picked.is_empty() || text_cond {
+                if !text_cond && n > 0 {
+                    ui.label(
+                        RichText::new("Click to select · Ctrl / Shift + click for more · drag onto another condition to move · × or Del removes")
+                            .color(TEXT_DIM)
+                            .size(11.5),
+                    );
+                }
+                return;
             }
-            if ui.add_enabled(self.sel.is_some(), egui::Button::new("Remove")).clicked() {
-                if let Some(i) = self.sel.take() {
-                    if i < self.conds.len() {
-                        self.conds.remove(i);
+            let pics: Vec<usize> = self.picked.iter().copied().collect();
+            ui.label(RichText::new(format!("{} selected", pics.len())).strong());
+            egui::ComboBox::from_id_salt("qd_move").selected_text("Move to…").width(120.0).show_ui(ui, |ui| {
+                for (i, name) in &others {
+                    if ui.selectable_label(false, name).clicked() {
+                        acts.push(QdAct::Move { from: ci, pics: pics.clone(), to: Some(*i) });
                     }
                 }
+                if ui.selectable_label(false, "+ New condition").clicked() {
+                    acts.push(QdAct::Move { from: ci, pics: pics.clone(), to: None });
+                }
+            });
+            if ui.button("Remove").on_hover_text("Remove the selected pictures from this condition (Del)").clicked() {
+                acts.push(QdAct::RemovePictures(pics.clone()));
+            }
+            if pics.len() < n && ui.button("Select all").clicked() {
+                acts.push(QdAct::SelectAll);
+            }
+            if ui.button("Deselect").clicked() {
+                acts.push(QdAct::Click(usize::MAX, egui::Modifiers::NONE));
             }
         });
-        ui.add_space(6.0);
+        // Del / Backspace removes the selection (not while a name is being typed)
+        if !self.picked.is_empty() && !ctx.egui_wants_keyboard_input() && ui.input(|i| i.key_pressed(Key::Delete) || i.key_pressed(Key::Backspace)) {
+            acts.push(QdAct::RemovePictures(self.picked.iter().copied().collect()));
+        }
+    }
+
+    fn block_settings(&mut self, ui: &mut Ui) {
         let step = if self.tr > 0.0 { self.tr } else { 0.5 };
         row(ui, "Block length", |ui| {
-            ui.add(egui::DragValue::new(&mut self.bd_block).range(0.5..=600.0).speed(step / 10.0).suffix(" s").max_decimals(2));
+            ui.add(egui::DragValue::new(&mut self.bd_block).range(0.5..=600.0).speed(step / 10.0).suffix(" s").max_decimals(2))
+                .on_hover_text("The pictures of a condition share its block equally");
         });
         row(ui, "Rest between blocks", |ui| {
             ui.add(egui::DragValue::new(&mut self.bd_rest).range(0.0..=600.0).speed(step / 10.0).suffix(" s").max_decimals(2))
@@ -1142,27 +1590,7 @@ impl QuickDesign {
         });
     }
 
-    fn event_tab(&mut self, ui: &mut Ui) {
-        ui.horizontal(|ui| {
-            let n = self.ev_images.len();
-            ui.label(if n > 0 {
-                format!("{n} pictures selected")
-            } else {
-                "No pictures yet – choose some, or import them into the Media panel first.".into()
-            });
-            ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
-                if ui.button("Choose pictures…").clicked() {
-                    let files = crate::panels::pick_images("Choose pictures");
-                    if !files.is_empty() {
-                        self.ev_images = files;
-                    }
-                }
-            });
-        });
-        ui.add_space(6.0);
-        row(ui, "Condition name", |ui| {
-            ui.text_edit_singleline(&mut self.ev_cond);
-        });
+    fn event_settings(&mut self, ui: &mut Ui) {
         row(ui, "Picture on screen", |ui| {
             ui.add(egui::DragValue::new(&mut self.ev_dur).range(0.1..=120.0).speed(0.05).suffix(" s").max_decimals(2));
         });
@@ -1171,12 +1599,14 @@ impl QuickDesign {
             ui.label("to");
             ui.add(egui::DragValue::new(&mut self.ev_max).range(0.0..=120.0).speed(0.05).suffix(" s").max_decimals(2));
         });
+        row(ui, "Order", |ui| {
+            ui.radio_value(&mut self.ev_shuffle, true, "All conditions mixed at random");
+            ui.radio_value(&mut self.ev_shuffle, false, "As listed, condition by condition");
+        });
         row(ui, "", |ui| {
             ui.checkbox(&mut self.ev_rating, "Participant rates each picture with the grips");
         });
-        row(ui, "", |ui| {
-            ui.checkbox(&mut self.ev_shuffle, "Shuffle picture order");
-        });
+        theme::hint(ui, "Every picture is shown once and marked with its condition (for the onset files).");
     }
 }
 
@@ -1909,5 +2339,88 @@ impl PrefsDialog {
             });
             out
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn quick(media: &[&str]) -> QuickDesign {
+        let par = Paradigm { tr: 2.0, ..Default::default() };
+        let media: Vec<String> = media.iter().map(|s| s.to_string()).collect();
+        QuickDesign::new(&par, &media, false)
+    }
+
+    fn names(q: &QuickDesign, c: usize) -> Vec<&str> {
+        q.conds[c].images.iter().map(|s| s.as_str()).collect()
+    }
+
+    /// Sorting pictures into conditions: select, move, remove, add.
+    #[test]
+    fn quick_design_sorts_pictures_into_conditions() {
+        let mut q = quick(&["n1.png", "n2.png", "p1.png", "p2.png", "p3.png"]);
+        assert_eq!(q.conds.len(), 1);
+        assert_eq!(names(&q, 0).len(), 5);
+        // click p1, shift-click p3 → three selected; move them to a new condition
+        q.click_picture(2, egui::Modifiers::NONE);
+        q.click_picture(4, egui::Modifiers::SHIFT);
+        assert_eq!(q.picked.iter().copied().collect::<Vec<_>>(), [2, 3, 4]);
+        q.apply(QdAct::Move { from: 0, pics: q.picked.iter().copied().collect(), to: None });
+        assert_eq!(names(&q, 0), ["n1.png", "n2.png"]);
+        assert_eq!(names(&q, 1), ["p1.png", "p2.png", "p3.png"]);
+        assert!(q.picked.is_empty());
+        // ctrl-click toggles; move one back by dropping it on the first condition
+        q.select(1);
+        q.click_picture(0, egui::Modifiers::COMMAND);
+        q.click_picture(2, egui::Modifiers::COMMAND);
+        q.click_picture(0, egui::Modifiers::COMMAND);
+        assert_eq!(q.picked.iter().copied().collect::<Vec<_>>(), [2]);
+        q.apply(QdAct::Move { from: 1, pics: vec![2], to: Some(0) });
+        assert_eq!(names(&q, 0), ["n1.png", "n2.png", "p3.png"]);
+        // moving onto itself or a text condition does nothing
+        let t = q.add_condition("text");
+        q.apply(QdAct::Move { from: 0, pics: vec![0], to: Some(t) });
+        q.apply(QdAct::Move { from: 0, pics: vec![0], to: Some(0) });
+        assert_eq!(names(&q, 0).len(), 3);
+        // remove pictures; adding while a text condition is shown makes a new picture condition
+        q.select(0);
+        q.apply(QdAct::RemovePictures(vec![2, 0]));
+        assert_eq!(names(&q, 0), ["n2.png"]);
+        q.select(t);
+        q.add_pictures(vec!["x.png".into(), "notes.txt".into(), "x.png".into()]);
+        assert_eq!(q.conds.len(), 4);
+        assert_eq!(q.sel, 3);
+        assert_eq!(names(&q, 3), ["x.png"]);
+        // names stay unique
+        let mut all: Vec<&str> = q.conds.iter().map(|c| c.name.as_str()).collect();
+        all.sort();
+        all.dedup();
+        assert_eq!(all.len(), q.conds.len());
+        // removing a condition keeps a valid selection
+        q.remove_condition(3);
+        assert!(q.sel < q.conds.len());
+    }
+
+    /// Event-related uses the picture conditions, the block design also the text ones; empty
+    /// picture conditions are left out of both.
+    #[test]
+    fn quick_design_uses_the_right_conditions() {
+        let mut q = quick(&["a.png", "b.png"]);
+        q.add_condition("image"); // empty
+        q.add_condition("text");
+        q.tab = 1;
+        let used: Vec<String> = q.used_conditions().into_iter().map(|c| c.name).collect();
+        assert_eq!(used, ["pictures"]);
+        let ev = q.blocks(Some(1));
+        assert_eq!(ev.iter().filter(|b| b.condition == "pictures").count(), 2);
+        q.tab = 0;
+        assert_eq!(q.used_conditions().len(), 2);
+        let bd = q.blocks(Some(1));
+        assert!(bd.iter().any(|b| b.kind == "text" && b.params.get("text").and_then(|v| v.as_str()) == Some("TASK3")));
+        // nothing usable → no timeline
+        let mut e = quick(&[]);
+        e.tab = 1;
+        assert!(e.blocks(None).is_empty());
     }
 }

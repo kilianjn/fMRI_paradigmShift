@@ -1199,14 +1199,15 @@ pub fn generate_block_design(
     blocks
 }
 
-/// Event-related design: one stimulus per image with a jittered fixation ITI.
+/// Event-related design: every picture of every condition once, each marked with its condition,
+/// with a jittered fixation ITI. `shuffle`: all conditions mixed at random; otherwise in the
+/// listed order, condition by condition.
 #[allow(clippy::too_many_arguments)]
 pub fn generate_event_design(
-    images: &[String],
+    conditions: &[DesignCondition],
     stim_dur: f64,
     iti_min: f64,
     iti_max: f64,
-    condition: &str,
     rating: bool,
     shuffle: bool,
     start: f64,
@@ -1214,15 +1215,16 @@ pub fn generate_event_design(
     seed: Option<u64>,
 ) -> Vec<Block> {
     let mut rng = Rng::new(seed);
-    let mut images = images.to_vec();
+    let mut events: Vec<(&str, &String)> =
+        conditions.iter().flat_map(|c| c.images.iter().map(move |img| (c.name.as_str(), img))).collect();
     if shuffle {
-        rng.shuffle(&mut images);
+        rng.shuffle(&mut events);
     }
     let mut blocks = vec![];
     let mut t = start;
-    for img in images {
+    for (cond, img) in events {
         let kind = if rating { "rating" } else { "image" };
-        blocks.push(Block::create(kind, t, Some(stim_dur)).with(json!({"path": img})).cond(condition));
+        blocks.push(Block::create(kind, t, Some(stim_dur)).with(json!({"path": img})).cond(cond));
         t += stim_dur;
         let mut iti = rng.uniform(iti_min, iti_max);
         if tr > 0.0 {
@@ -1608,7 +1610,8 @@ mod tests {
     #[test]
     fn event_design_jitter_on_quarter_tr() {
         let imgs: Vec<String> = (0..10).map(|i| format!("{i}.png")).collect();
-        let blocks = generate_event_design(&imgs, 3.0, 2.0, 6.0, "pic", false, true, 0.0, 2.0, Some(3));
+        let conds = vec![DesignCondition { name: "pic".into(), kind: "image".into(), images: imgs }];
+        let blocks = generate_event_design(&conds, 3.0, 2.0, 6.0, false, true, 0.0, 2.0, Some(3));
         let itis: Vec<&Block> = blocks.iter().filter(|b| b.label == "ITI").collect();
         assert_eq!(itis.len(), 10);
         for b in itis {
@@ -1616,6 +1619,32 @@ mod tests {
             assert!((b.duration / 0.5 - (b.duration / 0.5).round()).abs() < 1e-6);
         }
         assert_eq!(blocks.iter().filter(|b| b.kind == "image").count(), 10);
+    }
+
+    #[test]
+    fn event_design_with_conditions() {
+        let cond = |n: &str, k: usize| DesignCondition {
+            name: n.into(),
+            kind: "image".into(),
+            images: (0..k).map(|i| format!("{n}_{i}.png")).collect(),
+        };
+        let conds = vec![cond("negative", 6), cond("neutral", 4), DesignCondition { name: "empty".into(), kind: "image".into(), images: vec![] }];
+        // every picture once, with its own condition
+        let blocks = generate_event_design(&conds, 2.0, 1.0, 3.0, true, true, 0.0, 2.0, Some(7));
+        let pics: Vec<&Block> = blocks.iter().filter(|b| b.kind == "rating").collect();
+        assert_eq!(pics.len(), 10);
+        for b in &pics {
+            let path = b.params.s("path", "");
+            assert!(path.starts_with(&format!("{}_", b.condition)), "{path} marked {}", b.condition);
+        }
+        // mixed: the conditions take turns somewhere
+        let order: Vec<&str> = pics.iter().map(|b| b.condition.as_str()).collect();
+        assert!(order.windows(2).any(|w| w[0] != w[1]) && order[..6] != ["negative"; 6]);
+        // as listed: condition by condition, in order
+        let blocks = generate_event_design(&conds, 2.0, 1.0, 3.0, false, false, 0.0, 2.0, Some(7));
+        let paths: Vec<String> = blocks.iter().filter(|b| b.kind == "image").map(|b| b.params.s("path", "")).collect();
+        let want: Vec<String> = conds.iter().flat_map(|c| c.images.clone()).collect();
+        assert_eq!(paths, want);
     }
 
     #[test]

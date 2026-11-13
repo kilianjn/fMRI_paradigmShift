@@ -92,6 +92,8 @@ pub struct App {
     /// the hardware setup last checked (mode | port | baud), and whether the monitor is paused
     syncbox_checked: String,
     syncbox_paused: bool,
+    /// the quick design as it was last closed (for this paradigm): reopening keeps the sorting
+    quick_last: Option<Box<QuickDesign>>,
     last_autosave: f64,
     problems: (u64, Vec<String>),
     title: String,
@@ -130,6 +132,7 @@ impl App {
             syncbox: None,
             syncbox_checked: String::new(),
             syncbox_paused: false,
+            quick_last: None,
             last_autosave: now(),
             problems: (u64::MAX, vec![]),
             title: String::new(),
@@ -200,6 +203,7 @@ impl App {
             ..Default::default()
         };
         self.doc.reset(par);
+        self.quick_last = None;
         self.tl.set_playhead(0.0, false);
         self.tl.scroll = 0.0;
     }
@@ -218,6 +222,7 @@ impl App {
                 };
                 self.lib.clear();
                 self.lib.add_files(&files);
+                self.quick_last = None;
                 self.tl.set_playhead(0.0, false);
                 self.tl.zoom_fit();
                 self.playing = None;
@@ -341,7 +346,15 @@ impl App {
             Action::QuickDesign => {
                 // the quick design builds image blocks: only the pictures of the Media panel
                 let pictures: Vec<String> = self.lib.media.iter().filter(|f| model::is_image(f)).cloned().collect();
-                self.modal = Some(Modal::Quick(Box::new(QuickDesign::new(&self.doc.paradigm, &pictures))))
+                let blur = self.settings.prefs.blur_previews;
+                let d = match self.quick_last.take() {
+                    Some(mut d) => {
+                        d.refresh(&self.doc.paradigm, &pictures, blur);
+                        d
+                    }
+                    None => Box::new(QuickDesign::new(&self.doc.paradigm, &pictures, blur)),
+                };
+                self.modal = Some(Modal::Quick(d))
             }
             Action::Hardware => {
                 let par = self.present.as_ref().map(|p| &p.par).unwrap_or(&self.doc.paradigm);
@@ -1224,6 +1237,7 @@ impl App {
             },
             Modal::Quick(d) => match d.ui(ctx) {
                 Outcome::Accept => {
+                    self.quick_last = Some(d.clone());
                     let blocks = d.blocks(None);
                     let replace = d.replace;
                     if !blocks.is_empty() {
@@ -1244,7 +1258,10 @@ impl App {
                     }
                     keep = false;
                 }
-                Outcome::Cancel => keep = false,
+                Outcome::Cancel => {
+                    self.quick_last = Some(d.clone());
+                    keep = false;
+                }
                 _ => {}
             },
             Modal::Run(d) => match d.ui(ctx) {
@@ -1319,6 +1336,7 @@ impl App {
                             v
                         };
                         self.doc.reset(par);
+                        self.quick_last = None;
                         self.doc.dirty = true;
                         self.lib.clear();
                         self.lib.add_files(&files);
@@ -1352,6 +1370,11 @@ impl App {
             i.raw.dropped_files.iter().map(|f| f.path().to_path_buf()).filter(|p| !p.as_os_str().is_empty()).collect()
         });
         if dropped.is_empty() {
+            return;
+        }
+        // pictures dropped on the quick design go into its shown condition
+        if let Some(Modal::Quick(d)) = self.modal.as_mut() {
+            d.add_pictures(panels::expand_images(&dropped));
             return;
         }
         if let Some(p) = dropped.iter().find(|p| path_str(p).ends_with(".json")) {
@@ -1771,9 +1794,14 @@ impl App {
                 "templates" => self.modal = Some(Modal::Templates(Box::new(TemplateDialog::new(&self.doc.paradigm.hardware, presets::default_stim_dir(), "hariri")))),
                 "templates_stroop" => self.modal = Some(Modal::Templates(Box::new(TemplateDialog::new(&self.doc.paradigm.hardware, presets::default_stim_dir(), "stroop")))),
                 "hardware" => self.actions.push(Action::Hardware),
-                "quick" => {
+                "quick" | "quick_event" => {
                     self.open_example("emotional_rating");
-                    self.actions.push(Action::QuickDesign);
+                    let pictures: Vec<String> = self.lib.media.iter().filter(|f| model::is_image(f)).cloned().collect();
+                    let mut d = QuickDesign::new(&self.doc.paradigm, &pictures, self.settings.prefs.blur_previews);
+                    if scene == "quick_event" {
+                        d.demo();
+                    }
+                    self.modal = Some(Modal::Quick(Box::new(d)));
                 }
                 "prefs" => self.actions.push(Action::Preferences),
                 "panels" => {
