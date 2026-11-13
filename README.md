@@ -224,7 +224,10 @@ For each run (in the chosen folder):
 * `sub-01_task-<name>_run-01_log.tsv` – every trigger, button press and stimulus onset with its time.
 * `sub-01_task-<name>_run-01_paradigm.json` – a copy of the paradigm that was run (can be switched off).
 
-Aborted runs get `_ABORTED` in the file names. Onsets are relative to the first trigger after the dummy scans.
+Aborted runs get `_ABORTED` in the file names. **Data is never overwritten by accident:** if files of the same
+participant, session, run and task already exist in the folder, a dialog lists them before the run starts and
+asks whether to *add today's date* to the new file names (`…_run-01_20261113_events.tsv`, with the time added if
+that exists, too), to *overwrite* the old files, or to *cancel* and change the run settings. Onsets are relative to the first trigger after the dummy scans.
 **Export onsets** writes the planned design as `events.tsv` plus FSL 3-column files per condition.
 
 > **Timing note:** the run clock runs on its own thread with 1 ms resolution – independently of which window has

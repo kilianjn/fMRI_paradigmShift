@@ -42,6 +42,9 @@ pub struct RunSettings {
     pub blur_control_mirror: bool,
     /// size of the participant window when not full screen (default 1280 × 720)
     pub window_size: Option<(f32, f32)>,
+    /// added to the data file names, e.g. "_20261113" – chosen when files of this participant and run
+    /// already exist and must not be overwritten
+    pub name_suffix: String,
 }
 
 impl Default for RunSettings {
@@ -65,6 +68,7 @@ impl Default for RunSettings {
             control_refresh_ms: 100,
             blur_control_mirror: false,
             window_size: None,
+            name_suffix: String::new(),
         }
     }
 }
@@ -76,7 +80,38 @@ pub fn output_stem(p: &Paradigm, s: &RunSettings) -> String {
     }
     parts.push(format!("task-{}", bids_label(&p.name)));
     parts.push(format!("run-{:02}", s.run));
-    parts.join("_")
+    parts.join("_") + &s.name_suffix
+}
+
+/// Every data file a run with these settings may write – also those of an aborted run.
+pub fn output_files(p: &Paradigm, s: &RunSettings) -> Vec<PathBuf> {
+    let dir = PathBuf::from(&s.out_dir);
+    let stem = output_stem(p, s);
+    let mut v = vec![dir.join(format!("{stem}_buttons.tsv"))];
+    for st in [stem.clone(), format!("{stem}_ABORTED")] {
+        for kind in ["events.tsv", "log.tsv", "paradigm.json"] {
+            v.push(dir.join(format!("{st}_{kind}")));
+        }
+    }
+    v
+}
+
+/// Data files of this participant / session / run / task that already exist – starting the run
+/// would overwrite (or mix with) them.
+pub fn existing_outputs(p: &Paradigm, s: &RunSettings) -> Vec<PathBuf> {
+    output_files(p, s).into_iter().filter(|f| f.exists()).collect()
+}
+
+/// A file-name suffix with today's date that does not clash with existing files ("_20261113"),
+/// with the time added if data with today's date exists, too ("_20261113-143205").
+pub fn dated_suffix(p: &Paradigm, s: &RunSettings) -> String {
+    let now = chrono::Local::now();
+    let day = now.format("_%Y%m%d").to_string();
+    let with = |suffix: &str| RunSettings { name_suffix: suffix.to_string(), ..s.clone() };
+    if existing_outputs(p, &with(&day)).is_empty() {
+        return day;
+    }
+    now.format("_%Y%m%d-%H%M%S").to_string()
 }
 
 /// Python-style float text ("4.0", "1.25") so the TSV files look like those of the original app.
@@ -1214,6 +1249,30 @@ mod tests {
         p.blocks.push(Block::create("rating", 4.0, Some(4.0)).with(json!({"path": "x.png", "mode": "direct"})).cond("pos"));
         p.blocks.push(Block::create("rating", 8.0, Some(4.0)).with(json!({"mode": "cursor"})));
         p
+    }
+
+    #[test]
+    fn existing_data_is_found_and_a_dated_name_avoids_it() {
+        let p = paradigm();
+        let dir = std::env::temp_dir().join(format!("ps_clash_{}", crate::model::new_id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let s = RunSettings { out_dir: dir.to_string_lossy().to_string(), sub: "07".into(), run: 2, ..Default::default() };
+        assert!(existing_outputs(&p, &s).is_empty());
+        // also the files of an aborted run count
+        std::fs::write(dir.join("sub-07_task-Emorating_run-02_ABORTED_events.tsv"), "x").unwrap();
+        assert_eq!(existing_outputs(&p, &s).len(), 1);
+        // "add today's date": _YYYYMMDD, which is free
+        let d = dated_suffix(&p, &s);
+        assert_eq!(d.len(), 9, "{d}");
+        let s2 = RunSettings { name_suffix: d.clone(), ..s.clone() };
+        assert!(existing_outputs(&p, &s2).is_empty());
+        assert_eq!(output_stem(&p, &s2), format!("sub-07_task-Emorating_run-02{d}"));
+        // a second run with today's date: the time is added, too
+        std::fs::write(dir.join(format!("{}_events.tsv", output_stem(&p, &s2))), "x").unwrap();
+        let d2 = dated_suffix(&p, &s);
+        assert_eq!(d2.len(), 16, "{d2}");
+        assert!(d2.starts_with(&d));
+        let _ = std::fs::remove_dir_all(&dir);
     }
 
     #[test]

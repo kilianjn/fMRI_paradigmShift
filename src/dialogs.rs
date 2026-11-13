@@ -1243,6 +1243,98 @@ impl TestDialog {
     }
 }
 
+/// The run's data files exist already: overwrite them, add today's date to the new names, or go back.
+pub struct FileClash {
+    pub s: RunSettings,
+    pub back: RunDialog,
+    /// the suffix "Add today's date" uses
+    pub dated: String,
+    existing: Vec<String>,
+    dir: String,
+    who: String,
+    example: String,
+}
+
+#[derive(Clone, Copy, PartialEq)]
+pub enum ClashChoice {
+    Open,
+    Cancel,
+    Overwrite,
+    AddDate,
+}
+
+impl FileClash {
+    pub fn new(par: &Paradigm, s: RunSettings, back: RunDialog, existing: Vec<std::path::PathBuf>, dated: String) -> Self {
+        let names = existing.iter().filter_map(|p| p.file_name().map(|n| n.to_string_lossy().to_string())).collect();
+        let who = format!(
+            "participant {}{}, run {} of “{}”",
+            if s.sub.is_empty() { "01" } else { &s.sub },
+            if s.ses.is_empty() { String::new() } else { format!(", session {}", s.ses) },
+            s.run,
+            par.name
+        );
+        let dated_settings = RunSettings { name_suffix: dated.clone(), ..s.clone() };
+        let example = format!("{}_events.tsv", crate::runner::output_stem(par, &dated_settings));
+        FileClash { dir: s.out_dir.clone(), s, back, dated, existing: names, who, example }
+    }
+
+    pub fn ui(&mut self, ctx: &Context) -> ClashChoice {
+        let mut choice = ClashChoice::Open;
+        let out = modal(ctx, "file_clash", 560.0, |ui| {
+            title(ui, "⚠  These data files already exist");
+            ui.add_space(4.0);
+            ui.add(egui::Label::new(format!("The data of {} has already been saved in", self.who)).wrap());
+            ui.label(RichText::new(&self.dir).color(TEXT_DIM).size(12.0));
+            ui.add_space(4.0);
+            egui::Frame::new().fill(theme::BG).stroke(egui::Stroke::new(1.0, BORDER)).corner_radius(6).inner_margin(8).show(ui, |ui| {
+                ui.set_width(ui.available_width());
+                for n in self.existing.iter().take(8) {
+                    ui.label(RichText::new(n).monospace().size(12.0));
+                }
+                if self.existing.len() > 8 {
+                    ui.label(RichText::new(format!("… and {} more", self.existing.len() - 8)).color(TEXT_DIM));
+                }
+            });
+            ui.add_space(8.0);
+            ui.label(RichText::new("What should happen?").strong());
+            ui.add(
+                egui::Label::new(
+                    RichText::new(format!("Add today's date – the new files are named e.g.  {}  and the old ones stay as they are.", self.example))
+                        .color(TEXT_DIM)
+                        .size(12.5),
+                )
+                .wrap(),
+            );
+            ui.add(
+                egui::Label::new(RichText::new("Overwrite – the existing files are replaced by the new run's data.").color(TEXT_DIM).size(12.5))
+                    .wrap(),
+            );
+            ui.add(
+                egui::Label::new(RichText::new("Cancel – back to the run settings (e.g. to change the run number).").color(TEXT_DIM).size(12.5))
+                    .wrap(),
+            );
+            ui.add_space(10.0);
+            ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                if theme::colored_button(ui, "Add today's date", OK).on_hover_text(&self.example).clicked() {
+                    choice = ClashChoice::AddDate;
+                }
+                if ui.button(RichText::new("Overwrite").color(DANGER)).on_hover_text("The existing files are lost").clicked() {
+                    choice = ClashChoice::Overwrite;
+                }
+                if ui.button("Cancel").clicked() {
+                    choice = ClashChoice::Cancel;
+                }
+            });
+            Outcome::Open
+        });
+        if out == Outcome::Cancel {
+            choice = ClashChoice::Cancel; // Esc
+        }
+        choice
+    }
+}
+
+#[derive(Clone)]
 pub struct RunDialog {
     pub s: RunSettings,
     monitors: Vec<String>,

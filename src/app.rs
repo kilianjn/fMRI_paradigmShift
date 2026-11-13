@@ -8,7 +8,7 @@ use egui::{Align, Context, Key, KeyboardShortcut, Layout, Modifiers, Pos2, RichT
 
 use crate::actions::Action;
 use crate::controlroom::{CrAction, RunSession};
-use crate::dialogs::{self, AboutDialog, Confirm, FindReplace, HardwareDialog, Message, Outcome, PrefsDialog, QuickDesign, RepeatAsk, RunDialog, SaveChoice, TemplateDialog, TestDialog};
+use crate::dialogs::{self, AboutDialog, ClashChoice, Confirm, FileClash, FindReplace, HardwareDialog, Message, Outcome, PrefsDialog, QuickDesign, RepeatAsk, RunDialog, SaveChoice, TemplateDialog, TestDialog};
 use crate::selftest::TestSession;
 use crate::document::Document;
 use crate::hardware::now;
@@ -34,6 +34,7 @@ enum Modal {
     Hardware(Box<HardwareDialog>),
     Quick(Box<QuickDesign>),
     Run(Box<RunDialog>),
+    FileClash(Box<FileClash>),
     Test(Box<TestDialog>),
     Templates(Box<TemplateDialog>),
     Find(Box<FindReplace>),
@@ -1154,13 +1155,43 @@ impl App {
             },
             Modal::Run(d) => match d.ui(ctx) {
                 Outcome::Accept => {
-                    let s = d.s.clone();
+                    let mut s = d.s.clone();
+                    if s.out_dir.trim().is_empty() {
+                        s.out_dir = self.settings.prefs.data_dir.clone();
+                    }
+                    // never overwrite data by accident: ask first if this participant's run exists
+                    let par = self.present.as_ref().map(|p| &p.par).unwrap_or(&self.doc.paradigm);
+                    let existing = crate::runner::existing_outputs(par, &s);
+                    if !existing.is_empty() {
+                        let dated = crate::runner::dated_suffix(par, &s);
+                        self.modal = Some(Modal::FileClash(Box::new(FileClash::new(par, s, (**d).clone(), existing, dated))));
+                        return;
+                    }
                     self.modal = None;
                     self.start_run(ctx, s);
                     return;
                 }
                 Outcome::Cancel => keep = false,
                 _ => {}
+            },
+            Modal::FileClash(c) => match c.ui(ctx) {
+                ClashChoice::AddDate => {
+                    let s = crate::runner::RunSettings { name_suffix: c.dated.clone(), ..c.s.clone() };
+                    self.modal = None;
+                    self.start_run(ctx, s);
+                    return;
+                }
+                ClashChoice::Overwrite => {
+                    let s = c.s.clone();
+                    self.modal = None;
+                    self.start_run(ctx, s);
+                    return;
+                }
+                ClashChoice::Cancel => {
+                    self.modal = Some(Modal::Run(Box::new(c.back.clone())));
+                    return;
+                }
+                ClashChoice::Open => {}
             },
             Modal::Test(d) => match d.ui(ctx) {
                 Outcome::Accept => {
@@ -1658,6 +1689,22 @@ impl App {
                 "run_dialog" => {
                     self.open_example("hariri_face_matching");
                     self.run_paradigm(true);
+                }
+                "file_clash" => {
+                    // a run whose data exists already: the question before anything is overwritten
+                    self.open_example("hariri_face_matching");
+                    let dir = std::env::temp_dir().join("paradigmshift-demo-clash");
+                    let _ = std::fs::create_dir_all(&dir);
+                    let par = self.doc.paradigm.clone();
+                    let d = RunDialog::new(&par, &dir.to_string_lossy(), vec!["1: screen".into()]);
+                    let s = d.s.clone();
+                    let stem = crate::runner::output_stem(&par, &s);
+                    for kind in ["events.tsv", "log.tsv", "buttons.tsv", "paradigm.json"] {
+                        let _ = std::fs::write(dir.join(format!("{stem}_{kind}")), "");
+                    }
+                    let existing = crate::runner::existing_outputs(&par, &s);
+                    let dated = crate::runner::dated_suffix(&par, &s);
+                    self.modal = Some(Modal::FileClash(Box::new(FileClash::new(&par, s, d, existing, dated))));
                 }
                 "about" => {
                     self.open_example("emotional_rating");
