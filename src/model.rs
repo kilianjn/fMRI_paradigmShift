@@ -1966,8 +1966,8 @@ mod tests {
     }
 
     #[test]
-    fn loads_the_bundled_examples() {
-        let ex = Path::new(env!("CARGO_MANIFEST_DIR")).join("examples");
+    fn loads_the_demo_paradigms() {
+        let ex = Path::new(env!("CARGO_MANIFEST_DIR")).join("docs").join("demo");
         let mut n = 0;
         for e in std::fs::read_dir(ex).unwrap() {
             let p = e.unwrap().path();

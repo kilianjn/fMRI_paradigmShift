@@ -18,15 +18,12 @@ use crate::hardware::now;
 use crate::model::{self, fmt_g, fmt_time, Paradigm, FILE_SUFFIX, ParamExt};
 use crate::panels::{self, Inspector, Library};
 use crate::presets;
-use crate::prefs::{self, Settings};
+use crate::prefs::Settings;
 use crate::runner::{RunController, RunSettings};
 use crate::stimulus;
 use crate::theme::{self, hex, ACCENT, DANGER, OK, TEXT_DIM};
 use crate::timeline::{self, Timeline};
 
-mod examples {
-    include!(concat!(env!("OUT_DIR"), "/examples.rs"));
-}
 
 enum Modal {
     Message(Message),
@@ -342,34 +339,16 @@ impl App {
         self.lib.add_files(&v);
     }
 
-    fn open_example(&mut self, name: &str) {
-        let dir = prefs::data_dir().join("examples");
-        for (rel, data) in examples::EXAMPLE_FILES {
-            let p = dir.join(rel);
-            let same = std::fs::metadata(&p).map(|m| m.len() == data.len() as u64).unwrap_or(false);
-            if !same {
-                if let Some(d) = p.parent() {
-                    let _ = std::fs::create_dir_all(d);
-                }
-                let _ = std::fs::write(&p, data);
-            }
-        }
-        // screenshot tests can show any paradigm file instead (PARADIGMSHIFT_DEMO_FILE=path)
-        if let (true, Ok(f)) = (self.shot.is_some(), std::env::var("PARADIGMSHIFT_DEMO_FILE")) {
+    /// Screenshot scenes: a demo paradigm from the source tree (docs/demo) – or any file with
+    /// PARADIGMSHIFT_DEMO_FILE=path. Not part of the app for users: ready-made paradigms come from
+    /// "New from template…".
+    fn open_demo(&mut self, name: &str) {
+        if let Ok(f) = std::env::var("PARADIGMSHIFT_DEMO_FILE") {
             self.open_path(Path::new(&f));
             return;
         }
+        let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("docs").join("demo");
         self.open_path(&dir.join(format!("{name}{FILE_SUFFIX}")));
-    }
-
-    fn example_names() -> Vec<String> {
-        let mut v: Vec<String> = examples::EXAMPLE_FILES
-            .iter()
-            .filter(|(r, _)| r.ends_with(FILE_SUFFIX) && !r.contains('/'))
-            .map(|(r, _)| r.trim_end_matches(FILE_SUFFIX).to_string())
-            .collect();
-        v.sort();
-        v
     }
 
     fn autosave(&mut self) {
@@ -387,7 +366,7 @@ impl App {
 
     // ------------------------------------------------------------------ actions
     fn needs_confirm(a: &Action) -> bool {
-        matches!(a, Action::New | Action::Open(_) | Action::OpenExample(_) | Action::Templates | Action::Quit)
+        matches!(a, Action::New | Action::Open(_) | Action::Templates | Action::Quit)
     }
 
     fn perform(&mut self, ctx: &Context, a: Action, confirmed: bool) {
@@ -410,7 +389,6 @@ impl App {
                     self.open_path(&p);
                 }
             }
-            Action::OpenExample(n) => self.open_example(&n),
             Action::Save => {
                 self.save(false);
             }
@@ -893,11 +871,6 @@ impl App {
                 item!(ui, "Save as…  (own project folder)", "Ctrl+Shift+S", Action::SaveAs, true);
                 let missing = !model::missing_media(&self.doc.paradigm).is_empty();
                 item!(ui, "Find missing media…", "", Action::FindMedia, missing);
-                ui.menu_button("Open example", |ui| {
-                    for n in App::example_names() {
-                        item!(ui, &n, "", Action::OpenExample(n.clone()), true);
-                    }
-                });
                 ui.separator();
                 item!(ui, "Export onsets…", "Ctrl+E", Action::Export, true);
                 ui.separator();
@@ -1923,7 +1896,7 @@ impl App {
         if frame == 2 {
             match scene.as_str() {
                 "editor" | "bulk" | "find" | "blur" | "rating_direct" => {
-                    self.open_example("emotional_rating");
+                    self.open_demo("emotional_rating");
                     let ratings: Vec<String> = self.doc.paradigm.blocks.iter().filter(|b| b.kind == "rating").map(|b| b.id.clone()).collect();
                     if scene == "bulk" {
                         self.doc.select(ratings);
@@ -1956,7 +1929,7 @@ impl App {
                 "templates_stroop" => self.modal = Some(Modal::Templates(Box::new(TemplateDialog::new(&self.doc.paradigm.hardware, presets::default_stim_dir(), "stroop")))),
                 "hardware" => self.actions.push(Action::Hardware),
                 "quick" | "quick_event" | "quick_jitter" => {
-                    self.open_example("emotional_rating");
+                    self.open_demo("emotional_rating");
                     let pictures: Vec<String> = self.lib.media.iter().filter(|f| model::is_image(f)).cloned().collect();
                     let mut d = QuickDesign::new(&self.doc.paradigm, &pictures, self.settings.prefs.blur_previews);
                     if scene == "quick_event" {
@@ -1969,7 +1942,7 @@ impl App {
                 }
                 "prefs" => self.actions.push(Action::Preferences),
                 "panels" => {
-                    self.open_example("hariri_face_matching");
+                    self.open_demo("hariri_face_matching");
                     self.lib.closed = vec!["tasks".into()];
                     let pick = self.doc.paradigm.blocks.iter().find(|b| b.kind == "match").map(|b| (b.id.clone(), b.start + 0.1));
                     if let Some((id, t)) = pick {
@@ -1978,12 +1951,12 @@ impl App {
                     }
                 }
                 "run_dialog" => {
-                    self.open_example("hariri_face_matching");
+                    self.open_demo("hariri_face_matching");
                     self.run_paradigm(true);
                 }
                 "file_clash" => {
                     // a run whose data exists already: the question before anything is overwritten
-                    self.open_example("hariri_face_matching");
+                    self.open_demo("hariri_face_matching");
                     let dir = std::env::temp_dir().join("paradigmshift-demo-clash");
                     let _ = std::fs::create_dir_all(&dir);
                     let par = self.doc.paradigm.clone();
@@ -1998,11 +1971,11 @@ impl App {
                     self.modal = Some(Modal::FileClash(Box::new(FileClash::new(&par, s, d, existing, dated))));
                 }
                 "about" => {
-                    self.open_example("emotional_rating");
+                    self.open_demo("emotional_rating");
                     self.actions.push(Action::About);
                 }
                 "present" | "present_run" => {
-                    self.open_example("hariri_face_matching");
+                    self.open_demo("hariri_face_matching");
                     let path = self.doc.path.clone();
                     self.open_for_presenting(path);
                     if scene == "present" {
@@ -2028,7 +2001,7 @@ impl App {
                         "checkerboard" => "visual_checkerboard",
                         other => other,
                     };
-                    self.open_example(name);
+                    self.open_demo(name);
                     let pick = self.doc.paradigm.blocks.iter().find(|b| b.start > 20.0 && (b.kind == "match" || b.kind == "choice" || b.kind == "gonogo" || b.kind == "image" || b.kind == "feedback")).map(|b| (b.id.clone(), b.start + 0.1));
                     if let Some((id, t)) = pick {
                         self.doc.select(vec![id]);
@@ -2045,7 +2018,7 @@ impl App {
                     (p.len() == 2).then(|| (p[0], p[1]))
                 });
                 let example = std::env::var("PARADIGMSHIFT_DEMO_EXAMPLE").unwrap_or_else(|_| if small { "stroop".into() } else { "hariri_face_matching".into() });
-                self.open_example(&example);
+                self.open_demo(&example);
                 let s = RunSettings {
                     window_size: env_size.or(small.then_some((480.0, 360.0))),
                     out_dir: std::env::temp_dir().join("paradigmshift-demo").to_string_lossy().to_string(),

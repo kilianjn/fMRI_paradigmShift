@@ -17,7 +17,6 @@ pub enum DragPayload {
 pub enum Action {
     New,
     Open(Option<PathBuf>),
-    OpenExample(String),
     Save,
     /// save into a project folder of its own (paradigm + media/)
     SaveAs,

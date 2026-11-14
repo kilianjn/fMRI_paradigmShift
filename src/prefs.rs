@@ -17,7 +17,7 @@ pub fn config_dir() -> PathBuf {
         .unwrap_or_else(|| home_dir().join(".paradigmshift"))
 }
 
-/// Per-user data folder (placeholder pictures, unpacked examples).
+/// Per-user data folder (placeholder pictures).
 pub fn data_dir() -> PathBuf {
     project_dirs()
         .map(|p| p.data_dir().to_path_buf())

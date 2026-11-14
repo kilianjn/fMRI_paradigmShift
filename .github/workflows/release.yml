@@ -162,7 +162,7 @@ jobs:
           | macOS 11+ (Apple Silicon & Intel) | **ParadigmShift-macos-universal.zip** | Unzip, move *ParadigmShift.app* to Applications. First start: right-click → *Open* (the app is not notarised). |
           | Linux x86-64 | **ParadigmShift-linux-x86_64.tar.gz** | \`tar xzf ParadigmShift-linux-x86_64.tar.gz && ./ParadigmShift-linux-x86_64/paradigmshift\` |
 
-          The example paradigms are built in: *File → Open example*.
+          Ready-made paradigms: *File → New from template…*.
 
           Designed for compatibility with NordicNeuroLab (NNL) hardware – the SyncBox and the ResponseGrips. ParadigmShift is an independent project and is not affiliated with, endorsed, sponsored or supported by NordicNeuroLab AS; the names are used only to describe compatibility.
 
