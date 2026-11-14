@@ -8,7 +8,10 @@ use egui::{Align, Context, Key, KeyboardShortcut, Layout, Modifiers, Pos2, RichT
 
 use crate::actions::Action;
 use crate::controlroom::{CrAction, RunSession};
-use crate::dialogs::{self, AboutDialog, ClashChoice, Confirm, FileClash, FindReplace, HardwareDialog, Message, Outcome, PrefsDialog, QuickDesign, RepeatAsk, RunDialog, SaveChoice, TemplateDialog, TestDialog};
+use crate::dialogs::{
+    self, AboutDialog, ClashChoice, Confirm, FileClash, FindReplace, HardwareDialog, Message, Outcome, PrefsDialog, QuickDesign, RelinkAction, RelinkDialog,
+    RepeatAsk, RunDialog, SaveChoice, TemplateDialog, TestDialog,
+};
 use crate::selftest::TestSession;
 use crate::document::Document;
 use crate::hardware::now;
@@ -39,6 +42,10 @@ enum Modal {
     Templates(Box<TemplateDialog>),
     Find(Box<FindReplace>),
     Prefs(Box<PrefsDialog>),
+    /// media files that are not where the paradigm says
+    Relink(Box<RelinkDialog>),
+    /// "Save as…" would replace the paradigm file of another project folder
+    ReplaceProject(Confirm, PathBuf),
 }
 
 enum Popup {
@@ -211,17 +218,24 @@ impl App {
     pub fn open_path(&mut self, path: &Path) {
         match self.doc.load(path) {
             Ok(()) => {
-                self.settings.dir = path.parent().map(path_str).unwrap_or_default();
+                let parent = path.parent().map(|d| d.to_path_buf()).unwrap_or_default();
+                let base = if model::in_project_folder(path) { parent.parent().map(|d| d.to_path_buf()).unwrap_or(parent) } else { parent };
+                self.settings.dir = path_str(&base);
                 self.save_settings();
+                // media that moved together with the paradigm file are found again by themselves
+                let (found, missing) = Self::find_moved_media(&mut self.doc.paradigm, path);
+                if !found.is_empty() {
+                    self.doc.touch();
+                }
                 // the Media panel: every picture, video and sound the paradigm uses
-                let files: Vec<String> = {
-                    let mut v: Vec<String> = self.doc.paradigm.blocks.iter().flat_map(|b| b.media_files()).collect();
-                    v.sort();
-                    v.dedup();
-                    v
-                };
-                self.lib.clear();
-                self.lib.add_files(&files);
+                self.refill_media_panel();
+                if !missing.is_empty() {
+                    self.modal = Some(Modal::Relink(Box::new(RelinkDialog::new(missing, found, false))));
+                } else if !found.is_empty() {
+                    self.flash(format!("{} media file(s) were found again next to the paradigm – save to keep their new places.", found.len()));
+                } else if model::media_outside(&self.doc.paradigm, path) > 0 && !model::in_project_folder(path) {
+                    self.flash("Tip: “Save as…” puts this paradigm and all its media into one folder of its own – easy to copy to another computer.");
+                }
                 self.quick_last = None;
                 self.tl.set_playhead(0.0, false);
                 self.tl.zoom_fit();
@@ -236,7 +250,7 @@ impl App {
             (Some(p), false) => p.clone(),
             _ => {
                 let mut d = rfd::FileDialog::new()
-                    .set_title("Save paradigm")
+                    .set_title("Save paradigm – it gets a project folder of its own")
                     .add_filter("fMRI paradigm", &["json"])
                     .set_file_name(format!("{}{FILE_SUFFIX}", self.doc.paradigm.name));
                 if !self.settings.dir.is_empty() {
@@ -246,14 +260,56 @@ impl App {
                 if !path_str(&p).ends_with(".json") {
                     p = PathBuf::from(format!("{}{FILE_SUFFIX}", path_str(&p)));
                 }
-                p
+                // every project in a folder of its own: Studies/Hariri/Hariri.paradigm.json + media/
+                let target = model::project_file_for(&p);
+                let same = self.doc.path.as_ref().is_some_and(|d| model::absolute(d) == target);
+                if target.exists() && !same {
+                    let folder = target.parent().map(path_str).unwrap_or_default();
+                    let text = format!(
+                        "There already is a project “{}” in\n{folder}\n\nReplace its paradigm file with this one? Its media folder is kept \
+                         (files of the same name are not overwritten).",
+                        model::project_stem(&target)
+                    );
+                    self.modal = Some(Modal::ReplaceProject(Confirm { title: "Replace project?".into(), text, yes: "Replace".into() }, target));
+                    return false;
+                }
+                target
             }
         };
-        match self.doc.save(&path) {
+        self.save_to(&path)
+    }
+
+    /// Save to `path`. In a project folder, media from elsewhere are copied into its media folder first.
+    fn save_to(&mut self, path: &Path) -> bool {
+        let mut note = String::new();
+        if model::in_project_folder(path) {
+            let dir = path.parent().map(|d| d.to_path_buf()).unwrap_or_default();
+            match model::collect_media(&mut self.doc.paradigm, &dir) {
+                Ok(rep) => {
+                    self.lib.rename(&rep.moved);
+                    if rep.copied > 0 {
+                        note.push_str(&format!(" – {} media file{} copied into media/", rep.copied, if rep.copied == 1 { "" } else { "s" }));
+                    }
+                    if !rep.missing.is_empty() {
+                        note.push_str(&format!(" – {} media file(s) are missing (File → Find missing media…)", rep.missing.len()));
+                    }
+                }
+                Err(e) => {
+                    self.message("Could not copy the media into the project folder", e);
+                    return false;
+                }
+            }
+        }
+        match self.doc.save(path) {
             Ok(()) => {
-                self.settings.dir = path.parent().map(path_str).unwrap_or_default();
+                // the next "Save as…" starts next to this project, not inside its folder
+                let parent = path.parent().map(|d| d.to_path_buf()).unwrap_or_default();
+                let base = if model::in_project_folder(path) { parent.parent().map(|d| d.to_path_buf()).unwrap_or(parent) } else { parent };
+                self.settings.dir = path_str(&base);
                 self.save_settings();
-                self.flash(format!("Saved {}", path.display()));
+                let name = path.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
+                let place = if model::in_project_folder(path) { " in its project folder" } else { "" };
+                self.flash(format!("Saved {name}{place}{note}"));
                 true
             }
             Err(e) => {
@@ -261,6 +317,29 @@ impl App {
                 false
             }
         }
+    }
+
+    /// Media files that are not where the paradigm says: look for them next to the paradigm file
+    /// (e.g. in its media folder after the whole folder was copied). Returns (found, still missing).
+    fn find_moved_media(par: &mut Paradigm, path: &Path) -> (Vec<(String, String)>, Vec<String>) {
+        let missing = model::missing_media(par);
+        if missing.is_empty() {
+            return (vec![], vec![]);
+        }
+        let dir = model::absolute(path).parent().map(|d| d.to_path_buf()).unwrap_or_default();
+        let found = model::find_media(&missing, &[dir]);
+        model::relink_media(par, &found);
+        let still = model::missing_media(par);
+        (found, still)
+    }
+
+    /// The Media panel again from the blocks.
+    fn refill_media_panel(&mut self) {
+        let mut v: Vec<String> = self.doc.paradigm.blocks.iter().flat_map(|b| b.media_files()).collect();
+        v.sort();
+        v.dedup();
+        self.lib.clear();
+        self.lib.add_files(&v);
     }
 
     fn open_example(&mut self, name: &str) {
@@ -337,6 +416,12 @@ impl App {
             }
             Action::SaveAs => {
                 self.save(true);
+            }
+            Action::FindMedia => {
+                let missing = model::missing_media(&self.doc.paradigm);
+                if !missing.is_empty() {
+                    self.modal = Some(Modal::Relink(Box::new(RelinkDialog::new(missing, vec![], false))));
+                }
             }
             Action::Undo => self.doc.undo(),
             Action::Redo => self.doc.redo(),
@@ -569,13 +654,19 @@ impl App {
             }
         };
         match crate::model::Paradigm::load(&path) {
-            Ok(par) => {
+            Ok(mut par) => {
                 self.settings.dir = path.parent().map(path_str).unwrap_or_default();
                 self.save_settings();
                 self.playing = None;
+                // moved media are looked for next to the file (only for these runs – the file is not changed)
+                let (found, missing) = Self::find_moved_media(&mut par, &path);
                 let problems = par.validate();
                 self.present = Some(Presenter { par, path, problems, runs: 0, last: None });
-                self.actions.push(Action::Run);
+                if missing.is_empty() {
+                    self.actions.push(Action::Run);
+                } else {
+                    self.modal = Some(Modal::Relink(Box::new(RelinkDialog::new(missing, found, true))));
+                }
             }
             Err(e) => self.message("Could not open", e),
         }
@@ -799,7 +890,9 @@ impl App {
                 item!(ui, "Open…", "Ctrl+O", Action::Open(None), true);
                 item!(ui, "Open for presenting…", "Ctrl+Shift+O", Action::OpenForPresenting(None), true);
                 item!(ui, "Save", "Ctrl+S", Action::Save, true);
-                item!(ui, "Save as…", "Ctrl+Shift+S", Action::SaveAs, true);
+                item!(ui, "Save as…  (own project folder)", "Ctrl+Shift+S", Action::SaveAs, true);
+                let missing = !model::missing_media(&self.doc.paradigm).is_empty();
+                item!(ui, "Find missing media…", "", Action::FindMedia, missing);
                 ui.menu_button("Open example", |ui| {
                     for n in App::example_names() {
                         item!(ui, &n, "", Action::OpenExample(n.clone()), true);
@@ -1378,6 +1471,44 @@ impl App {
                     self.apply_prefs(ctx);
                     self.save_settings();
                     keep = false;
+                }
+                Outcome::Cancel => keep = false,
+                _ => {}
+            },
+            Modal::Relink(d) => match d.ui(ctx) {
+                RelinkAction::Search => {
+                    if let Some(dir) = dialogs::pick_folder("Folder with the missing media files", &self.settings.dir) {
+                        let found = model::find_media(&d.missing, &[PathBuf::from(dir)]);
+                        if d.present {
+                            if let Some(pr) = self.present.as_mut() {
+                                model::relink_media(&mut pr.par, &found);
+                                pr.problems = pr.par.validate();
+                            }
+                        } else if !found.is_empty() {
+                            model::relink_media(&mut self.doc.paradigm, &found);
+                            self.lib.rename(&found);
+                            self.doc.touch();
+                        }
+                        d.add_found(found);
+                    }
+                }
+                RelinkAction::SaveAsProject => {
+                    keep = false;
+                    self.actions.push(Action::SaveAs);
+                }
+                RelinkAction::Close => {
+                    keep = false;
+                    if d.present {
+                        self.actions.push(Action::Run);
+                    }
+                }
+                RelinkAction::Open => {}
+            },
+            Modal::ReplaceProject(c, target) => match c.ui(ctx) {
+                Outcome::Accept => {
+                    keep = false;
+                    let target = target.clone();
+                    self.save_to(&target);
                 }
                 Outcome::Cancel => keep = false,
                 _ => {}

@@ -1042,6 +1042,221 @@ impl Paradigm {
     }
 }
 
+// --------------------------------------------------------------------------
+// Project folders: a paradigm and its media in one folder of their own
+// --------------------------------------------------------------------------
+/// The media sub-folder of a project folder.
+pub const MEDIA_DIR: &str = "media";
+
+/// "Hariri" for ".../Hariri.paradigm.json".
+pub fn project_stem(path: &Path) -> String {
+    let name = path.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
+    let lower = name.to_lowercase();
+    for suffix in [FILE_SUFFIX, ".json"] {
+        if lower.ends_with(suffix) && name.len() > suffix.len() {
+            return name[..name.len() - suffix.len()].to_string();
+        }
+    }
+    name
+}
+
+/// Is the paradigm file in a project folder of its own (a folder with the project's name)?
+pub fn in_project_folder(path: &Path) -> bool {
+    let stem = project_stem(path);
+    absolute(path).parent().and_then(|d| d.file_name()).is_some_and(|n| n.to_string_lossy().eq_ignore_ascii_case(&stem))
+}
+
+/// Where "Save as…" puts a paradigm saved as `chosen`: into a folder of its own,
+/// ".../Studies/Hariri.paradigm.json" → ".../Studies/Hariri/Hariri.paradigm.json".
+pub fn project_file_for(chosen: &Path) -> PathBuf {
+    let chosen = absolute(chosen);
+    if in_project_folder(&chosen) {
+        return chosen;
+    }
+    let stem = project_stem(&chosen);
+    let parent = chosen.parent().map(|p| p.to_path_buf()).unwrap_or_default();
+    parent.join(&stem).join(chosen.file_name().unwrap_or_default())
+}
+
+/// What collecting the media into a project folder did.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct CollectReport {
+    /// files copied into the media folder
+    pub copied: usize,
+    /// media files that could not be found (left as they are)
+    pub missing: Vec<String>,
+    /// (old path, new path) of every file the blocks now use from the media folder
+    pub moved: Vec<(String, String)>,
+}
+
+/// The same bytes?
+fn same_content(a: &Path, b: &Path) -> bool {
+    use std::io::Read;
+    let (Ok(ma), Ok(mb)) = (std::fs::metadata(a), std::fs::metadata(b)) else { return false };
+    if ma.len() != mb.len() {
+        return false;
+    }
+    let (Ok(fa), Ok(fb)) = (std::fs::File::open(a), std::fs::File::open(b)) else { return false };
+    let (mut ra, mut rb) = (std::io::BufReader::new(fa), std::io::BufReader::new(fb));
+    let (mut ba, mut bb) = (vec![0u8; 65536], vec![0u8; 65536]);
+    loop {
+        let na = ra.read(&mut ba).unwrap_or(0);
+        if na == 0 {
+            return true;
+        }
+        if rb.read_exact(&mut bb[..na]).is_err() || ba[..na] != bb[..na] {
+            return false;
+        }
+    }
+}
+
+/// The media every block uses, each once.
+fn used_media(par: &Paradigm) -> Vec<String> {
+    let mut v: Vec<String> = vec![];
+    for b in &par.blocks {
+        for f in b.media_files() {
+            if !v.contains(&f) {
+                v.push(f);
+            }
+        }
+    }
+    v
+}
+
+/// Point the blocks at other files: (old path, new path).
+pub fn relink_media(par: &mut Paradigm, map: &[(String, String)]) -> usize {
+    let mut n = 0;
+    for b in par.blocks.iter_mut() {
+        for key in IMAGE_PARAMS {
+            if let Some(Value::String(p)) = b.params.get(*key) {
+                if let Some((_, new)) = map.iter().find(|(old, _)| old == p) {
+                    b.params.insert(key.to_string(), Value::String(new.clone()));
+                    n += 1;
+                }
+            }
+        }
+    }
+    n
+}
+
+/// Copy every media file the paradigm uses from outside `dir` into `dir/media` and point the blocks
+/// at the copies. Files already inside the folder stay where they are; a file of the same name and
+/// content in the media folder is used again; a different one of the same name gets " (2)" etc.
+pub fn collect_media(par: &mut Paradigm, dir: &Path) -> Result<CollectReport, String> {
+    let dir = absolute(dir);
+    let media = dir.join(MEDIA_DIR);
+    let mut rep = CollectReport::default();
+    for f in used_media(par) {
+        let src = absolute(Path::new(&f));
+        if !src.is_file() {
+            rep.missing.push(f);
+            continue;
+        }
+        if src.starts_with(&dir) {
+            continue;
+        }
+        std::fs::create_dir_all(&media).map_err(|e| format!("{}: {e}", media.display()))?;
+        let name = src.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_else(|| "file".into());
+        let (stem, ext) = match name.rsplit_once('.') {
+            Some((s, e)) if !s.is_empty() => (s.to_string(), format!(".{e}")),
+            _ => (name.clone(), String::new()),
+        };
+        let mut k = 1;
+        let target = loop {
+            let cand = media.join(if k == 1 { name.clone() } else { format!("{stem} ({k}){ext}") });
+            if !cand.exists() {
+                std::fs::copy(&src, &cand).map_err(|e| format!("{} → {}: {e}", src.display(), cand.display()))?;
+                rep.copied += 1;
+                break cand;
+            }
+            if same_content(&src, &cand) {
+                break cand;
+            }
+            k += 1;
+        };
+        rep.moved.push((f, target.to_string_lossy().to_string()));
+    }
+    relink_media(par, &rep.moved);
+    Ok(rep)
+}
+
+/// Media files the paradigm uses that are not there.
+pub fn missing_media(par: &Paradigm) -> Vec<String> {
+    used_media(par).into_iter().filter(|f| !Path::new(f).is_file()).collect()
+}
+
+/// How many of the paradigm's (existing) media files lie outside the folder of `path`.
+pub fn media_outside(par: &Paradigm, path: &Path) -> usize {
+    let dir = absolute(path).parent().map(|p| p.to_path_buf()).unwrap_or_default();
+    used_media(par).iter().filter(|f| Path::new(f).is_file() && !absolute(Path::new(f)).starts_with(&dir)).count()
+}
+
+/// The file name of a stored path – with "/" or "\" (a path from another computer).
+fn file_name_of(p: &str) -> String {
+    p.rsplit(['/', '\\']).next().unwrap_or(p).to_string()
+}
+
+/// Look for missing files by name in `roots` and their sub-folders. With several files of the same
+/// name, the one whose folders match the old path best is taken; a tie stays unresolved.
+/// Returns (old path, found path).
+pub fn find_media(missing: &[String], roots: &[PathBuf]) -> Vec<(String, String)> {
+    let wanted: HashSet<String> = missing.iter().map(|m| file_name_of(m).to_lowercase()).collect();
+    let mut index: HashMap<String, Vec<PathBuf>> = HashMap::new();
+    let mut stack: Vec<(PathBuf, usize)> = roots.iter().map(|r| (r.clone(), 0)).collect();
+    let mut seen_dirs: HashSet<PathBuf> = HashSet::new();
+    let mut files = 0usize;
+    while let Some((dir, depth)) = stack.pop() {
+        if files > 100_000 || !seen_dirs.insert(absolute(&dir)) {
+            continue;
+        }
+        let Ok(rd) = std::fs::read_dir(&dir) else { continue };
+        for e in rd.flatten() {
+            let path = e.path();
+            let name = e.file_name().to_string_lossy().to_string();
+            if name.starts_with('.') {
+                continue;
+            }
+            let Ok(ft) = e.file_type() else { continue };
+            if ft.is_dir() {
+                if depth < 8 {
+                    stack.push((path, depth + 1));
+                }
+            } else {
+                files += 1;
+                let key = name.to_lowercase();
+                if wanted.contains(&key) {
+                    index.entry(key).or_default().push(path);
+                }
+            }
+        }
+    }
+    // how many folders at the end of both paths agree
+    let tail_score = |old: &str, cand: &Path| -> usize {
+        let a: Vec<String> = old.split(['/', '\\']).rev().skip(1).map(|s| s.to_lowercase()).collect();
+        let b: Vec<String> = cand.components().rev().skip(1).map(|c| c.as_os_str().to_string_lossy().to_lowercase()).collect();
+        a.iter().zip(&b).take_while(|(x, y)| x == y).count()
+    };
+    let mut out = vec![];
+    for m in missing {
+        let Some(cands) = index.get(&file_name_of(m).to_lowercase()) else { continue };
+        let mut cands = cands.clone();
+        cands.sort();
+        cands.dedup();
+        let best = if cands.len() == 1 {
+            Some(cands[0].clone())
+        } else {
+            let scores: Vec<usize> = cands.iter().map(|c| tail_score(m, c)).collect();
+            let top = scores.iter().copied().max().unwrap_or(0);
+            let winners: Vec<&PathBuf> = cands.iter().zip(&scores).filter(|(_, s)| **s == top).map(|(c, _)| c).collect();
+            if winners.len() == 1 { Some(winners[0].clone()) } else { None }
+        };
+        if let Some(b) = best {
+            out.push((m.clone(), b.to_string_lossy().to_string()));
+        }
+    }
+    out
+}
+
 pub fn round4(x: f64) -> f64 {
     (x * 10000.0).round() / 10000.0
 }
@@ -1881,6 +2096,62 @@ mod tests {
         assert!(parse_jitter_list("2, abc", 1.0).is_err());
         assert!(parse_jitter_list("", 1.0).is_err());
         assert_eq!(compact_values(&[2.0, 2.0, 3.5]), vec![(2.0, 2), (3.5, 1)]);
+    }
+
+    #[test]
+    fn project_folders_collect_and_find_media() {
+        let root = std::env::temp_dir().join(format!("ps_project_test_{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&root);
+        let src = root.join("stimuli");
+        std::fs::create_dir_all(src.join("faces")).unwrap();
+        std::fs::create_dir_all(src.join("other")).unwrap();
+        std::fs::write(src.join("faces/a.png"), b"AAA").unwrap();
+        std::fs::write(src.join("other/a.png"), b"BBBB").unwrap(); // same name, other picture
+        std::fs::write(src.join("b.png"), b"BB").unwrap();
+        // names and folders
+        let chosen = root.join("Studies/Hariri.paradigm.json");
+        assert_eq!(project_stem(&chosen), "Hariri");
+        assert!(!in_project_folder(&chosen));
+        let file = project_file_for(&chosen);
+        assert_eq!(file, absolute(&root.join("Studies/Hariri/Hariri.paradigm.json")));
+        assert!(in_project_folder(&file));
+        assert_eq!(project_file_for(&file), file);
+        // a paradigm with media from elsewhere
+        let mut p = Paradigm::default();
+        let s = |x: &Path| x.to_string_lossy().to_string();
+        p.blocks.push(Block::create("image", 0.0, None).with(json!({"path": s(&src.join("faces/a.png"))})));
+        p.blocks.push(Block::create("image", 4.0, None).with(json!({"path": s(&src.join("other/a.png"))})));
+        p.blocks.push(Block::create("image", 8.0, None).with(json!({"path": s(&src.join("b.png"))})));
+        p.blocks.push(Block::create("image", 12.0, None).with(json!({"path": s(&src.join("b.png"))})));
+        p.blocks.push(Block::create("image", 16.0, None).with(json!({"path": s(&root.join("gone.png"))})));
+        let dir = file.parent().unwrap().to_path_buf();
+        let rep = collect_media(&mut p, &dir).unwrap();
+        assert_eq!(rep.copied, 3);
+        assert_eq!(rep.missing.len(), 1);
+        let media = dir.join(MEDIA_DIR);
+        assert_eq!(std::fs::read(media.join("a.png")).unwrap(), b"AAA");
+        assert_eq!(std::fs::read(media.join("a (2).png")).unwrap(), b"BBBB");
+        assert!(p.blocks[2].params.s("path", "").ends_with("b.png") && p.blocks[2].params.s("path", "") == p.blocks[3].params.s("path", ""));
+        // saving again copies nothing; saved paths are "media/…"
+        assert_eq!(collect_media(&mut p, &dir).unwrap().copied, 0);
+        p.save(&file).unwrap();
+        let text = std::fs::read_to_string(&file).unwrap();
+        assert!(text.contains("\"media/a.png\"") && text.contains("\"media/a (2).png\""), "{text}");
+        // the whole folder moved elsewhere: everything is still found
+        let moved = root.join("USB/Hariri");
+        std::fs::create_dir_all(root.join("USB")).unwrap();
+        std::fs::rename(&dir, &moved).unwrap();
+        let q = Paradigm::load(&moved.join("Hariri.paradigm.json")).unwrap();
+        assert_eq!(missing_media(&q), vec![s(&root.join("gone.png"))]);
+        // finding moved files by name; with two candidates the folders decide
+        let old_a = "C:\\Users\\x\\stimuli\\faces\\a.png".to_string();
+        let found = find_media(&[old_a.clone(), "/old/place/b.png".into(), "/nowhere/zzz.png".into()], &[src.clone()]);
+        assert!(found.contains(&(old_a, s(&src.join("faces/a.png")))), "{found:?}");
+        assert!(found.iter().any(|(o, n)| o == "/old/place/b.png" && n.ends_with("b.png")));
+        assert_eq!(found.len(), 2);
+        // a tie (no folder hint) stays unresolved
+        assert!(find_media(&["/x/a.png".to_string()], &[src.clone()]).is_empty());
+        let _ = std::fs::remove_dir_all(&root);
     }
 
     #[test]

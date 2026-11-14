@@ -19,7 +19,10 @@ pub enum Action {
     Open(Option<PathBuf>),
     OpenExample(String),
     Save,
+    /// save into a project folder of its own (paradigm + media/)
     SaveAs,
+    /// look for media files that are not where the paradigm says
+    FindMedia,
     Undo,
     Redo,
     Templates,

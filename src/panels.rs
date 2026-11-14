@@ -358,6 +358,18 @@ impl Library {
         n - self.media.len()
     }
 
+    /// Files that moved (e.g. copied into the project folder): (old, new).
+    pub fn rename(&mut self, map: &[(String, String)]) {
+        for f in self.media.iter_mut() {
+            if let Some((_, new)) = map.iter().find(|(o, _)| o == f) {
+                *f = new.clone();
+            }
+        }
+        let mut seen = std::collections::HashSet::new();
+        self.media.retain(|f| seen.insert(f.clone()));
+        self.media_sel.clear();
+    }
+
     pub fn selected_files(&self) -> Vec<String> {
         let mut idx = self.media_sel.clone();
         idx.sort_unstable();

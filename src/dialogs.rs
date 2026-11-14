@@ -196,6 +196,111 @@ impl Confirm {
     }
 }
 
+// =============================================================================
+// Missing media files: find them again
+// =============================================================================
+#[derive(PartialEq, Clone, Copy)]
+pub enum RelinkAction {
+    Open,
+    /// look in a folder the user picks
+    Search,
+    /// save the project into a folder of its own
+    SaveAsProject,
+    Close,
+}
+
+pub struct RelinkDialog {
+    /// still missing
+    pub missing: Vec<String>,
+    /// found again (old, new)
+    pub found: Vec<(String, String)>,
+    /// presentation mode: links change only for these runs
+    pub present: bool,
+    /// the last folder searched found nothing new
+    pub nothing_new: bool,
+}
+
+impl RelinkDialog {
+    pub fn new(missing: Vec<String>, found: Vec<(String, String)>, present: bool) -> Self {
+        RelinkDialog { missing, found, present, nothing_new: false }
+    }
+
+    /// Files found in a searched folder.
+    pub fn add_found(&mut self, map: Vec<(String, String)>) {
+        self.nothing_new = map.is_empty();
+        self.missing.retain(|m| !map.iter().any(|(o, _)| o == m));
+        self.found.extend(map);
+    }
+
+    pub fn ui(&mut self, ctx: &Context) -> RelinkAction {
+        let mut act = RelinkAction::Open;
+        let out = modal(ctx, "relink", 640.0, |ui| {
+            let n = self.missing.len();
+            title(ui, if n > 0 { "Missing media files" } else { "All media files found" });
+            let intro = if n > 0 {
+                format!(
+                    "{n} picture/video/sound file{} of this paradigm can't be found – e.g. because the project was copied from another \
+                     computer. Choose the folder that contains them: all files with matching names are found at once, also in its sub-folders.",
+                    if n == 1 { "" } else { "s" }
+                )
+            } else if self.present {
+                "Every media file is there again. The paradigm file itself is not changed – the new places are used for these runs.".to_string()
+            } else {
+                "Every media file is there again. Save to keep the new places – “Save as project folder…” puts the paradigm and all its \
+                 media into one folder of its own, so it can simply be copied to another computer."
+                    .to_string()
+            };
+            ui.add(egui::Label::new(intro).wrap());
+            ui.add_space(6.0);
+            egui::Frame::new().fill(theme::BG).stroke(egui::Stroke::new(1.0, BORDER)).corner_radius(6).inner_margin(8).show(ui, |ui| {
+                ui.set_width(ui.available_width());
+                egui::ScrollArea::vertical().max_height(220.0).auto_shrink([false, true]).show(ui, |ui| {
+                    let name = |p: &str| p.rsplit(['/', '\\']).next().unwrap_or(p).to_string();
+                    let folder = |p: &str| p.rsplit_once(['/', '\\']).map(|x| x.0.to_string()).unwrap_or_default();
+                    for m in &self.missing {
+                        ui.horizontal(|ui| {
+                            ui.label(RichText::new("✗").color(DANGER));
+                            ui.label(RichText::new(name(m)).strong());
+                            ui.add(egui::Label::new(RichText::new(folder(m)).color(TEXT_DIM).size(11.5)).truncate()).on_hover_text(m);
+                        });
+                    }
+                    for (o, f) in &self.found {
+                        ui.horizontal(|ui| {
+                            ui.label(RichText::new("✓").color(OK));
+                            ui.label(RichText::new(name(o)).strong());
+                            ui.add(egui::Label::new(RichText::new(format!("→ {}", folder(f))).color(TEXT_DIM).size(11.5)).truncate())
+                                .on_hover_text(format!("was: {o}\nnow: {f}"));
+                        });
+                    }
+                });
+            });
+            if self.nothing_new && n > 0 {
+                ui.label(RichText::new("No missing file was found in that folder – try another one.").color(ACCENT).size(12.0));
+            }
+            ui.add_space(8.0);
+            ui.horizontal(|ui| {
+                if n > 0 && ui.add(egui::Button::new(RichText::new("Search in folder…").font(theme::bold(13.5)).color(hex("#1B1B1B"))).fill(ACCENT)).clicked() {
+                    act = RelinkAction::Search;
+                }
+                ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                    let close = if n == 0 { "Done" } else if self.present { "Continue without them" } else { "Close" };
+                    if ui.button(close).clicked() {
+                        act = RelinkAction::Close;
+                    }
+                    if !self.present && !self.found.is_empty() && ui.button("Save as project folder…").on_hover_text("The paradigm and all its media into one folder of its own").clicked() {
+                        act = RelinkAction::SaveAsProject;
+                    }
+                });
+            });
+            Outcome::Open
+        });
+        if out == Outcome::Cancel {
+            act = RelinkAction::Close;
+        }
+        act
+    }
+}
+
 #[derive(PartialEq, Clone, Copy)]
 pub enum SaveChoice {
     Open,
