@@ -9,13 +9,13 @@ use egui::{Align, Context, Key, KeyboardShortcut, Layout, Modifiers, Pos2, RichT
 use crate::actions::Action;
 use crate::controlroom::{CrAction, RunSession};
 use crate::dialogs::{
-    self, AboutDialog, ClashChoice, Confirm, FileClash, FindReplace, HardwareDialog, Message, Outcome, PrefsDialog, QuickDesign, RelinkAction, RelinkDialog,
+    self, AboutDialog, CheckAction, CheckDialog, ClashChoice, Confirm, FileClash, FindReplace, HardwareDialog, Message, Outcome, PrefsDialog, QuickDesign, RelinkAction, RelinkDialog,
     RepeatAsk, RunDialog, SaveChoice, TemplateDialog, TestDialog,
 };
 use crate::selftest::TestSession;
 use crate::document::Document;
 use crate::hardware::now;
-use crate::model::{self, fmt_g, fmt_time, Paradigm, FILE_SUFFIX, ParamExt};
+use crate::model::{self, fmt_g, fmt_time, Fix, Paradigm, FILE_SUFFIX, ParamExt};
 use crate::panels::{self, Inspector, Library};
 use crate::presets;
 use crate::prefs::Settings;
@@ -41,6 +41,8 @@ enum Modal {
     Prefs(Box<PrefsDialog>),
     /// media files that are not where the paradigm says
     Relink(Box<RelinkDialog>),
+    /// "Check paradigm": problems with one-click fixes
+    Check(Box<CheckDialog>),
     /// "Save as…" would replace the paradigm file of another project folder
     ReplaceProject(Confirm, PathBuf),
 }
@@ -562,21 +564,7 @@ impl App {
     }
 
     fn validate(&mut self) {
-        let par = &self.doc.paradigm;
-        let problems = par.validate();
-        let off_grid = par.blocks.iter().filter(|b| par.tr > 0.0 && (b.start / par.tr - (b.start / par.tr).round()).abs() > 1e-6).count();
-        let mut msg = if problems.is_empty() {
-            "✓ No problems found.".to_string()
-        } else {
-            problems.iter().map(|p| format!("• {p}")).collect::<Vec<_>>().join("\n")
-        };
-        if off_grid > 0 {
-            msg.push_str(&format!(
-                "\n\nℹ {off_grid} block(s) start between volumes. That is fine for event-related designs (jitter), but unusual \
-                 for block designs."
-            ));
-        }
-        self.message("Check paradigm", msg);
+        self.modal = Some(Modal::Check(Box::new(CheckDialog::new(&self.doc.paradigm))));
     }
 
     fn run_paradigm(&mut self, checked: bool) {
@@ -1476,6 +1464,42 @@ impl App {
                     }
                 }
                 RelinkAction::Open => {}
+            },
+            Modal::Check(d) => match d.ui(ctx) {
+                CheckAction::Fix(Fix::FindMedia) => {
+                    keep = false;
+                    self.actions.push(Action::FindMedia);
+                }
+                CheckAction::Fix(Fix::OpenAudio) => {
+                    keep = false;
+                    let mut h = HardwareDialog::new(ctx, &self.doc.paradigm.hardware, self.doc.paradigm.tr);
+                    h.open_tab(2);
+                    self.modal = Some(Modal::Hardware(Box::new(h)));
+                }
+                CheckAction::Fix(fix) => {
+                    let mut done = false;
+                    self.doc.edit(|par| done = par.apply_fix(&fix));
+                    if done {
+                        d.fixed += 1;
+                    }
+                    d.refresh(&self.doc.paradigm);
+                }
+                CheckAction::FixOverlaps => {
+                    let mut n = 0;
+                    self.doc.edit(|par| n = par.fix_overlaps());
+                    d.fixed += n;
+                    d.refresh(&self.doc.paradigm);
+                }
+                CheckAction::Show(id) => {
+                    keep = false;
+                    if let Some(b) = self.doc.paradigm.blocks.iter().find(|b| b.id == id) {
+                        let t = b.start + (b.duration / 2.0).min(0.05);
+                        self.doc.select(vec![id.clone()]);
+                        self.tl.set_playhead(t, true);
+                    }
+                }
+                CheckAction::Close => keep = false,
+                CheckAction::Open => {}
             },
             Modal::ReplaceProject(c, target) => match c.ui(ctx) {
                 Outcome::Accept => {

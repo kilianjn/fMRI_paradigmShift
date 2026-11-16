@@ -122,6 +122,13 @@ three times). Every picture needs exactly one length: if the numbers don't add u
 dialog says so, *Fit to N pictures* scales them, and the timeline can't be built until they do. The lengths are
 shuffled; *All equally often* goes back to the even distribution.
 
+**Check paradigm** (Ctrl+K, or click the issue count in the status bar) lists every problem – and offers a fix where
+one click can solve it: an overlap of a few milliseconds is solved by shortening the earlier block; a bigger one by
+moving the later block and everything after it back (all durations stay) or, as an alternative, by shortening;
+*Fix all overlaps* does them all at once. Missing media files lead to *Find missing media…*, a silent sound output to
+*Hardware → Audio*. **Show** selects the block in the timeline. Every fix can be undone with Ctrl+Z. Overlaps below
+1 ms are rounding and don't count (they are far below one screen frame).
+
 **Unpleasant pictures:** *Options → Blur picture previews* (Ctrl+Shift+B) blurs every picture in the editor; a
 separate preference blurs the control-room mirror. The participant's screen always shows the real pictures.
 

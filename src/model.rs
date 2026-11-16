@@ -175,6 +175,9 @@ pub const STIMULUS_KINDS: &[&str] =
     &["fixation", "image", "video", "audio", "rating", "text", "rest", "match", "gonogo", "choice", "feedback"];
 /// Params that hold picture files.
 pub const IMAGE_PARAMS: &[&str] = &["path", "top", "left", "right", "flicker_path"];
+/// Blocks that overlap by less than this (s) don't count as overlapping: far below one screen
+/// frame, it is only rounding.
+pub const OVERLAP_EPS: f64 = 0.001;
 pub const NOGO_COLOR: &str = "#E5484D";
 
 /// Preference-driven defaults for *new* blocks, e.g. rating → {"mode": "cursor"} (see prefs.rs).
@@ -452,11 +455,7 @@ impl Block {
     }
 
     pub fn overlaps(&self, other: &Block) -> bool {
-        let eps = 1e-6;
-        self.track == other.track
-            && self.id != other.id
-            && self.start < other.end() - eps
-            && other.start < self.end() - eps
+        self.track == other.track && self.id != other.id && self.start < other.end() - OVERLAP_EPS && other.start < self.end() - OVERLAP_EPS
     }
 
     pub fn is_scored_trial(&self) -> bool {
@@ -889,49 +888,120 @@ impl Paradigm {
         }
     }
 
+    /// The problems as text (status bar, run check, tests).
     pub fn validate(&self) -> Vec<String> {
-        let mut problems = vec![];
+        self.issues().into_iter().map(|i| i.text).collect()
+    }
+
+    /// The problems – each with the block it is about and, where possible, fixes that one click applies.
+    pub fn issues(&self) -> Vec<Issue> {
+        let mut out = vec![];
         let mut bl: Vec<&Block> = self.blocks.iter().collect();
         bl.sort_by(|a, b| a.start.total_cmp(&b.start));
-        for b in bl {
+        let issue = |b: &Block, text: String, fixes: Vec<(String, Fix)>| Issue { text, block: Some(b.id.clone()), fixes };
+        let find_media = || vec![("Find missing media…".to_string(), Fix::FindMedia)];
+        for (j, b) in bl.iter().enumerate() {
             let place = format!("{} @ {:.2}s", b.display_label(), b.start);
             let p = &b.params;
             if b.kind == "image" && p.nonempty("path").is_none() {
-                problems.push(format!("{place}: no image chosen"));
+                out.push(issue(b, format!("{place}: no image chosen"), vec![]));
             }
             if (b.kind == "video" || b.kind == "audio") && p.nonempty("path").is_none() {
-                problems.push(format!("{place}: no {} file chosen", b.kind));
+                out.push(issue(b, format!("{place}: no {} file chosen", b.kind), vec![]));
             }
             if b.kind == "video" || b.kind == "audio" {
                 if let Some(f) = p.nonempty("path") {
                     if !Path::new(&f).exists() {
-                        problems.push(format!("{place}: {} file not found", b.kind));
+                        out.push(issue(b, format!("{place}: {} file not found", b.kind), find_media()));
                     }
                 }
             }
             if b.kind == "choice" && p.nonempty("text").is_none() && p.nonempty("path").is_none() {
-                problems.push(format!("{place}: choice trial shows nothing (no text or picture)"));
+                out.push(issue(b, format!("{place}: choice trial shows nothing (no text or picture)"), vec![]));
             }
             if b.kind == "feedback" && self.previous_scored(b).is_none() {
-                problems.push(format!("{place}: feedback has no scored trial before it"));
+                out.push(issue(b, format!("{place}: feedback has no scored trial before it"), vec![]));
             }
             if b.kind == "match" && !["top", "left", "right"].iter().all(|k| p.nonempty(k).is_some()) {
-                problems.push(format!("{place}: needs a top, left and right picture"));
+                out.push(issue(b, format!("{place}: needs a top, left and right picture"), vec![]));
             }
             if b.image_files().iter().any(|f| !Path::new(f).exists()) {
-                problems.push(format!("{place}: image file not found"));
+                out.push(issue(b, format!("{place}: image file not found"), find_media()));
             }
-            if self.has_overlap(b) {
-                problems.push(format!("{place}: overlaps another block"));
+            // overlap: the earlier block on the same track that reaches furthest into this one
+            let prev = bl[..j].iter().filter(|a| a.track == b.track && a.end() > b.start + OVERLAP_EPS).max_by(|x, y| x.end().total_cmp(&y.end()));
+            if let Some(a) = prev {
+                let by = round4(a.end() - b.start);
+                let amount = if by < 0.01 { format!("{:.1} ms", by * 1000.0) } else { format!("{} s", fmt_g(round_to(by, 3))) };
+                let mut fixes = vec![];
+                let trimmed = round4(b.start - a.start);
+                let shift = (format!("Move “{}” and what follows {amount} later", b.display_label()), Fix::ShiftFrom { id: b.id.clone(), by });
+                let trim = (format!("Shorten “{}” by {amount}", a.display_label()), Fix::Trim { id: a.id.clone(), end: b.start });
+                // a tiny overlap: shorten the earlier block (nobody sees that); a bigger one: keep all
+                // durations and make room – or shorten, if that still leaves the earlier block a sensible length
+                if by < 0.1 && trimmed >= 0.05 {
+                    fixes.push(trim);
+                    fixes.push(shift);
+                } else {
+                    fixes.push(shift);
+                    if trimmed >= 0.05 {
+                        fixes.push(trim);
+                    }
+                }
+                out.push(Issue {
+                    text: format!("{} @ {:.2}s overlaps {} @ {:.2}s by {amount}", a.display_label(), a.start, b.display_label(), b.start),
+                    block: Some(b.id.clone()),
+                    fixes,
+                });
             }
         }
         let sounds = self.blocks.iter().filter(|b| b.kind == "audio").count();
         if sounds > 0 && self.hardware.audio_device.is_empty() {
-            problems.push(format!(
-                "Sound is off: {sounds} audio block(s) will be silent – choose a sound output in Hardware → Audio"
-            ));
+            out.push(Issue {
+                text: format!("Sound is off: {sounds} audio block(s) will be silent – choose a sound output in Hardware → Audio"),
+                block: None,
+                fixes: vec![("Open Hardware → Audio".into(), Fix::OpenAudio)],
+            });
         }
-        problems
+        out
+    }
+
+    /// Apply a fix that changes the paradigm (shorten / make room). Returns false for fixes that need
+    /// a dialog (finding media, choosing a sound output).
+    pub fn apply_fix(&mut self, fix: &Fix) -> bool {
+        match fix {
+            Fix::Trim { id, end } => {
+                if let Some(b) = self.block_mut(id) {
+                    b.duration = round4((end - b.start).max(0.001));
+                    return true;
+                }
+                false
+            }
+            Fix::ShiftFrom { id, by } => {
+                let Some((start, track)) = self.blocks.iter().find(|b| b.id == *id).map(|b| (b.start, b.track)) else { return false };
+                for b in self.blocks.iter_mut() {
+                    // this block and everything that starts at or after it on its track
+                    if b.track == track && (b.id == *id || b.start >= start + OVERLAP_EPS) {
+                        b.start = round4(b.start + by);
+                    }
+                }
+                true
+            }
+            Fix::FindMedia | Fix::OpenAudio => false,
+        }
+    }
+
+    /// Solve every overlap with its first suggestion, one after the other. Returns how many.
+    pub fn fix_overlaps(&mut self) -> usize {
+        let mut n = 0;
+        for _ in 0..10_000 {
+            let next = self.issues().into_iter().find_map(|i| i.fixes.into_iter().map(|f| f.1).find(|f| matches!(f, Fix::Trim { .. } | Fix::ShiftFrom { .. })));
+            match next {
+                Some(f) if self.apply_fix(&f) => n += 1,
+                _ => break,
+            }
+        }
+        n
     }
 
     // ---- (de)serialisation ---------------------------------------------------
@@ -1045,6 +1115,31 @@ impl Paradigm {
 // --------------------------------------------------------------------------
 // Project folders: a paradigm and its media in one folder of their own
 // --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// Problems found by "Check paradigm", with fixes
+// --------------------------------------------------------------------------
+/// A fix "Check paradigm" offers for a problem.
+#[derive(Clone, Debug, PartialEq)]
+pub enum Fix {
+    /// let block `id` end at `end`
+    Trim { id: String, end: f64 },
+    /// move block `id` and everything after it on its track `by` seconds later
+    ShiftFrom { id: String, by: f64 },
+    /// look for media files that are not there
+    FindMedia,
+    /// choose a sound output
+    OpenAudio,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct Issue {
+    pub text: String,
+    /// the block it is about ("Show")
+    pub block: Option<String>,
+    /// (button label, fix) – the first one is the suggestion
+    pub fixes: Vec<(String, Fix)>,
+}
+
 /// The media sub-folder of a project folder.
 pub const MEDIA_DIR: &str = "media";
 
@@ -1382,33 +1477,40 @@ pub fn generate_block_design(
         }
         seq.extend(cyc);
     }
+    // every block starts exactly where the one before ends: boundaries are rounded once, and each
+    // duration is the difference of two boundaries (never a sum of rounded steps)
     let mut blocks = vec![];
-    let mut t = start;
+    let mut t = round4(start);
+    let mut push = |blocks: &mut Vec<Block>, t: &mut f64, len: f64, make: &dyn Fn(f64, f64) -> Block| {
+        let end = round4(*t + len);
+        blocks.push(make(*t, round4(end - *t)));
+        *t = end;
+    };
     if lead_in > 0.0 {
-        blocks.push(Block::create("fixation", t, Some(lead_in)).lab("Baseline"));
-        t += lead_in;
+        push(&mut blocks, &mut t, lead_in, &|s, d| Block::create("fixation", s, Some(d)).lab("Baseline"));
     }
     for ci in seq {
         let cond = &conditions[ci];
         if !cond.images.is_empty() {
             let n = cond.images.len();
-            let step = block_dur / n as f64;
             let mut images = cond.images.clone();
             if random_order {
                 rng.shuffle(&mut images);
             }
-            for img in images {
-                blocks.push(Block::create("image", t, Some(step)).with(json!({"path": img})).cond(&cond.name));
-                t += step;
+            // n equal parts of the block, e.g. 1 s / 3 pictures → 0.3333, 0.3334, 0.3333
+            let t0 = t;
+            for (i, img) in images.iter().enumerate() {
+                let start_i = round4(t0 + block_dur * i as f64 / n as f64);
+                let end_i = round4(t0 + block_dur * (i + 1) as f64 / n as f64);
+                blocks.push(Block::create("image", start_i, Some(round4(end_i - start_i))).with(json!({"path": img})).cond(&cond.name));
+                t = end_i;
             }
         } else {
             let kind = if cond.kind.is_empty() { "fixation" } else { cond.kind.as_str() };
-            blocks.push(Block::create(kind, t, Some(block_dur)).cond(&cond.name).lab(&cond.name));
-            t += block_dur;
+            push(&mut blocks, &mut t, block_dur, &|s, d| Block::create(kind, s, Some(d)).cond(&cond.name).lab(&cond.name));
         }
         if rest_dur > 0.0 {
-            blocks.push(Block::create("fixation", t, Some(rest_dur)).lab("Rest"));
-            t += rest_dur;
+            push(&mut blocks, &mut t, rest_dur, &|s, d| Block::create("fixation", s, Some(d)).lab("Rest"));
         }
     }
     blocks
@@ -1435,7 +1537,8 @@ pub fn generate_event_design(
         rng.shuffle(&mut events);
     }
     let mut blocks = vec![];
-    let mut t = start;
+    let mut t = round4(start);
+    let stim_dur = round4(stim_dur);
     for (i, (cond, img)) in events.into_iter().enumerate() {
         let kind = if rating { "rating" } else { "image" };
         blocks.push(Block::create(kind, t, Some(stim_dur)).with(json!({"path": img})).cond(cond));
@@ -2152,6 +2255,73 @@ mod tests {
         // a tie (no folder hint) stays unresolved
         assert!(find_media(&["/x/a.png".to_string()], &[src.clone()]).is_empty());
         let _ = std::fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn quick_designs_never_overlap_by_rounding() {
+        // 3 pictures in a 1 s block → 0.333… s each: boundaries must meet exactly
+        let imgs = |n: usize| (0..n).map(|i| format!("{i}.png")).collect::<Vec<_>>();
+        for (n, block) in [(3, 1.0), (7, 2.0), (6, 1.3), (11, 10.0)] {
+            let conds = vec![
+                DesignCondition { name: "A".into(), kind: "image".into(), images: imgs(n) },
+                DesignCondition { name: "B".into(), kind: "image".into(), images: imgs(n) },
+                DesignCondition { name: "T".into(), kind: "text".into(), images: vec![] },
+            ];
+            for rest in [0.0, 0.7] {
+                let blocks = generate_block_design(&conds, block, rest, 4, true, 0.0, 1.1, Some(2));
+                let mut p = Paradigm::default();
+                p.blocks = blocks;
+                let overlaps: Vec<String> = p.validate().into_iter().filter(|m| m.contains("overlaps")).collect();
+                assert!(overlaps.is_empty(), "{n} in {block}s: {overlaps:?}");
+                let mut bl = p.blocks.clone();
+                bl.sort_by(|a, b| a.start.total_cmp(&b.start));
+                for w in bl.windows(2) {
+                    assert!((w[0].end() - w[1].start).abs() < 1e-9, "gap/overlap {} → {}", w[0].end(), w[1].start);
+                }
+            }
+        }
+        // event-related with an odd picture time
+        let conds = vec![DesignCondition { name: "A".into(), kind: "image".into(), images: imgs(9) }];
+        let mut p = Paradigm::default();
+        p.blocks = generate_event_design(&conds, 1.0 / 3.0, &[0.0, 0.25, 1.0 / 7.0], false, true, 0.0, Some(1));
+        assert!(p.validate().iter().all(|m| !m.contains("overlaps")), "{:?}", p.validate());
+    }
+
+    #[test]
+    fn check_offers_fixes_for_overlaps() {
+        // less than 1 ms is rounding, not an overlap
+        let p = make(&[("fixation", 0.0, 2.0004), ("fixation", 2.0, 2.0)]);
+        assert!(p.issues().is_empty());
+        // a tiny overlap: shorten the earlier block
+        let mut p = make(&[("fixation", 0.0, 2.004), ("fixation", 2.0, 2.0), ("fixation", 4.0, 1.0)]);
+        let iss = p.issues();
+        assert_eq!(iss.len(), 1);
+        assert!(matches!(iss[0].fixes[0].1, Fix::Trim { .. }), "{:?}", iss[0].fixes);
+        assert!(p.apply_fix(&iss[0].fixes[0].1));
+        assert!(p.issues().is_empty());
+        assert!((p.blocks[0].duration - 2.0).abs() < 1e-9);
+        // a big overlap: make room, durations stay
+        let mut p = make(&[("fixation", 0.0, 4.0), ("fixation", 2.0, 2.0), ("fixation", 4.0, 1.0)]);
+        let iss = p.issues();
+        assert_eq!(iss.len(), 1, "{iss:?}");
+        let Fix::ShiftFrom { by, .. } = iss[0].fixes[0].1.clone() else { panic!("{:?}", iss[0].fixes) };
+        assert!((by - 2.0).abs() < 1e-9);
+        assert!(p.apply_fix(&iss[0].fixes[0].1));
+        assert!(p.issues().is_empty(), "{:?}", p.issues());
+        let mut d: Vec<f64> = p.blocks.iter().map(|b| b.duration).collect();
+        d.sort_by(f64::total_cmp);
+        assert_eq!(d, [1.0, 2.0, 4.0]);
+        // all at once
+        let mut p = make(&[("fixation", 0.0, 3.0), ("fixation", 2.0, 2.0), ("fixation", 3.5, 2.0), ("fixation", 5.0, 1.002), ("fixation", 6.0, 1.0)]);
+        assert!(p.issues().len() >= 3);
+        assert!(p.fix_overlaps() >= 3);
+        assert!(p.issues().is_empty(), "{:?}", p.issues());
+        // missing media → the fix is a dialog
+        let mut p = Paradigm::default();
+        p.blocks.push(Block::create("image", 0.0, None).with(json!({"path": "/nowhere/x.png"})));
+        let iss = p.issues();
+        assert!(iss.iter().any(|i| i.fixes.first().map(|f| &f.1) == Some(&Fix::FindMedia)));
+        assert!(!p.apply_fix(&Fix::FindMedia));
     }
 
     #[test]

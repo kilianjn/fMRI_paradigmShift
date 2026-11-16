@@ -14,7 +14,7 @@ use crate::hardware::{
 use crate::model::{
     compact_values, find_text, fmt_g, fmt_time, generate_block_design, generate_event_design, parse_jitter_list, replace_text,
     round4, round_to, text_field_title, DesignCondition, Jitter,
-    GripButton, Hardware, Paradigm, TEXT_FIELDS,
+    Fix, GripButton, Hardware, Issue, Paradigm, TEXT_FIELDS,
 };
 use crate::prefs::Prefs;
 use crate::runner::RunSettings;
@@ -193,6 +193,127 @@ impl Confirm {
             ui.add(egui::Label::new(self.text.as_str()).wrap());
             buttons(ui, &self.yes, true)
         })
+    }
+}
+
+// =============================================================================
+// Check paradigm: problems, with fixes
+// =============================================================================
+#[derive(Clone, PartialEq)]
+pub enum CheckAction {
+    Open,
+    /// select the block and show it
+    Show(String),
+    Fix(Fix),
+    /// solve all overlaps with their suggestions
+    FixOverlaps,
+    Close,
+}
+
+pub struct CheckDialog {
+    pub issues: Vec<Issue>,
+    /// blocks starting between volumes (a note, not a problem)
+    pub off_grid: usize,
+    /// fixes applied while the dialog is open
+    pub fixed: usize,
+}
+
+impl CheckDialog {
+    pub fn new(par: &Paradigm) -> Self {
+        let mut d = CheckDialog { issues: vec![], off_grid: 0, fixed: 0 };
+        d.refresh(par);
+        d
+    }
+
+    pub fn refresh(&mut self, par: &Paradigm) {
+        self.issues = par.issues();
+        self.off_grid = par.blocks.iter().filter(|b| par.tr > 0.0 && (b.start / par.tr - (b.start / par.tr).round()).abs() > 1e-6).count();
+    }
+
+    fn overlaps(&self) -> usize {
+        self.issues.iter().filter(|i| i.fixes.iter().any(|f| matches!(f.1, Fix::Trim { .. } | Fix::ShiftFrom { .. }))).count()
+    }
+
+    pub fn ui(&mut self, ctx: &Context) -> CheckAction {
+        let mut act = CheckAction::Open;
+        let out = modal(ctx, "check", 720.0, |ui| {
+            title(ui, "Check paradigm");
+            let n = self.issues.len();
+            if n == 0 {
+                ui.label(RichText::new("✓ No problems found.").color(OK).font(theme::bold(14.0)));
+            } else {
+                ui.label(format!("{n} problem{} found. Where a fix is offered, one click applies it – Ctrl+Z undoes it.", if n == 1 { "" } else { "s" }));
+            }
+            if self.fixed > 0 {
+                ui.label(RichText::new(format!("{} fix{} applied.", self.fixed, if self.fixed == 1 { "" } else { "es" })).color(OK).size(12.5));
+            }
+            if n > 0 {
+                ui.add_space(4.0);
+                egui::Frame::new().fill(theme::BG).stroke(egui::Stroke::new(1.0, BORDER)).corner_radius(6).inner_margin(8).show(ui, |ui| {
+                    ui.set_width(ui.available_width());
+                    egui::ScrollArea::vertical().max_height(380.0).auto_shrink([false, true]).show(ui, |ui| {
+                        for (k, issue) in self.issues.iter().enumerate() {
+                            if k > 0 {
+                                ui.separator();
+                            }
+                            ui.horizontal_wrapped(|ui| {
+                                ui.label(RichText::new("⚠").color(DANGER));
+                                ui.add(egui::Label::new(issue.text.as_str()).wrap());
+                            });
+                            ui.horizontal_wrapped(|ui| {
+                                ui.add_space(18.0);
+                                for (i, (label, fix)) in issue.fixes.iter().enumerate() {
+                                    let b = if i == 0 {
+                                        egui::Button::new(RichText::new(label).color(hex("#1B1B1B"))).fill(ACCENT)
+                                    } else {
+                                        egui::Button::new(label.as_str())
+                                    };
+                                    if ui.add(b).clicked() {
+                                        act = CheckAction::Fix(fix.clone());
+                                    }
+                                }
+                                if let Some(id) = &issue.block {
+                                    if ui.button("Show").on_hover_text("Select this block in the timeline").clicked() {
+                                        act = CheckAction::Show(id.clone());
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+            if self.off_grid > 0 {
+                ui.add_space(4.0);
+                ui.add(
+                    egui::Label::new(
+                        RichText::new(format!(
+                            "ℹ {} block(s) start between volumes. That is fine for event-related designs (jitter), but unusual for block designs.",
+                            self.off_grid
+                        ))
+                        .color(TEXT_DIM)
+                        .size(12.5),
+                    )
+                    .wrap(),
+                );
+            }
+            ui.add_space(8.0);
+            ui.horizontal(|ui| {
+                let o = self.overlaps();
+                if o > 1 && ui.button(format!("Fix all {o} overlaps")).on_hover_text("Each overlap gets its suggested fix (the orange button), one after the other").clicked() {
+                    act = CheckAction::FixOverlaps;
+                }
+                ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                    if ui.button("Close").clicked() {
+                        act = CheckAction::Close;
+                    }
+                });
+            });
+            Outcome::Open
+        });
+        if out == Outcome::Cancel {
+            act = CheckAction::Close;
+        }
+        act
     }
 }
 
@@ -410,6 +531,11 @@ pub struct HardwareDialog {
 }
 
 impl HardwareDialog {
+    /// Open on a tab (0 SyncBox, 1 ResponseGrips, 2 Audio).
+    pub fn open_tab(&mut self, tab: usize) {
+        self.tab = tab.min(2);
+    }
+
     pub fn new(ctx: &Context, hw: &Hardware, tr: f64) -> Self {
         let c = ctx.clone();
         let mut d = HardwareDialog {
