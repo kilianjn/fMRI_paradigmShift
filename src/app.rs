@@ -100,6 +100,8 @@ pub struct App {
     syncbox_paused: bool,
     /// the quick design as it was last closed (for this paradigm): reopening keeps the sorting
     quick_last: Option<Box<QuickDesign>>,
+    /// the timeline was clicked last: ← / → step through its blocks
+    tl_focus: bool,
     last_autosave: f64,
     problems: (u64, Vec<String>),
     title: String,
@@ -139,6 +141,7 @@ impl App {
             syncbox_checked: String::new(),
             syncbox_paused: false,
             quick_last: None,
+            tl_focus: false,
             last_autosave: now(),
             problems: (u64::MAX, vec![]),
             title: String::new(),
@@ -806,6 +809,11 @@ impl App {
             self.tl.set_playhead(0.0, true);
             self.actions.push(Action::Seek(0.0));
         }
+        if plain(Key::End) {
+            let end = self.doc.paradigm.duration();
+            self.tl.set_playhead(end, true);
+            self.actions.push(Action::Seek(end));
+        }
         if plain(Key::N) {
             self.actions.push(Action::ToggleSnap);
         }
@@ -823,13 +831,44 @@ impl App {
         } else if plain(Key::Delete) || plain(Key::Backspace) {
             self.actions.push(Action::Delete { ripple: false });
         }
-        let tr = self.doc.paradigm.tr;
-        for (k, sign) in [(Key::ArrowLeft, -1.0), (Key::ArrowRight, 1.0)] {
-            if ctx.input_mut(|i| i.consume_key(Modifiers::SHIFT, k)) {
-                timeline::nudge_selected(&mut self.doc, sign * if tr > 0.0 { tr } else { 1.0 });
-            } else if plain(k) {
-                timeline::nudge_selected(&mut self.doc, sign * self.tl.grid_step());
+        // once the timeline was clicked: ← / → move the playhead block by block,
+        // Alt+← / → let the selected block trade places with its neighbour
+        for (k, dir) in [(Key::ArrowLeft, -1), (Key::ArrowRight, 1)] {
+            if !self.tl_focus {
+                continue;
             }
+            if ctx.input_mut(|i| i.consume_key(Modifiers::ALT, k)) {
+                self.swap_selected(dir);
+            } else if plain(k) {
+                if let Some(t) = self.tl.step_to_block(&mut self.doc, dir) {
+                    self.actions.push(Action::Seek(t));
+                }
+            }
+        }
+    }
+
+    /// Alt+← / →: the selected block (or neighbouring blocks, e.g. a trial) trades places with the
+    /// block before / after it – no gaps, no overlaps. Nothing selected: the block at the playhead.
+    fn swap_selected(&mut self, dir: i32) {
+        let mut ids = self.doc.selection.clone();
+        if ids.is_empty() {
+            let ph = self.tl.playhead;
+            let at = self.doc.paradigm.blocks.iter().filter(|b| b.start <= ph + 1e-6 && ph < b.end() - 1e-6).min_by_key(|b| b.track).map(|b| b.id.clone());
+            if let Some(id) = at {
+                ids = vec![id];
+                self.doc.select(ids.clone());
+            }
+        }
+        // try on a copy first, so a refused move leaves no empty undo step
+        let mut trial = self.doc.paradigm.clone();
+        match trial.swap_with_neighbour(&ids, dir) {
+            Ok(_) => {
+                let mut t = 0.0;
+                self.doc.edit(|p| t = p.swap_with_neighbour(&ids, dir).unwrap_or(0.0));
+                self.tl.set_playhead(t, true);
+                self.actions.push(Action::Seek(t));
+            }
+            Err(e) => self.flash(e),
         }
     }
 
@@ -974,7 +1013,7 @@ impl App {
     }
 
     fn timeline_panel(&mut self, ui: &mut Ui) {
-        theme::panel_frame().show(ui, |ui| {
+        let framed = theme::panel_frame().show(ui, |ui| {
             ui.set_width(ui.available_width());
             ui.set_height(ui.available_height());
             theme::panel_title(ui, "Timeline");
@@ -1004,7 +1043,13 @@ impl App {
                     if ui.add(snap).on_hover_text("Snap to TR grid and block edges (hold Alt while dragging to place freely) – N").clicked() {
                         self.actions.push(Action::ToggleSnap);
                     }
-                    if self.settings.prefs.show_hints {
+                    if self.tl_focus {
+                        ui.label(RichText::new("← → previous / next block  ·  Alt+← → move it").color(ACCENT).size(12.0)).on_hover_text(
+                            "← / →: the playhead jumps from block to block (and selects it)\n\
+                             Alt+← / →: the selected block trades places with the one before / after it – no gaps, no overlaps; \
+                             a Shift+click range (e.g. a whole trial) moves as one\nHome / End: start / end",
+                        );
+                    } else if self.settings.prefs.show_hints {
                         ui.label(RichText::new("drag to move · drag edges to trim · Ctrl+wheel zoom · right-click for more").color(TEXT_DIM).size(12.0));
                     }
                 });
@@ -1012,6 +1057,10 @@ impl App {
             ui.add_space(2.0);
             self.tl.ui(ui, &mut self.doc, &mut self.actions);
         });
+        // clicked into: the arrow keys work here now
+        if self.tl_focus {
+            ui.painter().rect_stroke(framed.response.rect, 8, egui::Stroke::new(1.5, theme::alpha(ACCENT, 150)), egui::StrokeKind::Inside);
+        }
     }
 
     fn monitor_panel(&mut self, ui: &mut Ui) {
@@ -1687,6 +1736,19 @@ impl App {
 
     fn editor(&mut self, ui: &mut Ui) {
         let ctx = ui.ctx().clone();
+        // a click into the timeline makes ← / → step through its blocks; a click elsewhere ends that
+        if self.modal.is_none() && self.popup.is_none() {
+            // the press events themselves (a quick click can press and release within one frame)
+            let press = ctx.input(|i| {
+                i.events.iter().find_map(|e| match e {
+                    egui::Event::PointerButton { pos, pressed: true, .. } => Some(*pos),
+                    _ => None,
+                })
+            });
+            if let Some(pos) = press {
+                self.tl_focus = self.tl.contains(pos);
+            }
+        }
         self.shortcuts(&ctx);
         self.handle_file_drops(&ctx);
         if let Some((t0, from)) = self.playing {

@@ -991,6 +991,50 @@ impl Paradigm {
         }
     }
 
+    /// Alt+← / →: the blocks `ids` – one block, or neighbouring blocks on one track (e.g. a whole
+    /// trial) – trade places with the block before (`dir` < 0) or after them. A gap between them
+    /// stays where it is, so nothing overlaps and no new gap appears. Returns the group's new start.
+    pub fn swap_with_neighbour(&mut self, ids: &[String], dir: i32) -> Result<f64, String> {
+        let group: Vec<usize> = self.blocks.iter().enumerate().filter(|(_, b)| ids.contains(&b.id)).map(|(i, _)| i).collect();
+        let Some(&first) = group.first() else { return Err("Select a block first – then Alt+← / → moves it.".into()) };
+        let track = self.blocks[first].track;
+        if group.iter().any(|&i| self.blocks[i].track != track) {
+            return Err("Alt+← / → moves blocks of one track only.".into());
+        }
+        let mut order: Vec<usize> = (0..self.blocks.len()).filter(|&i| self.blocks[i].track == track).collect();
+        order.sort_by(|&a, &b| self.blocks[a].start.total_cmp(&self.blocks[b].start));
+        let pos: Vec<usize> = order.iter().enumerate().filter(|(_, i)| group.contains(i)).map(|(p, _)| p).collect();
+        let (lo, hi) = (pos[0], pos[pos.len() - 1]);
+        if hi - lo + 1 != pos.len() {
+            return Err("Alt+← / → moves one block or neighbouring blocks – not blocks with others in between.".into());
+        }
+        let g_start = self.blocks[order[lo]].start;
+        let g_end = group.iter().map(|&i| self.blocks[i].end()).fold(f64::MIN, f64::max);
+        let nb = if dir > 0 { order.get(hi + 1).copied() } else { lo.checked_sub(1).map(|p| order[p]) };
+        let Some(nb) = nb else {
+            return Err(if dir > 0 { "That is already the last block." } else { "That is already the first block." }.into());
+        };
+        let (n_start, n_end) = (self.blocks[nb].start, self.blocks[nb].end());
+        let new_start = if dir > 0 {
+            // the neighbour takes the group's place, the group follows behind the gap
+            let shift = (n_end - n_start) + (n_start - g_end);
+            self.blocks[nb].start = round4(g_start);
+            for &i in &group {
+                self.blocks[i].start = round4(self.blocks[i].start + shift);
+            }
+            g_start + shift
+        } else {
+            // the group takes the neighbour's place, the neighbour follows behind the gap
+            let back = g_start - n_start;
+            for &i in &group {
+                self.blocks[i].start = round4(self.blocks[i].start - back);
+            }
+            self.blocks[nb].start = round4(n_start + (g_end - g_start) + (g_start - n_end));
+            n_start
+        };
+        Ok(round4(new_start))
+    }
+
     /// Solve every overlap with its first suggestion, one after the other. Returns how many.
     pub fn fix_overlaps(&mut self) -> usize {
         let mut n = 0;
@@ -2322,6 +2366,43 @@ mod tests {
         let iss = p.issues();
         assert!(iss.iter().any(|i| i.fixes.first().map(|f| &f.1) == Some(&Fix::FindMedia)));
         assert!(!p.apply_fix(&Fix::FindMedia));
+    }
+
+    #[test]
+    fn alt_arrows_swap_blocks_with_their_neighbours() {
+        // A 0–4, B 4–6, C 6–10, gap, D 12–13
+        let mut p = make(&[("fixation", 0.0, 4.0), ("image", 4.0, 2.0), ("rating", 6.0, 4.0), ("text", 12.0, 1.0)]);
+        let id = |p: &Paradigm, k: &str| p.blocks.iter().find(|b| b.kind == k).unwrap().id.clone();
+        let at = |p: &Paradigm, k: &str| p.blocks.iter().find(|b| b.kind == k).map(|b| (b.start, b.end())).unwrap();
+        // B to the right: C 4–8, B 8–10
+        let b = id(&p, "image");
+        assert_eq!(p.swap_with_neighbour(&[b.clone()], 1), Ok(8.0));
+        assert_eq!(at(&p, "rating"), (4.0, 8.0));
+        assert_eq!(at(&p, "image"), (8.0, 10.0));
+        // again to the right, over the 2-s gap: D takes B's place (8–9), the gap stays, B 11–13
+        assert_eq!(p.swap_with_neighbour(&[b.clone()], 1), Ok(11.0));
+        assert_eq!(at(&p, "text"), (8.0, 9.0));
+        assert_eq!(at(&p, "image"), (11.0, 13.0));
+        assert!(!p.validate().iter().any(|m| m.contains("overlaps")), "{:?}", p.validate());
+        assert!(p.swap_with_neighbour(&[b.clone()], 1).is_err()); // last block
+        // and all the way back
+        assert_eq!(p.swap_with_neighbour(&[b.clone()], -1), Ok(8.0));
+        assert_eq!(at(&p, "text"), (12.0, 13.0));
+        assert_eq!(p.swap_with_neighbour(&[b.clone()], -1), Ok(4.0));
+        assert_eq!(at(&p, "image"), (4.0, 6.0));
+        assert_eq!(at(&p, "rating"), (6.0, 10.0));
+        // a whole trial (B + C) moves as one: A goes behind it
+        let trial = vec![b.clone(), id(&p, "rating")];
+        assert_eq!(p.swap_with_neighbour(&trial, -1), Ok(0.0));
+        assert_eq!(at(&p, "image"), (0.0, 2.0));
+        assert_eq!(at(&p, "rating"), (2.0, 6.0));
+        assert_eq!(at(&p, "fixation"), (6.0, 10.0));
+        assert!(!p.validate().iter().any(|m| m.contains("overlaps")));
+        assert!(p.swap_with_neighbour(&trial, -1).is_err()); // first already
+        // not neighbours, nothing selected
+        let apart = vec![id(&p, "image"), id(&p, "fixation")];
+        assert!(p.swap_with_neighbour(&apart, 1).is_err());
+        assert!(p.swap_with_neighbour(&[], 1).is_err());
     }
 
     #[test]

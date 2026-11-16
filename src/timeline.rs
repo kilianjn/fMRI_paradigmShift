@@ -882,6 +882,41 @@ impl Timeline {
         self.view.contains(pos)
     }
 
+    /// ← / →: the playhead jumps to the start of the previous / next block, which gets selected (so
+    /// Alt+← / → can move it right away). Nothing is moved. Past the last block: the end; before the
+    /// first: 0. Returns the new time.
+    pub fn step_to_block(&mut self, doc: &mut Document, dir: i32) -> Option<f64> {
+        let ph = self.playhead;
+        let mut bl: Vec<&Block> = doc.paradigm.blocks.iter().collect();
+        bl.sort_by(|a, b| a.start.total_cmp(&b.start).then(a.track.cmp(&b.track)));
+        let target = if dir > 0 { bl.iter().find(|b| b.start > ph + 1e-6) } else { bl.iter().rev().find(|b| b.start < ph - 1e-6) };
+        let t = match target.map(|b| (b.id.clone(), b.start)) {
+            Some((id, start)) => {
+                // the first block starting there (lowest track)
+                let id = bl.iter().find(|b| (b.start - start).abs() < 1e-6).map(|b| b.id.clone()).unwrap_or(id);
+                doc.select(vec![id.clone()]);
+                self.anchor = Some(id);
+                start
+            }
+            None if dir > 0 => {
+                let end = doc.paradigm.duration();
+                if end <= ph + 1e-6 {
+                    return None;
+                }
+                doc.select(vec![]);
+                end
+            }
+            None => {
+                if ph <= 1e-6 {
+                    return None;
+                }
+                0.0
+            }
+        };
+        self.set_playhead(t, true);
+        Some(t)
+    }
+
     // ------------------------------------------------------------------ context menu
     fn context_menu(&mut self, resp: &egui::Response, doc: &mut Document, actions: &mut Vec<Action>) {
         if resp.secondary_clicked() {
@@ -1417,29 +1452,37 @@ pub fn add_preset(doc: &mut Document, key: &str, start: Option<f64>, variant: Op
     doc.select(ids);
 }
 
-pub fn nudge_selected(doc: &mut Document, step: f64) {
-    if doc.selection.is_empty() {
-        return;
-    }
-    doc.begin_edit();
-    let ids = doc.selection.clone();
-    for id in &ids {
-        if let Some(b) = doc.paradigm.block_mut(id) {
-            b.start = round4(b.start + step).max(0.0);
-        }
-    }
-    let overl = ids.iter().any(|i| doc.paradigm.block(i).map(|b| doc.paradigm.has_overlap(b)).unwrap_or(false));
-    if overl {
-        doc.cancel_edit();
-    } else {
-        doc.commit_edit();
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::model::ParamExt;
+
+    #[test]
+    fn arrow_keys_step_the_playhead_block_by_block() {
+        let (mut tl, mut doc) = setup(4); // blocks at 0, 4, 8, 12 – end 16
+        let ids: Vec<String> = doc.paradigm.blocks.iter().map(|b| b.id.clone()).collect();
+        let before: Vec<(f64, f64)> = doc.paradigm.blocks.iter().map(|b| (b.start, b.duration)).collect();
+        tl.set_playhead(0.0, false);
+        assert_eq!(tl.step_to_block(&mut doc, 1), Some(4.0));
+        assert_eq!(doc.selection, vec![ids[1].clone()]);
+        assert_eq!(tl.step_to_block(&mut doc, 1), Some(8.0));
+        assert_eq!(tl.step_to_block(&mut doc, 1), Some(12.0));
+        // past the last block: the end, then nothing more
+        assert_eq!(tl.step_to_block(&mut doc, 1), Some(16.0));
+        assert!(doc.selection.is_empty());
+        assert_eq!(tl.step_to_block(&mut doc, 1), None);
+        assert_eq!(tl.step_to_block(&mut doc, -1), Some(12.0));
+        assert_eq!(doc.selection, vec![ids[3].clone()]);
+        // from the middle of a block: first to its start
+        tl.set_playhead(9.5, false);
+        assert_eq!(tl.step_to_block(&mut doc, -1), Some(8.0));
+        assert_eq!(tl.step_to_block(&mut doc, -1), Some(4.0));
+        assert_eq!(tl.step_to_block(&mut doc, -1), Some(0.0));
+        assert_eq!(tl.step_to_block(&mut doc, -1), None);
+        // stepping never moves a block
+        let after: Vec<(f64, f64)> = doc.paradigm.blocks.iter().map(|b| (b.start, b.duration)).collect();
+        assert_eq!(before, after);
+    }
 
     /// A timeline 1200 px wide at 10 px/s and a run of `n` 4-second fixation blocks.
     fn setup(n: usize) -> (Timeline, Document) {

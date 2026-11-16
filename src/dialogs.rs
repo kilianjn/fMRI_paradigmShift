@@ -474,14 +474,15 @@ impl RepeatAsk {
 
 pub fn shortcuts_text() -> &'static str {
     "Space\tplay / pause preview\n\
-     Home\tgo to start\n\
+     ← →\tplayhead to the previous / next block (after a click into the timeline)\n\
+     Alt + ← →\tthe selected block trades places with the one before / after it\n\
+     Home / End\tgo to start / end\n\
      Shift+click\tselect all blocks from the last clicked one\n\
      Ctrl+click\tadd / remove one block\n\
      Del\tdelete selected   (Shift+Del closes the gap)\n\
      Ctrl+D\tduplicate\n\
      Ctrl+R\trepeat ×N\n\
      S\tsplit at playhead\n\
-     ← →\tnudge (Shift: by one TR)\n\
      Alt + drag\tplace without snapping\n\
      Ctrl+wheel\tzoom\n\
      Ctrl+0\tfit whole run\n\
