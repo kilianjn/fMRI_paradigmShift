@@ -292,6 +292,8 @@ pub struct Library {
     anchor: Option<usize>,
     /// where the media bin was drawn last (Del there removes the selected files)
     bin_rect: Option<Rect>,
+    /// selection frame on the bin's empty space
+    marquee: Marquee,
     /// panels minimised into the tool strip
     pub closed: Vec<String>,
     /// relative heights of the panels (blocks, task blocks, pictures)
@@ -571,12 +573,22 @@ impl Library {
         let mut clicked: Option<usize> = None;
         let mut drag_start: Option<usize> = None;
         let mut remove: Option<Vec<String>> = None;
+        // the empty space (also between the thumbnails) takes a selection frame, like the timeline
+        let top = ui.cursor().min;
+        let rows = self.media.len().div_ceil(cols);
+        let bg_h = (rows as f32 * cell.y).max(ui.clip_rect().bottom() - top.y);
+        let bg = Marquee::background(ui, Rect::from_min_size(top, Vec2::new(ui.available_width(), bg_h)), ui.id().with("media_marquee"));
+        let mut items: Vec<(usize, Rect)> = vec![];
         for row in self.media.chunks(cols).enumerate() {
             ui.horizontal(|ui| {
                 ui.spacing_mut().item_spacing.x = 0.0;
                 for (j, path) in row.1.iter().enumerate() {
                     let idx = row.0 * cols + j;
-                    let (r, resp) = ui.allocate_exact_size(cell, Sense::click_and_drag());
+                    let (_, r) = ui.allocate_space(cell);
+                    // the item itself: thumbnail and name, the narrow gaps around it count as empty space
+                    let hit = r.shrink2(Vec2::new(5.0, 1.0));
+                    let resp = ui.interact(hit, ui.id().with(("media_item", idx)), Sense::click_and_drag());
+                    items.push((idx, hit));
                     let sel = self.media_sel.contains(&idx);
                     if sel {
                         ui.painter().rect_filled(r.shrink(1.0), CornerRadius::same(4), theme::alpha(ACCENT, 60));
@@ -633,6 +645,11 @@ impl Library {
                 }
             });
         }
+        match self.marquee.update(ui, &bg, &items, &self.media_sel) {
+            MarqueeEvent::Select(sel) => self.media_sel = sel,
+            MarqueeEvent::Clicked => self.media_sel.clear(),
+            MarqueeEvent::None => {}
+        }
         if let Some(files) = remove {
             actions.push(Action::RemoveMedia(files));
         }
@@ -659,6 +676,57 @@ impl Library {
                 self.anchor = Some(i);
             }
         }
+    }
+}
+
+// =============================================================================
+// Rubber-band selection (Media panel, quick design picture box)
+// =============================================================================
+/// A selection frame drawn on the empty space of a grid of thumbnails, like on the timeline.
+#[derive(Clone, Default)]
+pub struct Marquee {
+    start: Option<Pos2>,
+    /// the selection when the drag began – Ctrl / Shift add to it
+    base: Vec<usize>,
+}
+
+pub enum MarqueeEvent {
+    None,
+    /// a click on empty space: clear the selection
+    Clicked,
+    /// the selection while the frame is drawn
+    Select(Vec<usize>),
+}
+
+impl Marquee {
+    /// The background of the grid. Call it before the items, so they stay clickable on top of it.
+    pub fn background(ui: &mut Ui, rect: Rect, id: egui::Id) -> egui::Response {
+        ui.interact(rect, id, Sense::click_and_drag())
+    }
+
+    /// After the items (`items`: index and rect of each): draw the frame and say what is selected.
+    pub fn update(&mut self, ui: &Ui, bg: &egui::Response, items: &[(usize, Rect)], current: &[usize]) -> MarqueeEvent {
+        if bg.drag_started() {
+            self.start = ui.input(|i| i.pointer.press_origin()).or(bg.interact_pointer_pos());
+            let m = ui.input(|i| i.modifiers);
+            self.base = if m.shift || m.command || m.ctrl { current.to_vec() } else { vec![] };
+        }
+        if !bg.dragged() {
+            self.start = None;
+            return if bg.clicked() && !ui.input(|i| i.modifiers.shift || i.modifiers.command) { MarqueeEvent::Clicked } else { MarqueeEvent::None };
+        }
+        let (Some(s), Some(p)) = (self.start, ui.input(|i| i.pointer.latest_pos())) else { return MarqueeEvent::None };
+        let frame = Rect::from_two_pos(s, p);
+        let painter = ui.painter().with_clip_rect(ui.clip_rect());
+        painter.rect(frame, CornerRadius::same(2), theme::alpha(ACCENT, 35), Stroke::new(1.0, ACCENT), StrokeKind::Inside);
+        let mut sel = self.base.clone();
+        for (i, r) in items {
+            if r.intersects(frame) && !sel.contains(i) {
+                sel.push(*i);
+            }
+        }
+        ui.ctx().request_repaint();
+        MarqueeEvent::Select(sel)
     }
 }
 

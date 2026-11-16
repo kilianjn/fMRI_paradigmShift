@@ -1225,6 +1225,10 @@ enum QdAct {
     RemoveCondition(usize),
     Click(usize, egui::Modifiers),
     SelectAll,
+    /// pictures selected with the selection frame
+    SetPicked(Vec<usize>),
+    /// nothing selected
+    Deselect,
     RemovePictures(Vec<usize>),
     Move { from: usize, pics: Vec<usize>, to: Option<usize> },
     AddPictures(Vec<String>),
@@ -1240,6 +1244,8 @@ pub struct QuickDesign {
     sel: usize,
     /// selected pictures in the box (indices into the shown condition's pictures)
     picked: std::collections::BTreeSet<usize>,
+    /// selection frame on the box's empty space
+    marquee: crate::panels::Marquee,
     anchor: Option<usize>,
     /// the pictures of the Media panel
     media: Vec<String>,
@@ -1285,6 +1291,7 @@ impl QuickDesign {
             conds: vec![DesignCondition { name: name.into(), kind: "image".into(), images: media.to_vec() }],
             sel: 0,
             picked: Default::default(),
+            marquee: Default::default(),
             anchor: None,
             media: media.to_vec(),
             blur,
@@ -1509,6 +1516,11 @@ impl QuickDesign {
             }
             QdAct::RemoveCondition(i) => self.remove_condition(i),
             QdAct::Click(j, m) => self.click_picture(j, m),
+            QdAct::SetPicked(p) => self.picked = p.into_iter().collect(),
+            QdAct::Deselect => {
+                self.picked.clear();
+                self.anchor = None;
+            }
             QdAct::SelectAll => {
                 let n = self.conds.get(self.sel).map(|c| c.images.len()).unwrap_or(0);
                 self.picked = (0..n).collect();
@@ -1762,10 +1774,17 @@ impl QuickDesign {
             let pointer = ui.input(|i| i.pointer.latest_pos());
             let mods = ui.input(|i| i.modifiers);
             egui::ScrollArea::vertical().id_salt(("qd_pics", ci)).auto_shrink([false, false]).show(ui, |ui| {
+                // the empty space (also between the thumbnails) takes a selection frame, like the timeline
+                let top = ui.cursor().min;
+                let cols = (((ui.available_width() + 6.0) / (QD_THUMB.x + 6.0)).floor() as usize).max(1);
+                let bg_h = (n.div_ceil(cols) as f32 * (QD_THUMB.y + 6.0)).max(ui.clip_rect().bottom() - top.y);
+                let bg = crate::panels::Marquee::background(ui, egui::Rect::from_min_size(top, Vec2::new(ui.available_width(), bg_h)), ui.id().with("qd_marquee"));
+                let mut items: Vec<(usize, egui::Rect)> = vec![];
                 ui.horizontal_wrapped(|ui| {
                     ui.spacing_mut().item_spacing = Vec2::splat(6.0);
                     for (j, f) in c.images.iter().enumerate() {
                         let (r, resp) = ui.allocate_exact_size(QD_THUMB, egui::Sense::click_and_drag());
+                        items.push((j, r));
                         if !ui.is_rect_visible(r) {
                             continue;
                         }
@@ -1798,6 +1817,12 @@ impl QuickDesign {
                         }
                     }
                 });
+                let current: Vec<usize> = self.picked.iter().copied().collect();
+                match self.marquee.update(ui, &bg, &items, &current) {
+                    crate::panels::MarqueeEvent::Select(sel) => acts.push(QdAct::SetPicked(sel)),
+                    crate::panels::MarqueeEvent::Clicked => acts.push(QdAct::Deselect),
+                    crate::panels::MarqueeEvent::None => {}
+                }
             });
         });
         // the dragged pictures follow the pointer
@@ -1851,7 +1876,7 @@ impl QuickDesign {
                 acts.push(QdAct::SelectAll);
             }
             if ui.button("Deselect").clicked() {
-                acts.push(QdAct::Click(usize::MAX, egui::Modifiers::NONE));
+                acts.push(QdAct::Deselect);
             }
         });
         // Del / Backspace removes the selection (not while a name is being typed)
