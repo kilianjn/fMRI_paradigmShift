@@ -100,7 +100,7 @@ pub struct App {
     syncbox_paused: bool,
     /// the quick design as it was last closed (for this paradigm): reopening keeps the sorting
     quick_last: Option<Box<QuickDesign>>,
-    /// the timeline was clicked last: ← / → step through its blocks
+    /// the timeline was clicked last: ← / → step through its blocks even when the mouse is elsewhere
     tl_focus: bool,
     last_autosave: f64,
     problems: (u64, Vec<String>),
@@ -831,10 +831,11 @@ impl App {
         } else if plain(Key::Delete) || plain(Key::Backspace) {
             self.actions.push(Action::Delete { ripple: false });
         }
-        // once the timeline was clicked: ← / → move the playhead block by block,
-        // Alt+← / → let the selected block trade places with its neighbour
+        // with the mouse over the timeline (or after a click into it): ← / → move the playhead block
+        // by block, Alt+← / → let the selected block trade places with its neighbour
+        let over_timeline = ctx.pointer_hover_pos().is_some_and(|p| self.tl.contains(p));
         for (k, dir) in [(Key::ArrowLeft, -1), (Key::ArrowRight, 1)] {
-            if !self.tl_focus {
+            if !(self.tl_focus || over_timeline) {
                 continue;
             }
             if ctx.input_mut(|i| i.consume_key(Modifiers::ALT, k)) {
@@ -1013,7 +1014,7 @@ impl App {
     }
 
     fn timeline_panel(&mut self, ui: &mut Ui) {
-        let framed = theme::panel_frame().show(ui, |ui| {
+        theme::panel_frame().show(ui, |ui| {
             ui.set_width(ui.available_width());
             ui.set_height(ui.available_height());
             theme::panel_title(ui, "Timeline");
@@ -1043,24 +1044,28 @@ impl App {
                     if ui.add(snap).on_hover_text("Snap to TR grid and block edges (hold Alt while dragging to place freely) – N").clicked() {
                         self.actions.push(Action::ToggleSnap);
                     }
-                    if self.tl_focus {
-                        ui.label(RichText::new("← → previous / next block  ·  Alt+← → move it").color(ACCENT).size(12.0)).on_hover_text(
-                            "← / →: the playhead jumps from block to block (and selects it)\n\
+                    if self.settings.prefs.show_hints {
+                        ui.add(
+                            egui::Label::new(
+                                RichText::new("drag to move · drag edges to trim · ← → step through blocks · Alt+← → move a block · Ctrl+wheel zoom · right-click for more")
+                                    .color(TEXT_DIM)
+                                    .size(12.0),
+                            )
+                            .truncate(),
+                        )
+                        .on_hover_text(
+                            "With the mouse over the timeline:\n\
+                             ← / →: the playhead jumps from block to block (and selects it) – nothing is moved\n\
                              Alt+← / →: the selected block trades places with the one before / after it – no gaps, no overlaps; \
-                             a Shift+click range (e.g. a whole trial) moves as one\nHome / End: start / end",
+                             a Shift+click range (e.g. a whole trial) moves as one\n\
+                             Home / End: start / end",
                         );
-                    } else if self.settings.prefs.show_hints {
-                        ui.label(RichText::new("drag to move · drag edges to trim · Ctrl+wheel zoom · right-click for more").color(TEXT_DIM).size(12.0));
                     }
                 });
             });
             ui.add_space(2.0);
             self.tl.ui(ui, &mut self.doc, &mut self.actions);
         });
-        // clicked into: the arrow keys work here now
-        if self.tl_focus {
-            ui.painter().rect_stroke(framed.response.rect, 8, egui::Stroke::new(1.5, theme::alpha(ACCENT, 150)), egui::StrokeKind::Inside);
-        }
     }
 
     fn monitor_panel(&mut self, ui: &mut Ui) {

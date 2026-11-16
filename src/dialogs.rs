@@ -474,7 +474,7 @@ impl RepeatAsk {
 
 pub fn shortcuts_text() -> &'static str {
     "Space\tplay / pause preview\n\
-     ← →\tplayhead to the previous / next block (after a click into the timeline)\n\
+     ← →\tplayhead to the previous / next block (mouse over the timeline)\n\
      Alt + ← →\tthe selected block trades places with the one before / after it\n\
      Home / End\tgo to start / end\n\
      Shift+click\tselect all blocks from the last clicked one\n\
