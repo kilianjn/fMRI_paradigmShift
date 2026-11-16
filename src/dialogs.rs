@@ -1818,7 +1818,7 @@ impl QuickDesign {
                     }
                 });
                 let current: Vec<usize> = self.picked.iter().copied().collect();
-                match self.marquee.update(ui, &bg, &items, &current) {
+                match self.marquee.update(ui, &bg, top, &items, &current) {
                     crate::panels::MarqueeEvent::Select(sel) => acts.push(QdAct::SetPicked(sel)),
                     crate::panels::MarqueeEvent::Clicked => acts.push(QdAct::Deselect),
                     crate::panels::MarqueeEvent::None => {}

@@ -645,7 +645,7 @@ impl Library {
                 }
             });
         }
-        match self.marquee.update(ui, &bg, &items, &self.media_sel) {
+        match self.marquee.update(ui, &bg, top, &items, &self.media_sel) {
             MarqueeEvent::Select(sel) => self.media_sel = sel,
             MarqueeEvent::Clicked => self.media_sel.clear(),
             MarqueeEvent::None => {}
@@ -682,10 +682,12 @@ impl Library {
 // =============================================================================
 // Rubber-band selection (Media panel, quick design picture box)
 // =============================================================================
-/// A selection frame drawn on the empty space of a grid of thumbnails, like on the timeline.
+/// A selection frame drawn on the empty space of a grid of thumbnails, like on the timeline. Past
+/// the top or bottom edge, the list scrolls along (like a file manager or a browser).
 #[derive(Clone, Default)]
 pub struct Marquee {
-    start: Option<Pos2>,
+    /// where the drag began, relative to the start of the scrolled content (so it scrolls along)
+    start: Option<Vec2>,
     /// the selection when the drag began – Ctrl / Shift add to it
     base: Vec<usize>,
 }
@@ -704,10 +706,11 @@ impl Marquee {
         ui.interact(rect, id, Sense::click_and_drag())
     }
 
-    /// After the items (`items`: index and rect of each): draw the frame and say what is selected.
-    pub fn update(&mut self, ui: &Ui, bg: &egui::Response, items: &[(usize, Rect)], current: &[usize]) -> MarqueeEvent {
+    /// After the items (`items`: index and rect of each; `origin`: where the scrolled content starts
+    /// this frame): draw the frame, scroll at the edges, and say what is selected.
+    pub fn update(&mut self, ui: &Ui, bg: &egui::Response, origin: Pos2, items: &[(usize, Rect)], current: &[usize]) -> MarqueeEvent {
         if bg.drag_started() {
-            self.start = ui.input(|i| i.pointer.press_origin()).or(bg.interact_pointer_pos());
+            self.start = ui.input(|i| i.pointer.press_origin()).or(bg.interact_pointer_pos()).map(|p| p - origin);
             let m = ui.input(|i| i.modifiers);
             self.base = if m.shift || m.command || m.ctrl { current.to_vec() } else { vec![] };
         }
@@ -716,6 +719,22 @@ impl Marquee {
             return if bg.clicked() && !ui.input(|i| i.modifiers.shift || i.modifiers.command) { MarqueeEvent::Clicked } else { MarqueeEvent::None };
         }
         let (Some(s), Some(p)) = (self.start, ui.input(|i| i.pointer.latest_pos())) else { return MarqueeEvent::None };
+        let s = origin + s;
+        // near or past the top / bottom edge: scroll that way – the further out, the faster
+        let clip = ui.clip_rect();
+        let margin = 14.0;
+        let out = if p.y > clip.bottom() - margin {
+            p.y - (clip.bottom() - margin)
+        } else if p.y < clip.top() + margin {
+            p.y - (clip.top() + margin)
+        } else {
+            0.0
+        };
+        if out != 0.0 {
+            let dt = ui.input(|i| i.stable_dt).clamp(0.001, 0.05);
+            let speed = (out.abs() * 12.0).clamp(120.0, 2000.0) * dt;
+            ui.scroll_with_delta_animation(Vec2::new(0.0, -out.signum() * speed), egui::style::ScrollAnimation::none());
+        }
         let frame = Rect::from_two_pos(s, p);
         let painter = ui.painter().with_clip_rect(ui.clip_rect());
         painter.rect(frame, CornerRadius::same(2), theme::alpha(ACCENT, 35), Stroke::new(1.0, ACCENT), StrokeKind::Inside);
